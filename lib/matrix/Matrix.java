@@ -313,6 +313,7 @@ public class Matrix
                 this.MATRIX[r][c] = 0;
             }
         }
+        this.index = 0; // reset the index row
     }
 
     // -- Matrix Sorter -- //
