@@ -1,0 +1,5 @@
+Program-Name: JMatrix
+Version: v0.2.0
+Main-Class: lib.matrix.ExampleMatrix
+Created-By: Ryuu Mitsuki
+Manifest-Version: 1.0
