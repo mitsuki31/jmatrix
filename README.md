@@ -3,7 +3,8 @@
 
 > JMatrix is a matrix builder written in Java.<br>
 > Developed by Ryuu Mitsuki.<br>
-> It can create, summarize, subtract and clear the matrix array
+> It can create, summarize, subtract, multiply and clear the matrix array.<br>
+> Check `LIST FUNCTION` below to see all functions.
 
 ---
 
@@ -13,12 +14,6 @@ If not, download here:<br>
 2. [https://developers.redhat.com/products/openjdk/download](https://developers.redhat.com/products/openjdk/download)
 
 ## LIST FUNCTION:rocket:
-> NOTE:<br>
-> All below functions isn't static, so create a new Matrix object first :)<br>
-> Except for:
-> - static void display(int[ ][ ] array)
-> - static void sort(int[ ][ ] array)
-
 
 ### add()
 Fill column of matrix array with push method.<br>
@@ -27,35 +22,91 @@ If you attempt to call `add()` function again and you've matrix size 2x3, but yo
 Function parameters:
 - void add(int... values)
 - void add(int value)
-> For the second parameter, it would create a single column with same value and for size equal to total matrix rows, then assign to matrix array.
-
 
 ### sum()
-Summarize current matrix array with other matrix array.<br>
+Summarize current matrix array with other matrix.<br>
 <br>
 Function parameters:
-- int[ ][ ] sum(Matrix object)
-- int[ ][ ] sum(int[ ][ ] array)
+- void sum(Matrix object)
+- void sum(int[ ][ ] array)
+<br>
+
+- static int[ ][ ] sum(int[ ][ ] array, int[ ][ ] array)
+- static Matrix sum(Matrix obj1, Matrix obj2)
 
 ### sub()
-Subtract current matrix array with other matrix array.<br>
+Subtract current matrix array with other matrix.<br>
 <br>
 Function parameters:
-- int[ ][ ] sub(Matrix object)
-- int[ ][ ] sub(int[ ][ ] array)
+- void sub(Matrix obj)
+- void sub(int[ ][ ] arr)
+<br>
+
+- static int[ ][ ] sub(int[ ][ ] arr, int[ ][ ] arr)
+- static Matrix sub(Matrix obj1, Matrix obj2)
+
+### mult()
+Multiply current matrix with other matrix.<br>
+<br>
+Function parameters:
+- void mult(Matrix obj)
+- void mult(int[ ][ ] arr)
+<br>
+
+- static int[ ][ ] mult(int[ ][ ] arr, int[ ][ ] arr)
+- static Matrix mult(Matrix obj1, Matrix obj2)
+
+### transpose()
+Transpose current matrix or current matrix transpose to other matrix.<br>
+<br>
+Function parameters:
+- void transpose()
+<br>
+
+- static int[ ][ ] transpose(int[ ][ ] arr)
+- static Matrix transpose(Matrix obj)
+
+
+### create()
+Create a new matrix with specified rows and columns.<br>
+<br>
+Function parametera:
+- void create(int rows, int cols)
+
+### select()
+Select row matrix by given index.<br>
+<br>
+Function parameters:
+- void select()
+
+### change()
+Change values of selected row with given values.<br>
+> Use this together with `select` function.<br>
+> Example:  `matrixA.select(<index>).change(<values>)`
+<br>
+
+Function parameters:
+- void change(int... values)
+- void change(int value)
+
+### copy()
+Copy current matrix to another matrix object.<br>
+<br>
+Function parameters:
+- Matrix copy()
 
 ### sort()
 Sort all columns inside matrix array.<br>
 <br>
 Function parameters:
 - void sort()
-- static void sort(int[ ][ ] array)
+- static void sort(int[ ][ ] arr)
 
 ### getSize()
-Return list of matrix size.<br>
+Return list of matrix size [rows, columns].<br>
 <br>
 Function parameters:
-- int[ ] getSize()  <- return [\<rows\>, \<cols\>]
+- int[ ] getSize()
 
 ### clear()
 Clear all each column inside matrix array, and change all values with 0.<br>
@@ -68,32 +119,26 @@ Display the matrix to console output.<br>
 <br>
 Function parameters:
 - void display()
-- static void display(int[ ][ ] array)
+- void display(int index)
+<br>
 
+- static void display(int[ ][ ] arr)
+- static void display(int[ ][ ] arr, int index)
 
-## EXAMPLE USAGE
+<br>
 
-I've created example for `JMatrix` usage in `examples` directory (just for references).<br>
-
----
-
-**Clone this repository and goto `jmatrix` directory<br>**
-```shell|powershell
-git clone https://github.com/mitsuki31/jmatrix.git
-cd jmatrix
+## USAGE
+Compile and create a `JAR` file with `Makefile`
+```bash|powershell
+make
 ```
 
-**Compile the program<br>**
-- Linux / Unix
-```shell
-javac examples/ExampleMatrix.java
-```
-- Windows
-```powershell
-javac "examples\ExampleMatrix.java"
+Run the program
+```bash|powershell
+make run
 ```
 
-**Run the program<br>**
-```shell|powershell
-java examples.ExampleMatrix
-```
+## EDIT MANIFEST
+If you want to change the `Main` file while running the program,
+change `Main-Class` in `META-INF/MANIFEST.MF`.<br>
+Default: `lib.matrix.ExampleMatrix`
