@@ -1,19 +1,19 @@
 # JMatrix
-**Author : Ryuu Mitsuki<br>**
+**Developed by Ryuu Mitsuki<br>**
+**Java version: openjdk-17**
 
+> **Note**
 > JMatrix is a matrix builder written in Java.<br>
-> Developed by Ryuu Mitsuki.<br>
 > It can create, summarize, subtract, multiply and clear the matrix array.<br>
-> Check `LIST FUNCTION` below to see all functions.
+> [See all functions](https://github.com/mitsuki31/jmatrix#list-functionsrocket)<br>
+> [See usage](https://github.com/mitsuki31/jmatrix#usage)
 
----
+> **Warning** Make sure you've installed these on your device<br>
+> - Java \[[Download here](https://oracle.com/java/)\]
+> - Python \[[Download here](https://python.org/)\]
+> - Make \[[Download here](https://chocolatey.org/install)\]
 
-Make sure you've `Java` installed in your device:warning:<br>
-If not, download here:<br>
-1. [https://openjdk.org](https://openjdk.org)
-2. [https://developers.redhat.com/products/openjdk/download](https://developers.redhat.com/products/openjdk/download)
-
-## LIST FUNCTION:rocket:
+## LIST FUNCTIONS:rocket:
 
 ### add()
 Fill column of matrix array with push method.<br>
@@ -28,10 +28,10 @@ Summarize current matrix array with other matrix.<br>
 <br>
 Function parameters:
 - void sum(Matrix object)
-- void sum(int[ ][ ] array)
+- void sum(int\[ ]\[ ] array)
 <br>
 
-- static int[ ][ ] sum(int[ ][ ] array, int[ ][ ] array)
+- static int[ ]\[ ] sum(int\[ ]\[ ] array, int\[ ]\[ ] array)
 - static Matrix sum(Matrix obj1, Matrix obj2)
 
 ### sub()
@@ -128,17 +128,18 @@ Function parameters:
 <br>
 
 ## USAGE
-Compile and create a `JAR` file with `Makefile`
-```bash|powershell
+### Makefile Options
+Compile and create new `JAR` file
+```bash
 make
 ```
 
-Run the program
-```bash|powershell
-make run
+Clearing binary files in `bin/` directory and `JAR` file
+```bash
+make clean
 ```
 
-## EDIT MANIFEST
-If you want to change the `Main` file while running the program,
-change `Main-Class` in `META-INF/MANIFEST.MF`.<br>
-Default: `lib.matrix.ExampleMatrix`
+Clearing binary files only
+```bash
+make clean-bin
+```
