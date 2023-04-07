@@ -44,12 +44,12 @@ public class JMBaseException extends Exception
         String arrow = ">>>>>>>>>>>>>";
 
         if (this.isCausedException && this.stackTraceElements.length > 2) {
-            System.err.printf("/!\\ EXCEPTION%s%s%s: %s%s",
+            System.err.printf("/!\\ EXCEPTION%s%s%s",
                     System.lineSeparator(),
                     arrow,
-                    System.lineSeparator(),
-                    this.toString(),
                     System.lineSeparator());
+            System.err.println(this.toString());
+
             for (int i = this.stackTraceElements.length - 2; i != this.stackTraceElements.length; i++) {
                 System.err.printf("%sat \"%s.%s\" -> \"%s\": line %d" + System.lineSeparator(),
                     spc,
@@ -59,12 +59,12 @@ public class JMBaseException extends Exception
                     this.stackTraceElements[i].getLineNumber());
             }
         } else {
-            System.err.printf("/!\\ EXCEPTION%s%s%s: %s%s",
+            System.err.printf("/!\\ EXCEPTION%s%s%s",
                     System.lineSeparator(),
                     arrow,
-                    System.lineSeparator(),
-                    this.toString(),
                     System.lineSeparator());
+            System.err.println(this.toString());
+
             for (StackTraceElement ste : this.stackTraceElements) {
                 System.err.printf("%sat \"%s.%s\" -> \"%s\": line %d" + System.lineSeparator(),
                     spc,
