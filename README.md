@@ -1,6 +1,9 @@
 # JMatrix
 **Developed by Ryuu Mitsuki<br>**
-**Java version: openjdk-17**
+
+**Operating System: Linux<br>**
+**Java version: openjdk-17<br>**
+**Python version: python-3.11.2**
 
 > **Note**
 > JMatrix is a matrix builder written in Java.<br>
@@ -17,8 +20,9 @@
 
 ### add()
 Fill column of matrix array with push method.<br>
-If you attempt to call `add()` function again and you've matrix size 2x3, but you've already call `add()` 2 times (same as total rows), it'll throw `MatrixArrayFullException`.<br>
+> **Note** If you attempt to call `add()` function again and you've matrix size 2x3, but you've already call `add()` 2 times (same as total rows), it'll throw `MatrixArrayFullException`.<br>
 <br>
+
 Function parameters:
 - void add(int... values)
 - void add(int value)
@@ -31,7 +35,7 @@ Function parameters:
 - void sum(int\[ ]\[ ] array)
 <br>
 
-- static int[ ]\[ ] sum(int\[ ]\[ ] array, int\[ ]\[ ] array)
+- static int[ ]\[ ] sum(int\[ ]\[ ] array, int\[ ]\[ ] array) 
 - static Matrix sum(Matrix obj1, Matrix obj2)
 
 ### sub()
@@ -39,10 +43,10 @@ Subtract current matrix array with other matrix.<br>
 <br>
 Function parameters:
 - void sub(Matrix obj)
-- void sub(int[ ][ ] arr)
+- void sub(int\[ ]\[ ] arr)
 <br>
 
-- static int[ ][ ] sub(int[ ][ ] arr, int[ ][ ] arr)
+- static int\[ ]\[ ] sub(int\[ ]\[ ] arr, int\[ ]\[ ] arr)
 - static Matrix sub(Matrix obj1, Matrix obj2)
 
 ### mult()
@@ -50,10 +54,10 @@ Multiply current matrix with other matrix.<br>
 <br>
 Function parameters:
 - void mult(Matrix obj)
-- void mult(int[ ][ ] arr)
+- void mult(int\[ ]\[ ] arr)
 <br>
 
-- static int[ ][ ] mult(int[ ][ ] arr, int[ ][ ] arr)
+- static int\[ ]\[ ] mult(int\[ ]\[ ] arr, int\[ ]\[ ] arr)
 - static Matrix mult(Matrix obj1, Matrix obj2)
 
 ### transpose()
@@ -63,7 +67,7 @@ Function parameters:
 - void transpose()
 <br>
 
-- static int[ ][ ] transpose(int[ ][ ] arr)
+- static int\[ ]\[ ] transpose(int\[ ]\[ ] arr)
 - static Matrix transpose(Matrix obj)
 
 
@@ -77,11 +81,11 @@ Function parametera:
 Select row matrix by given index.<br>
 <br>
 Function parameters:
-- void select()
+- Matrix select(int index)
 
 ### change()
 Change values of selected row with given values.<br>
-> Use this together with `select` function.<br>
+> **Note** Use this together with `select` function.<br>
 > Example:  `matrixA.select(<index>).change(<values>)`
 <br>
 
@@ -100,13 +104,13 @@ Sort all columns inside matrix array.<br>
 <br>
 Function parameters:
 - void sort()
-- static void sort(int[ ][ ] arr)
+- static void sort(int\[ ]\[ ] arr)
 
 ### getSize()
-Return list of matrix size [rows, columns].<br>
+Return list of matrix size \[rows, columns].<br>
 <br>
 Function parameters:
-- int[ ] getSize()
+- int\[ ] getSize()
 
 ### clear()
 Clear all each column inside matrix array, and change all values with 0.<br>
@@ -122,8 +126,8 @@ Function parameters:
 - void display(int index)
 <br>
 
-- static void display(int[ ][ ] arr)
-- static void display(int[ ][ ] arr, int index)
+- static void display(int\[ ]\[ ] arr)
+- static void display(int\[ ]\[ ] arr, int index)
 
 <br>
 
@@ -135,6 +139,8 @@ make
 ```
 
 Clearing binary files in `bin/` directory and `JAR` file
+> **Warning** This will delete `bin/` directory recursively<br>
+> Make sure you don't save any important file(s) to `bin/` directory
 ```bash
 make clean
 ```
