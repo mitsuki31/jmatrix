@@ -7,16 +7,17 @@
 
 > **Note**
 > JMatrix is a matrix builder written in Java.<br>
-> It can create, summarize, subtract, multiply and clear the matrix array.<br>
-> [See all functions](https://github.com/mitsuki31/jmatrix#list-functionsrocket)<br>
+> It can create, operate addition, subtract, multiply and clear the matrix array.<br>
+> 
+> [See all methods](https://github.com/mitsuki31/jmatrix#list-methodsrocket)&nbsp; - &nbsp;
 > [See usage](https://github.com/mitsuki31/jmatrix#usage)
 
 > **Warning** Make sure you've installed these on your device<br>
 > - Java \[[Download here](https://oracle.com/java/)\]
 > - Python \[[Download here](https://python.org/)\]
-> - Make \[[Download here](https://chocolatey.org/install)\]
+> - Chocolatey \[[Download here](https://chocolatey.org/install)\]
 
-## LIST FUNCTIONS:rocket:
+## LIST METHODS:rocket:
 
 ### add()
 Fill column of matrix array with push method.<br>
