@@ -18,24 +18,61 @@ import java.io.FileNotFoundException;
 import java.lang.NullPointerException;
 import java.lang.IllegalArgumentException;
 
+// -**- Built-in Package (java.math) -**- //
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 // -**- Local Package -**- //
 import com.mitsuki.jmatrix.core.JMBaseException;
 import com.mitsuki.jmatrix.util.OSUtils;
 import com.mitsuki.jmatrix.util.XMLParser;
 
+/**
+* This class provides all requirements for {@code JMatrix} package.<br>
+*
+* @version 1.0
+* @since   1.0.0
+* @author  Ryuu Mitsuki
+*
+* @see     com.mitsuki.jmatrix.util.OSUtils
+* @see     com.mitsuki.jmatrix.util.XMLParser
+*/
 public class Options
 {
+    /**
+    * {@link Enum} contains all available options.<br>
+    *
+    * @since 1.0.0
+    * @see   #getOptions(String)
+    */
     public enum OPT {
         VERSION, HELP, COPYRIGHT
     };
 
-    private static XMLParser XML = XMLParser.newParser(XMLParser.XMLType.CONFIG);
+    // -- Private Attributes
+    private static XMLParser XML = new XMLParser(XMLParser.XMLType.CONFIG);
     private static String PROGNAME = XML.getProperty("programName").toLowerCase();
     private static String PACKAGE = getPackageName(Options.class);
     private static String THISCLASS = getClassName(Options.class);
-
     private static String contentsPath = String.format("assets%scontents%s", OSUtils.sep, OSUtils.sep);
 
+    /**
+    * Method that checks the input argument then returns specific option.
+    * <br>
+    * <ul>
+    *     <li>[{@code -V}, {@code ver}, {@code version}]  ->  returns {@code VERSION} value.</li>
+    *     <li.[{@code -h}, {@code help}]                  ->  returns {@code HELP} value.</li>
+    *     <li>[{@code -cr}, {@code copyright}]            ->  returns {@code COPYRIGHT} value.</li>
+    * </ul>
+    * <br>
+    *
+    * @param  inputOpt  the {@link String} that wants to be checked.
+    *
+    * @return the {@link Options#OPT} contains specified value.
+    *
+    * @since  1.0.0
+    * @see    Options#OPT
+    */
     public static OPT getOptions(String inputOpt) {
         if (inputOpt != null) {
             if (inputOpt.equals("-V") || inputOpt.equals("version") || inputOpt.equals("ver")) {
@@ -68,27 +105,109 @@ public class Options
     }
 
 
-    ///// -------------- /////
-    ///      Packages      ///
-    ///// -------------- /////
+    ///// ---------------------- /////
+    ///      Class & Packages      ///
+    ///// ---------------------- /////
 
+    /**
+    * Gets the package name of specific class. For example:
+    * <br>
+    * <code>
+    *     Options.getPackageName(MyClass.class);
+    * </code>
+    * <br>
+    *
+    * @param  cls  a class name to retrieves it's package name.
+    *
+    * @return the {@link String} that contains package name of specified class.
+    *
+    * @since  1.0.0
+    * @see    #getClassName(Class<?>)
+    */
     public static String getPackageName(Class<?> cls) {
         return cls.getPackage().getName();
     }
 
+    /**
+    * Gets the full package name (with class name) of specific class. For example:
+    * <br>
+    * <code>
+    *     Options.getClassName(MyClass.class);
+    * </code>
+    * <br>
+    *
+    * @param  cls  a class name to retrieves it's full package name.
+    *
+    * @return a {@link String} that contains full package name of specified class.
+    *
+    * @since  1.0.0
+    * @see    #getPackageName(Class<?>)
+    */
     public static String getClassName(Class<?> cls) {
         return cls.getName();
     }
+
+    /**
+    * Returns the class of the given template object.<br>
+    *
+    * @param  template  the template object to retrieve the class.
+    * @param  <T>       the type of the template object.
+    *
+    * @return the class of the template object.
+    *
+    * @since  1.0.0
+    * @see    #getClassNameFromTemplate(T)
+    */
+    public static <T> Class<T> getClassFromTemplate(T template) {
+        return (Class<T>) template.getClass();
+    }
+
+    /**
+    * Returns {@code String} contains the name of the class of the given template object.<br>
+    *
+    * @param  template  the template object to retrieves the class name from.
+    * @param  <T>       the type of the template object.
+    *
+    * @return the name of the class of the template object.
+    *
+    * @since  1.0.0
+    * @see    #getClassFromTemplate(T)
+    */
+    public static <T> String getClassNameFromTemplate(T template) {
+        String fullNameClass = template.getClass().getName();
+        int lastIndex = fullNameClass.lastIndexOf('.');
+
+        if (lastIndex == -1) {
+            // Return unextracted full name of class, if doesn't contain any dots
+            return fullNameClass;
+        } else {
+            // Extract just the class name from the full name
+            return fullNameClass.substring(lastIndex + 1);
+        }
+    }
+
 
 
     ///// -------------------- /////
     ///       Files Options      ///
     ///// -------------------- /////
 
-    public static long getLinesFile(String pathFile) {
+    /**
+    * Returns the total lines of specified file.<br>
+    *
+    * @param  filePath  a path to specific file.
+    *
+    * @return total lines of specified file.
+    *
+    * @since  1.0.0
+    * @see    #getLinesFile(InputStream)
+    * @see    java.io.FileReader
+    * @see    java.io.BufferedReader
+    */
+    public static long getLinesFile(String filePath) {
         long lines = 0;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(pathFile))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             while (br.readLine() != null) lines++;
         } catch (final IOException e) {
             try {
@@ -101,6 +220,18 @@ public class Options
         return lines;
     }
 
+    /**
+    * Returns the total lines of specified file.<br>
+    *
+    * @param  stream  a stream that contains path to specific file.
+    *
+    * @return total lines of specified file.
+    *
+    * @since  1.0.0
+    * @see    #getLinesFile(String)
+    * @see    java.io.InputStreamReader
+    * @see    java.io.BufferedReader
+    */
     public static long getLinesFile(InputStream stream) {
         long lines = 0;
 
@@ -117,8 +248,21 @@ public class Options
         return lines;
     }
 
-    public static String[ ] readFile(String fileName) {
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+
+    /**
+    * Reads and returns the contents of specified file.<br>
+    *
+    * @param  filePath a path to specific file.
+    *
+    * @return the contents of specified file.
+    *
+    * @since  1.0.0
+    * @see    #readFile(InputStream)
+    * @see    java.io.BufferedReader
+    * @see    java.io.FileReader
+    */
+    public static String[ ] readFile(String filePath) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             return br.lines().toArray(String[ ]::new);
         } catch (final IOException e) {
             try {
@@ -131,6 +275,18 @@ public class Options
         return null;
     }
 
+    /**
+    * Reads and returns the contents of specified file.<br>
+    *
+    * @param  stream  a stream that contains path to specific file.
+    *
+    * @return the contents of specified file.
+    *
+    * @since  1.0.0
+    * @see    #readFile(String)
+    * @see    java.io.BufferedReader
+    * @see    java.io.InputStreamReader
+    */
     public static String[ ] readFile(InputStream stream) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             return br.lines().toArray(String[ ]::new);
@@ -145,6 +301,18 @@ public class Options
         return null;
     }
 
+    /**
+    * Returns the stream of specified file path.<br>
+    * This method is similar to {@link java.lang.ClassLoader#getResourceAsStream(String)}, but this method is a simple way.<br>
+    *
+    * @param  filePath  a path to specific file.
+    *
+    * @return returns the {@link java.io.InputStream}
+    *
+    * @since  1.0.0
+    * @see    java.lang.ClassLoader
+    * @see    java.lang.InputStream
+    */
     public static InputStream getFileAsStream(String filePath) {
         InputStream stream = null;
         try {
@@ -161,9 +329,20 @@ public class Options
         return stream;
     }
 
-    public static boolean writeToFile(String filePath, String[ ] content) {
+    /**
+    * Writes the contents to specific file.<br>
+    *
+    * @param  filePath  the {@link String} that contains path to specific file.
+    * @param  contents  the contents to be writen into specific file.
+    *
+    * @return returns {@code true} if succeed, else return {@code false}
+    *
+    * @since  1.0.0
+    * @see    java.io.FileWriter
+    */
+    public static boolean writeToFile(String filePath, String[ ] contents) {
         try (FileWriter fw = new FileWriter(filePath)) {
-            for (String line : content) {
+            for (String line : contents) {
                 fw.write(line + System.lineSeparator());
             }
             return true;
@@ -183,19 +362,34 @@ public class Options
     ///        Contents        ///
     ///// ------------------ /////
 
+    /**
+    * Returns the help message contents.<br>
+    *
+    * @return the contents of help message.
+    *
+    * @since  1.0.0
+    * @see    #readFile
+    * @see    #getFileAsStream(String)
+    */
     public static String[ ] getHelpMsg() {
         return readFile(getFileAsStream(contentsPath + "help.content"));
     }
 
+    /**
+    * Returns the copyright contents.<br>
+    *
+    * @return the contents of copyright.
+    *
+    * @since  1.0.0
+    * @see    #readFile
+    * @see    #getFileAsStream(String)
+    * @see    java.lang.StringBuilder
+    * @see    com.mitsuki.jmatrix.util.XMLParser#getProperty(String)
+    */
     public static String[ ] getCopyright() {
         final String license = readFile(getFileAsStream("LICENSE"))[0];
         final String[ ] contents = readFile(getFileAsStream(contentsPath + "additional.content"));
         String[ ] copyright = new String[contents.length];
-        String[ ] otherContents = new String[ ]
-            {
-                XML.getProperty("programName"),
-                license
-            };
 
         for (int i = 0; i < contents.length; i++) {
             StringBuilder sb = new StringBuilder();
@@ -206,9 +400,17 @@ public class Options
             copyright[i] = sb.toString();
         }
 
-        for (int i = 0, j = 0; j != otherContents.length; i++) {
-            if (copyright[i].contains("%s")) {
-                copyright[i] = String.format(copyright[i], otherContents[j++]);
+        for (int i = 0; i != contents.length; i++) {
+            if (copyright[i].contains("${PACKAGE_NAME}")) {
+                copyright[i] = copyright[i].replace("${PACKAGE_NAME}", XML.getProperty("programName"));
+            }
+
+            if (copyright[i].contains("${AUTHOR}")) {
+                copyright[i] = copyright[i].replace("${AUTHOR}", XML.getProperty("author"));
+            }
+
+            if (copyright[i].contains("${LICENSE}")) {
+                copyright[i] = copyright[i].replace("${LICENSE}", license);
             }
         }
 
@@ -220,33 +422,87 @@ public class Options
     ///       Error Options       ///
     ///// --------------------- /////
 
+    /**
+    * Raises an error or exception and prints the stack trace of the
+    * input exception object and then exits the program (default exit code: 1).<br>
+    *
+    * @param ex  the {@code Exception} object to be printed.
+    *
+    * @since 1.0.0
+    * @see   #raiseError(Exception, int)
+    * @see   #raiseErrorMsg(Exception)
+    * @see   java.lang.Exception
+    * @see   java.lang.Exception#printStackTrace
+    */
     public final static void raiseError(final Exception ex) {
         ex.printStackTrace();
-        System.err.println("\nExited with error code: 1");
+        System.err.println(System.lineSeparator() +
+            "Exited with error code: 1");
         System.exit(1);
     }
 
+    /**
+    * Raises an error or exception and prints the stack trace of the
+    * input exception object and then exits the program with the specified exit code.<br>
+    * Sets the {@code exitStatus} to {@code 0} (zero) if don't want the program to exits.<br>
+    *
+    * @param ex          the {@code Exception} object to be printed.
+    * @param exitStatus  the value to specify the exit code.
+    *
+    * @since 1.0.0
+    * @see   #raiseError(Exception)
+    * @see   #raiseErrorMsg(Exception, int)
+    * @see   java.lang.Exception
+    * @see   java.lang.Exception#printStackTrace
+    */
     public final static void raiseError(final Exception ex, final int exitStatus) {
         ex.printStackTrace();
         if (exitStatus != 0) {
-            System.err.printf("\nExited with error code: %d\n", exitStatus);
+            System.err.printf(System.lineSeparator() +
+                "Exited with error code: %d%s", exitStatus, System.lineSeparator());
             System.exit(exitStatus);
         }
     }
 
 
-    // Raise and only print error message
-
+    /**
+    * Raises an error or exception but only prints the message
+    * and then exits the program (default exit code: 1).<br>
+    *
+    * @param ex  the {@code Exception} object to prints the message.
+    *
+    * @since 1.0.0
+    * @see   #raiseErrorMsg(Exception, int)
+    * @see   #raiseError(Exception)
+    * @see   java.lang.Exception
+    * @see   java.lang.Exception#printStackTrace
+    */
     public final static void raiseErrorMsg(final Exception ex) {
-        System.err.printf("[%s] Error: %s\n", PROGNAME, ex.getMessage());
-        System.err.println("\nExited with error code: 1");
+        System.err.printf("[%s] Error: %s%s", PROGNAME, ex.getMessage(), System.lineSeparator());
+        System.err.println(System.lineSeparator() +
+            "Exited with error code: 1");
         System.exit(1);
     }
 
+    /**
+    * Raises an error or exception but only prints the message
+    * and then exits the program with the specified exit code.<br>
+    * Sets the {@code exitStatus} to {@code 0} (zero) if don't want the program to exits.<br>
+    *
+    * @param ex          the {@code Exception} object to prints the message.
+    * @param exitStatus  the value to specify the exit code.
+    *
+    * @since 1.0.0
+    * @see   #raiseErrorMsg(Exception)
+    * @see   #raiseError(Exception, int)
+    * @see   java.lang.Exception
+    * @see   java.lang.Exception#printStackTrace
+    */
     public final static void raiseErrorMsg(final Exception ex, final int exitStatus) {
-        System.err.printf("[%s] Error: %s\n", PROGNAME, ex.getMessage());
+        System.err.printf("[%s] Error: %s%s", PROGNAME, ex.getMessage(), System.lineSeparator());
         if (exitStatus != 0) {
-            System.err.printf("\nExited with error code: %d\n", exitStatus);
+            System.err.printf(System.lineSeparator() +
+                "Exited with error code: %d%s", exitStatus, System.lineSeparator());
             System.exit(exitStatus);
         }
     }
