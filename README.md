@@ -1,21 +1,22 @@
 # JMatrix
 **Developed by Ryuu Mitsuki<br>**
 
-**Operating System: Linux<br>**
-**Java version: openjdk-17<br>**
-**Python version: python-3.11.2**
+**Operating System: `Linux`<br>**
+**Java version: `openjdk-17`<br>**
+**Python version: `python-3.11.2`**
 
 > **Note**
 > JMatrix is a matrix builder written in Java.<br>
 > It can create, operate addition, subtract, multiply and clear the matrix array.<br>
 > 
-> [See all methods](https://github.com/mitsuki31/jmatrix#list-methodsrocket)&nbsp; - &nbsp;
-> [See usage](https://github.com/mitsuki31/jmatrix#usage)
+> [See all methods](https://github.com/mitsuki31/jmatrix#list-methodsrocket)&nbsp; | &nbsp;
+> [See usages](https://github.com/mitsuki31/jmatrix#usage)
 
-> **Warning** Make sure you've installed these on your device<br>
-> - Java \[[Download here](https://oracle.com/java/)\]
-> - Python \[[Download here](https://python.org/)\]
-> - Chocolatey \[[Download here](https://chocolatey.org/install)\]
+> **Warning** Make sure you've installed these on your device
+> - Java&nbsp; \[[Download here](https://oracle.com/java/)\]
+> - Python&nbsp; \[[Download here](https://python.org/)\]
+> - Make&nbsp; *(for Windows you need to install Chocolatey)*
+>     - Chocolatey&nbsp; \[[Download here](https://chocolatey.org/install)\]
 
 ## LIST METHODS:rocket:
 
