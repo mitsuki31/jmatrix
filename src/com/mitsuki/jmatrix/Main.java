@@ -17,7 +17,7 @@ public class Main
         String arg1 = null,
                arg2 = null;
 
-        XMLParser XML = XMLParser.newParser(XMLParser.XMLType.CONFIG);
+        XMLParser XML = new XMLParser(XMLParser.XMLType.CONFIG);
 
         if (args.length >= 1 && args.length < 2) {
             arg1 = args[0];
@@ -57,7 +57,7 @@ public class Main
                 System.out.print(XML.getProperty("programName") + " " +
                     XML.getProperty("version") + "-");
                 System.out.print(XML.getProperty("releaseType"));
-                System.out.printf("  <%s>\n", XML.getProperty("packageName"));
+                System.out.printf(" <%s>\n", XML.getProperty("packageName"));
                 break;
 
             case HELP:
