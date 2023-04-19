@@ -2,11 +2,11 @@
 /* --  MatrixArrayFullException  -- */
 // :: -------------------------- :: //
 
-package com.mitsuki.jmatrix;
+package com.mitsuki.jmatrix.core;
 
-import java.lang.RuntimeException;
+import com.mitsuki.jmatrix.core.JMBaseException;
 
-public class MatrixArrayFullException extends RuntimeException
+public class MatrixArrayFullException extends JMBaseException
 {
     private String message = null;
 
@@ -21,6 +21,7 @@ public class MatrixArrayFullException extends RuntimeException
 
     public MatrixArrayFullException(Throwable cause) {
         super(cause);
+        this.message = cause.getMessage();
     }
 
     @Override
