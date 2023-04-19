@@ -2,11 +2,11 @@
 /* --  NullMatrixException  -- */
 // :: --------------------- :: //
 
-package com.mitsuki.jmatrix;
+package com.mitsuki.jmatrix.core;
 
-import java.lang.NullPointerException;
+import com.mitsuki.jmatrix.core.JMBaseException;
 
-public class NullMatrixException extends NullPointerException
+public class NullMatrixException extends JMBaseException
 {
     private String message = null;
 
@@ -17,6 +17,11 @@ public class NullMatrixException extends NullPointerException
     public NullMatrixException(String message) {
         super(message);
         this.message = message;
+    }
+
+    public NullMatrixException(Throwable cause) {
+        super(cause);
+        this.message = cause.getMessage();
     }
 
     @Override
