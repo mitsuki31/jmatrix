@@ -370,9 +370,10 @@ public class Options
     * @since  1.0.0
     * @see    #readFile
     * @see    #getFileAsStream(String)
+    * @see    #removeComment(String[])
     */
     public static String[ ] getHelpMsg() {
-        return readFile(getFileAsStream(contentsPath + "help.content"));
+        return removeComment(readFile(getFileAsStream(contentsPath + "help.content")));
     }
 
     /**
@@ -392,15 +393,20 @@ public class Options
         String[ ] copyright = new String[contents.length];
 
         for (int i = 0; i < contents.length; i++) {
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < contents[i].length(); j += 2) {
-                String bytes = contents[i].substring(j, j + 2);
-                sb.append((char) Integer.parseInt(bytes, 16));
+            // Ignore the comment
+            if (!contents[i].startsWith("#")) {
+                StringBuilder sb = new StringBuilder();
+                for (int j = 0; j < contents[i].length(); j += 2) {
+                    String bytes = contents[i].substring(j, j + 2);
+                    sb.append((char) Integer.parseInt(bytes, 16));
+                }
+                copyright[i] = sb.toString();
+            } else {
+                copyright[i] = contents[i];
             }
-            copyright[i] = sb.toString();
         }
 
-        for (int i = 0; i != contents.length; i++) {
+        for (int i = 0, j = 0; i != contents.length; i++) {
             if (copyright[i].contains("${PACKAGE_NAME}")) {
                 copyright[i] = copyright[i].replace("${PACKAGE_NAME}", XML.getProperty("programName"));
             }
@@ -414,7 +420,58 @@ public class Options
             }
         }
 
-        return copyright;
+        return removeComment(copyright);
+    }
+
+
+    /**
+    * Removes comment lines from an array of strings.<br>
+    * Default set the delimiter to <b>#</b>.<br>
+    *
+    * @param  contents  the array of strings containing the content.
+    *
+    * @return a new array of strings with all comment lines removed.
+    *
+    * @since  1.0.0
+    * @see    #removeComment(String[], String)
+    */
+    public static String[ ] removeComment(String[ ] contents) {
+        return removeComment(contents, "#");
+    }
+
+    /**
+    * Removes comment lines that start with a specified delimiter
+    * from an array of strings.<br>
+    * Most used delimiter is (<b>#</b>, <b>//</b>).<br>
+    *
+    * @param  contents  the array of strings containing the content.
+    * @param  del       the string that specifies the delimiter.
+    *
+    * @return a new array of strings with all comment lines
+    *         that start with the specified delimiter removed.
+    *
+    * @since  1.0.0
+    * @see    #removeComment(String[])
+    */
+    public static String[ ] removeComment(String[ ] contents, String del) {
+        String[ ] tmp = contents; // copy the contents
+        int ct = 0;
+
+        // Count the line of contents that contains the comment
+        for (int i = 0; i < tmp.length; i++) {
+            if (tmp[i].startsWith(del)) ct++;
+        }
+        
+        // If the contents doesn't contains any comment
+        if (ct == 0) return contents;
+
+        // Initialize new contents
+        contents = new String[contents.length - ct];
+        for (int i = 0, j = 0; i < tmp.length && j < contents.length; i++) {
+            if (!tmp[i].startsWith(del)) contents[j++] = tmp[i];
+        }
+
+        return contents;
     }
 
 
@@ -447,7 +504,7 @@ public class Options
     * Sets the {@code exitStatus} to {@code 0} (zero) if don't want the program to exits.<br>
     *
     * @param ex          the {@code Exception} object to be printed.
-    * @param exitStatus  the value to specify the exit code.
+    * @param exitStatus  the value that specifies the exit code.
     *
     * @since 1.0.0
     * @see   #raiseError(Exception)
@@ -490,7 +547,7 @@ public class Options
     * Sets the {@code exitStatus} to {@code 0} (zero) if don't want the program to exits.<br>
     *
     * @param ex          the {@code Exception} object to prints the message.
-    * @param exitStatus  the value to specify the exit code.
+    * @param exitStatus  the value that specifies the exit code.
     *
     * @since 1.0.0
     * @see   #raiseErrorMsg(Exception)
