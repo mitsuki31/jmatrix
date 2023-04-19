@@ -62,17 +62,10 @@ package com.mitsuki.jmatrix;
 
 // -**- Built-in Package -**- //
 import java.util.Arrays;
-import java.util.Collections;
 import java.lang.Math;
 
-// -**- Local Package [Exception] -**- //
-import com.mitsuki.jmatrix.NullMatrixException;
-import com.mitsuki.jmatrix.MatrixArrayFullException;
-import com.mitsuki.jmatrix.IllegalMatrixSizeException;
-import com.mitsuki.jmatrix.InvalidIndexException;
-import com.mitsuki.jmatrix.core.JMBaseException;
-
-// -**- Local Package [Utils] -**- //
+// -**- Local Package -**- //
+import com.mitsuki.jmatrix.core.*;
 import com.mitsuki.jmatrix.util.Options;
 
 // ** MATRIX CLASS ** //
