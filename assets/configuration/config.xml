@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<configuration>
+    <program_name>JMatrix</program_name>
+    <version type="release">v1.0.0</version>
+    <package>com.mitsuki.jmatrix</package>
+    <author>Ryuu Mitsuki</author>
+</configuration>

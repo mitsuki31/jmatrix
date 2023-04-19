@@ -2,11 +2,11 @@
 /* --  InvalidIndexException  -- */
 // :: ----------------------- :: //
 
-package lib.matrix;
+package com.mitsuki.jmatrix.core;
 
-import java.lang.Exception;
+import com.mitsuki.jmatrix.core.JMBaseException;
 
-public class InvalidIndexException extends Exception
+public class InvalidIndexException extends JMBaseException
 {
     private String message = null;
 
@@ -21,6 +21,7 @@ public class InvalidIndexException extends Exception
 
     public InvalidIndexException(Throwable cause) {
         super(cause);
+        this.message = cause.getMessage();
     }
 
     @Override
@@ -30,6 +31,6 @@ public class InvalidIndexException extends Exception
 
     @Override
     public String toString() {
-        return this.message;
+        return String.format("%s: %s", this.getClass().getName(), this.message);
     }
 }

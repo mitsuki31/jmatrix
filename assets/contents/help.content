@@ -1,0 +1,10 @@
+Usage:
+    java -jar <jar_file> [options]
+
+Options:
+    -h, help              display this help
+    -cr, copyright        print the copyright
+    -V, ver, version      display version number with release type
+
+JMatrix - com.mitsuki.jmatrix
+Developed by Ryuu Mitsuki
