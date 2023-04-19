@@ -19,7 +19,8 @@ all: $(SRCTXT) $(MANIFEST)
 	python $(PY)get_sources.py
 	python $(PY)fix_version.py
 	javac -d $(BIN_DIR) @$<
-	jar cvfm $(JAR) $(MANIFEST) Makefile LICENSE assets/ -C bin/ .
+	jar cvfm $(JAR) $(MANIFEST) \
+	    LICENSE assets/ -C bin/ .
 
 
 clean-bin:
