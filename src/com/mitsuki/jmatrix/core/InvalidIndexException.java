@@ -2,11 +2,11 @@
 /* --  InvalidIndexException  -- */
 // :: ----------------------- :: //
 
-package com.mitsuki.jmatrix;
+package com.mitsuki.jmatrix.core;
 
-import java.lang.ArrayIndexOutOfBoundsException;
+import com.mitsuki.jmatrix.core.JMBaseException;
 
-public class InvalidIndexException extends ArrayIndexOutOfBoundsException
+public class InvalidIndexException extends JMBaseException
 {
     private String message = null;
 
@@ -17,6 +17,11 @@ public class InvalidIndexException extends ArrayIndexOutOfBoundsException
     public InvalidIndexException(String message) {
         super(message);
         this.message = message;
+    }
+
+    public InvalidIndexException(Throwable cause) {
+        super(cause);
+        this.message = cause.getMessage();
     }
 
     @Override
