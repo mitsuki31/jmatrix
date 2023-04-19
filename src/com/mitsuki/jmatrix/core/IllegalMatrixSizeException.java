@@ -2,11 +2,11 @@
 /* --  IllegalMatrixSizeException  -- */
 // :: ---------------------------- :: //
 
-package com.mitsuki.jmatrix;
+package com.mitsuki.jmatrix.core;
 
-import java.lang.RuntimeException;
+import com.mitsuki.jmatrix.core.JMBaseException;
 
-public class IllegalMatrixSizeException extends RuntimeException
+public class IllegalMatrixSizeException extends JMBaseException
 {
     private String message = null;
 
@@ -21,6 +21,7 @@ public class IllegalMatrixSizeException extends RuntimeException
 
     public IllegalMatrixSizeException(Throwable cause) {
         super(cause);
+        this.message = cause.getMessage();
     }
 
     @Override
