@@ -4,15 +4,10 @@
 
 package com.mitsuki.jmatrix.core;
 
-import java.lang.Exception;
+import java.lang.RuntimeException;
 
-import com.mitsuki.jmatrix.util.XMLParser;
-
-public class JMBaseException extends Exception
+public class JMBaseException extends RuntimeException
 {
-    private final XMLParser XML = XMLParser.newParser(XMLParser.XMLType.CONFIG);
-    private final String PKG = XML.getProperty("packageName");
-
     private StackTraceElement[ ] stackTraceElements = null;
     private StackTraceElement[ ] causedStackTraceElements = null;
     private String strException = null;
@@ -93,7 +88,7 @@ public class JMBaseException extends Exception
             }
         }
         System.err.println(System.lineSeparator() + "[EXCEPTION INFO]");
-        System.err.println("Type: " + this.strException.split(":\s")[0]);
+        System.err.println("Type: " + ((this.isCausedException) ? this.strException.split(":\s")[0] : this.getClass().getName()));
         System.err.println("Message: " + this.message);
     }
 
