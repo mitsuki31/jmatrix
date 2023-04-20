@@ -58,6 +58,7 @@
   -  void sort(int[ ][ ]);
 */
 
+// -**- Package -**- //
 package com.mitsuki.jmatrix;
 
 // -**- Built-in Package -**- //
@@ -68,7 +69,15 @@ import java.lang.Math;
 import com.mitsuki.jmatrix.core.*;
 import com.mitsuki.jmatrix.util.Options;
 
-// ** MATRIX CLASS ** //
+
+/**
+* Creates matrix array with specified sizes of rows and columns or just creates a {@code null} matrix.<br>
+* Also this class provides basic matrix operations.<br>
+*
+* @version  1.2
+* @since    0.1.0
+* @author   Ryuu Mitsuki
+*/
 public class Matrix
 {
     // - Private attributes
@@ -85,21 +94,30 @@ public class Matrix
     // -**- CONSTRUCTOR -**- //
     //// ----------------- ////
 
-    /*  -- Matrix() --
-    * Matrix constructor without parameter, would create null matrix
+    /**
+    * Constructs new <b>Matrix</b> object without any parameter.<br>
+    * This would creates a {@code null} matrix.<br>
     *
-    * @return Null Matrix object
+    * @since 0.2.0
+    * @see   Matrix(int, int)
+    * @see   Matrix(int, int, int)
     */
     public Matrix() {}
 
 
-    /*  -- Matrix() --
-    * Matrix constructor with 2 parameters
+    /**
+    * Constructs new <b>Matrix</b> object with specified sizes of rows and columns.<br>
     *
-    * @param rows - Value size for matrix rows
-    * @param cols - Value size for matrix columns
+    * @param rows  a value for size of matrix row.
+    * @param cols  a value for size of matrix column.
     *
-    * @return Create Matrix array with specified rows and columns
+    * @throws IllegalArgumentException
+    *         if the two input sizes is negative value
+    *         or one of two input sizes are equal to zero.
+    *
+    * @since 0.1.0
+    * @see   Matrix()
+    * @see   Matrix(int, int, int)
     */
     public Matrix(int rows, int cols) {
         this.ROWS = rows;
@@ -114,14 +132,21 @@ public class Matrix
     }
 
 
-    /*  -- Matrix() --
-    * Matrix constructor with 3 parameter:
+    /**
+    * Constructs new <b>Matrix</b> object with specified sizes of rows and columns.<br>
+    * Also fills out entire elements of matrix with specified value.<br>
     *
-    * @param rows - Value size for matrix rows
-    * @param cols - Value size for matrix columns
-    * @param val - Value for fill the entire elements of matrix array
+    * @param rows  a value for size of matrix row.
+    * @param cols  a value for size of matrix column.
+    * @param val   a value to be filled out into all elements of matrix.
     *
-    * @return Create Matrix array with specified rows and columns, then fill entire elements with specified value
+    * @throws IllegalArgumentException
+    *         if the two input sizes is negative value
+    *         or one of two input sizes are equal to zero.
+    *
+    * @since 0.1.0
+    * @see   Matrix()
+    * @see   Matrix(int, int)
     */
     public Matrix(int rows, int cols, int val) {
         this.ROWS = rows;
@@ -142,18 +167,24 @@ public class Matrix
             }
         }
     }
+
     //// ----------------------- ////
     // -**- [END] CONSTRUCTOR -**- //
     //// ----------------------- ////
 
 
-    /*  -- Matrix() --
-    * Create new Matrix, it can be called even the Matrix object isn't null
+    /**
+    * Creates a new <b>Matrix</b> with specific rows and columns.<br>
+    * Can be called even the <b>Matrix</b> not {@code null}.<br>
     *
-    * @param rows - Size for new Matrix rows
-    * @param cols - Size for new Matrix columns
+    * @param  rows  a value for new matrix row size.
+    * @param  cols  a value for new matrix column size.
     *
-    * @return Create new Matrix array with specified rows and columns
+    * @throws IllegalArgumentException
+    *         if the two input sizes is negative value
+    *         or one of two input sizes are equal to zero.
+    *
+    * @since  0.2.0
     */
     public void create(int rows, int cols) {
         this.ROWS = rows;
@@ -170,10 +201,16 @@ public class Matrix
     }
 
 
-    /*  -- copy() --
-    * Copy the Matrix object to another Matrix object
+    /**
+    * Duplicates current matrix to another matrix object.<br>
+    * Throw <b>NullMatrixException</b> if the current matrix is {@code null}.<br>
     *
-    * @return Copied Matrix object and all attributes
+    * @return the copied of current <b>Matrix</b> object with all of its attributes.
+    *
+    * @throws NullMatrixException
+    *         if this matrix is {@code null}.
+    *
+    * @since  0.2.0
     */
     public Matrix copy() {
         if (this.MATRIX == null) {
@@ -196,11 +233,21 @@ public class Matrix
     }
 
 
-    /*  -- select() --
-    * Select index of Matrix rows, this method should be combined with "change()" method. Instead it'll just do nothing
+    /**
+    * Selects <b>Matrix</b> column with specific index,
+    * this method should be combined with {@link #change} method.<br>
     *
-    * @param index - Index row that want to be selected
-    * @return Matrix - Return itself
+    * @param  index  the index row to be selected.
+    *
+    * @return self.
+    * 
+    * @throws NullMatrixException
+    *         if current matrix is {@code null}.
+    * @throws InvalidIndexException
+    *         if the input index is negative value or larger than this matrix rows.
+    *
+    * @since  0.2.0
+    * @see    #change
     */
     public Matrix select(final int index) {
         // Check for null matrix
@@ -250,10 +297,22 @@ public class Matrix
     // -**- ADD VALUES -**- //
     //// ---------------- ////
 
-    /*  -- add() --
-    * Fill column with list of Integer(s) (int...) or Integer array (int[ ])
+    /**
+    * Fills the column with specified array.<br>
+    * It can be an {@code Integer} array ({@code int[]}) or inserts the values one by one.<br>
     *
-    * @param values - Values to be added into column. It can be Integer array (int[ ]) or you can write the values one by one
+    * @param  values  the values to be added into matrix column.
+    *
+    * @throws NullMatrixException
+    *         if current matrix is {@code null}.
+    * @throws MatrixArrayFullException
+    *         if the matrix cannot be added more values.
+    * @throws IllegalMatrixSizeException
+    *         if the given argument is overcapacity to matrix column
+    *         or not enough argument to fill the column.
+    * 
+    * @since  0.1.0
+    * @see    #add(int)
     */
     public void add(int... values) {
         // Throw "NullMatrixException" when matrix array is null
@@ -320,10 +379,18 @@ public class Matrix
     }
 
 
-    /*  -- add() --
-    * Fill column with a repeated single Integer value
+    /**
+    * Fills the column with repeated of specified value.<br>
     *
-    * @param value - Number value that want to fill out the column
+    * @param  value  the value to fills the matrix column.
+    *
+    * @throws NullMatrixException
+    *         if current matrix is {@code null}.
+    * @throws MatrixArrayFullException
+    *         if the matrix cannot be added more values.
+    * 
+    * @since  0.1.0
+    * @see    #add(int...)
     */
     public void add(int value) {
         // Throw "NullMatrixException" when matrix array is null
@@ -376,6 +443,7 @@ public class Matrix
 
         this.index++; // increment index row
     }
+
     //// ---------------------- ////
     // -**- [END] ADD VALUES -**- //
     //// ---------------------- ////
@@ -385,11 +453,19 @@ public class Matrix
     // -**- CHANGE VALUES -**- //
     //// ------------------- ////
 
-    /*  -- change() --
-    * Method that change all values at specified column, combine this method with "select()" method
-    * 
+    /**
+    * Changes all values at specified column with an array.<br>
+    * Uses this method only when already called {@link #select(int)} method.<br>
     *
-    * @param values - Values for change the specified column
+    * @param  values  the values to changes all values at specified column.
+    *
+    * @throws IllegalMatrixSizeException
+    *         if the given argument is overcapacity to matrix column
+    *         or not enough argument to fill the column.
+    *
+    * @since  0.2.0
+    * @see    #select(int)
+    * @see    #change(int)
     */
     public void change(int... values) {
         // Check size of values from argument parameter
@@ -425,10 +501,15 @@ public class Matrix
     }
 
 
-    /*  -- change() --
+    /**
+    * Changes all values at specified column with repeated of specific value.<br>
+    * Uses this method only when you've called {@link #select(int)} method.<br>
     *
-    * @params
-    * @return: void (None)
+    * @param  value  the value to changes all values at specified column.
+    *
+    * @since  0.2.0
+    * @see    #select(int)
+    * @see    #change(int...)
     */
     public void change(int value) {
         // Create new array with same value
@@ -443,6 +524,7 @@ public class Matrix
 
         this.selectedIndex = -1; // reset to default
     }
+
     //// ------------------------- ////
     // -**- [END] CHANGE VALUES -**- //
     //// ------------------------- ////
@@ -452,12 +534,16 @@ public class Matrix
     // -**- MATRIX OPERATIONS -**- //
     //// ----------------------- ////
 
-    /*  -- sum() --
-    * Summarize current matrix with other matrix,
-    * and both matrices should be same size
+    /**
+    * Operates addition for current <b>Matrix</b> and other <b>Matrix</b> object,
+    * and both matrices should be same size.<br>
     *
-    * @params: other (Matrix class)
-    * @return: void (None)
+    * @param  other  the <b>Matrix</b> object as addend.
+    *
+    * @since  0.1.0
+    * @see    #sum(int[][])
+    * @see    #sum(int[][], int[][])
+    * @see    #sum(Matrix, Matrix)
     */
     public void sum(Matrix other) {
         // Throw "NullMatrixException" if matrix is null
@@ -499,12 +585,16 @@ public class Matrix
     }
 
 
-    /*  -- sum()  --
-    * Summarize current matrix with list of Integer array,
-    * both should be same size
+    /**
+    * Operates addition for current <b>Matrix</b> and {@code Integer} array ({@code int[][]}),
+    * and both objects should be same size.<br>
     *
-    * @params: matrix (List of Integer array)
-    * @return: void (None)
+    * @param  matrix  an array as addend.
+    *
+    * @since  0.1.0
+    * @see    #sum(Matrix)
+    * @see    #sum(int[][], int[][])
+    * @see    #sum(Matrix, Matrix)
     */
     public void sum(int[ ][ ] matrix) {
         // Throw "NullMatrixException" if matrix is null
@@ -546,15 +636,19 @@ public class Matrix
     }
 
 
-    /*  -- sum() --
-    * Summarize two list of Integer array,
-    * both should be same size
+    /**
+    * Operates addition for two {@code Integer} arrays ({@code int[][]}),
+    * and both arrays should be same size.<br>
     *
-    * @params:
-    *     - matrixA (List of Integer array)
-    *     - matrixB (List of Integer array)
-    * @return:
-    *     int[ ][ ] (List of Integer array)
+    * @param  matrixA  the first array as addend.
+    * @param  matrixB  the second array as addend.
+    *
+    * @return the array which contains the sum of two arrays.
+    *
+    * @since  0.2.0
+    * @see    #sum(Matrix)
+    * @see    #sum(int[])
+    * @see    #sum(Matrix, Matrix)
     */
     public static int[ ][ ] sum(int[ ][ ] matrixA, int[ ][ ] matrixB) {
         // Throw "NullMatrixException" if matrix array is null
@@ -595,14 +689,19 @@ public class Matrix
     }
 
 
-    /*  -- sum() --
-    * Summarize two matrices object,
-    * both matrices should be same size
+    /**
+    * Operates addition for two <b>Matrix</b> objects,
+    * and both matrices should be same size.<br>
     *
-    * @params:
-    *     - matrixA (Matrix class)
-    *     - matrixB (Matrix class)
-    * @return: Matrix (Matrix class)
+    * @param  matrixA  the first <b>Matrix</b> object as addend.
+    * @param  matrixB  the second <b>Matrix</b> object as addend.
+    *
+    * @return the <b>Matrix</b> object which contains the sum of two matrices.
+    *
+    * @since  0.2.0
+    * @see    #sum(Matrix)
+    * @see    #sum(int[][])
+    * @see    #sum(int[][], int[][])
     */
     public static Matrix sum(Matrix matrixA, Matrix matrixB) {
         if (matrixA.MATRIX == null || matrixB.MATRIX == null) {
@@ -643,12 +742,16 @@ public class Matrix
 
 
 
-    /*  -- sub() --
-    * Subtract current matrix with other matrix object,
-    * both matrices should be same size
+    /**
+    * Operates subtraction for current <b>Matrix</b> and other <b>Matrix</b> object,
+    * and both matrices should be same size.<br>
     *
-    * @params: other (Matrix class)
-    * @return: void (None)
+    * @param other  the <b>Matrix</b> object as subtrahend.
+    *
+    * @since 0.1.0
+    * @see   #sub(int[][])
+    * @see   #sub(int[][], int[][])
+    * @see   #sub(Matrix, Matrix)
     */
     public void sub(Matrix other) {
         // Throw "NullMatrixException" if matrix is null
@@ -690,12 +793,16 @@ public class Matrix
     }
 
 
-    /*  -- sub() --
-    * Subtract current matrix with list of Integer array,
-    * both should be same size
+    /**
+    * Operates subtraction for current {@code Matrix} and {@code Integer} array,
+    * and both objects should be same size.<br>
     *
-    * @params: matrix (list of Integer array)
-    * @return: void (None)
+    * @param matrix  an array as subtrahend.
+    *
+    * @since 0.1.0
+    * @see   #sub(Matrix)
+    * @see   #sub(int[][], int[][])
+    * @see   #sub(Matrix, Matrix)
     */
     public void sub(int[ ][ ] matrix) {
         // Throw "NullMatrixException" if matrix is null
@@ -737,14 +844,19 @@ public class Matrix
     }
 
 
-    /*  -- sub() --
-    * Subtract two list of Integer array,
-    * both should be same size
+    /**
+    * Operates subtraction of two list of {@code Integer} arrays,
+    * and both arrays should be same size.<br>
     *
-    * @params:
-    *     - matrixA (List of Integer array)
-    *     - matrixB (List of Integer array)
-    * @return: int[ ][ ] (List of Integer array)
+    * @param  matrixA  the first array as minuend.
+    * @param  matrixB  the second array as subtrahend.
+    *
+    * @return the array which contains the difference of two arrays.
+    *
+    * @since  0.2.0
+    * @see    #sub(Matrix)
+    * @see    #sub(int[][])
+    * @see    #sub(Matrix, Matrix)
     */
     public static int[ ][ ] sub(int[ ][ ] matrixA, int[ ][ ] matrixB) {
         // Throw "NullMatrixException" if matrix array is null
@@ -785,14 +897,19 @@ public class Matrix
     }
 
 
-    /*  -- sub() --
-    * Subtract two matrices object,
-    * both matrices should be same size
+    /**
+    * Operates subtraction for two matrices objects,
+    * and both matrices size should be same.<br>
     *
-    * @params:
-    *     - matrixA (Matrix class)
-    *     - matrixB (Matrix class)
-    * @return: Matrix (Matrix class)
+    * @param  matrixA  the first <b>Matrix</b> object as minuend.
+    * @param  matrixB  the second <b>Matrix</b> object as subtrahend.
+    *
+    * @return the <b>Matrix</b> object which contains the difference of two matrices.
+    *
+    * @since 0.2.0
+    * @see   #sub(Matrix)
+    * @see   #sub(int[][])
+    * @see   #sub(int[][], int[][])
     */
     public static Matrix sub(Matrix matrixA, Matrix matrixB) {
         if (matrixA.MATRIX == null || matrixB.MATRIX == null) {
@@ -833,12 +950,19 @@ public class Matrix
 
 
 
-    /*  -- multCell() --
+    /**
+    * Calculates product of a specific cell in two arrays.<br>
+    * This method is used for matrix multiplication operation.<br>
     *
-    * @params:
-    *     - matrixA (List of Integer array)
-    *     - matrixB (List of Integer array)
-    * @return: int (Integer)
+    * @param  matrixA  the first array.
+    * @param  matrixB  the second array.
+    * @param  row      a row index of the cell to be calculated.
+    * @param  col      a column index of the cell to be calculated.
+    *
+    * @return the product of the specified cell of two arrays.
+    *
+    * @since  0.2.0
+    * @see    #mult
     */
     private static int multCell(int[ ][ ] matrixA, int[ ][ ] matrixB, int row, int col) {
         int result = 0;
@@ -850,11 +974,15 @@ public class Matrix
     }
 
 
-    /*  -- mult() --
-    * Multiply current matrix with other matrix
+    /**
+    * Operates multiplication for current <b>Matrix</b> and other <b>Matrix</b> object.<br>
     *
-    * @params: other (Matrix class)
-    * @return: void (None)
+    * @param other  the <b>Matrix</b> object as multiplicand.
+    *
+    * @since 0.2.0
+    * @see   #mult(int[][])
+    * @see   #mult(int[][], int[][])
+    * @see   #mult(Matrix, Matrix)
     */
     public void mult(Matrix other) {
         if (this.MATRIX == null || other.MATRIX == null) {
@@ -883,11 +1011,15 @@ public class Matrix
     }
 
 
-    /*  -- mult() --
-    * Multiply current matrix with list of Integer array
+    /**
+    * Operates multiplication for current <b>Matrix</b> and {@code Integer} array.<br>
     *
-    * @params: matrix (List of Integer array)
-    * @return: void (None)
+    * @param matrix  an array as multiplicand.
+    *
+    * @since 0.2.0
+    * @see   #mult(Matrix)
+    * @see   #mult(int[][], int[][])
+    * @see   #mult(Matrix, Matrix)
     */
     public void mult(int[ ][ ] matrix) {
         if (this.MATRIX == null || matrix == null) {
@@ -916,18 +1048,23 @@ public class Matrix
     }
 
 
-    /*  -- mult() --
-    * Multiply two list of Integer array
+    /**
+    * Operates multiplication for two {@code Integer} arrays.<br>
     *
-    * @params:
-    *     - matrixA (List of Integer array)
-    *     - matrixB (List of Integer array)
-    * @return: int[ ][ ] (List of Integer array)
+    * @param  matrixA  the first array as multiplier.
+    * @param  matrixB  the second array as multiplicand.
+    *
+    * @return the array which contains the product of two arrays.
+    *
+    * @since  0.2.0
+    * @see    #mult(Matrix)
+    * @see    #mult(int[][])
+    * @see    #mult(Matrix, Matrix)
     */
     public static int[ ][ ] mult(int[ ][ ] matrixA, int[ ][ ] matrixB)
     throws NullMatrixException {
         if (matrixA == null || matrixB == null) {
-            throw new NullMatrixException("Can not iterate null matrix");
+            throw new NullMatrixException("Cannot iterate null matrix");
         }
 
         int[ ][ ] multiplyResult = new int[matrixA.length][matrixB[0].length];
@@ -942,18 +1079,23 @@ public class Matrix
     }
 
 
-    /*  -- mult() --
-    * Multiply two matrices object
+    /**
+    * Operates multiplication for two <b>Matrix</b> objects.<br>
     *
-    * @params:
-    *     - matrixA (Matrix class)
-    *     - matrixB (Matrix class)
-    * @return: Matrix (Matrix class)
+    * @param  matrixA  the first <b>Matrix</b> object as multiplier.
+    * @param  matrixB  the second <b>Matrix</b> object as multiplicand.
+    *
+    * @return the <b>Matrix</b> object which contains the product of two matrices.
+    *
+    * @since  0.2.0
+    * @see    #mult(Matrix)
+    * @see    #mult(int[][])
+    * @see    #mult(int[][], int[][])
     */
     public static Matrix mult(Matrix matrixA, Matrix matrixB) {
         if (matrixA.MATRIX == null || matrixB.MATRIX == null) {
             try {
-                throw new NullMatrixException("Can not iterate null matrix");
+                throw new NullMatrixException("Cannot iterate null matrix");
             } catch (final NullMatrixException nme) {
                 try {
                     throw new JMBaseException(nme);
@@ -981,15 +1123,22 @@ public class Matrix
 
 
 
-    /*  -- display() --
-    * Method that will print out/display current matrix array
-    * Output example:
-    *      [   [ n, n, n, ... ]
-    *          [ n, n, n, ... ]
-    *          [ .. .. .. ... ]   ]
+    /**
+    * Method that will prints out or displays current matrix to standard output.<br>
+    * <br>
     *
-    * @params: void (None)
-    * @return: void (None)
+    * Output example:<br>
+    * <code>
+    * &nbsp; [&nbsp; &nbsp;[ n, n, n, ... ]<br>
+    * &nbsp; &nbsp; &nbsp; [ n, n, n, ... ]<br>
+    * &nbsp; &nbsp; &nbsp; [ .. .. .. ... ]&nbsp; &nbsp;]
+    * </code>
+    * <br>
+    *
+    * @since 0.1.0
+    * @see   #display(int)
+    * @see   #display(int[][])
+    * @see   #display(int[][], int)
     */
     public final void display() {
         // Throw "NullMatrixException" if matrix array is null
@@ -1016,11 +1165,22 @@ public class Matrix
     }
 
 
-    /*  -- display() --
-    * Method that will print out/display specific matrix column
+    /**
+    * Method that will prints out or displays specific column of current matrix to standard output.<br>
+    * <br>
     *
-    * @params: index (Integer)
-    * @return: void (None)
+    * Output example:<br>
+    * <code>
+    * &nbsp; [ n, n, n, ... ]
+    * </code>
+    * <br>
+    *
+    * @param index  the index column to be selected.
+    *
+    * @since 0.2.0
+    * @see   #display()
+    * @see   #display(int[][])
+    * @see   #display(int[][], int)
     */
     public final void display(int index) {
         // Check whether matrix array is null or not
@@ -1063,11 +1223,24 @@ public class Matrix
     }
 
 
-    /*  -- display() --
-    * Method that will print out/display matrix array
+    /**
+    * Method that will prints out or displays specified {@code Integer} array to standard output.<br>
+    * <br>
     *
-    * @params: matrix (List of Integer array)
-    * @return: void (None)
+    * Output example:<br>
+    * <code>
+    * &nbsp; [&nbsp; &nbsp;[ n, n, n, ... ]<br>
+    * &nbsp; &nbsp; &nbsp; [ n, n, n, ... ]<br>
+    * &nbsp; &nbsp; &nbsp; [ .. .. .. ... ]&nbsp; &nbsp;]
+    * </code>
+    * <br>
+    *
+    * @param matrix  the array to be displayed.
+    *
+    * @since 0.1.0
+    * @see   #display()
+    * @see   #display(int)
+    * @see   #display(int[][], int)
     */
     public static final void display(int[ ][ ] matrix) {
         // Throw "NullMatrixException" if matrix array is null
@@ -1097,13 +1270,23 @@ public class Matrix
     }
 
 
-    /*  -- display() --
-    * Method that will print out/display specific matrix column
+    /**
+    * Method that will prints out or displays specified column of given {@code Integer} array to standard output.<br>
+    * <br>
     *
-    * @params:
-    *     - matrix (List of Integer array)
-    *     - index (Integer)
-    * @return: void (None)
+    * Output example:<br>
+    * <code>
+    * &nbsp; [ n, n, n, ... ]
+    * </code>
+    * <br>
+    *
+    * @param matrix  the array to be selected its column.
+    * @param index   the index for selecting the array column.
+    *
+    * @since 0.2.0
+    * @see #display()
+    * @see #display(int)
+    * @see #display(int[][])
     */
     public static final void display(int[ ][ ] matrix, int index) {
         if (matrix == null) {
@@ -1145,11 +1328,16 @@ public class Matrix
     }
 
 
-    /*  -- toString() --
-    * Method that convert Integer array to String
+    /**
+    * Method that converts {@code Integer} array to {@code String}.<br>
+    * This method is similar to {@link java.util.Arrays#toString}.<br>
     *
-    * @params: array (Integer array)
-    * @return: String
+    * @param  array  the array to be converted into {@code String}.
+    *
+    * @return the converted {@code Integer} array to {@code String}.
+    *
+    * @since  0.2.0
+    * @see    java.util.Arrays#toString
     */
     private static String toString(int[ ] array) {
         final int len = array.length;
@@ -1166,11 +1354,13 @@ public class Matrix
     }
 
 
-    /* -- transpose() --
-    * Method that will transpose current matrix array
+    /**
+    * Method that will transposes current matrix.<br>
+    * If the matrix type is square, the sizes won't be inverted.<br>
     *
-    * @params: void (None)
-    * @return: void (None)
+    * @since 0.2.0
+    * @see   #transpose(int[][])
+    * @see   #transpose(Matrix)
     */
     public void transpose() {
         if (this.MATRIX == null) {
@@ -1218,11 +1408,17 @@ public class Matrix
     }
 
 
-    /*  -- transpose() --
-    * Method that will transpose given list of Integer array
+    /**
+    * Method that will transposes specified array.<br>
+    * If the matrix type is square, the sizes won't be inverted.<br>
     *
-    * @params: matrix (List of Integer array)
-    * @return: int[ ][ ] (List of Integer array)
+    * @param  array  the array to be transposed.
+    *
+    * @return the transposed of given array.
+    *
+    * @since  0.2.0
+    * @see    #transpose()
+    * @see    #transpose(Matrix)
     */
     public static int[ ][ ] transpose(int[ ][ ] matrix) {
         if (matrix == null) {
@@ -1278,11 +1474,17 @@ public class Matrix
     }
 
 
-    /*  -- transpose() --
-    * Method that will transpose given matrix array
+    /**
+    * Method that will transposes specific <b>Matrix</b> object.<br>
+    * If the matrix type is square, the sizes won't be inverted.<br>
     *
-    * @params: other (Matrix class)
-    * @return: Matrix (Matrix class)
+    * @param  other  the matrix to be transposed.
+    *
+    * @return the transposed of given <b>Matrix</b>.
+    *
+    * @since 0.2.0
+    * @see   #transpose()
+    * @see   #transpose(int[][])
     */
     public static Matrix transpose(Matrix other) {
         if (other == null) {
@@ -1306,11 +1508,11 @@ public class Matrix
 
 
 
-    /*  -- clear() --
-    * Method that clearing all values inside current matrix array
+    /**
+    * Clears all values inside current matrix.<br>
+    * This method will creates the matrix into null type matrix.<br>
     *
-    * @params: void (None)
-    * @return: void (None)
+    * @since 0.2.0
     */
     public void clear() {
         if (this.MATRIX == null) {
@@ -1334,11 +1536,12 @@ public class Matrix
     }
 
 
-    /*  -- sort() --
-    * Method that will sort each columns matrix
+    /**
+    * Sorts all values of current matrix.<br>
     *
-    * @params: void (None)
-    * @return: void (None)
+    * @since 0.2.0
+    * @see   #sort(int[][])
+    * @see   java.util.Arrays#sort
     */
     public void sort() {
         if (this.MATRIX == null) {
@@ -1360,11 +1563,14 @@ public class Matrix
     }
 
 
-    /*  -- sort() --
-    * Method that will sort each columns given matrix
+    /**
+    * Sorts all values of specified array.<br>
     *
-    * @params: matrix (List of Integer array)
-    * @return: void (None)
+    * @param matrix  the array to be sorted.
+    *
+    * @since 0.2.0
+    * @see   #sort()
+    * @see   java.util.Arrays#sort
     */
     public static void sort(int[ ][ ] matrix) {
         if (matrix == null) {
@@ -1385,11 +1591,12 @@ public class Matrix
     }
 
 
-    /*  -- getSize() --
-    * Get size of current matrix array
+    /**
+    * Gets the sizes of current matrix.<br>
     *
-    * @params: void (None)
-    * @return: int[ ] (Integer array)
+    * @return a list which contains total rows<sup>[0]</sup> and columns<sup>[1]</sup>.
+    *
+    * @since 0.1.0
     */
     public int[ ] getSize() {
         // It would return list: [<rows>, <cols>]
