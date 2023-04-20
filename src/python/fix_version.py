@@ -25,7 +25,7 @@ def strtobool(val: str) -> bool:
 
 def raise_error(ex: Exception, status: int = 1) -> None:
     '''Raise an error message then exit if status not equal zero'''
-    print('[jmatrix]', e)
+    print('[jmatrix]', ex)
     sys.exit(status) if status != 0 else None
 
 
