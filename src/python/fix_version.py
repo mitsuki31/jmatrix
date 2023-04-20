@@ -12,20 +12,9 @@ Created by Ryuu Mitsuki
 import os, sys
 from bs4 import BeautifulSoup
 
-def strtobool(val: str) -> bool:
-    """Parse the string to the boolean value or raise an exception"""
-    if isinstance(val, str) and val:
-        if val.lower() in ('true', 'yes', 't', '1'):
-            return True
-        elif val.lower() in ('false', 'no', 'f', '0'):
-            return False
-
-    raise ValueError("'%s' is not recognized as a boolean value" % (val))
-
-
 def raise_error(ex: Exception, status: int = 1) -> None:
     '''Raise an error message then exit if status not equal zero'''
-    print('[jmatrix]', e)
+    print('[jmatrix]', ex)
     sys.exit(status) if status != 0 else None
 
 
