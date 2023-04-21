@@ -88,7 +88,7 @@ public class JMBaseException extends RuntimeException
             }
         }
         System.err.println(System.lineSeparator() + "[EXCEPTION INFO]");
-        System.err.println("Type: " + ((this.isCausedException) ? this.strException.split(":\s")[0] : this.getClass().getName()));
+        System.err.println("Type: " + ((this.isCausedException) ? this.strException.split(":\\s")[0] : this.getClass().getName()));
         System.err.println("Message: " + this.message);
     }
 
