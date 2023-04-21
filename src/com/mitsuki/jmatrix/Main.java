@@ -57,12 +57,22 @@ public class Main
                 System.out.print(XML.getProperty("programName") + " " +
                     XML.getProperty("version") + "-");
                 System.out.print(XML.getProperty("releaseType"));
-                System.out.printf(" <%s>\n", XML.getProperty("packageName"));
+
+                if (!XML.getProperty("releaseType").equals("release"))
+                    System.out.print("." + XML.getProperty("betaNum"));
+
+                System.out.printf(" <%s>%s", XML.getProperty("packageName"), System.lineSeparator());
                 break;
 
             case HELP:
-                System.out.println(XML.getProperty("programName") + " " +
-                    XML.getProperty("version"));
+                System.out.print(XML.getProperty("programName") + " " + XML.getProperty("version"));
+
+                if (!XML.getProperty("releaseType").equals("release")) {
+                    System.out.println("-" + XML.getProperty("releaseType") + "." + XML.getProperty("betaNum"));
+                } else {
+                    System.out.print(System.lineSeparator());
+                }
+
                 for (String s : Options.getHelpMsg()) System.out.println(s);
                 break;
 
