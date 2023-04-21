@@ -3,7 +3,7 @@
 <configuration>
     <program_name>JMatrix</program_name>
     <version type="beta">v1.0.0</version>
-    <beta_num>1</beta_num>
+    <beta_num>2</beta_num>
     <package>com.mitsuki.jmatrix</package>
     <author>Ryuu Mitsuki</author>
 </configuration>
