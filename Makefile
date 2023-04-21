@@ -1,6 +1,6 @@
 # MAKEFILE FOR JMATRIX
 # Created by Ryuu Mitsuki
-VERSION = v1.0.0-beta.1
+VERSION = v1.0.0-beta.2
 
 SRC_DIR = com/mitsuki/jmatrix/
 BIN_DIR = bin/
