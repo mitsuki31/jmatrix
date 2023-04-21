@@ -42,7 +42,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # Setup the Java Virtual Machine
     - name: Setup JVM
+      if: ${{ matrix.language }} == 'java'
       uses: actions/setup-java@v1
       with:
         java-version: 11
@@ -68,14 +70,17 @@ jobs:
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
-    #   If the Autobuild fails above, remove it and uncomment the following three lines.
-    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
+    - name: Build project
+      run: |
+        echo "Building the project..."
+        if [[ ${{ matrix.language }} == 'python' ]]; then
+          pip install -r requirements.txt && python src/python/*.py
+        elif [[ ${{ matrix.language }} == 'java' ]]; then
+          python src/python/get_sources.py && javac -d bin @assets/properties/source_files.list
+        fi
 
-    - run: |
-        pip install -r requirements.txt
-        make
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
       with:
-        category: "/language:${{matrix.language}}"
+        category: "/language:${{ matrix.language }}"
