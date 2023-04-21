@@ -249,10 +249,10 @@ public class Matrix
     * @since  0.2.0
     * @see    #mult
     */
-    private static int multCell(double[ ][ ] arrayA, double[ ][ ] arrayB, int row, int col) {
-        int result = 0;
+    private static double multCell(double[ ][ ] arrayA, double[ ][ ] arrayB, int row, int col) {
+        double result = 0;
         for (int i = 0; i < arrayB.length; i++) {
-            result += arrayA[row][i] * arrayB[i][col];
+            result += (arrayA[row][i] * arrayB[i][col]);
         }
 
         return result;
