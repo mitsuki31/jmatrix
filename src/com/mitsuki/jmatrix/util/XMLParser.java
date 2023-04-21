@@ -34,6 +34,7 @@ class XMLConfig
 {
     static String programName = null;
     static String version = null;
+    static String betaNum = null;
     static String author = null;
     static String packageName = null;
     static String releaseType = null;
@@ -57,6 +58,10 @@ interface XMLData
                 break;
             case "version":
                 data = XMLConfig.version;
+                break;
+            case "betaNum":
+            case "betaVer":
+                data = XMLConfig.betaNum;
                 break;
             case "author":
                 data = XMLConfig.author;
@@ -135,6 +140,10 @@ public class XMLParser implements XMLData
             XMLConfig.releaseType = xml.getElementsByTagName("version").item(0)
                 .getAttributes().getNamedItem("type").getNodeValue();
             XMLConfig.packageName = xml.getElementsByTagName("package").item(0).getTextContent();
+
+            if (!XMLConfig.version.equals("release")) {
+                XMLConfig.betaNum = xml.getElementsByTagName("beta_num").item(0).getTextContent();
+            }
         } catch (final Exception e) {
             try {
                 throw new JMBaseException(e);
