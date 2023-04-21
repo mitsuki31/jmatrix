@@ -1,5 +1,5 @@
 Program-Name: JMatrix
-Version: v1.0.0-beta.1
+Version: v1.0.0-beta.2
 Main-Class: com.mitsuki.jmatrix.Main
 Created-By: Ryuu Mitsuki
 Manifest-Version: 1.1
