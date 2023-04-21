@@ -1,4 +1,4 @@
-# JMatrix
+# JMatrix - beta version
 **Developed by Ryuu Mitsuki<br>**
 
 **Operating System: `Linux`<br>**
