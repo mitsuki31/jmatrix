@@ -250,9 +250,9 @@ public class Matrix
     * @see    #mult
     */
     private static int multCell(double[ ][ ] arrayA, double[ ][ ] arrayB, int row, int col) {
-        int result = 0;
+        double result = 0;
         for (int i = 0; i < arrayB.length; i++) {
-            result += arrayA[row][i] * arrayB[i][col];
+            result += (arrayA[row][i] * arrayB[i][col]);
         }
 
         return result;
