@@ -39,6 +39,7 @@ jobs:
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
     steps:
+    - if: ${{ !startsWith(pull_request.head.ref, '^dependabot/.+') }}
     - name: Checkout repository
       uses: actions/checkout@v3
 
