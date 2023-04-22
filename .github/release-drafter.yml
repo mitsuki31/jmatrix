@@ -12,13 +12,16 @@ categories:
       - 'bug'
   - title: '🧰 Maintenance'
     label: 'chore'
-  - title: '📄 Documentations'
+  - title: '📑 Documentations'
     labels:
       - 'documentation'
       - 'docs'
   - title: '⛔ Removed'
     labels:
       - 'remove'
+  - title: '🧩 Dependencies'
+    labels:
+      - 'dependencies'
 change-template: '- $TITLE (#$NUMBER) - @$AUTHOR'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 version-resolver:
@@ -34,5 +37,8 @@ version-resolver:
   default: patch
 template: |
   ## What's New 👀
-
+  
   $CHANGES
+  
+  For more details, see [full changelogs](https://github.com/mitsuki31/jmatrix/compare/$PREVIOUS_TAG...$NEXT_MINOR_VERSION)
+  
