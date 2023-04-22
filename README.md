@@ -1,4 +1,21 @@
 # JMatrix
+
+<div align="center">
+    <a href="https://github.com/mitsuki31/jmatrix/actions/workflows/codeql.yml">
+        <img src="https://github.com/mitsuki31/jmatrix/actions/workflows/codeql.yml/badge.svg?branch=master"
+             alt="codeql"
+        />
+    </a>
+    <a href="https://github.com/mitsuki31/jmatrix/actions/workflows/release-drafter.yml">
+        <img src="https://github.com/mitsuki31/jmatrix/actions/workflows/release-drafter.yml/badge.svg?branch=master"
+             alt="release-drafter"
+        />
+    </a>
+    <a href="https://github.com/mitsuki31/jmatrix/blob/master/.github/dependabot.yml">
+        <img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fatrox%2Fsync-dotenv%2Fbadge&label=build&logo=dependabot" />
+    </a>
+</div>
+
 **Developed by Ryuu Mitsuki<br>**
 
 **Operating System: `Linux`<br>**
