@@ -1,10 +1,10 @@
-src/com/mitsuki/jmatrix/IllegalMatrixSizeException.java
-src/com/mitsuki/jmatrix/InvalidIndexException.java
 src/com/mitsuki/jmatrix/Main.java
 src/com/mitsuki/jmatrix/Matrix.java
-src/com/mitsuki/jmatrix/MatrixArrayFullException.java
-src/com/mitsuki/jmatrix/NullMatrixException.java
+src/com/mitsuki/jmatrix/core/IllegalMatrixSizeException.java
+src/com/mitsuki/jmatrix/core/InvalidIndexException.java
 src/com/mitsuki/jmatrix/core/JMBaseException.java
+src/com/mitsuki/jmatrix/core/MatrixArrayFullException.java
+src/com/mitsuki/jmatrix/core/NullMatrixException.java
 src/com/mitsuki/jmatrix/util/OSUtils.java
 src/com/mitsuki/jmatrix/util/Options.java
 src/com/mitsuki/jmatrix/util/XMLParser.java
