@@ -31,6 +31,9 @@ categories:
   - title: '🧩 Dependencies'
     labels:
       - 'dependencies'
+exclude-labels:
+  - 'skip-changelog'
+
 change-template: '- $TITLE (#$NUMBER) - @$AUTHOR'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 version-resolver:
