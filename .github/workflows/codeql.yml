@@ -21,20 +21,8 @@ on:
     - cron: '26 7 * * 4'
 
 jobs:
-  check-bot-activity:
-    name: Checking bot activity...
-    runs-on: 'ubuntu-latest'
-    if: ${{ github.event.pull_request.head.repo.owner.name == 'dependabot' }}
-    steps:
-      - name: Bot activity detected
-        run: |
-          echo "This activity is from Dependabot"
-          exit 0
-
   analyze:
     name: Analyze
-    # Need to check bot activity before continue analyze
-    needs: check-bot-activity
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       actions: read
@@ -96,3 +84,14 @@ jobs:
       uses: github/codeql-action/analyze@v2
       with:
         category: "/language:${{ matrix.language }}"
+
+  check-bot-activity:
+    name: Checking bot activity...
+    needs: analyze
+    runs-on: 'ubuntu-latest'
+    if: ${{ github.event.pull_request.head.repo.owner.name == 'dependabot' }}
+    steps:
+      - name: Bot activity detected
+        run: |
+          echo "This activity is from Dependabot"
+          exit 0
