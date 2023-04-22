@@ -2,7 +2,7 @@ name: Scan Virus on Releases
 
 on:
   release:
-    types: [published, released, prereleased]
+    types: [published]
 
 jobs:
   virustotal:
