@@ -8,9 +8,13 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    labels:
+      - "dependencies"
 
   # Configuration for Make
   - package-ecosystem: "Make"
     directory: "/"
     schedule:
       interval: "daily"
+    labels:
+      - "dependencies"
