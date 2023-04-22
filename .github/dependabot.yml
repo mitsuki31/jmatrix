@@ -1,0 +1,16 @@
+# For more details about configuring Dependabot, see full documentations here:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  # Configuration for pip
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  # Configuration for Make
+  - package-ecosystem: "Make"
+    directory: "/"
+    schedule:
+      interval: "daily"
