@@ -1,24 +1,33 @@
-name-template: 'v$RESOLVED_VERSION'
+name-template: 'Release v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
+# Categories filter
 categories:
-  - title: '🚀 Features'
+  # New Features
+  - title: '🚀 New Features'
     labels:
       - 'feature'
       - 'enhancement'
+  # Bug Fixes
   - title: '🐛 Bug Fixes'
     labels:
       - 'fix'
       - 'bugfix'
       - 'bug'
-  - title: '🧰 Maintenance'
-    label: 'chore'
+  # Maintenances Updates
+  - title: '🧰 Maintenances'
+    labels:
+      - 'chore'
+      - 'maintenance'
+  # Documentations Updates
   - title: '📑 Documentations'
     labels:
       - 'documentation'
       - 'docs'
+  # Removed / Deprecated Feature
   - title: '⛔ Removed'
     labels:
       - 'remove'
+  # Dependencies Updates
   - title: '🧩 Dependencies'
     labels:
       - 'dependencies'
