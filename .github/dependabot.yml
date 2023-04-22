@@ -8,13 +8,23 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "pip updated"
+      include: "scope"
     labels:
       - "dependencies"
+    assignees:
+      - "mitsuki31"
 
-  # Configuration for Make
-  - package-ecosystem: "Make"
+  # Configuration for GitHub Actions
+  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "GitHub Actions updated"
+      include: "scope"
     labels:
       - "dependencies"
+    assignees:
+      - "mitsuki31"
