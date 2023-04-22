@@ -21,6 +21,19 @@ on:
     - cron: '26 7 * * 4'
 
 jobs:
+  check-bot-activity:
+    name: Checking bot activity...
+    runs-on: 'ubuntu-latest'
+    if: ${{
+            github.event.pull_request.head.repo.owner.name == 'dependabot[bot]' || 
+            github.event.merge.head.repo.owner.name == 'dependabot[bot]'
+        }}
+    steps:
+      - name: Bot activity detected
+        run: |
+          echo "This activity is from Dependabot"
+          exit 0
+
   analyze:
     name: Analyze
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
@@ -80,19 +93,7 @@ jobs:
           javac -d bin @assets/properties/source_files.list
         fi
 
-
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
       with:
         category: "/language:${{ matrix.language }}"
-
-  check-bot-activity:
-    name: Checking bot activity...
-    needs: analyze
-    runs-on: 'ubuntu-latest'
-    if: ${{ github.event.pull_request.head.repo.owner.name == 'dependabot' }}
-    steps:
-      - name: Bot activity detected
-        run: |
-          echo "This activity is from Dependabot"
-          exit 0
