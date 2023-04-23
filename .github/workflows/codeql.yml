@@ -15,22 +15,16 @@ on:
   push:
     branches: [ "master", "develop" ]
     paths:
-      - 'src'
+      - 'src/'
       - '**/*.java'
       - '**/*.py'
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "master", "develop" ]
     paths:
-      - 'src'
+      - 'src/'
       - '**/*.java'
       - '**/*.py'
-    paths-ignore:
-      - '**/*.md'
-      - '**/*.txt'
   schedule:
     - cron: '26 7 * * 4'
 
