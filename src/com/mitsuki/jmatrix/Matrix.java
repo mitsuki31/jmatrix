@@ -1632,15 +1632,17 @@ public class Matrix
         final int rows = this.ROWS, cols = this.COLS;
         String strMatrix;
 
-        strMatrix = "[   "; // head
+        strMatrix = "[   "; // head row
         for (int r = 0; r < rows; r++) {
+            strMatrix += "["; // head column
             for (int c = 0; c < cols; c++) {
                 strMatrix += this.ENTRIES[r][c];
                 if (c != cols - 1) strMatrix += ", ";
             }
+            strMatrix += "]"; // tail column
             if (r != rows - 1) strMatrix += String.format("%s    ", System.lineSeparator());
         }
-        strMatrix += "   ]"; // tail
+        strMatrix += "   ]"; // tail row
 
         return strMatrix;
     }
