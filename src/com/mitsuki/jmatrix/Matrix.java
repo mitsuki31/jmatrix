@@ -1146,9 +1146,9 @@ public class Matrix
     *
     * Output example:<br>
     * <code>
-    * &nbsp; [&nbsp; &nbsp;[ n, n, n, ... ]<br>
-    * &nbsp; &nbsp; &nbsp; [ n, n, n, ... ]<br>
-    * &nbsp; &nbsp; &nbsp; [ .. .. .. ... ]&nbsp; &nbsp;]
+    * &nbsp; [&nbsp; &nbsp;[n, n, n, ...]<br>
+    * &nbsp; &nbsp; &nbsp; [n, n, n, ...]<br>
+    * &nbsp; &nbsp; &nbsp; [.. .. .. ...]&nbsp; &nbsp;]
     * </code>
     * <br>
     *
@@ -1173,7 +1173,7 @@ public class Matrix
     *
     * Output example:<br>
     * <code>
-    * &nbsp; [ n, n, n, ... ]
+    * &nbsp; [n, n, n, ...]
     * </code>
     * <br>
     *
@@ -1215,9 +1215,9 @@ public class Matrix
     *
     * Output example:<br>
     * <code>
-    * &nbsp; [&nbsp; &nbsp;[ n, n, n, ... ]<br>
-    * &nbsp; &nbsp; &nbsp; [ n, n, n, ... ]<br>
-    * &nbsp; &nbsp; &nbsp; [ .. .. .. ... ]&nbsp; &nbsp;]
+    * &nbsp; [&nbsp; &nbsp;[n, n, n, ...]<br>
+    * &nbsp; &nbsp; &nbsp; [n, n, n, ...]<br>
+    * &nbsp; &nbsp; &nbsp; [.. .. .. ...]&nbsp; &nbsp;]
     * </code>
     * <br>
     *
@@ -1254,7 +1254,7 @@ public class Matrix
     *
     * Output example:<br>
     * <code>
-    * &nbsp; [ n, n, n, ... ]
+    * &nbsp; [n, n, n, ...]
     * </code>
     * <br>
     *
