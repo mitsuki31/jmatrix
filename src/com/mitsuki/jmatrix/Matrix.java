@@ -4,62 +4,6 @@
 
 // Developed by Ryuu Mitsuki
 
-/*
-      ---  LIST OF METHODS  ---
-
->>  Non-static method(s):
-  -  Matrix select(int);
-
-  -  Matrix copy();
-
-  -  void add(int...);
-  -  void add(int);
-
-  -  void change(int...);
-  -  void change(int);
-
-  -  void sum(Matrix);
-  -  void sum(double[ ][ ]);
-
-  -  void sub(Matrix);
-  -  void sub(double[ ][ ]);
-
-  -  void mult(Matrix);
-  -  void mult(double[ ][ ]);
-
-  -  void transpose();
-
-  -  void display();
-  -  void display(int);
-
-  -  void sort();
-
-  -  int[ ] getSize();
-
-  -  void clear();
-
-
->>  Static method(s):
-  -  double[ ][ ] sum(double[ ][ ], double[ ][ ]);
-  -  Matrix sum(Matrix, Matrix);
-
-  -  double[ ][ ] sub(double[ ][ ], double[ ][ ]);
-  -  Matrix sub(Matrix, Matrix);
-
-  -  double[ ][ ] mult(double[ ][ ], double[ ][ ]);
-  -  Matrix mult(Matrix, Matrix);
-
-  -  double[ ][ ] transpose(double[ ][ ]);
-  -  Matrix transpose(Matrix);
-
-  -  void display(double[ ][ ]);
-  -  void display(double[ ][ ], int);
-
-  -  void sort(double[ ][ ]);
-  -  Matrix sort(Matrix);
-
-*/
-
 
 // -**- Package -**- //
 package com.mitsuki.jmatrix;
@@ -84,7 +28,7 @@ import com.mitsuki.jmatrix.util.Options;
 public class Matrix
 {
     // - Private attributes
-    private double[ ][ ] MATRIX = null; // Create null matrix
+    private double[ ][ ] ENTRIES = null; // Create null matrix
     private int ROWS = 0,               // Initialize matrix rows
                 COLS = 0,               // Initialize matrix columns
                 index = 0,              // Index for add() function
@@ -141,7 +85,7 @@ public class Matrix
 
         this.ROWS = rows;
         this.COLS = cols;
-        this.MATRIX = new double[rows][cols];
+        this.ENTRIES = new double[rows][cols];
 
         if (rows != cols) {
             this.isSquare = false;
@@ -185,7 +129,7 @@ public class Matrix
         this.ROWS = rows;
         this.COLS = cols;
 
-        this.MATRIX = new double[rows][cols];
+        this.ENTRIES = new double[rows][cols];
 
         if (rows != cols) {
             this.isSquare = false;
@@ -196,7 +140,7 @@ public class Matrix
         // Fill all matrix entries with "val"
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                this.MATRIX[r][c] = val;
+                this.ENTRIES[r][c] = val;
             }
         }
     }
@@ -215,7 +159,7 @@ public class Matrix
     public Matrix(double[ ][ ] array) {
         this.ROWS = array.length;
         this.COLS = array[0].length;
-        this.MATRIX = array;
+        this.ENTRIES = array;
 
         if (this.ROWS == this.COLS) {
             this.isSquare = true;
@@ -259,31 +203,6 @@ public class Matrix
     }
 
 
-    /**
-    * Method that converts an array to {@code String} in Python-style.<br>
-    * This method is similar to {@link java.util.Arrays#toString}.<br>
-    *
-    * @param  array  the array to be converted into {@code String}.
-    *
-    * @return the converted array to {@code String} in Python-style.
-    *
-    * @since  0.2.0
-    * @see    java.util.Arrays#toString
-    */
-    private static String toString(double[ ] array) {
-        final int len = array.length;
-        String strResult;
-
-        strResult = "[ ";
-        for (int i = 0; i < len; i++) {
-            strResult += array[i];
-            if (i != len - 1) strResult += ", ";
-        }
-        strResult += " ]";
-
-        return strResult;
-    }
-
     //// --------------------------- ////
     // -**- [END] PRIVATE METHODS -**- //
     //// --------------------------- ////
@@ -323,7 +242,7 @@ public class Matrix
 
         this.ROWS = rows;
         this.COLS = cols;
-        this.MATRIX = new double[rows][cols];
+        this.ENTRIES = new double[rows][cols];
 
         this.index = 0; // reset index row
 
@@ -348,7 +267,7 @@ public class Matrix
     public void create(double[ ][ ] array) {
         this.ROWS = array.length;
         this.COLS = array[0].length;
-        this.MATRIX = array;
+        this.ENTRIES = array;
 
         if (this.ROWS == this.COLS) {
             this.isSquare = true;
@@ -369,7 +288,7 @@ public class Matrix
     * @since  0.2.0
     */
     public Matrix copy() {
-        if (this.MATRIX == null) {
+        if (this.ENTRIES == null) {
             try {
                 throw new NullMatrixException("Cannot copy the matrix, because current matrix is null");
             } catch (final NullMatrixException nme) {
@@ -379,7 +298,7 @@ public class Matrix
 
         // Create new and copy the matrix
         Matrix copiedMatrix = new Matrix(this.ROWS, this.COLS);
-        copiedMatrix.MATRIX = this.MATRIX;
+        copiedMatrix.ENTRIES = this.ENTRIES;
 
         return copiedMatrix;
     }
@@ -404,7 +323,7 @@ public class Matrix
     public Matrix select(final int index) {
         try {
             // Check for null matrix
-            if (this.MATRIX == null) {
+            if (this.ENTRIES == null) {
                 throw new NullMatrixException("Cannot select matrix row, because current matrix is null");
             }
             // Check for negative index
@@ -429,7 +348,7 @@ public class Matrix
     }
 
     /**
-    * Checks whether the current <b>Matrix</b> is square matrix type.<br>
+    * Checks whether the current matrix is square matrix type.<br>
     * The matrix with square type is when the both sizes (<i>rows and columns</i>) are same.<br>
     *
     * @return  return boolean {@code true} if the matrix is square type, else return {@code false}.
@@ -466,7 +385,7 @@ public class Matrix
     public void add(double ... values) {
         try {
             // Throw "NullMatrixException" if current matrix array is null
-            if (this.MATRIX == null) {
+            if (this.ENTRIES == null) {
                 throw new NullMatrixException("Cannot add values, becuase current Matrix is null");
             }
             else if (this.index >= this.ROWS) {
@@ -491,7 +410,7 @@ public class Matrix
         // Iterate values list and fill elements of matrix array
         int i = 0;
         for (double val : values) {
-            this.MATRIX[this.index][i++] = val;
+            this.ENTRIES[this.index][i++] = val;
         }
 
         this.index++; // increment index of matrix row
@@ -514,7 +433,7 @@ public class Matrix
     public void add(double value) {
         try {
             // Throw "NullMatrixException" when matrix array is null
-            if (this.MATRIX == null) {
+            if (this.ENTRIES == null) {
                 throw new NullMatrixException("Matrix array is null, cannot add some values");
             }
             /** ---
@@ -549,7 +468,7 @@ public class Matrix
         // Iterate values list and fill elements of matrix array
         int i = 0;
         for (double val : values) {
-            this.MATRIX[this.index][i++] = val;
+            this.ENTRIES[this.index][i++] = val;
         }
 
         this.index++; // increment index row
@@ -602,7 +521,7 @@ public class Matrix
 
         // Change values of matrix column with values from argument parameter
         for (int i = 0; i < this.COLS; i++) {
-            this.MATRIX[this.selectedIndex][i] = values[i];
+            this.ENTRIES[this.selectedIndex][i] = values[i];
         }
 
         this.selectedIndex = -1; // reset to default
@@ -642,7 +561,7 @@ public class Matrix
         }
 
         for (int i = 0; i < this.COLS; i++) {
-            this.MATRIX[this.selectedIndex][i] = values[i];
+            this.ENTRIES[this.selectedIndex][i] = values[i];
         }
 
         this.selectedIndex = -1; // reset to default
@@ -678,7 +597,7 @@ public class Matrix
     public void sum(Matrix other) {
         try {
             // Throw "NullMatrixException" if current Matrix or given Matrix is null
-            if (this.MATRIX == null) {
+            if (this.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate addition, because current matrix is \"null\"");
             } else if (other == null) {
                 throw new NullMatrixException("Cannot operate addition, because <param1> is \"null\" matrix");
@@ -701,11 +620,11 @@ public class Matrix
         // Iterate over each element of the matrices and add the corresponding values together
         for (int i = 0; i < this.ROWS; i++) {
             for (int j = 0; j < this.COLS; j++) {
-                result[i][j] = this.MATRIX[i][j] + other.MATRIX[i][j];
+                result[i][j] = this.ENTRIES[i][j] + other.ENTRIES[i][j];
             }
         }
 
-        this.MATRIX = result; // copy the result to Matrix
+        this.ENTRIES = result; // copy the result to Matrix
     }
 
 
@@ -723,7 +642,7 @@ public class Matrix
     public void sum(double[ ][ ] array) {
         try {
             // Throw "NullMatrixException" if current Matrix or given array is null
-            if (this.MATRIX == null) {
+            if (this.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate summation, because current matrix is \"null\"");
             } else if (array == null) {
                 throw new NullMatrixException("Cannot operate summation, because <param1> is \"null\" array");
@@ -746,11 +665,11 @@ public class Matrix
         // Using nested loop for iterate over each element of matrix
         for (int i = 0; i < this.ROWS; i++) {
             for (int j = 0; j < this.COLS; j++) {
-                result[i][j] = this.MATRIX[i][j] + array[i][j];
+                result[i][j] = this.ENTRIES[i][j] + array[i][j];
             }
         }
 
-        this.MATRIX = result; // copy the result to Matrix
+        this.ENTRIES = result; // copy the result to Matrix
     }
 
 
@@ -824,13 +743,13 @@ public class Matrix
     public static Matrix sum(Matrix matrixA, Matrix matrixB) {
         try {
             // Throw "NullMatrixException" if both matrices is null
-            if (matrixA.MATRIX == null) {
+            if (matrixA.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate summation, because <param1> is \"null\" matrix");
-            } else if (matrixB.MATRIX == null) {
+            } else if (matrixB.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate summation, because <param2> is \"null\" matrix");
             }
             // Else throw "IllegalMatrixSizeException" if both matrices size are not same
-            else if (matrixA.MATRIX.length != matrixB.MATRIX.length || matrixA.MATRIX[0].length != matrixB.MATRIX[0].length) {
+            else if (matrixA.ENTRIES.length != matrixB.ENTRIES.length || matrixA.ENTRIES[0].length != matrixB.ENTRIES[0].length) {
                 throw new IllegalMatrixSizeException("Cannot summing up two matrices with a different size");
             }
         } catch (final Exception e) {
@@ -842,11 +761,11 @@ public class Matrix
         }
 
         // Create new matrix object
-        Matrix matrixRes = new Matrix(matrixA.MATRIX.length, matrixB.MATRIX[0].length);
+        Matrix matrixRes = new Matrix(matrixA.ENTRIES.length, matrixB.ENTRIES[0].length);
 
-        for (int i = 0; i < matrixA.MATRIX.length; i++) {
-            for (int j = 0; j < matrixB.MATRIX[0].length; j++) {
-                matrixRes.MATRIX[i][j] = matrixA.MATRIX[i][j] + matrixB.MATRIX[i][j];
+        for (int i = 0; i < matrixA.ENTRIES.length; i++) {
+            for (int j = 0; j < matrixB.ENTRIES[0].length; j++) {
+                matrixRes.ENTRIES[i][j] = matrixA.ENTRIES[i][j] + matrixB.ENTRIES[i][j];
             }
         }
 
@@ -874,7 +793,7 @@ public class Matrix
     public void sub(Matrix other) {
         try {
             // Throw "NullMatrixException" if current Matrix or given Matrix is null
-            if (this.MATRIX == null) {
+            if (this.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate subtraction, because current matrix is \"null\"");
             } else if (other == null) {
                 throw new NullMatrixException("Cannot operate subtraction, because <param1> is \"null\" matrix");
@@ -897,11 +816,11 @@ public class Matrix
         // Iterate over each element of all matrices and subtract each values together
         for (int i = 0; i < this.ROWS; i++) {
             for (int j = 0; j < this.COLS; j++) {
-                result[i][j] = this.MATRIX[i][j] - other.MATRIX[i][j];
+                result[i][j] = this.ENTRIES[i][j] - other.ENTRIES[i][j];
             }
         }
 
-        this.MATRIX = result; // copy the result to Matrix
+        this.ENTRIES = result; // copy the result to Matrix
     }
 
 
@@ -919,7 +838,7 @@ public class Matrix
     public void sub(double[ ][ ] array) {
         try {
             // Throw "NullMatrixException" if current matrix is null
-            if (this.MATRIX == null) {
+            if (this.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate subtraction, because current matrix is \"null\"");
             } else if (array == null) {
                 throw new NullMatrixException("Cannot operate subtraction, because <param1> is \"null\" array");
@@ -942,11 +861,11 @@ public class Matrix
         // Iterate over each element of all matrices and subtract each values together
         for (int i = 0; i < this.ROWS; i++) {
             for (int j = 0; j < this.COLS; j++) {
-                result[i][j] = this.MATRIX[i][j] - array[i][j];
+                result[i][j] = this.ENTRIES[i][j] - array[i][j];
             }
         }
 
-        this.MATRIX = result; // copy the result to Matrix
+        this.ENTRIES = result; // copy the result to Matrix
     }
 
 
@@ -1020,13 +939,13 @@ public class Matrix
     public static Matrix sub(Matrix matrixA, Matrix matrixB) {
         try {
             // Throw "NullMatrixException" if both matrices is null
-            if (matrixA.MATRIX == null) {
+            if (matrixA.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate subtraction, because <param1> is \"null\" matrix");
-            } else if (matrixB.MATRIX == null) {
+            } else if (matrixB.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate subtraction, because <param2> is \"null\" matrix");
             }
             // Else throw "IllegalMatrixSizeException" if both matrices size are not same
-            else if (matrixA.MATRIX.length != matrixB.MATRIX.length || matrixA.MATRIX[0].length != matrixB.MATRIX[0].length) {
+            else if (matrixA.ENTRIES.length != matrixB.ENTRIES.length || matrixA.ENTRIES[0].length != matrixB.ENTRIES[0].length) {
                 throw new IllegalMatrixSizeException("Cannot subtract two matrices with different size");
             }
         } catch (final Exception e) {
@@ -1038,11 +957,11 @@ public class Matrix
         }
 
         // Create new matrix object
-        Matrix matrixRes = new Matrix(matrixA.MATRIX.length, matrixB.MATRIX[0].length);
+        Matrix matrixRes = new Matrix(matrixA.ENTRIES.length, matrixB.ENTRIES[0].length);
 
-        for (int i = 0; i < matrixA.MATRIX.length; i++) {
-            for (int j = 0; j < matrixB.MATRIX[0].length; j++) {
-                matrixRes.MATRIX[i][j] = matrixA.MATRIX[i][j] - matrixB.MATRIX[i][j];
+        for (int i = 0; i < matrixA.ENTRIES.length; i++) {
+            for (int j = 0; j < matrixB.ENTRIES[0].length; j++) {
+                matrixRes.ENTRIES[i][j] = matrixA.ENTRIES[i][j] - matrixB.ENTRIES[i][j];
             }
         }
 
@@ -1068,9 +987,9 @@ public class Matrix
     public void mult(Matrix other) {
         try {
             // Throw "NullMatrixException" if current Matrix or given Matrix is null
-            if (this.MATRIX == null) {
+            if (this.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate multiplication, because current matrix is \"null\"");
-            } else if (other.MATRIX == null) {
+            } else if (other.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" matrix");
             }
         } catch (final NullMatrixException nme) {
@@ -1082,16 +1001,16 @@ public class Matrix
         }
 
         // Create new matrix array
-        double[ ][ ] multiplyResult = new double[this.ROWS][other.MATRIX[0].length];
+        double[ ][ ] multiplyResult = new double[this.ROWS][other.ENTRIES[0].length];
 
         // Iterate and multiply each element
         for (int r = 0; r < multiplyResult.length; r++) {
             for (int c = 0; c < multiplyResult[r].length; c++) {
-                multiplyResult[r][c] = this.multCell(this.MATRIX, other.MATRIX, r, c);
+                multiplyResult[r][c] = this.multCell(this.ENTRIES, other.ENTRIES, r, c);
             }
         }
 
-        this.MATRIX = multiplyResult;
+        this.ENTRIES = multiplyResult;
     }
 
 
@@ -1108,7 +1027,7 @@ public class Matrix
     public void mult(double[ ][ ] array) {
         try {
             // Throw "NullMatrixException" if current Matrix or given Matrix is null
-            if (this.MATRIX == null) {
+            if (this.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate multiplication, because current matrix is \"null\"");
             } else if (array == null) {
                 throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" array");
@@ -1127,11 +1046,11 @@ public class Matrix
         // Iterate and multiply each element
         for (int r = 0; r < multiplyResult.length; r++) {
             for (int c = 0; c < multiplyResult[r].length; c++) {
-                multiplyResult[r][c] = this.multCell(this.MATRIX, array, r, c);
+                multiplyResult[r][c] = this.multCell(this.ENTRIES, array, r, c);
             }
         }
 
-        this.MATRIX = multiplyResult;
+        this.ENTRIES = multiplyResult;
     }
 
 
@@ -1189,9 +1108,9 @@ public class Matrix
     public static Matrix mult(Matrix matrixA, Matrix matrixB) {
         try {
             // Throw "NullMatrixException" if given Matrix is null
-            if (matrixA.MATRIX == null) {
+            if (matrixA.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" matrix");
-            } else if (matrixB.MATRIX == null) {
+            } else if (matrixB.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate multiplication, because <param2> is \"null\" matrix");
             }
         } catch (final NullMatrixException nme) {
@@ -1203,11 +1122,11 @@ public class Matrix
         }
 
         // Create new matrix object
-        Matrix matrixMultResult = new Matrix(matrixA.MATRIX.length, matrixB.MATRIX[0].length);
+        Matrix matrixMultResult = new Matrix(matrixA.ENTRIES.length, matrixB.ENTRIES[0].length);
 
-        for (int r = 0; r < matrixMultResult.MATRIX.length; r++) {
-            for (int c = 0; c < matrixMultResult.MATRIX[r].length; c++) {
-                matrixMultResult.MATRIX[r][c] = multCell(matrixA.MATRIX, matrixB.MATRIX, r, c);
+        for (int r = 0; r < matrixMultResult.ENTRIES.length; r++) {
+            for (int c = 0; c < matrixMultResult.ENTRIES[r].length; c++) {
+                matrixMultResult.ENTRIES[r][c] = multCell(matrixA.ENTRIES, matrixB.ENTRIES, r, c);
             }
         }
 
@@ -1239,10 +1158,10 @@ public class Matrix
     * @see   #display(double[][], int)
     */
     public final void display() {
-        if (this.MATRIX != null) {
+        if (this.ENTRIES != null) {
             System.out.print("[   ");
             for (int r = 0; r < this.ROWS; r++) {
-                System.out.print(toString(this.MATRIX[r]));
+                System.out.print(Arrays.toString(this.ENTRIES[r]));
                 if (r != this.ROWS - 1) {
                     System.out.print("\n    ");
                 }
@@ -1273,7 +1192,7 @@ public class Matrix
     * @see   #display(int[][], int)
     */
     public final void display(int index) {
-        if (this.MATRIX != null) {
+        if (this.ENTRIES != null) {
             // Checking index value from argument parameter
             try {
                 if (index < 0) {
@@ -1289,7 +1208,7 @@ public class Matrix
                 }
             }
 
-            System.out.println(toString(this.MATRIX[index]));
+            System.out.println(Arrays.toString(this.ENTRIES[index]));
         } else {
             System.out.println("<null_matrix>");
         }
@@ -1323,7 +1242,7 @@ public class Matrix
 
             System.out.print("[   ");
             for (int r = 0; r < rows; r++) {
-                System.out.print(toString(array[r]));
+                System.out.print(Arrays.toString(array[r]));
                 if (r != rows - 1) {
                     System.out.print("\n    ");
                 }
@@ -1371,7 +1290,7 @@ public class Matrix
                 }
             }
 
-            System.out.println(toString(array[index]));
+            System.out.println(Arrays.toString(array[index]));
         } else {
             System.out.println("<null_matrix>");
         }
@@ -1387,7 +1306,7 @@ public class Matrix
     * @see   #transpose(Matrix)
     */
     public void transpose() {
-        if (this.MATRIX == null) {
+        if (this.ENTRIES == null) {
             try {
                 throw new NullMatrixException("Cannot transpose \"null\" matrix");
             } catch (final NullMatrixException nme) {
@@ -1402,17 +1321,17 @@ public class Matrix
         double[ ][ ] transposedMatrix; // create null transposed matrix
 
         if (this.isSquare) {
-            // Initialize new matrix with same size as MATRIX size
+            // Initialize new matrix with same size as current matrix size
             transposedMatrix = new double[this.ROWS][this.COLS];
 
             // Iterate over elements and transpose each element
             for (int i = 0; i < this.ROWS; i++) {
                 for (int j = 0; j < this.COLS; j++) {
-                    transposedMatrix[i][j] = this.MATRIX[j][i];
+                    transposedMatrix[i][j] = this.ENTRIES[j][i];
                 }
             }
         } else {
-            // Initialize new matrix with inverted size as MATRIX size
+            // Initialize new matrix with inverted size as current matrix size
             /*
               - rows    = columns
               - columns = rows
@@ -1421,14 +1340,14 @@ public class Matrix
 
             for (int i = 0; i < this.COLS; i++) {
                 for (int j = 0; j < this.ROWS; j++) {
-                    transposedMatrix[i][j] = this.MATRIX[j][i];
+                    transposedMatrix[i][j] = this.ENTRIES[j][i];
                 }
             }
 
             this.create(this.COLS, this.ROWS); // transpose matrix size
         }
 
-        this.MATRIX = transposedMatrix; // assign with transposed matrix
+        this.ENTRIES = transposedMatrix; // assign with transposed matrix
     }
 
 
@@ -1504,7 +1423,7 @@ public class Matrix
     *
     * @param  other  the matrix to be transposed.
     *
-    * @return the transposed of given <b>Matrix</b>.
+    * @return the transposed of given matrix.
     *
     * @since 0.2.0
     * @see   #transpose()
@@ -1532,7 +1451,7 @@ public class Matrix
             // Iterate over elements and transpose each element
             for (int i = 0; i < other.ROWS; i++) {
                 for (int j = 0; j < other.COLS; j++) {
-                    transposedMatrix.MATRIX[i][j] = other.MATRIX[j][i];
+                    transposedMatrix.ENTRIES[i][j] = other.ENTRIES[j][i];
                 }
             }
         } else {
@@ -1545,7 +1464,7 @@ public class Matrix
 
             for (int i = 0; i < other.COLS; i++) {
                 for (int j = 0; j < other.ROWS; j++) {
-                    transposedMatrix.MATRIX[i][j] = other.MATRIX[j][i];
+                    transposedMatrix.ENTRIES[i][j] = other.ENTRIES[j][i];
                 }
             }
         }
@@ -1562,7 +1481,7 @@ public class Matrix
     * @since 0.2.0
     */
     public void clear() {
-        if (this.MATRIX == null) {
+        if (this.ENTRIES == null) {
             try {
                 throw new NullMatrixException("Cannot clearing values, because current matrix is \"null\"");
             } catch (final NullMatrixException nme) {
@@ -1576,7 +1495,7 @@ public class Matrix
 
         for (int r = 0; r < this.ROWS; r++) {
             for (int c = 0; c < this.COLS; c++) {
-                this.MATRIX[r][c] = 0;
+                this.ENTRIES[r][c] = 0;
             }
         }
         this.index = 0; // reset the index row
@@ -1592,7 +1511,7 @@ public class Matrix
     * @see   java.util.Arrays#sort
     */
     public void sort() {
-        if (this.MATRIX == null) {
+        if (this.ENTRIES == null) {
             try {
                 throw new NullMatrixException("Cannot sorting all values, because current matrix is \"null\"");
             } catch (final NullMatrixException nme) {
@@ -1606,7 +1525,7 @@ public class Matrix
 
         // Just simply iterate matrix rows, then sort each columns
         for (int r = 0; r < this.ROWS; r++) {
-            Arrays.sort(this.MATRIX[r]);
+            Arrays.sort(this.ENTRIES[r]);
         }
     }
 
@@ -1654,7 +1573,7 @@ public class Matrix
     public static Matrix sort(Matrix obj) {
         // Check for null matrix
         try {
-            if (obj.MATRIX == null) {
+            if (obj.ENTRIES == null) {
                 throw new NullMatrixException("Cannot sorting all values, because <param1> is null matrix");
             }
         } catch (final NullMatrixException nme) {
@@ -1667,10 +1586,10 @@ public class Matrix
 
         // Create new matrix object
         Matrix sortedMatrix = new Matrix(obj.ROWS, obj.COLS);
-        sortedMatrix.MATRIX = obj.MATRIX; // copy the matrix
+        sortedMatrix.ENTRIES = obj.ENTRIES; // copy the matrix
 
         for (int r = 0; r < sortedMatrix.ROWS; r++) {
-            Arrays.sort(sortedMatrix.MATRIX[r]);
+            Arrays.sort(sortedMatrix.ENTRIES[r]);
         }
 
         return sortedMatrix;
@@ -1682,11 +1601,47 @@ public class Matrix
     *
     * @return a list which contains total rows<sup>[0]</sup> and columns<sup>[1]</sup>.
     *
-    * @since 0.1.0
+    * @since  0.1.0
     */
     public int[ ] getSize() {
         // It would return list: [<rows>, <cols>]
         final int[ ] size = { this.ROWS, this.COLS };
         return size;
+    }
+
+    /**
+    * Returns the array representation of this matrix entries.<br>
+    *
+    * @return the entries array of this matrix.
+    *
+    * @since  1.0.0
+    */
+    public double[ ][ ] getEntries() {
+        return this.ENTRIES;
+    }
+
+    /**
+    * Returns a {@code String} representation of this matrix.<br>
+    *
+    * @return {@code String} representation of this matrix in Python-style array notation.
+    *
+    * @since  1.0.0
+    */
+    @Override
+    public String toString() {
+        final int rows = this.ROWS, cols = this.COLS;
+        String strMatrix;
+
+        strMatrix = "[   "; // head
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                strMatrix += this.ENTRIES[r][c];
+                if (c != cols - 1) strMatrix += ", ";
+            }
+            if (r != rows - 1) strMatrix += String.format("%s    ", System.lineSeparator());
+        }
+        strMatrix += "   ]"; // tail
+
+        return strMatrix;
     }
 }
