@@ -12,7 +12,7 @@
         />
     </a>
     <a href="https://github.com/mitsuki31/jmatrix/blob/master/.github/dependabot.yml">
-        <img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fatrox%2Fsync-dotenv%2Fbadge&label=build&logo=dependabot" />
+        <img src="https://img.shields.io/static/v1?label=Dependabot&message=active&color=31c753&logo=dependabot&logoColor=white&labelColor=0366d6" />
     </a>
 </div>
 
