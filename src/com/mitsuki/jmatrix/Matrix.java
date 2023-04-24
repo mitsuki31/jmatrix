@@ -1159,14 +1159,7 @@ public class Matrix
     */
     public final void display() {
         if (this.ENTRIES != null) {
-            System.out.print("[   ");
-            for (int r = 0; r < this.ROWS; r++) {
-                System.out.print(Arrays.toString(this.ENTRIES[r]));
-                if (r != this.ROWS - 1) {
-                    System.out.print("\n    ");
-                }
-            }
-            System.out.println("   ]");
+            System.out.println(this.toString());
         } else {
             System.out.println("<null_matrix>");
         }
