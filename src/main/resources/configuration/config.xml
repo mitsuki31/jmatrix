@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
-    <program_name>JMatrix</program_name>
-    <version type="release">v1.0.0</version>
-    <beta_num>0</beta_num>
-    <package>com.mitsuki.jmatrix</package>
-    <author>Ryuu Mitsuki</author>
+    <program_name>${package.name}</program_name>
+    <version type="${package.releaseType}">v${package.version.core}</version>
+    <beta_num>${package.betaNum}</beta_num>
+    <package>${project.groupId}.${project.artifactId}</package>
+    <author>${author.name}</author>
 </configuration>
