@@ -153,8 +153,8 @@ public class Options
     * @since  1.0.0
     * @see    #getClassNameFromTemplate(T)
     */
-    public static <T> Class<T> getClassFromTemplate(T template) {
-        return (Class<T>) template.getClass();
+    public static <T> Class<?> getClassFromTemplate(T template) {
+        return template.getClass();
     }
 
     /**
