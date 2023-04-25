@@ -83,13 +83,13 @@ public class Options
         }
 
         try {
-            throw new IllegalArgumentException(String.format("Unknown>
+            throw new IllegalArgumentException(String.format("Unknown argument option for input \"%s\"", inputOpt));
         } catch (final Exception e) {
             try {
                 throw new JMBaseException(e);
             } catch (final JMBaseException ex) {
                 raiseError(ex, 0);
-                System.err.println(System.lineSeparator() + getHelpMs>
+                System.err.println(System.lineSeparator() + getHelpMsg()[0]);
                 System.err.println("    " +
                     "java -jar <jar_file> [-h|-V|-cr]");
                 System.exit(-1);
