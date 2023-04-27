@@ -371,7 +371,14 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
     with_cache:  bool   = False
     target_path: str    = None
     target_data: object = None
-    output_dir:  str    = __CLASSES_PATH + f'resources{os.sep}'
+    output_dir:  str    = None
+
+    if target.lower() == __TARGET_FILES[0]:
+        output_dir = __CLASSES_PATH + f'configuration{os.sep}'
+    elif target.lower() == __TARGET_FILES[1].lower():
+        output_dir = __TARGET_FILES[1]
+    elif target.lower() == __TARGET_FILES[2].lower():
+        output_dir = f'MANIFEST{os.sep}' + __TARGET_FILES[2]
 
     __check_directory(output_dir, verbose=verbose)
 
