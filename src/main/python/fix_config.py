@@ -45,10 +45,10 @@ def __check_directory(dir: str, verbose: bool = False) -> None:
             info_msg(f'Creating new directory... (\'{dir}\')')
         os.makedirs(dir)
         if verbose:
-            info_msg(f'Successfully create "{dir}" directory')
+            info_msg(f'Successfully create "{dir}" directory.')
     else:
         if verbose:
-            info_msg(f'"{dir}" directory is already exists')
+            info_msg(f'"{dir}" directory is already exists.')
 
 
 def __create_cache(data: Optional[dict], indent: int = 4, out: str = None, verbose: bool = False) -> None:
@@ -115,7 +115,7 @@ def __create_cache(data: Optional[dict], indent: int = 4, out: str = None, verbo
         else:
             if verbose:
                 print()
-                info_msg(f'Cache created, saved in "{__CACHE_PATH}{out}"')
+                info_msg(f'Cache created, saved in "{__CACHE_PATH}{out}".')
 
 
 def __get_pom_data(cache: bool = True, verbose: bool = False) -> Optional[dict]:
@@ -248,10 +248,6 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
         - FileNotFoundError
             If file path to cached configuration data does not exist.
     """
-    with_cache:  bool = False
-    target_path: str  = None
-    target_data: object = None
-
     def __read_file(fp: str, _list: bool = True, verbose: bool = False) -> Optional[list]:
         """
         Read all contents from specified file, and specify the return to list or str
@@ -296,10 +292,11 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
             raise_error(e)
         else:
             if verbose:
-                info_msg('Successfully retrieve all contents')
+                info_msg('Successfully retrieve all contents.')
 
         return None
 
+    # ------------------------------------------- #
 
     def __write_to_file(fp: str, contents: object = None, verbose: bool = False) -> None:
         """
@@ -307,10 +304,14 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
 
         Parameters:
             - fp: str
-                The file path to write to.
+                The file path to write the contents.
 
             - contents: object (default = None)
-                The contents to write to the file. Can be a `list`, `str`, or `dict`.
+                The contents to write to the file.
+                Supported type of contents:
+                    - `list` (recommended)
+                    - `str`
+                    - `dict`
 
             - verbose: bool
                 Whether to print detailed messages while writing to the file.
@@ -321,6 +322,9 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
         Raises:
             - ValueError
                 If the file path or contents is empty.
+
+            - RuntimeError
+                If the contents type is not valid or unsupported.
         """
         try:
             if fp is None:
@@ -332,53 +336,68 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
 
             with open(fp, 'w', encoding='utf-8') as file:
                 if isinstance(contents, list):
+                    if verbose:
+                        print()
                     for content in contents:
                         if verbose:
-                            info_msg('Writing "{content}" -> \'{fp}\'')
+                            info_msg(f'Writing "{content}" -> \'{fp}\'')
                         file.write(content + os.linesep)
                 elif isinstance(contents, str):
                     if verbose:
-                        info_msg('Type: str')
-                        info_msg(os.linesep + f'Writing "{contents}" -> \'{fp}\'')
-                    file.write(contents)
+                        print()
+                        info_msg(f'Writing "{contents}" -> \'{fp}\'')
+                    file.write(contents + os.linesep)
                 elif isinstance(contents, dict):
+                    file.write(json.dumps(contents, indent=4) + os.linesep)
                     if verbose:
-                        info_msg('Type: dict' + os.linesep)
-                    file.write(json.dumps(contents, indent=4))
-                    if verbose:
+                        print()
                         for var, val in contents.items():
                            info_msg(f'Writing ("{var}", "{val}") -> \'{fp}\'')
+                else:
+                    try:
+                        msg = f'Unsupported contents type for type "{type(contents)}"'
+                        raise RuntimeError(msg)
+                    except RuntimeError as re:
+                        raise_error(re, -1, file=__file__)
 
         except Exception as e:
             raise_error(e, file=__file__)
         else:
             if verbose:
-                info_msg(f'Successfully write contents to file: "{fp}"')
+                info_msg(f'Successfully write the contents to file: "{fp}".')
 
+    # ------------------------------------------- #
+
+    with_cache:  bool   = False
+    target_path: str    = None
+    target_data: object = None
+    output_dir:  str    = __CLASSES_PATH + f'resources{os.sep}'
+
+    __check_directory(output_dir, verbose=verbose)
 
     if verbose:
         print(os.linesep + '>>> [ FIX CONFIGURATION ] <<<')
     if data is None or len(data) == 0:
         with_cache = True
         if verbose:
-            info_msg(f'Using cached configuration data "{cached}"')
+            info_msg(f'Using cached configuration data "{cached}".')
 
     try:
         if (data is None or len(data) == 0) and cached is None:
             msg = 'Given config data is empty, please specify path to cached config'
             raise RuntimeError(msg)
-        elif target is None or not target in __TARGET_FILES:
+        elif target.lower() is None or not target in [target_file.lower() for target_file in __TARGET_FILES]:
             msg = 'Please specify the target file'
             raise RuntimeError(msg)
-        elif target in __TARGET_FILES:
+        elif target.lower() in [target_file.lower() for target_file in __TARGET_FILES]:
             # config.xml
-            if target == __TARGET_FILES[0]:
+            if target.lower() == __TARGET_FILES[0]:
                 target_path = __RESOURCES_PATH + f'configuration{os.sep}' + __TARGET_FILES[0]
             # Makefile
-            elif target == __TARGET_FILES[1]:
+            elif target.lower() == __TARGET_FILES[1].lower():
                 target_path = __TARGET_FILES[1]
             # MANIFEST.MF
-            elif target == __TARGET_FILES[2]:
+            elif target.lower() == __TARGET_FILES[2].lower():
                 target_path = f'META-INF{os.sep}' + __TARGET_FILES[2]
     except RuntimeError as re:
         raise_error(re, -1, file=__file__)
@@ -397,10 +416,8 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
         except Exception as e:
             raise_error(e, 1, file=__file__)
 
-    output_dir: str = __CLASSES_PATH + f'resources{os.sep}'
-
-    __check_directory(output_dir, verbose=verbose)
-    if target in ('config_xml', 'config.xml'):
+    # Check the target file
+    if target.lower() == __TARGET_FILES[0]:
         import re
 
         target_data: dict = { }
@@ -416,18 +433,37 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
             bs_data = re.sub(fr'\${{{var}}}', val, bs_data)
 
         xml_formatter = XMLFormatter(indent=4)
-        bs_data = BeautifulSoup(bs_data, 'xml').prettify(formatter=xml_formatter)
+        bs_data = BeautifulSoup(bs_data, 'xml').prettify(formatter=xml_formatter).split(os.linesep)
+        bs_data[0] += os.linesep
 
-        with open(output_dir + 'config.xml', 'w', encoding='utf-8') as config:
-            config.write(bs_data + os.linesep)
+        fixed_data: list = [ ]
+        i: int = 0
+        for idx, element in enumerate(bs_data):
+            if not element.startswith(('<?', '<conf', '</conf')):
+                if not element.strip().startswith('<'):
+                    fixed_data.append(element.strip())
+                elif fixed_data and element.strip().startswith('</'):
+                    fixed_data[-1] += element.strip()
+                    bs_data[idx - 2] += fixed_data[i]
+                    bs_data[idx] = None; bs_data[idx - 1] = None
+                    i += 1
 
-    elif target in ('Make', 'make', 'Makefile', 'makefile'):
-        target_data = __read_file(target_path, verbose=verbose)
-    
+        bs_data = [data for data in bs_data if data is not None]
 
+        __write_to_file(output_dir + 'config.xml', contents=bs_data, verbose=verbose)
+
+    elif target.lower() == __TARGET_FILES[1].lower():
+        target_data: list = __read_file(target_path, _list=True, verbose=verbose)
+
+        print(target_data)
+
+    elif target.lower() == __TARGET_FILES[2].lower():
+        target_data: list = __read_file(target_path, _list=True, verbose=verbose)
+
+        print(target_data)
 
 if __name__ == '__main__':
-    verbose : bool  = False
+    verbose:  bool  = False
     opts_arg: tuple = ('-v', '--verbose', 'verbose',)
 
     # Checking the CLI arguments
@@ -450,3 +486,4 @@ if __name__ == '__main__':
 
     __get_pom_data(cache=True, verbose=verbose)
     __fix_configuration(cached=f'{__CACHE_PATH}config.json', target='config.xml', verbose=verbose)
+#    __fix_configuration(cached=f'{__CACHE_PATH}config.json', target='manifest.mf', verbose=verbose)
