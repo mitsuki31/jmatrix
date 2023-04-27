@@ -51,25 +51,48 @@ def __check_directory(dir: str, verbose: bool = False) -> None:
             info_msg(f'"{dir}" directory is already exists')
 
 
-def __create_cache(data: Optional[dict], type: str = 'json', indent: int = 4, out: str = None, verbose=False) -> None:
-    '''Create the cache of `data` and store it to `target/.cache/` directory with specified file name'''
-    list_type: tuple = ('json', 'str', 'string',)
+def __create_cache(data: Optional[dict], indent: int = 4, out: str = None, verbose: bool = False) -> None:
+    """
+    Create the cache of `data` and store it to `target/.cache/` directory with specified file name.
+    The function supports creating two types of cache (JSON and string). For JSON cache,
+      the `data` parameter should be a dictionary object.
 
+    Parameters:
+        - data: Optional[dict]
+            Data object that want to be cached.
+            The type is optional, can be 'dict' or 'str'.
+            Recommended use 'dict' object for creating JSON cache.
+
+        - indent: int (default = 4)
+            An integer value that specifies number of spaces for indentation in the JSON cache.
+
+        - out: str (default = None)
+            String representing the name of the output file.
+            The output directory is `target/.cache/` directory.
+
+        - verbose: bool (default = False)
+            Boolean that specifies whether to print verbose output.
+
+    Returns:
+        None
+
+    Raises:
+        - RuntimeError
+            If `out` parameter is empty.
+    """
     __check_directory(__CACHE_PATH, verbose=verbose)
+    
     if verbose:
         print(os.linesep + '>>> [ CREATE CACHE ] <<<')
-        info_msg(f'Creating cache for <{id(data)}> to "{out}"...')
+        info_msg(f'Creating cache for id:<{id(data)}> to "{out}"...')
     try:
-        if not type in list_type:
-            msg = f'Unknown cache type for type: "{type}"'
-            raise ValueError(msg)
-        elif out is None:
+        if out is None:
             msg = 'Please insert name for output file'
             raise RuntimeError(msg)
-    except Exception as e:
-        raise_error(e, -1, file=__file__)
+    except RuntimeError as re:
+        raise_error(re, -1, file=__file__)
 
-    if type in list_type[1:]:
+    if isinstance(data, str):
         try:
             with open(__CACHE_PATH + out, 'w', encoding='utf-8') as cache:
                 if verbose:
@@ -78,19 +101,14 @@ def __create_cache(data: Optional[dict], type: str = 'json', indent: int = 4, ou
         except Exception as e:
             raise_error(e, file=__file__)
 
-    elif type in list_type[0]:
+    elif isinstance(data, dict):
         try:
             with open(__CACHE_PATH + out, 'w', encoding='utf-8') as cache:
-                if isinstance(data, dict):
-                    if verbose:
-                        print()
+                if verbose:
+                    print()
                     for k, v in data.items():
-                        if verbose:
-                            info_msg(f'Writing ("{k}", "{v}") -> \'{out}\'...')
-                    cache.write(json.dumps(data, indent=indent))
-                elif isinstance(data, str):
-                    if verbose:
-                        info_msg(os.linesep + f'Writing "{data.strip()}" -> \'{out}\'...')
+                        info_msg(f'Writing ("{k}", "{v}") -> \'{out}\'...')
+                cache.write(json.dumps(data, indent=indent))
         except Exception as e:
             raise_error(e, file=__file__)
         else:
@@ -109,7 +127,7 @@ def __get_pom_data(cache: bool = True, verbose: bool = False) -> Optional[dict]:
             If filename is 'config.xml' or any values that same, would be cached with file name 'config.json'.
 
         - verbose: bool (default = False)
-            Boolean that specifies whether to print additional messages or not.
+            Boolean that specifies whether to print verbose output.
 
     Returns:
         If `cache` is False, the function returns a dictionary containing the configuration data.
