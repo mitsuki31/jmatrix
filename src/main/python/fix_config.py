@@ -81,7 +81,7 @@ def __create_cache(data: Optional[dict], indent: int = 4, out: str = None, verbo
             If `out` parameter is empty.
     """
     __check_directory(__CACHE_PATH, verbose=verbose)
-    
+
     if verbose:
         print(os.linesep + '>>> [ CREATE CACHE ] <<<')
         info_msg(f'Creating cache for id:<{id(data)}> to "{out}"...')
@@ -108,7 +108,8 @@ def __create_cache(data: Optional[dict], indent: int = 4, out: str = None, verbo
                     print()
                     for k, v in data.items():
                         info_msg(f'Writing ("{k}", "{v}") -> \'{out}\'...')
-                cache.write(json.dumps(data, indent=indent))
+                json.dump(data, cache, indent=indent)
+                cache.write(os.linesep)
         except Exception as e:
             raise_error(e, file=__file__)
         else:
@@ -215,7 +216,7 @@ def __get_pom_data(cache: bool = True, verbose: bool = False) -> Optional[dict]:
         info_msg('All contents filtered.')
 
     if cache:
-        __create_cache(config_data, 'json', out='config.json', verbose=verbose)
+        __create_cache(config_data, indent=4, out='config.json', verbose=verbose)
     else:
         return config_data
 
@@ -384,36 +385,44 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
 
     if with_cache:
         try:
+            if not os.path.exists(cached):
+                msg = 'Path to cached configuration data does not exist'
+                raise FileNotFoundError(msg)
+            elif os.path.exists(cached) and not os.path.isfile(cached):
+                msg = 'Path to cached configuration data is a directory'
+                raise FileNotFoundError(msg)
+
             with open(cached, 'r', encoding='utf-8') as cache:
                 data = json.load(cache)
-        except FileNotFoundError as fe:
-            raise_error(e, 2, file=__file__)
         except Exception as e:
             raise_error(e, 1, file=__file__)
 
-        if target in ('config_xml', 'config.xml'):
-            import re
+    output_dir: str = __CLASSES_PATH + f'resources{os.sep}'
 
-            target_data: dict = { }
-            bs_data = repr(convert_to_BS(target_path, verbose=verbose))
-            pattern: re.Pattern = re.compile(r"\$\{([\w.-]+)\}")
+    __check_directory(output_dir, verbose=verbose)
+    if target in ('config_xml', 'config.xml'):
+        import re
 
-            target_value: list = pattern.findall(bs_data)
+        target_data: dict = { }
+        bs_data = repr(convert_to_BS(target_path, verbose=verbose))
+        pattern: re.Pattern = re.compile(r"\$\{([\w.-]+)\}")
 
-            for i in range(len(target_value)):
-                target_data[target_value[i]] = data[target_value[i]]
+        target_value: list = pattern.findall(bs_data)
 
-            for var, val in target_data.items():
-                bs_data = re.sub(fr'\${{{var}}}', val, bs_data)
+        for i in range(len(target_value)):
+            target_data[target_value[i]] = data[target_value[i]]
 
-            xml_formatter = XMLFormatter(indent=4)
-            bs_data = BeautifulSoup(bs_data, 'xml').prettify(formatter=xml_formatter)
+        for var, val in target_data.items():
+            bs_data = re.sub(fr'\${{{var}}}', val, bs_data)
 
-            with open(__CLASSES_PATH + f'tmp.xml', 'w', encoding='utf-8') as tmp:
-                tmp.write(bs_data + os.linesep)
+        xml_formatter = XMLFormatter(indent=4)
+        bs_data = BeautifulSoup(bs_data, 'xml').prettify(formatter=xml_formatter)
 
-        elif target in ('Make', 'make', 'Makefile', 'makefile'):
-            target_data = __read_file(target_path, verbose=verbose)
+        with open(output_dir + 'config.xml', 'w', encoding='utf-8') as config:
+            config.write(bs_data + os.linesep)
+
+    elif target in ('Make', 'make', 'Makefile', 'makefile'):
+        target_data = __read_file(target_path, verbose=verbose)
     
 
 
