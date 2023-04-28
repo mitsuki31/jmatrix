@@ -60,7 +60,7 @@ class GenerateList:
                 msg = f'Unknown argument value: "{generate}"'
                 raise ValueError(msg)
             except ValueError as ve:
-                raise_error(e, -1, file=__file__)
+                Utils._Utils__raise_error(ve, -1, file=__file__)
 
     def __generate_sources_list(self) -> None:
         if platform.system().lower() in ('linux', 'unix'):
@@ -103,25 +103,58 @@ class GenerateList:
 
 ## === DRIVER === ##
 if __name__ == '__main__':
-    verbose:  bool  = False
-    opts_arg: tuple = ('-v', '--verbose', 'verbose',)
+    verbose:       bool  = False
+    generate_type: str   = None
+    opts_arg:      list  = [
+        ('-v', '--verbose', 'verbose'),
+        [
+            ('src', 'source'),
+            ('cls', 'class')
+        ]
+    ]
+
+
+    check_opt_1  = lambda arg : any(arg in opt for opt in opts_arg[1])
+    check_opt_1x = lambda arg, i : arg in opts_arg[1][i]
+    check_opt_2  = lambda arg : arg in opts_arg[0]
 
     # Checking the CLI arguments
     try:
         msg: str = None  # Empty message variable for exception message
 
-        if len(sys.argv) > 2:
-            msg = 'Too many arguments, need (1) argument'
+        if len(sys.argv) < 2:
+            msg = 'Arguments cannot be empty'
             raise IndexError(msg)
-        elif len(sys.argv) == 2 and sys.argv[1] not in opts_arg:
-            msg = f'Unknown options for value: "{sys.argv[1]}"'
+        elif len(sys.argv) > 3:
+            msg = 'Too many arguments, need (1 or 2) arguments'
+            raise IndexError(msg)
+        elif len(sys.argv) == 2 and not (check_opt_1(sys.argv[1])):
+            msg = f'Unknown options value: "{sys.argv[1]}"'
             raise ValueError(msg)
-    except Exception as e: # Catch all exceptions that could occurs
-        Utils._Utils__raise_error(e, file=__file__)
+        elif len(sys.argv) == 3 and not (check_opt_1(sys.argv[1]) or check_opt_2(sys.argv[2])):
+            msg = f'Unknown options value: "{sys.argv[1]}" + "{sys.argv[2]}"'
+            raise ValueError(msg)
+    except Exception as e:
+        Utils._Utils__raise_error(e, 1, file=__file__)
     else:
-        if len(sys.argv) == 2 and sys.argv[1] in opts_arg:
+        if len(sys.argv) == 2 and check_opt_1(sys.argv[1]):
+            if check_opt_1x(sys.argv[1], 0):
+                generate_type = 'source_list'
+            elif check_opt_1x(sys.argv[1], 1):
+                generate_type = 'output_list'
+        elif len(sys.argv) == 3 and (check_opt_1(sys.argv[1]) and check_opt_2(sys.argv[2])):
+            if check_opt_1x(sys.argv[1], 0):
+                generate_type = 'source_list'
+            elif check_opt_1x(sys.argv[1], 1):
+                generate_type = 'output_list'
             verbose = True
         else:
-            verbose = False
+            try:
+                msg = f'Unknown options value: "{sys.argv[1]}" "{sys.argv[2]}"'
+                raise ValueError(msg)
+            except ValueError as ve:
+                Utils._Utils__raise_error(ve, 1, file=__file__)
 
-    GenerateList(verbose=verbose).run(generate='output_list')
+
+    # Run the generator
+    GenerateList(verbose=verbose).run(generate=generate_type)
