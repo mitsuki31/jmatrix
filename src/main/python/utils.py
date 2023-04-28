@@ -5,8 +5,6 @@ class Utils:
     Notes:
         All methods from this class is private.
     """
-    import os, sys, traceback
-
     @staticmethod
     def __raise_error(ex: Exception, status: int = 1, file: str = __file__) -> None:
         """
@@ -28,6 +26,8 @@ class Utils:
         Raises:
             None
         """
+        import os, sys, traceback
+
         if len(file.split(os.sep)) != 1:
             file = file.split(os.sep)[-1]
 
@@ -99,6 +99,8 @@ class Utils:
             - Exception:
                 If any other error occurs while parsing the file.
         """
+        import os
+
         contents = None  # create null object for file contents
 
         try:
