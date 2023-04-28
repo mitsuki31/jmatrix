@@ -104,13 +104,10 @@ class Utils:
         contents = None  # create null object for file contents
 
         try:
+            from file_utils import FileUtils
             from bs4 import BeautifulSoup
 
-            if verbose:
-                Utils._Utils__info_msg(f'Retrieving all contents from "{fp}"...')
-
-            with open(fp, 'r', encoding='utf-8') as file:
-                contents = file.read()
+            contents: str = FileUtils._FileUtils__read_file(fp, _list=False, verbose=verbose)
         except FileNotFoundError as fe:
             Utils._Utils__raise_error(fe, 2)
         except ModuleNotFoundError as me:
