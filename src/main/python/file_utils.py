@@ -21,21 +21,26 @@ class FileUtils:
 
         Returns:
             None
+
+        Raises:
+            None
         """
         import os
         from utils import Utils
 
         if verbose:
             print(os.linesep + '>>> [ CHECK DIRECTORY ] <<<')
+            Utils._Utils__info_msg(f'Checking directory "{dir}"...')
         if not os.path.exists(dir):
             if verbose:
-                Utils._Utils__info_msg(f'Creating new directory... (\'{dir}\')')
+                Utils._Utils__info_msg(f'Given directory path does not exist.')
+                Utils._Utils__info_msg(f'Creating new directory (\'{dir}\')...')
             os.makedirs(dir)
             if verbose:
                 Utils._Utils__info_msg(f'Successfully create "{dir}" directory.')
         else:
             if verbose:
-                Utils._Utils__info_msg(f'"{dir}" directory is already exists.')
+                Utils._Utils__info_msg(f'"{dir}" directory is already exist.')
 
 
     @staticmethod
@@ -61,6 +66,7 @@ class FileUtils:
         from utils import Utils
 
         if verbose:
+            print(os.linesep + '>>> [ CHECK FILE ] <<<')
             Utils._Utils__info_msg(f'Check existence for file: "{fp}"...')
 
         if os.path.exists(fp):
@@ -106,6 +112,7 @@ class FileUtils:
         from utils import Utils
 
         if verbose:
+            print(os.linesep + '>>> [ GET FILE CONTENTS ] <<<')
             Utils._Utils__info_msg(f'Retrieving all contents from "{fp}"...')
         try:
             if fp is None:
@@ -161,6 +168,10 @@ class FileUtils:
         import os, json
         from utils import Utils
 
+        if verbose:
+            print(os.linesep + '>>> [ WRITE FILE ] <<<')
+            Utils._Utils__info_msg(f'Writing contents id:<{id(contents)}> to "{fp}"...')
+
         try:
             if fp is None:
                 msg = 'File path cannot be empty'
@@ -175,22 +186,22 @@ class FileUtils:
                         print()
                     for content in contents:
                         if verbose:
-                            Utils._Utils__info_msg(f'Writing "{content.strip()}" -> \'{fp}\'')
+                            Utils._Utils__info_msg(f'Writing "{content.strip()}" -> \'{fp}\'...')
                         file.write(content + os.linesep)
                 elif isinstance(contents, str):
                     if verbose:
                         print()
-                        Utils._Utils__info_msg(f'Writing "{contents}" -> \'{fp}\'')
+                        Utils._Utils__info_msg(f'Writing "{contents}" -> \'{fp}\'...')
                     file.write(contents + os.linesep)
                 elif isinstance(contents, dict):
                     file.write(json.dumps(contents, indent=4) + os.linesep)
                     if verbose:
                         print()
                         for var, val in contents.items():
-                           Utils._Utils__info_msg(f'Writing ("{var}", "{val}") -> \'{fp}\'')
+                           Utils._Utils__info_msg(f'Writing ("{var}", "{val}") -> \'{fp}\'...')
                 else:
                     try:
-                        msg = f'Unsupported contents type for type "{type(contents)}"'
+                        msg = f'Unsupported contents type for type: "{type(contents)}"'
                         raise RuntimeError(msg)
                     except RuntimeError as re:
                         Utils._Utils__raise_error(re, -1, file=__file__)
