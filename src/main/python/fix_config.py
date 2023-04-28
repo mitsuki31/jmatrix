@@ -10,258 +10,182 @@ Created by Ryuu Mitsuki
 '''
 
 import os, sys, json
-from typing import Optional
+from typing import Optional, Union
 from bs4 import BeautifulSoup
 from bs4.formatter import XMLFormatter
-from utils import raise_error, info_msg, convert_to_BS
+from utils import Utils
+from file_utils import FileUtils
 
-# Global Variables #
-__SOURCES_PATH:   str = f'src{os.sep}main{os.sep}'
-__TARGET_PATH:    str = f'target{os.sep}'
-__CLASSES_PATH:   str = __TARGET_PATH + f'classes{os.sep}'
-__CACHE_PATH:     str = __TARGET_PATH + f'.cache{os.sep}'
-__RESOURCES_PATH: str = __SOURCES_PATH + f'resources{os.sep}'
+class FixConfig:
+    __SOURCES_PATH:   str = f'src{os.sep}main{os.sep}'
+    __TARGET_PATH:    str = f'target{os.sep}'
+    __CLASSES_PATH:   str = __TARGET_PATH + f'classes{os.sep}'
+    __CACHE_PATH:     str = __TARGET_PATH + f'.cache{os.sep}'
+    __RESOURCES_PATH: str = __SOURCES_PATH + f'resources{os.sep}'
 
-__TARGET_FILES: tuple = ('config.xml', 'Makefile', 'MANIFEST.MF',)
+    __TARGET_FILES: tuple = ('config.xml', 'Makefile', 'MANIFEST.MF',)
 
-def __check_directory(dir: str, verbose: bool = False) -> None:
-    """
-    Check if a directory exists and create it if it does not.
+    def __init__(self):
+        pass
 
-    Parameters:
-        - dir: str
-            Directory path to be checked.
-
-        - verbose: bool
-            Whether to print detailed messages while checking or creating the directory.
-
-    Returns:
-        None
-    """
-    if verbose:
-        print(os.linesep + '>>> [ CHECK DIRECTORY ] <<<')
-    if not os.path.exists(dir):
-        if verbose:
-            info_msg(f'Creating new directory... (\'{dir}\')')
-        os.makedirs(dir)
-        if verbose:
-            info_msg(f'Successfully create "{dir}" directory.')
-    else:
-        if verbose:
-            info_msg(f'"{dir}" directory is already exists.')
+    @staticmethod
+    def run(verbose: bool = False):
+        FixConfig().__get_pom_data(cache=True, verbose=verbose)
+        FixConfig().__fix_configuration(cached=f'{FixConfig().__CACHE_PATH}config.json', target='config.xml', verbose=verbose)
+#        FixConfig().__fix_configuration(cached=f'{FixConfig().__CACHE_PATH}config.json', target='manifest.mf', verbose=verbose)
 
 
-def __create_cache(data: Optional[dict], indent: int = 4, out: str = None, verbose: bool = False) -> None:
-    """
-    Create the cache of `data` and store it to `target/.cache/` directory with specified file name.
-    The function supports creating two types of cache (JSON and string). For JSON cache,
-      the `data` parameter should be a dictionary object.
-
-    Parameters:
-        - data: Optional[dict]
-            Data object that want to be cached.
-            The type is optional, can be 'dict' or 'str'.
-            Recommended use 'dict' object for creating JSON cache.
-
-        - indent: int (default = 4)
-            An integer value that specifies number of spaces for indentation in the JSON cache.
-
-        - out: str (default = None)
-            String representing the name of the output file.
-            The output directory is `target/.cache/` directory.
-
-        - verbose: bool (default = False)
-            Boolean that specifies whether to print verbose output.
-
-    Returns:
-        None
-
-    Raises:
-        - RuntimeError
-            If `out` parameter is empty.
-    """
-    __check_directory(__CACHE_PATH, verbose=verbose)
-
-    if verbose:
-        print(os.linesep + '>>> [ CREATE CACHE ] <<<')
-        info_msg(f'Creating cache for id:<{id(data)}> to "{out}"...')
-    try:
-        if out is None:
-            msg = 'Please insert name for output file'
-            raise RuntimeError(msg)
-    except RuntimeError as re:
-        raise_error(re, -1, file=__file__)
-
-    if isinstance(data, str):
-        try:
-            with open(__CACHE_PATH + out, 'w', encoding='utf-8') as cache:
-                if verbose:
-                    info_msg(os.linesep + f'Writing "{data.strip()}" -> \'{out}\'...')
-                cache.write(data)
-        except Exception as e:
-            raise_error(e, file=__file__)
-
-    elif isinstance(data, dict):
-        try:
-            with open(__CACHE_PATH + out, 'w', encoding='utf-8') as cache:
-                if verbose:
-                    print()
-                    for k, v in data.items():
-                        info_msg(f'Writing ("{k}", "{v}") -> \'{out}\'...')
-                json.dump(data, cache, indent=indent)
-                cache.write(os.linesep)
-        except Exception as e:
-            raise_error(e, file=__file__)
-        else:
-            if verbose:
-                print()
-                info_msg(f'Cache created, saved in "{__CACHE_PATH}{out}".')
-
-
-def __get_pom_data(cache: bool = True, verbose: bool = False) -> Optional[dict]:
-    """
-    This function is used to retrieve configuration data from 'pom.xml'.
-
-    Parameters:
-        - cache: bool (default = True)
-            Boolean that specifies whether to create a cache file for the retrieved data or not.
-            If filename is 'config.xml' or any values that same, would be cached with file name 'config.json'.
-
-        - verbose: bool (default = False)
-            Boolean that specifies whether to print verbose output.
-
-    Returns:
-        If `cache` is False, the function returns a dictionary containing the configuration data.
-        Otherwise, the function returns None.
-    """
-    def __check_existence(fp: str, verbose: bool = False) -> None:
+    def __create_cache(self, data: Union[dict, str], indent: int = 4, out: str = None, verbose: bool = False) -> None:
         """
-        Check if a file exists.
+        Create the cache of `data` and store it to `target/.cache/` directory with specified file name.
+        The function supports creating two types of cache (JSON and string). For JSON cache,
+          the `data` parameter should be a dictionary object.
 
         Parameters:
-            - fp: str
-                The file path to be checked.
+            - data: Union[dict, str]
+                Data object that want to be cached.
+                The type is optional, can be 'dict' or 'str'.
+                Recommended use 'dict' object for creating JSON cache.
+
+            - indent: int (default = 4)
+                An integer value that specifies number of spaces for indentation in the JSON cache.
+
+            - out: str (default = None)
+                String representing the name of the output file.
+                The output directory is `target/.cache/` directory.
 
             - verbose: bool (default = False)
-                If True, print verbose output.
+                Boolean that specifies whether to print verbose output.
 
         Returns:
             None
 
         Raises:
-            - FileNotFoundError
-                If the file does not exist or cannot be accessed.
+            - RuntimeError
+                If `out` parameter is empty.
         """
+        FileUtils._FileUtils__check_directory(self.__CACHE_PATH, verbose=verbose)
+
         if verbose:
-            info_msg(f'Check existence for file: "{fp}"...')
+            print(os.linesep + '>>> [ CREATE CACHE ] <<<')
+            Utils._Utils__info_msg(f'Creating cache for id:<{id(data)}> to "{out}"...')
+        try:
+            if out is None:
+                msg = 'Please insert name for output file'
+                raise RuntimeError(msg)
+        except RuntimeError as re:
+            Utils._Utils__raise_error(re, -1, file=__file__)
 
-        if os.path.exists(fp):
-            if verbose:
-                info_msg(f'File "{fp}" is exist.')
-            return
-        else:
-            info_msg(f'File "{fp}" does not exist, error raised!' + os.linesep)
+        if isinstance(data, str):
             try:
-                msg = f'File "{fp}" does not exist or cannot be accessed'
-                raise FileNotFoundError(msg)
-            except FileNotFoundError as fe:
-                raise_error(fe, 2, file=__file__)
+                with open(self.__CACHE_PATH + out, 'w', encoding='utf-8') as cache:
+                    if verbose:
+                        Utils._Utils__info_msg(os.linesep + f'Writing "{data.strip()}" -> \'{out}\'...')
+                    cache.write(data)
+            except Exception as e:
+                Utils._Utils__raise_error(e, file=__file__)
 
-    # ------------------------------------------- #
-
-    pom_xml:     str  = 'pom.xml'
-    config_data: dict = { }
-
-    if verbose:
-        print(os.linesep + '>>> [ GET CONFIG DATA ] <<<')
-
-    try:
-        from bs4 import BeautifulSoup
-    except ModuleNotFoundError as me:
-        info_msg('Please install all the requirements first.' + os.linesep)
-        raise_error(me, file=__file__)
-
-    __check_existence(pom_xml)
-    bs_data: BeautifulSoup = None
-    bs_data = convert_to_BS(pom_xml, verbose=verbose)
-
-    if verbose:
-        info_msg('Filtering contents...')
-        print(os.linesep + '>> ' + '-'*30)
-        print(os.linesep + '<contents>')
-
-    for element in bs_data.find_all():
-        for child in element.find_all():
-            if child.name == 'properties':
-                for child_1 in child.find_all():
-                    if not child_1.name.startswith('project'):
-                        config_data[child_1.name] = child_1.text.strip()
-                        if verbose:
-                            print(' '*4 + f'<{child_1.name}>', child_1.text.strip(), f'</{child_1.name}>')
-
-    for elm in bs_data.find_all('groupId'):
-        if elm.text.strip().split('.')[-1] in config_data['author.name'].lower():
-            config_data['project.' + elm.name] = elm.text.strip()
-            if verbose:
-                print(' '*4 + f'<{elm.name}>', elm.text.strip(), f'</{elm.name}>')
-    for elm in bs_data.find_all('artifactId'):
-        if elm.text.strip().split('-')[0] == config_data['package.name'].lower():
-            config_data['project.' + elm.name] = elm.text.strip()
-            if verbose:
-                print(' '*4 + f'<{elm.name}>', elm.text.strip(), f'</{elm.name}>')
-
-    if verbose:
-        print('</contents>' + os.linesep)
-        print('>> ' + '-'*30 + os.linesep)
-        info_msg('All contents filtered.')
-
-    if cache:
-        __create_cache(config_data, indent=4, out='config.json', verbose=verbose)
-    else:
-        return config_data
+        elif isinstance(data, dict):
+            try:
+                with open(self.__CACHE_PATH + out, 'w', encoding='utf-8') as cache:
+                    if verbose:
+                        print()
+                        for k, v in data.items():
+                            Utils._Utils__info_msg(f'Writing ("{k}", "{v}") -> \'{out}\'...')
+                    json.dump(data, cache, indent=indent)
+                    cache.write(os.linesep)
+            except Exception as e:
+                Utils._Utils__raise_error(e, file=__file__)
+            else:
+                if verbose:
+                    print()
+                    Utils._Utils__info_msg(f'Cache created, saved in "{self.__CACHE_PATH}{out}".')
 
 
-def __fix_configuration(data: dict = None, cached: str = None, target: str = None, verbose: bool = False) -> None:
-    """
-    Fix the configurations of specified target file.
-
-    Parameters:
-        - data: dict
-            The dictionary contains new configuration data.
-
-        - cached: str
-            File path to the cached new configuration data.
-
-        - target: str
-            The target file that want to fix it's configurations.
-
-        - verbose: bool
-            Whether to print detailed messages while fixing the configurations.
-
-    Returns:
-        None
-
-    Raises:
-        - ValueError
-            If the file path is empty.
-
-        - FileNotFoundError
-            If file path to cached configuration data does not exist.
-    """
-    def __read_file(fp: str, _list: bool = True, verbose: bool = False) -> Optional[list]:
+    def __get_pom_data(self, cache: bool = True, verbose: bool = False) -> Optional[dict]:
         """
-        Read all contents from specified file, and specify the return to list or str
+        This function is used to retrieve configuration data from 'pom.xml'.
 
         Parameters:
-            - fp: str
-                The file path to read the contents.
-
-            - _list: bool (default = True)
-                If True it will returns the contents with type of list,
-                if False it will returns the contents with type of str.
+            - cache: bool (default = True)
+                Boolean that specifies whether to create a cache file for the retrieved data or not.
+                If filename is 'config.xml' or any values that same, would be cached with file name 'config.json'.
 
             - verbose: bool (default = False)
-                Whether to print detailed messages while read the file contents.
+                Boolean that specifies whether to print verbose output.
+
+        Returns:
+            If `cache` is False, the function returns a dictionary containing the configuration data.
+            Otherwise, the function returns None.
+        """
+        pom_xml:     str  = 'pom.xml'
+        config_data: dict = { }
+
+        if verbose:
+            print(os.linesep + '>>> [ GET CONFIG DATA ] <<<')
+
+        try:
+            from bs4 import BeautifulSoup
+        except ModuleNotFoundError as me:
+            Utils._Utils__info_msg('Please install all the requirements first.' + os.linesep)
+            Utils._Utils__raise_error(me, file=__file__)
+
+        FileUtils._FileUtils__check_file(pom_xml)
+        bs_data: BeautifulSoup = None
+        bs_data = Utils._Utils__convert_to_BS(pom_xml, verbose=verbose)
+
+        if verbose:
+            Utils._Utils__info_msg('Filtering contents...')
+            print(os.linesep + '>> ' + '-'*30)
+            print(os.linesep + '<contents>')
+
+        for element in bs_data.find_all():
+            for child in element.find_all():
+                if child.name == 'properties':
+                    for child_1 in child.find_all():
+                        if not child_1.name.startswith('project'):
+                            config_data[child_1.name] = child_1.text.strip()
+                            if verbose:
+                                print(' '*4 + f'<{child_1.name}>', child_1.text.strip(), f'</{child_1.name}>')
+
+        for elm in bs_data.find_all('groupId'):
+            if elm.text.strip().split('.')[-1] in config_data['author.name'].lower():
+                config_data['project.' + elm.name] = elm.text.strip()
+                if verbose:
+                    print(' '*4 + f'<{elm.name}>', elm.text.strip(), f'</{elm.name}>')
+        for elm in bs_data.find_all('artifactId'):
+            if elm.text.strip().split('-')[0] == config_data['package.name'].lower():
+                config_data['project.' + elm.name] = elm.text.strip()
+                if verbose:
+                    print(' '*4 + f'<{elm.name}>', elm.text.strip(), f'</{elm.name}>')
+
+        if verbose:
+            print('</contents>' + os.linesep)
+            print('>> ' + '-'*30 + os.linesep)
+            Utils._Utils__info_msg('All contents filtered.')
+
+        if cache:
+            self.__create_cache(config_data, indent=4, out='config.json', verbose=verbose)
+        else:
+            return config_data
+
+
+    def __fix_configuration(self, data: dict = None, cached: str = None, target: str = None, verbose: bool = False) -> None:
+        """
+        Fix the configurations of specified target file.
+
+        Parameters:
+            - data: dict
+                The dictionary contains new configuration data.
+
+            - cached: str
+                File path to the cached new configuration data.
+
+            - target: str
+                The target file that want to fix it's configurations.
+
+            - verbose: bool
+                Whether to print detailed messages while fixing the configurations.
 
         Returns:
             None
@@ -271,204 +195,112 @@ def __fix_configuration(data: dict = None, cached: str = None, target: str = Non
                 If the file path is empty.
 
             - FileNotFoundError
-                If file path to read it's contents does not exist.
+                If file path to cached configuration data does not exist.
         """
+        with_cache:  bool   = False
+        target_path: str    = None
+        target_data: object = None
+        output_dir:  str    = None
+
+        if target.lower() == self.__TARGET_FILES[0]:
+            output_dir = self.__CLASSES_PATH + f'configuration{os.sep}'
+        elif target.lower() == self.__TARGET_FILES[1].lower():
+            output_dir = self.__TARGET_FILES[1]
+        elif target.lower() == self.__TARGET_FILES[2].lower():
+            output_dir = f'MANIFEST{os.sep}' + self.__TARGET_FILES[2]
+
+        FileUtils._FileUtils__check_directory(output_dir, verbose=verbose)
+
         if verbose:
-            info_msg(f'Retrieving all contents from "{fp}"...')
-        try:
-            if fp is None:
-                msg = 'File path cannot be empty'
-                raise ValueError(msg)
-            elif not os.path.exists(fp):
-                msg = f'File "{fp}" does not exist or cannot be accessed'
-                raise FileNotFoundError(msg)
-
-            with open(fp, 'r', encoding='utf-8') as file:
-                if _list:
-                    return file.readlines()
-                else:
-                    return file.read()
-        except Exception as e:
-            raise_error(e)
-        else:
+            print(os.linesep + '>>> [ FIX CONFIGURATION ] <<<')
+        if data is None or len(data) == 0:
+            with_cache = True
             if verbose:
-                info_msg('Successfully retrieve all contents.')
+                Utils._Utils__info_msg(f'Using cached configuration data "{cached}".')
 
-        return None
-
-    # ------------------------------------------- #
-
-    def __write_to_file(fp: str, contents: object = None, verbose: bool = False) -> None:
-        """
-        Write the contents to specified file.
-
-        Parameters:
-            - fp: str
-                The file path to write the contents.
-
-            - contents: object (default = None)
-                The contents to write to the file.
-                Supported type of contents:
-                    - `list` (recommended)
-                    - `str`
-                    - `dict`
-
-            - verbose: bool
-                Whether to print detailed messages while writing to the file.
-
-        Returns:
-            None
-
-        Raises:
-            - ValueError
-                If the file path or contents is empty.
-
-            - RuntimeError
-                If the contents type is not valid or unsupported.
-        """
         try:
-            if fp is None:
-                msg = 'File path cannot be empty'
-                raise ValueError(msg)
-            elif contents is None:
-                msg = 'Contents cannot be empty'
-                raise ValueError(msg)
+            if (data is None or len(data) == 0) and cached is None:
+                msg = 'Given config data is empty, please specify path to cached config'
+                raise RuntimeError(msg)
+            elif target.lower() is None or not target in [target_file.lower() for target_file in self.__TARGET_FILES]:
+                msg = 'Please specify the target file'
+                raise RuntimeError(msg)
+            elif target.lower() in [target_file.lower() for target_file in self.__TARGET_FILES]:
+                # config.xml
+                if target.lower() == self.__TARGET_FILES[0]:
+                    target_path = self.__RESOURCES_PATH + f'configuration{os.sep}' + self.__TARGET_FILES[0]
+                # Makefile
+                elif target.lower() == self.__TARGET_FILES[1].lower():
+                    target_path = self.__TARGET_FILES[1]
+                # MANIFEST.MF
+                elif target.lower() == self.__TARGET_FILES[2].lower():
+                    target_path = f'META-INF{os.sep}' + self.__TARGET_FILES[2]
+        except RuntimeError as re:
+            Utils._Utils__raise_error(re, -1, file=__file__)
 
-            with open(fp, 'w', encoding='utf-8') as file:
-                if isinstance(contents, list):
-                    if verbose:
-                        print()
-                    for content in contents:
-                        if verbose:
-                            info_msg(f'Writing "{content}" -> \'{fp}\'')
-                        file.write(content + os.linesep)
-                elif isinstance(contents, str):
-                    if verbose:
-                        print()
-                        info_msg(f'Writing "{contents}" -> \'{fp}\'')
-                    file.write(contents + os.linesep)
-                elif isinstance(contents, dict):
-                    file.write(json.dumps(contents, indent=4) + os.linesep)
-                    if verbose:
-                        print()
-                        for var, val in contents.items():
-                           info_msg(f'Writing ("{var}", "{val}") -> \'{fp}\'')
-                else:
-                    try:
-                        msg = f'Unsupported contents type for type "{type(contents)}"'
-                        raise RuntimeError(msg)
-                    except RuntimeError as re:
-                        raise_error(re, -1, file=__file__)
+        if with_cache:
+            try:
+                if not os.path.exists(cached):
+                    msg = 'Path to cached configuration data does not exist'
+                    raise FileNotFoundError(msg)
+                elif os.path.exists(cached) and not os.path.isfile(cached):
+                    msg = 'Path to cached configuration data is a directory'
+                    raise FileNotFoundError(msg)
 
-        except Exception as e:
-            raise_error(e, file=__file__)
-        else:
-            if verbose:
-                info_msg(f'Successfully write the contents to file: "{fp}".')
+                with open(cached, 'r', encoding='utf-8') as cache:
+                    data = json.load(cache)
+            except Exception as e:
+                Utils._Utils__raise_error(e, 1, file=__file__)
 
-    # ------------------------------------------- #
+        # Check the target file
+        if target.lower() == self.__TARGET_FILES[0]:
+            import re
 
-    with_cache:  bool   = False
-    target_path: str    = None
-    target_data: object = None
-    output_dir:  str    = None
+            target_data: dict = { }
+            bs_data = repr(Utils._Utils__convert_to_BS(target_path, verbose=verbose))
+            pattern: re.Pattern = re.compile(r"\$\{([\w.-]+)\}")
 
-    if target.lower() == __TARGET_FILES[0]:
-        output_dir = __CLASSES_PATH + f'configuration{os.sep}'
-    elif target.lower() == __TARGET_FILES[1].lower():
-        output_dir = __TARGET_FILES[1]
-    elif target.lower() == __TARGET_FILES[2].lower():
-        output_dir = f'MANIFEST{os.sep}' + __TARGET_FILES[2]
+            target_value: list = pattern.findall(bs_data)
 
-    __check_directory(output_dir, verbose=verbose)
+            for i in range(len(target_value)):
+                target_data[target_value[i]] = data[target_value[i]]
 
-    if verbose:
-        print(os.linesep + '>>> [ FIX CONFIGURATION ] <<<')
-    if data is None or len(data) == 0:
-        with_cache = True
-        if verbose:
-            info_msg(f'Using cached configuration data "{cached}".')
+            for var, val in target_data.items():
+                bs_data = re.sub(fr'\${{{var}}}', val, bs_data)
 
-    try:
-        if (data is None or len(data) == 0) and cached is None:
-            msg = 'Given config data is empty, please specify path to cached config'
-            raise RuntimeError(msg)
-        elif target.lower() is None or not target in [target_file.lower() for target_file in __TARGET_FILES]:
-            msg = 'Please specify the target file'
-            raise RuntimeError(msg)
-        elif target.lower() in [target_file.lower() for target_file in __TARGET_FILES]:
-            # config.xml
-            if target.lower() == __TARGET_FILES[0]:
-                target_path = __RESOURCES_PATH + f'configuration{os.sep}' + __TARGET_FILES[0]
-            # Makefile
-            elif target.lower() == __TARGET_FILES[1].lower():
-                target_path = __TARGET_FILES[1]
-            # MANIFEST.MF
-            elif target.lower() == __TARGET_FILES[2].lower():
-                target_path = f'META-INF{os.sep}' + __TARGET_FILES[2]
-    except RuntimeError as re:
-        raise_error(re, -1, file=__file__)
+            xml_formatter = XMLFormatter(indent=4)
+            bs_data = BeautifulSoup(bs_data, 'xml').prettify(formatter=xml_formatter).split(os.linesep)
+            bs_data[0] += os.linesep
 
-    if with_cache:
-        try:
-            if not os.path.exists(cached):
-                msg = 'Path to cached configuration data does not exist'
-                raise FileNotFoundError(msg)
-            elif os.path.exists(cached) and not os.path.isfile(cached):
-                msg = 'Path to cached configuration data is a directory'
-                raise FileNotFoundError(msg)
+            fixed_data: list = [ ]
+            i: int = 0
+            for idx, element in enumerate(bs_data):
+                if not element.startswith(('<?', '<conf', '</conf')):
+                    if not element.strip().startswith('<'):
+                        fixed_data.append(element.strip())
+                    elif fixed_data and element.strip().startswith('</'):
+                        fixed_data[-1] += element.strip()
+                        bs_data[idx - 2] += fixed_data[i]
+                        bs_data[idx] = None; bs_data[idx - 1] = None
+                        i += 1
 
-            with open(cached, 'r', encoding='utf-8') as cache:
-                data = json.load(cache)
-        except Exception as e:
-            raise_error(e, 1, file=__file__)
+            bs_data = [data for data in bs_data if data is not None]
 
-    # Check the target file
-    if target.lower() == __TARGET_FILES[0]:
-        import re
+            FileUtils._FileUtils__write_to_file(output_dir + 'config.xml', contents=bs_data, verbose=verbose)
 
-        target_data: dict = { }
-        bs_data = repr(convert_to_BS(target_path, verbose=verbose))
-        pattern: re.Pattern = re.compile(r"\$\{([\w.-]+)\}")
+        elif target.lower() == self.__TARGET_FILES[1].lower():
+            target_data: list = FileUtils._FileUtils__read_file(target_path, _list=True, verbose=verbose)
 
-        target_value: list = pattern.findall(bs_data)
+            print(target_data)
 
-        for i in range(len(target_value)):
-            target_data[target_value[i]] = data[target_value[i]]
+        elif target.lower() == self.__TARGET_FILES[2].lower():
+            target_data: list = FileUtils._FileUtils__read_file(target_path, _list=True, verbose=verbose)
 
-        for var, val in target_data.items():
-            bs_data = re.sub(fr'\${{{var}}}', val, bs_data)
+            print(target_data)
 
-        xml_formatter = XMLFormatter(indent=4)
-        bs_data = BeautifulSoup(bs_data, 'xml').prettify(formatter=xml_formatter).split(os.linesep)
-        bs_data[0] += os.linesep
 
-        fixed_data: list = [ ]
-        i: int = 0
-        for idx, element in enumerate(bs_data):
-            if not element.startswith(('<?', '<conf', '</conf')):
-                if not element.strip().startswith('<'):
-                    fixed_data.append(element.strip())
-                elif fixed_data and element.strip().startswith('</'):
-                    fixed_data[-1] += element.strip()
-                    bs_data[idx - 2] += fixed_data[i]
-                    bs_data[idx] = None; bs_data[idx - 1] = None
-                    i += 1
 
-        bs_data = [data for data in bs_data if data is not None]
-
-        __write_to_file(output_dir + 'config.xml', contents=bs_data, verbose=verbose)
-
-    elif target.lower() == __TARGET_FILES[1].lower():
-        target_data: list = __read_file(target_path, _list=True, verbose=verbose)
-
-        print(target_data)
-
-    elif target.lower() == __TARGET_FILES[2].lower():
-        target_data: list = __read_file(target_path, _list=True, verbose=verbose)
-
-        print(target_data)
-
+## === DRIVER === ##
 if __name__ == '__main__':
     verbose:  bool  = False
     opts_arg: tuple = ('-v', '--verbose', 'verbose',)
@@ -484,13 +316,11 @@ if __name__ == '__main__':
             msg = f'Unknown options for value: "{sys.argv[1]}"'
             raise ValueError(msg)
     except Exception as e: # Catch all exceptions that could occurs
-        raise_error(e, file=__file__)
+        Utils._Utils__raise_error(e, file=__file__)
     else:
         if len(sys.argv) == 2 and sys.argv[1] in opts_arg:
             verbose = True
         else:
             verbose = False
 
-    __get_pom_data(cache=True, verbose=verbose)
-    __fix_configuration(cached=f'{__CACHE_PATH}config.json', target='config.xml', verbose=verbose)
-#    __fix_configuration(cached=f'{__CACHE_PATH}config.json', target='manifest.mf', verbose=verbose)
+    FixConfig.run(verbose=verbose)
