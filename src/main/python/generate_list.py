@@ -4,11 +4,11 @@ from file_utils import FileUtils
 
 class GenerateList:
     __PATH: dict = {
-        ('target_path'): f'src{os.sep}main{os.sep}java{os.sep}',
-        ('class_path'): f'target{os.sep}classes{os.sep}',
-        ('out_path'): f'target{os.sep}generated-list{os.sep}',
-        ('source'): f'target{os.sep}generated-list{os.sep}sourceFiles.lst',
-        ('output'): f'target{os.sep}generated-list{os.sep}outputFiles.lst'
+        ('target_path'): (os.sep).join(['src', 'main', 'java']),
+        ('class_path'): (os.sep).join(['target', 'classes']) + os.sep,
+        ('out_path'): (os.sep).join(['target', 'generated-list']) + os.sep,
+        ('source'): (os.sep).join(['target', 'generated-list', 'sourceFiles.lst']),
+        ('output'): (os.sep).join(['target', 'generated-list', 'outputFiles.lst'])
     }
 
     __verbose: bool = False
@@ -62,6 +62,7 @@ class GenerateList:
             except ValueError as ve:
                 Utils._Utils__raise_error(ve, -1, file=__file__)
 
+
     def __generate_sources_list(self) -> None:
         if platform.system().lower() in ('linux', 'unix'):
             cmd = self.__command['unix']['source']
@@ -72,6 +73,25 @@ class GenerateList:
 
         if err_code != 0:
             sys.exit(err_code)
+
+        if self.__verbose:
+            print(os.linesep + '>>> [ SORT THE SOURCE LIST ] <<<')
+            Utils._Utils__info_msg(f'Sorting "{self.__PATH["source"].split(os.sep)[-1]}"...')
+
+        sourceFiles_lst: list = FileUtils._FileUtils__read_file(
+            self.__PATH['source'], verbose=self.__verbose
+        )
+
+        for idx, source_file in enumerate(sourceFiles_lst):
+            sourceFiles_lst[idx - 1] = sourceFiles_lst[idx - 1].strip()
+        sourceFiles_lst.sort()
+
+        if self.__verbose:
+            Utils._Utils__info_msg('All list sorted.')
+
+        FileUtils._FileUtils__write_to_file(
+            self.__PATH['source'], contents=sorted(sourceFiles_lst), verbose=self.__verbose
+        )
 
 
     def __generate_output_list(self) -> None:
@@ -85,6 +105,10 @@ class GenerateList:
         if err_code != 0:
             sys.exit(err_code)
 
+        if self.__verbose:
+            print(os.linesep + '>>> [ SORT THE OUTPUT LIST ] <<<')
+            Utils._Utils__info_msg(f'Sorting "{self.__PATH["output"].split(os.sep)[-1]}"...')
+
         outputFiles_lst: list = FileUtils._FileUtils__read_file(
             self.__PATH['output'], verbose=self.__verbose
         )
@@ -95,6 +119,9 @@ class GenerateList:
             for out in output_file.split():
                 new_outputFiles_lst.append(os.path.join(*(out.split(os.sep)[2:])))
         new_outputFiles_lst.sort()
+
+        if self.__verbose:
+            Utils._Utils__info_msg('All list sorted.')
 
         FileUtils._FileUtils__write_to_file(
             self.__PATH['output'], contents=new_outputFiles_lst, verbose=self.__verbose
