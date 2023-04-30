@@ -1,8 +1,25 @@
-import os, sys, platform
-from utils import Utils
-from file_utils import FileUtils
+"""
+Program that generates the list of source files or class files.
+"""
+__author__ = 'Ryuu Mitsuki'
+__all__    = ['GenerateList']
+
+import os
+import sys
+import platform
+from utils import Utils, FileUtils
 
 class GenerateList:
+    """
+    This class provides methods that generates list of source files and class files.
+
+    For generating list, this class uses command that based on the operating system.
+
+    Working directory:
+        : 'src/main/java/' - For searching all of source files (*.java).
+        : 'target/classes/' - For searching all of class files (*.class).
+        : 'target/generated-list/' - The output directory for generated list.
+    """
     __PATH: dict = {
         ('target_path'): (os.sep).join(['src', 'main', 'java']),
         ('class_path'): (os.sep).join(['target', 'classes']) + os.sep,
@@ -14,87 +31,146 @@ class GenerateList:
     __verbose: bool = False
     __command: dict = {
         'unix': {
-            'source': 'find {_in} -type f -name "*.java" > {_out}'.format(
-                _in=__PATH['target_path'], _out=__PATH['source']
-            ),
+            'source':
+                f'find {__PATH["target_path"]} -type f -name "*.java" > {__PATH["source"]}',
 
-            'output': 'find {_in} -type f -name "*.class" > {_out}'.format(
-                _in=__PATH['class_path'], _out=__PATH['output']
-            )
+            'output':
+                f'find {__PATH["class_path"]} -type f -name "*.class" > {__PATH["output"]}'
         },
 
         'windows': {
-            'source': 'dir "{_in}" /b /s *.java > {_out}'.format(
-                _in=__PATH['target_path'], _out=__PATH['source']
-            ),
+            'source':
+                f'dir "{__PATH["target_path"]}" /b /s *.java > {__PATH["source"]}',
 
-            'output': 'dir "{_in}" /b /s *.class > {_out}'.format(
-                _in=__PATH['class_path'], _out=__PATH['output']
-            )
+            'output':
+                f'dir "{__PATH["class_path"]}" /b /s *.class > {__PATH["output"]}'
         }
     }
 
+
     def __init__(self, verbose: bool = False) -> None:
+        """
+        This constructor will construct new object of `GenerateList`.
+        It does nothing, only checks and creates some working directories.
+
+        Parameters:
+            - verbose: bool (default = False)
+                Boolean value that specifies whether to print verbose output.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         self.__verbose: bool = verbose
 
         # Checking 'src/main/java' directory
-        FileUtils._FileUtils__check_directory(
+        FileUtils.check_directory(
             self.__PATH['target_path'],
             verbose=self.__verbose
         )
 
         # Checking 'target/generated-list' directory
-        FileUtils._FileUtils__check_directory(
+        FileUtils.check_directory(
             self.__PATH['out_path'],
             verbose=self.__verbose
         )
 
 
     def run(self, generate: str = 'source_list') -> None:
+        """
+        Runs and generates the list by specifying the type of list
+          that want to be generated.
+
+        Parameters:
+            - generate: str (default = 'source_list')
+                String value that specifies which one list
+                  that want to be generated.
+
+                Accepted values:
+                    - 'source_list' or 'source'
+                    - 'output_list' or 'output'
+
+        Returns:
+            None
+
+        Raises:
+            - ValueError
+                If the value of `generate` parameter is invalid.
+        """
         if generate in ('source', 'source_list'):
             self.__generate_sources_list()
         elif generate in ('output', 'output_list'):
             self.__generate_output_list()
         else:
             try:
-                msg = f'Unknown argument value: "{generate}"'
+                msg = f'Unknown list type: "{generate}"'
                 raise ValueError(msg)
-            except ValueError as ve:
-                Utils._Utils__raise_error(ve, -1, file=__file__)
+            except ValueError as val_err:
+                Utils.raise_error(val_err, -1, file=__file__)
 
 
     def __generate_sources_list(self) -> None:
-        if platform.system().lower() in ('linux', 'unix'):
-            cmd = self.__command['unix']['source']
-        elif platform.system().lower() in ('win', 'win32', 'win64', 'windows'):
-            cmd = self.__command['windows']['source']
+        """
+        This method generates a list of source files from `src/main/java` directory.
+        The generated list is sorted and written back to `sourceFiles.lst` file.
 
-        err_code: int = os.system(cmd)
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
+        if platform.system().lower() in ('linux', 'unix'):
+            command = self.__command['unix']['source']
+        elif platform.system().lower() in ('win', 'win32', 'win64', 'windows'):
+            command = self.__command['windows']['source']
+
+        err_code: int = os.system(command)
 
         if err_code != 0:
             sys.exit(err_code)
 
         if self.__verbose:
             print(os.linesep + '>>> [ SORT THE SOURCE LIST ] <<<')
-            Utils._Utils__info_msg(f'Sorting "{self.__PATH["source"].split(os.sep)[-1]}"...')
+            Utils.info_msg(
+                f'Sorting "{self.__PATH["source"].rsplit(os.sep, maxsplit=1)[-1]}"...'
+            )
 
-        sourceFiles_lst: list = FileUtils._FileUtils__read_file(
+        source_lst: list = FileUtils.read_file(
             self.__PATH['source'], verbose=self.__verbose
         )
 
-        for idx, source_file in enumerate(sourceFiles_lst):
-            sourceFiles_lst[idx - 1] = sourceFiles_lst[idx - 1].strip()
-        sourceFiles_lst.sort()
+        for idx, _ in enumerate(source_lst):
+            source_lst[idx] = source_lst[idx].strip()
+        source_lst.sort()
 
         if self.__verbose:
-            Utils._Utils__info_msg('All list sorted.')
+            Utils.info_msg('All list sorted.')
 
-        FileUtils._FileUtils__write_to_file(
-            self.__PATH['source'], contents=sorted(sourceFiles_lst), verbose=self.__verbose
+        FileUtils.write_to_file(
+            self.__PATH['source'], contents=sorted(source_lst), verbose=self.__verbose
         )
 
 
     def __generate_output_list(self) -> None:
+        """
+        This method generates a list of class files from `target/classes/` directory.
+        The generated list is sorted and written back to `outputFiles.lst` file.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
         if platform.system().lower() in ('linux', 'unix'):
             cmd = self.__command['unix']['output']
         elif platform.system().lower() in ('win', 'win32', 'win64', 'windows'):
@@ -107,32 +183,50 @@ class GenerateList:
 
         if self.__verbose:
             print(os.linesep + '>>> [ SORT THE OUTPUT LIST ] <<<')
-            Utils._Utils__info_msg(f'Sorting "{self.__PATH["output"].split(os.sep)[-1]}"...')
+            Utils.info_msg(
+                f'Sorting "{self.__PATH["output"].rsplit(os.sep, maxsplit=1)[-1]}"...'
+            )
 
-        outputFiles_lst: list = FileUtils._FileUtils__read_file(
+        output_lst: list = FileUtils.read_file(
             self.__PATH['output'], verbose=self.__verbose
         )
 
-        new_outputFiles_lst: list = [ ]
+        new_output_lst: list = [ ]
 
-        for output_file in outputFiles_lst:
+        for output_file in output_lst:
             for out in output_file.split():
-                new_outputFiles_lst.append(os.path.join(*(out.split(os.sep)[2:])))
-        new_outputFiles_lst.sort()
+                new_output_lst.append(os.path.join(*(out.split(os.sep)[2:])))
+        new_output_lst.sort()
 
         if self.__verbose:
-            Utils._Utils__info_msg('All list sorted.')
+            Utils.info_msg('All list sorted.')
 
-        FileUtils._FileUtils__write_to_file(
-            self.__PATH['output'], contents=new_outputFiles_lst, verbose=self.__verbose
+        FileUtils.write_to_file(
+            self.__PATH['output'], contents=new_output_lst, verbose=self.__verbose
         )
 
+    __all__ = ['run']
 
-## === DRIVER === ##
-if __name__ == '__main__':
-    verbose:       bool  = False
-    generate_type: str   = None
-    opts_arg:      list  = [
+
+def main() -> None:
+    """
+    Main program.
+    """
+    def check_opt(opt: str, *args) -> bool:
+        result: bool = False
+
+        if len(args) == 1 and args[0] == 1:
+            result = any(opt in option for option in opts_arg[args[0]])
+        elif len(args) == 1 and args[0] == 0:
+            result = opt in opts_arg[0]
+        elif len(args) == 2 and args[0] == 1:
+            result = opt in opts_arg[args[0]][args[1]]
+
+        return result
+
+    # -------------------------------------------------------- #
+
+    opts_arg: list  = [
         ('-v', '--verbose', 'verbose'),
         [
             ('src', 'source'),
@@ -140,48 +234,44 @@ if __name__ == '__main__':
         ]
     ]
 
-
-    check_opt_1  = lambda arg : any(arg in opt for opt in opts_arg[1])
-    check_opt_1x = lambda arg, i : arg in opts_arg[1][i]
-    check_opt_2  = lambda arg : arg in opts_arg[0]
-
     # Checking the CLI arguments
     try:
-        msg: str = None  # Empty message variable for exception message
+        if len(sys.argv) > 3:
+            raise RuntimeError('Too many arguments, need (1 or 2) arguments')
+        if len(sys.argv) == 2 and not check_opt(sys.argv[1], 1):
+            raise ValueError(f'Unknown options value: "{sys.argv[1]}"')
+        if len(sys.argv) == 3 and not (check_opt(sys.argv[1], 1) or check_opt(sys.argv[2], 0)):
+            raise ValueError(f'Unknown options value: "{sys.argv[1]}" + "{sys.argv[2]}"')
+    except ValueError as value_err:
+        Utils.raise_error(value_err, 1, file=__file__)
+    except RuntimeError as run_err:
+        Utils.raise_error(run_err, -1, file=__file__)
 
-        if len(sys.argv) < 2:
-            msg = 'Arguments cannot be empty'
-            raise IndexError(msg)
-        elif len(sys.argv) > 3:
-            msg = 'Too many arguments, need (1 or 2) arguments'
-            raise IndexError(msg)
-        elif len(sys.argv) == 2 and not (check_opt_1(sys.argv[1])):
-            msg = f'Unknown options value: "{sys.argv[1]}"'
-            raise ValueError(msg)
-        elif len(sys.argv) == 3 and not (check_opt_1(sys.argv[1]) or check_opt_2(sys.argv[2])):
-            msg = f'Unknown options value: "{sys.argv[1]}" + "{sys.argv[2]}"'
-            raise ValueError(msg)
-    except Exception as e:
-        Utils._Utils__raise_error(e, 1, file=__file__)
+    # Run the GenerateList program
+    if len(sys.argv) == 2 and \
+            (check_opt(sys.argv[1], 1) and check_opt(sys.argv[1], 1, 0)):
+        GenerateList().run(generate='source_list')
+    elif len(sys.argv) == 2 and \
+            (check_opt(sys.argv[1], 1) and check_opt(sys.argv[1], 1, 1)):
+        GenerateList().run(generate='output_list')
+    elif len(sys.argv) == 3 and (check_opt(sys.argv[1], 1) and check_opt(sys.argv[2], 0)):
+        if check_opt(sys.argv[1], 1, 0):
+            GenerateList(verbose=True).run(generate='source_list')
+        elif check_opt(sys.argv[1], 1, 1):
+            GenerateList(verbose=True).run(generate='output_list')
     else:
-        if len(sys.argv) == 2 and check_opt_1(sys.argv[1]):
-            if check_opt_1x(sys.argv[1], 0):
-                generate_type = 'source_list'
-            elif check_opt_1x(sys.argv[1], 1):
-                generate_type = 'output_list'
-        elif len(sys.argv) == 3 and (check_opt_1(sys.argv[1]) and check_opt_2(sys.argv[2])):
-            if check_opt_1x(sys.argv[1], 0):
-                generate_type = 'source_list'
-            elif check_opt_1x(sys.argv[1], 1):
-                generate_type = 'output_list'
-            verbose = True
-        else:
-            try:
-                msg = f'Unknown options value: "{sys.argv[1]}" "{sys.argv[2]}"'
-                raise ValueError(msg)
-            except ValueError as ve:
-                Utils._Utils__raise_error(ve, 1, file=__file__)
+        try:
+            raise ValueError(f'Unknown options value: "{sys.argv[1]}" "{sys.argv[2]}"')
+        except ValueError as value_err:
+            Utils.raise_error(value_err, 1, file=__file__)
 
 
-    # Run the generator
-    GenerateList(verbose=verbose).run(generate=generate_type)
+## === DRIVER === ##
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        Utils.raise_error(
+            RuntimeError('Arguments cannot be empty'),
+            -1, file=__file__
+        )
+
+    main()
