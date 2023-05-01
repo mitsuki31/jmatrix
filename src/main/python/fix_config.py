@@ -66,24 +66,31 @@ class FixConfig:
         Raises:
             None
         """
-        self.__get_pom_data(cache=True)
+        self.__get_pom_data(cache=True, out='config.json')
+
+        # [config.xml]
         self.__fix_configuration(
             None,
             cached=f'{self.__CACHE_PATH}config.json',
             target='config.xml'
         )
-        
-        # XXX: Still in development
 
-#        self.__fix_configuration(
-#            None,
-#            cached=f'{self.__CACHE_PATH}config.json',
-#            target='manifest.mf'
-#        )
+        # [Makefile]
+        self.__fix_configuration(
+            None,
+            cached=f'{self.__CACHE_PATH}config.json',
+            target='makefile'
+        )
 
+        # [MANIFEST.MF]
+        self.__fix_configuration(
+            None,
+            cached=f'{self.__CACHE_PATH}config.json',
+            target='manifest.mf'
+        )
 
     def __create_cache(self,
-        data: Union[dict, str], indent: int = 4, out: str = None) -> None:
+            data: Union[dict, str], indent: int = 4, out: str = None) -> None:
         """
         Create the cache of `data` and store it to `target/.cache/` directory
           with specified file name.
@@ -119,7 +126,7 @@ class FixConfig:
         FileUtils.check_directory(self.__CACHE_PATH, verbose=self.__verbose)
 
         if self.__verbose:
-            print(os.linesep + '>>> [ CREATE CACHE ] <<<')
+            Utils.pr_banner('CREATE CACHE')
             Utils.info_msg(f'Creating cache for id:<{id(data)}> to "{out}"...')
 
         try:
@@ -159,6 +166,7 @@ class FixConfig:
             if self.__verbose:
                 print()
                 Utils.info_msg(f'Cache created, saved in "{self.__CACHE_PATH}{out}".')
+                Utils.pr_banner('(END) CREATE CACHE', newline=1)
 
 
     def __get_cache(self, cache_path: str) -> dict:
@@ -200,6 +208,93 @@ class FixConfig:
             Utils.raise_error(dir_err, 1, file=__file__)
 
         return cache_data
+
+
+    def __get_output_path(self, target: str) -> str:
+        """
+        Gets the correct output path for targeted file.
+
+        Parameters:
+            - target: str
+                The targeted file to gets it's correct output path.
+
+        Returns:
+            A string representing output path for targeted file.
+
+        Raises:
+            None
+        """
+        path: str = None
+
+        if target.lower() == self.__TARGET_FILES[0]:
+            path = self.__CLASSES_PATH + f'configuration{os.sep}'
+        if target.lower() == self.__TARGET_FILES[1].lower():
+            path = '.' + os.sep
+        if target.lower() == self.__TARGET_FILES[2].lower():
+            path = 'MANIFEST' + os.sep
+
+        return path
+
+
+    def __get_version(self, list_data: list = None, **kwargs) -> Union[tuple, str]:
+        """
+        Search for a version string in a list of data
+          using a regex pattern and return version information.
+
+        Parameters:
+            - list_data: list (default = None)
+                A list of data to be searched.
+
+            - **kwargs
+                Additional keyword arguments.
+
+                + regex: str
+                    A regex pattern to match against the list elements.
+
+                + config_data: dict
+                    Dictionary containing the configuration data and version.
+
+                + fixed_only: bool (optional)
+                    If True, returns only the fixed version string.
+
+        Returns:
+            If a match is found, a tuple containing the index of the
+              matching element, the new version string,
+              and the original element content.
+            If 'fixed_only' is True, returns the fixed version string only.
+
+        Raises:
+            None
+        """
+        config_data:   dict = kwargs.get('config_data', {})
+        fixed_version: str  = config_data.get('package.version.core', 'null')
+        if config_data.get('package.releaseType', 'null').lower() != 'release':
+            fixed_version += '-' + config_data.get('package.releaseType', 'null') + \
+                             '.' + config_data.get('package.betaNum', 'null')
+
+        if kwargs.get('fixed_only', False):
+            return fixed_version
+
+        if not list_data or len(list_data) == 0:
+            Utils.raise_error(
+                ValueError('List data cannot be empty'),
+                1, file=__file__
+            )
+
+        regex:         str  = kwargs.get('regex')
+        new_version:   str  = None
+        index:         int  = -99
+
+        for i, __data in enumerate(list_data):
+            match = re.compile(regex).match(__data.lower().strip())
+            if match:
+                index = i
+                new_version = ' '.join(
+                    match.group(0).upper().split()[:2]
+                ) + ' ' + fixed_version
+                break
+
+        return (list_data[index].strip(), new_version, index)
 
 
     def __get_pom_data(self, cache: bool = True, out: str = None) -> Optional[dict]:
@@ -246,7 +341,7 @@ class FixConfig:
 
             if self.__verbose:
                 Utils.info_msg('Filtering contents...')
-                print(os.linesep + '>> ' + '-' * 70)
+                print(os.linesep + '>> ' + '-' * 50 + ' <<')
                 print(os.linesep + '<contents>')
 
             for element in bs_data.find_all():
@@ -267,7 +362,7 @@ class FixConfig:
 
             if self.__verbose:
                 print('</contents>' + os.linesep)
-                print('>> ' + '-' * 70 + os.linesep)
+                print('>> ' + '-' * 50 + ' <<' + os.linesep)
                 Utils.info_msg('All contents filtered.')
 
             return data
@@ -278,7 +373,7 @@ class FixConfig:
             out = 'config.json'
 
         if self.__verbose:
-            print(os.linesep + '>>> [ GET CONFIG DATA ] <<<')
+            Utils.pr_banner('GET CONFIG DATA', newline=1)
 
         FileUtils.check_file('pom.xml', verbose=self.__verbose)
         bs_data: BeautifulSoup = Utils.convert_to_bs(
@@ -290,7 +385,10 @@ class FixConfig:
 
         if cache:
             self.__create_cache(config_data, indent=4, out=out)
-            return None
+            config_data = None
+
+        if self.__verbose:
+            Utils.pr_banner('(END) GET CONFIG DATA', newline=1)
 
         return config_data
 
@@ -314,35 +412,18 @@ class FixConfig:
             None
 
         Raises:
-            - ValueError
-                If the file path is empty.
+            - RuntimeError
+                If `data` is empty and path to cached
+                  configuration also empty.
 
             - FileNotFoundError
                 If file path to cached configuration data does not exist.
         """
-        def get_output_path(target: str) -> Optional[str]:
-            if target.lower() == self.__TARGET_FILES[0]:
-                return self.__CLASSES_PATH + f'configuration{os.sep}'
-            if target.lower() == self.__TARGET_FILES[1].lower():
-                return '.' + os.sep
-            if target.lower() == self.__TARGET_FILES[2].lower():
-                return 'MANIFEST' + os.sep
-
-            return None
-
-        # ---------------------------------------------------- #
-
         target_path: str = None
         target_data: Union[list, dict] = None
 
-        if target.lower() != self.__TARGET_FILES[1].lower():
-            FileUtils.check_directory(get_output_path(target), verbose=self.__verbose)
-
-        if self.__verbose:
-            print(os.linesep + '>>> [ FIX CONFIGURATION ] <<<')
-
         try:
-            if (data is None or len(data) == 0) and cached is None:
+            if not data and not cached:
                 raise RuntimeError(
                     'Given config data is empty, please specify path to cached config'
                 )
@@ -373,12 +454,19 @@ class FixConfig:
         except RuntimeError as run_err:
             Utils.raise_error(run_err, -1, file=__file__)
 
-        if data is None or data == {}:
-            data = self.__get_cache(cached)
-            if self.__verbose:
-                Utils.info_msg(f'Using cached configuration data "{cached}".')
+        if self.__verbose:
+            Utils.pr_banner('FIX CONFIGURATION')
+            print(f'>>>>> FILE: "{target_path}"')
+
+        if target.lower() != self.__TARGET_FILES[1].lower():
+            FileUtils.check_directory(
+                self.__get_output_path(target), verbose=self.__verbose
+            )
+
+        data = self.__get_cache(cached) if not data else data
 
         # Check the target file
+        # [config.xml]
         if target.lower() == self.__TARGET_FILES[0]:
             bs_data = repr(Utils.convert_to_bs(target_path, verbose=self.__verbose))
 
@@ -410,25 +498,84 @@ class FixConfig:
                     bs_data[idx - 1] = None
                     i += 1
 
-            del i, fixed_data
-            bs_data = [data for data in bs_data if data is not None]
+            bs_data = [__data for __data in bs_data if __data]
 
             FileUtils.write_to_file(
-                get_output_path(target) + 'config.xml',
+                self.__get_output_path(target) + 'config.xml',
                 contents=bs_data, verbose=self.__verbose
             )
 
+        # [Makefile]
         elif target.lower() == self.__TARGET_FILES[1].lower():
-            target_data: list = FileUtils.read_file(target_path, verbose=self.__verbose)
+            target_data: list = FileUtils.read_file(
+                target_path, verbose=self.__verbose
+            )
 
-            print(target_data)
-            # Still in development
+            # Get the version number using regex
+            old_version, new_version, idx = self.__get_version(
+                list_data=target_data,
+                regex=r'^version\s*[:=|=]+\s*(.*?)\s*$',
+                config_data=data
+            )
 
+            if old_version == new_version:
+                if self.__verbose:
+                    Utils.info_msg(f'Version in "{target_path}" is up-to-date')
+                return
+
+            target_data[idx] = new_version + os.linesep
+            FileUtils.write_to_file(
+                target_path, contents=target_data,
+                newline=False,
+                verbose=self.__verbose
+            )
+
+            # After fix version in Makefile, this program will exit immediately.
+            # If this program exit, it will send exit signal to Makefile.
+            # In that way, Makefile will recognize the signal,
+            #   and then will be terminated immediately.
+            print(os.linesep * 2 + r'/!\ WARNING' + os.linesep + '-' * 70)
+            Utils.info_msg(f'Version in "{target_path}" have been fixed, need restart!')
+            print(
+                f'Old version: "{old_version.split()[-1].strip()}"' + os.linesep + \
+                f'New version: "{new_version.split()[-1].strip()}"' + os.linesep + \
+                '-' * 70
+            )
+            sys.exit(-1)  # this should not be zero
+
+        # [MANIFEST.MF]
         elif target.lower() == self.__TARGET_FILES[2].lower():
-            target_data: list = FileUtils.read_file(target_path, verbose=self.__verbose)
+            contents: str = f'''
+            Manifest-Version: 1.2
+            Built-By: {data.get("author.name")}
+            License-File: LICENSE
+            Main-Class: {data.get("package.mainClass")}
+            Program-Name: {data.get("package.name")}
+            Program-Version: v%s
+            ''' % self.__get_version(config_data=data, fixed_only=True)
+            contents = [ct.strip() for ct in contents.splitlines() if ct][:-1]
 
-            print(target_data)
-            # Still in development
+            manifest_contents: list = FileUtils.read_file(
+                target_path, verbose=self.__verbose
+            )
+            manifest_contents = [mf.strip() for mf in manifest_contents]
+
+            if contents == manifest_contents:
+                if self.__verbose:
+                    Utils.info_msg(f'File "{self.__TARGET_FILES[2]}" is up-to-date')
+                return
+
+            FileUtils.write_to_file(
+                target_path, contents=contents,
+                verbose=self.__verbose
+            )
+
+            if self.__verbose:
+                Utils.info_msg(f'File "{self.__TARGET_FILES[2]}" updated.')
+
+
+        if self.__verbose:
+            Utils.pr_banner('(END) FIX CONFIGURATION', newline=1)
 
 
     __all__ = ['run']
