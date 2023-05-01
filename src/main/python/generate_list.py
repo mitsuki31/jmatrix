@@ -130,13 +130,20 @@ class GenerateList:
         elif platform.system().lower() in ('win', 'win32', 'win64', 'windows'):
             command = self.__command['windows']['source']
 
+        if self.__verbose:
+            Utils.pr_banner('GENERATING LIST')
+            Utils.info_msg('Generating list...')
+
         err_code: int = os.system(command)
 
         if err_code != 0:
             sys.exit(err_code)
 
         if self.__verbose:
-            print(os.linesep + '>>> [ SORT THE SOURCE LIST ] <<<')
+            Utils.info_msg(
+                f'List generated, saved in "{self.__PATH["source"]}".'
+            )
+            Utils.pr_banner('SORT THE SOURCE LIST')
             Utils.info_msg(
                 f'Sorting "{self.__PATH["source"].rsplit(os.sep, maxsplit=1)[-1]}"...'
             )
@@ -153,7 +160,7 @@ class GenerateList:
             Utils.info_msg('All list sorted.')
 
         FileUtils.write_to_file(
-            self.__PATH['source'], contents=sorted(source_lst), verbose=self.__verbose
+            self.__PATH['source'], contents=source_lst, verbose=self.__verbose
         )
 
 
@@ -176,13 +183,20 @@ class GenerateList:
         elif platform.system().lower() in ('win', 'win32', 'win64', 'windows'):
             cmd = self.__command['windows']['output']
 
+        if self.__verbose:
+            Utils.pr_banner('GENERATING LIST')
+            Utils.info_msg('Generating list...')
+
         err_code: int = os.system(cmd)
 
         if err_code != 0:
             sys.exit(err_code)
 
         if self.__verbose:
-            print(os.linesep + '>>> [ SORT THE OUTPUT LIST ] <<<')
+            Utils.info_msg(
+                f'List generated, saved in "{self.__PATH["output"]}".'
+            )
+            Utils.pr_banner('SORT THE OUTPUT LIST')
             Utils.info_msg(
                 f'Sorting "{self.__PATH["output"].rsplit(os.sep, maxsplit=1)[-1]}"...'
             )
@@ -205,7 +219,9 @@ class GenerateList:
             self.__PATH['output'], contents=new_output_lst, verbose=self.__verbose
         )
 
+
     __all__ = ['run']
+
 
 
 def main() -> None:
