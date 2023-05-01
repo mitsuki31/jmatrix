@@ -50,7 +50,7 @@ class Utils:
 
         sys.stderr.write(
             os.linesep + \
-            f'/!\\ ERROR{os.linesep}{">"*9}{os.linesep}'
+            fr'/!\ ERROR{os.linesep}{">"*9}{os.linesep}'
         )
 
         if file is not None:
@@ -63,7 +63,7 @@ class Utils:
         tb_stack = extract_stack()
         tb_stack.pop(-1)
 
-        sys.stderr.write(f'/!\\ TRACEBACK{os.linesep}{">"*13}{os.linesep}')
+        sys.stderr.write(fr'/!\ TRACEBACK{os.linesep}{">"*13}{os.linesep}')
         for frame in tb_stack:
             sys.stderr.write(
                 f'File "...{os.sep}' + \
@@ -137,8 +137,29 @@ class Utils:
         return BeautifulSoup(contents, _type)
 
 
+    @staticmethod
+    def pr_banner(title: str, **kwargs) -> None:
+        """
+        Create and print the banner to standard output (stdout).
+
+        Parameters:
+            - title: str
+                String to specifies the banner title.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
+        print(os.linesep * kwargs.get('newline', 2) + \
+            '-' * kwargs.get('lines', 80))
+        print(f'>>> [ {title} ] <<< '.center(kwargs.get('center', 78)))
+        print('-' * kwargs.get('lines', 80))
+
+
     # List all of public methods, it can be imported all with wildcard '*'
-    __all__ = ['check_directory', 'check_file', 'read_file', 'write_to_file']
+    __all__ = ['check_directory', 'check_file', 'read_file', 'write_to_file', 'pr_banner']
 
 
 
@@ -167,7 +188,9 @@ class FileUtils:
             None
         """
         if verbose:
-            print(os.linesep + '>>> [ CHECK DIRECTORY ] <<<')
+            Utils.pr_banner(
+                'CHECK DIRECTORY', lines=40, center=39, newline=1
+            )
             Utils.info_msg(f'Checking directory "{dirpath}"...')
         if not os.path.exists(dirpath):
             if verbose:
@@ -179,6 +202,12 @@ class FileUtils:
         else:
             if verbose:
                 Utils.info_msg(f'"{dirpath}" directory is already exist.')
+        if verbose:
+            Utils.pr_banner(
+                '(END) CHECK DIRECTORY',
+                lines=40, center=39, newline=0
+            )
+            print()
 
 
     @staticmethod
@@ -201,7 +230,9 @@ class FileUtils:
                 If the file does not exist or cannot be accessed.
         """
         if verbose:
-            print(os.linesep + '>>> [ CHECK FILE ] <<<')
+            Utils.pr_banner(
+                'CHECK FILE', lines=40, center=39, newline=1
+            )
             Utils.info_msg(f'Check existence for file: "{filepath}"...')
 
         if os.path.exists(filepath):
@@ -215,6 +246,13 @@ class FileUtils:
             raise FileNotFoundError(msg)
         except FileNotFoundError as not_found_err:
             Utils.raise_error(not_found_err, 2, file=__file__)
+
+        if verbose:
+            Utils.pr_banner(
+                '(END) CHECK FILE',
+                lines=40, center=39, newline=0
+            )
+            print()
 
 
     @staticmethod
@@ -252,8 +290,11 @@ class FileUtils:
         contents: Union[list, str] = None
 
         if verbose:
-            print(os.linesep + '>>> [ GET FILE CONTENTS ] <<<')
+            Utils.pr_banner(
+                'GET FILE CONTENTS', lines=40, center=39, newline=1
+            )
             Utils.info_msg(f'Retrieving all contents from "{filepath}"...')
+
         try:
             if filepath is None:
                 msg = 'File path cannot be empty'
@@ -273,9 +314,14 @@ class FileUtils:
             Utils.raise_error(file_not_found, 2, file=__file__)
         except PermissionError as perm_err:
             Utils.raise_error(perm_err, -1, file=__file__)
-        else:
-            if verbose:
-                Utils.info_msg('Successfully retrieve all contents.')
+
+        if verbose:
+            Utils.info_msg('Successfully retrieve all contents.')
+            Utils.pr_banner(
+                '(END) GET FILE CONTENTS',
+                lines=40, center=39, newline=0
+            )
+            print()
 
         return contents
 
@@ -283,7 +329,7 @@ class FileUtils:
     @staticmethod
     def write_to_file(filepath: str,
             contents: Union[Union[list, dict], str] = None,
-            verbose: bool = False) -> None:
+            verbose: bool = False, **kwargs) -> None:
         """
         Write the contents to specified file.
         If file has a contents inside, this method won't overwrites it
@@ -326,17 +372,17 @@ class FileUtils:
             filepath = kwargs.get('filepath', None)
 
             try:
-                if filepath is None:
+                if not filepath:
                     msg = 'File path cannot be empty'
                     raise ValueError(msg)
-                if contents is None:
+                if not contents:
                     msg = 'Contents cannot be empty'
                     raise ValueError(msg)
                 if os.path.exists(filepath) and os.path.isdir(filepath):
                     msg = 'Given file path is a directory'
                     raise IsADirectoryError(msg)
                 if not isinstance(contents, (list, dict, str)):
-                    msg = f'Unsupported contents type for type: "{type(contents)}"'
+                    msg = f'Unsupported contents type: "{type(contents)}"'
                     raise TypeError(msg)
 
             except (ValueError, TypeError) as val_type_err:
@@ -362,23 +408,32 @@ class FileUtils:
             filepath=filepath, contents=contents
         )
 
+        if kwargs.get('newline', True):
+            newline = os.linesep
+        else:
+            newline = ''
+
         if verbose:
-            print(os.linesep + '>>> [ WRITE FILE ] <<<')
-            Utils.info_msg(f'Writing contents id:<{id(contents)}> to "{filepath}"...')
+            Utils.pr_banner(
+                'WRITE FILE', lines=40, center=39, newline=1
+            )
+            Utils.info_msg(
+                f'Writing contents id:<{id(contents)}> to "{filepath}"...'
+            )
 
         try:
             with open(filepath, 'w', encoding='utf-8') as file:
                 if isinstance(contents, list):
                     for content in contents:
-                        file.write(content + os.linesep)
+                        file.write(content + newline)
                         pr_msg(
                             f'Writing "{content.strip()}" -> \'{filepath}\'...'
                         )
                 elif isinstance(contents, str):
                     pr_msg(f'Writing "{contents}" -> \'{filepath}\'...')
-                    file.write(contents + os.linesep)
+                    file.write(contents + newline)
                 elif isinstance(contents, dict):
-                    file.write(json.dumps(contents, indent=4) + os.linesep)
+                    file.write(json.dumps(contents, indent=4) + newline)
                     pr_msg(
                         'Writing ("{key}", "{val}") ->' + f'\'{filepath}\'...',
                         contents
@@ -386,10 +441,16 @@ class FileUtils:
 
         except PermissionError as perm_err:
             Utils.raise_error(perm_err, -1, file=__file__)
-        else:
-            if verbose:
-                print()
-                Utils.info_msg(f'Successfully write the contents to file: "{filepath}".')
+
+        if verbose:
+            print()
+            Utils.info_msg(
+                f'Successfully write the contents to file: "{filepath}".'
+            )
+            Utils.pr_banner(
+                '(END) WRITE FILE', lines=40, center=39, newline=0
+            )
+            print()
 
 
     # List all of public methods, it can be imported all with wildcard '*'
