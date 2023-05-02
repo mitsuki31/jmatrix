@@ -53,6 +53,7 @@ class FixConfig:
         """
         self.__verbose = verbose
 
+
     def run(self) -> None:
         """
         Runs this program and fixes all JMatrix configurations data.
@@ -88,6 +89,7 @@ class FixConfig:
             cached=f'{self.__CACHE_PATH}config.json',
             target='manifest.mf'
         )
+
 
     def __create_cache(self,
             data: Union[dict, str], indent: int = 4, out: str = None) -> None:
@@ -231,7 +233,7 @@ class FixConfig:
         if target.lower() == self.__TARGET_FILES[1].lower():
             path = '.' + os.sep
         if target.lower() == self.__TARGET_FILES[2].lower():
-            path = 'MANIFEST' + os.sep
+            path = 'META-INF' + os.sep
 
         return path
 
