@@ -23,14 +23,15 @@ CLASSES_LIST   := target/generated-list/outputFiles.lst
 
 SRCFILES       := $(shell find $(SOURCES_PATH) -type f -name '*.java')
 ifneq "$(wildcard $(CLASSES_PATH))" ""
-	CLSFILES       := $(shell find $(CLASSES_PATH) -type f -name '*.class')
+	CLSFILES   := $(shell find $(CLASSES_PATH) -type f -name '*.class')
 endif
 
-jar := $(OUTPUT_PATH)jmatrix-$(VERSION).jar
+jar      := $(OUTPUT_PATH)jmatrix-$(VERSION).jar
+jar_name := $(word 3,$(subst /, , $(jar)))
 
 
 # Check whether the program has been compiled
-HAS_OUTPUT := $(wildcard $(OUTPUT_PATH))
+HAS_OUTPUT   := $(wildcard $(OUTPUT_PATH))
 HAS_COMPILED := $(wildcard $(CLASSES_PATH))
 
 ARG1 := $(word 1,$(MAKECMDGOALS))
@@ -51,8 +52,14 @@ endif
 endif
 
 ifeq "$(ARG1)" "clean"
-ifeq ($(strip $(HAS_OUTPUT)),)
+ifeq "$(strip $(HAS_OUTPUT))" ""
 $(error $(PREFIX) Program is uncompiled, failed to clean working directory)
+endif
+endif
+
+ifeq "$(ARG1)" "cleanbin"
+ifeq "$(strip $(HAS_COMPILED))" ""
+$(error $(PREFIX) Program is uncompiled, failed to clean classes directory)
 endif
 endif
 
@@ -62,20 +69,30 @@ endif
 
 
 all:
-	@echo "$(PREFIX) Options:"
+	$(info [Makefile-jmatrix])
+	@echo "Options:"
 	@echo "   * compile       - Compile the program. \
 		\n   * package       - Create archived package (jar) of compiled program.\
 		\n                        WARNING: Program need to be compiled first! \
 		\n   * clean         - Clean all of compiled program and created jar. \
-		\n   * check-verbose - Check the verbose status."
+		\n   * cleanbin      - Clean all generated class files only. \
+		\n   * check-verbose - Check the verbose status. \
+		\n   * usage         - Print the example usages for build the project."
 
-	@echo "\n$(PREFIX) Usage:\n     make [option1] [option2] [...]"
+	@echo "\nUsage:"
+	@echo "     $$ make [option1] [option2] [...]"
+	@echo "     $$ make compile package"
 
-	@echo "\nTips: Combine the options, and Makefile will understand it."
+	@echo "\nTips:"
+	@echo "   - Combine the options, Makefile can understand multiple rules."
+	@echo "   - Use command: 'export VERBOSE=true' for activating verbose output, \
+	and check the verbose with 'check-verbose' option."
+
+	@echo "\nCreated by Ryuu Mitsuki"
 
 
 check-verbose:
-ifeq ($(MAKE_VERBOSE),)
+ifneq "$(MAKE_VERBOSE)" "true"
 	@echo "Verbose output is DEACTIVATE."
 else
 	@echo "Verbose output is ACTIVATE."
@@ -96,7 +113,7 @@ compile: $(SOURCES_LIST) $(SRCFILES)
 	@echo "\n>> [ GENERATE LIST ] <<"
 	@echo "$(PREFIX) Generating list of class files..."
 
-ifeq ($(MAKE_VERBOSE),true)
+ifeq "$(MAKE_VERBOSE)" "true"
 	@python $(PYTHON_PATH)generate_list.py cls -v
 else
 	@python $(PYTHON_PATH)generate_list.py cls
@@ -105,7 +122,11 @@ endif
 	@echo "$(PREFIX) List file generated."
 
 
-package: $(CLASSES_LIST) $(CLSFILES)
+package: $(CLSFILES)
+	$(if $(shell [ ! -d $(CLASSES_PATH) ] && echo "1"),\
+		$(error $(PREFIX) Program is uncompiled, compile it with `make compile` command)\
+	)
+
 	@echo "\n>> [ CREATE JAR ] <<"
 
 	@echo "$(PREFIX) Copying all program resources to output directory..."
@@ -114,7 +135,7 @@ package: $(CLASSES_LIST) $(CLSFILES)
 
 	@echo "$(PREFIX) Creating jar for compiled classes..."
 
-ifeq ($(MAKE_VERBOSE),true)
+ifeq "$(MAKE_VERBOSE)" "true"
 	@python $(PYTHON_PATH)fix_config.py -v
 	@jar cvfm $(jar) $(MANIFEST) \
 	    LICENSE -C $(CLASSES_PATH) .
@@ -135,12 +156,23 @@ clean:
 	@echo "\n$(PREFIX) All cleaned up."
 
 
+cleanbin:
+	@echo "\n>> [ CLEAN ONLY CLASS OBJECTS ] <<"
+	@echo "$(PREFIX) Cleaning the class files only..."
+	@-rm -r $(CLASSES_PATH)
+	@echo "\n$(PREFIX) All cleaned up."
+
+	$(if $(shell test -e $(jar) && echo "1"),\
+		@echo 'File "$(jar:/=)" is still exists.',\
+		$(warning File "$(jar_name)" is missing or has been deleted.)\
+	)
+
 
 $(SOURCES_LIST): $(wildcard $(PYTHON_PATH)*.py)
 	@echo "\n>> [ GENERATE LIST ] <<"
 	@echo "$(PREFIX) Generating list of source files..."
 
-ifeq ($(MAKE_VERBOSE),true)
+ifeq "$(MAKE_VERBOSE)" "true"
 	@python $(PYTHON_PATH)generate_list.py src -v
 else
 	@python $(PYTHON_PATH)generate_list.py src
@@ -149,5 +181,23 @@ endif
 	@echo "$(PREFIX) List file generated."
 
 
-$(CLASSES_LIST): $(wildcard $(PYTHON_PATH)*.py)
-	$(if !$(HAS_COMPILED),$(error $(PREFIX) Program is uncompiled, compile it with `make compile` command))
+usage:
+	@echo "[Makefile Usage]\n"
+
+	@echo "Parameters:\n    $$ make [option1] [option2] [...]\n"
+
+	@echo "Generate \"jar\" file (simple)"
+	@echo "\
+	make\n\
+	  └── compile\n\
+	          └── package\n\
+	                 └── cleanbin (optional)\n"
+
+	@echo "Generate \"jar\" file (complex)"
+	@echo "\
+	make\n\
+	  └── compile\n\
+	         └── package\n\
+	                └── && mv target/*.jar\n\
+	                       └── && make\n\
+	                              └── clean\n"
