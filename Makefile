@@ -10,11 +10,11 @@ PREFIX  := [jmatrix]
 CC := javac
 
 # Path variables
-PYTHON_PATH    := src/main/python/
-SOURCES_PATH   := src/main/java/
-RESOURCES_PATH := src/main/resources/
-OUTPUT_PATH    := target/
-CLASSES_PATH   := target/classes/
+PYTHON_PATH    := ./src/main/python/
+SOURCES_PATH   := ./src/main/java/
+RESOURCES_PATH := ./src/main/resources/
+OUTPUT_PATH    := ./target/
+CLASSES_PATH   := ./target/classes/
 PACKAGE_PATH   := com/mitsuki/jmatrix/
 MANIFEST       := META-INF/MANIFEST.MF
 
@@ -51,7 +51,9 @@ endif
 endif
 
 ifeq "$(ARG1)" "clean"
-$(if !$(HAS_OUTPUT),$(error $(PREFIX) Program is uncompiled, compile it with `make compile` command))
+ifeq ($(strip $(HAS_OUTPUT)),)
+$(error $(PREFIX) Program is uncompiled, failed to clean working directory)
+endif
 endif
 
 
