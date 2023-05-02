@@ -23,14 +23,15 @@ CLASSES_LIST   := target/generated-list/outputFiles.lst
 
 SRCFILES       := $(shell find $(SOURCES_PATH) -type f -name '*.java')
 ifneq "$(wildcard $(CLASSES_PATH))" ""
-	CLSFILES       := $(shell find $(CLASSES_PATH) -type f -name '*.class')
+	CLSFILES   := $(shell find $(CLASSES_PATH) -type f -name '*.class')
 endif
 
-jar := $(OUTPUT_PATH)jmatrix-$(VERSION).jar
+jar      := $(OUTPUT_PATH)jmatrix-$(VERSION).jar
+jar_name := $(word 3,$(subst /, , $(jar)))
 
 
 # Check whether the program has been compiled
-HAS_OUTPUT := $(wildcard $(OUTPUT_PATH))
+HAS_OUTPUT   := $(wildcard $(OUTPUT_PATH))
 HAS_COMPILED := $(wildcard $(CLASSES_PATH))
 
 ARG1 := $(word 1,$(MAKECMDGOALS))
@@ -51,8 +52,14 @@ endif
 endif
 
 ifeq "$(ARG1)" "clean"
-ifeq ($(strip $(HAS_OUTPUT)),)
+ifeq "$(strip $(HAS_OUTPUT))" ""
 $(error $(PREFIX) Program is uncompiled, failed to clean working directory)
+endif
+endif
+
+ifeq "$(ARG1)" "cleanbin"
+ifeq "$(strip $(HAS_COMPILED))" ""
+$(error $(PREFIX) Program is uncompiled, failed to clean class directory)
 endif
 endif
 
@@ -69,13 +76,18 @@ all:
 		\n   * clean         - Clean all of compiled program and created jar. \
 		\n   * check-verbose - Check the verbose status."
 
-	@echo "\n$(PREFIX) Usage:\n     make [option1] [option2] [...]"
+	@echo "\n$(PREFIX) Usage:"
+	@echo "\n     $ make [option1] [option2] [...]"
+	@echo "\n     $ make compile package"
 
-	@echo "\nTips: Combine the options, and Makefile will understand it."
+	@echo "\nTips:"
+	@echo "   - Combine the options, and Makefile will understand it."
+	@echo "   - To activating verbose output, use command: 'export VERBOSE=true', and check the verbose with 'check-verbose' option"
+	@echo "\nCreated by Ryuu Mitsuki"
 
 
 check-verbose:
-ifeq ($(MAKE_VERBOSE),)
+ifneq "$(MAKE_VERBOSE)" "true"
 	@echo "Verbose output is DEACTIVATE."
 else
 	@echo "Verbose output is ACTIVATE."
@@ -96,7 +108,7 @@ compile: $(SOURCES_LIST) $(SRCFILES)
 	@echo "\n>> [ GENERATE LIST ] <<"
 	@echo "$(PREFIX) Generating list of class files..."
 
-ifeq ($(MAKE_VERBOSE),true)
+ifeq "$(MAKE_VERBOSE)" "true"
 	@python $(PYTHON_PATH)generate_list.py cls -v
 else
 	@python $(PYTHON_PATH)generate_list.py cls
@@ -114,7 +126,7 @@ package: $(CLASSES_LIST) $(CLSFILES)
 
 	@echo "$(PREFIX) Creating jar for compiled classes..."
 
-ifeq ($(MAKE_VERBOSE),true)
+ifeq "$(MAKE_VERBOSE)" "true"
 	@python $(PYTHON_PATH)fix_config.py -v
 	@jar cvfm $(jar) $(MANIFEST) \
 	    LICENSE -C $(CLASSES_PATH) .
@@ -135,12 +147,23 @@ clean:
 	@echo "\n$(PREFIX) All cleaned up."
 
 
+cleanbin:
+	@echo "\n>> [ CLEAN ONLY CLASS OBJECTS ] <<"
+	@echo "$(PREFIX) Cleaning the classes file only..."
+	@-rm -r $(CLASSES_PATH)
+	@echo "\n$(PREFIX) All cleaned up."
+
+	$(if $(shell test -e $(jar) && echo "1"),\
+		@echo 'File "$(jar:/=)" is still exists.',\
+		$(warning File "$(jar_name)" is missing or has been deleted.)\
+	)
+
 
 $(SOURCES_LIST): $(wildcard $(PYTHON_PATH)*.py)
 	@echo "\n>> [ GENERATE LIST ] <<"
 	@echo "$(PREFIX) Generating list of source files..."
 
-ifeq ($(MAKE_VERBOSE),true)
+ifeq "$(MAKE_VERBOSE)" "true"
 	@python $(PYTHON_PATH)generate_list.py src -v
 else
 	@python $(PYTHON_PATH)generate_list.py src
