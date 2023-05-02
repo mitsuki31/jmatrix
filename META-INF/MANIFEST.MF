@@ -1,0 +1,6 @@
+Manifest-Version: 1.2
+Built-By: Ryuu Mitsuki
+License-File: LICENSE
+Main-Class: com.mitsuki.jmatrix.Main
+Program-Name: JMatrix
+Program-Version: v1.0.0-beta.x
