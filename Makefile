@@ -198,6 +198,6 @@ usage:
 	make\n\
 	  └── compile\n\
 	         └── package\n\
-	                └── && mv target/*.jar\n\
+	                └── && mv target/*.jar .\n\
 	                       └── && make\n\
 	                              └── clean\n"
