@@ -1,0 +1,34 @@
+name: PyLint
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+    steps:
+      # Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # Setup Python
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      # Install the dependencies
+      - name: Install dependencies
+        run: |
+          echo "Updating 'pip'..."
+          python -m pip install --upgrade pip
+          echo "Installing 'pylint'..."
+          pip install pylint
+      
+      # Analyze the Python code
+      - name: Analyzing the code with pylint
+        run: |
+          echo "Analyzing the Python code..."
+          pylint --rcfile=.pylintrc $(git ls-files '*.py')

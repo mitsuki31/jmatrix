@@ -1,0 +1,56 @@
+name-template: 'Release v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+# Categories filter
+categories:
+  # New Features
+  - title: '🚀 New Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+  # Bug Fixes
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  # Maintenances Updates
+  - title: '🧰 Maintenances'
+    labels:
+      - 'chore'
+      - 'maintenance'
+  # Documentations Updates
+  - title: '📑 Documentations'
+    labels:
+      - 'documentation'
+      - 'docs'
+  # Removed / Deprecated Feature
+  - title: '⛔ Removed'
+    labels:
+      - 'remove'
+  # Dependencies Updates
+  - title: '🧩 Dependencies'
+    labels:
+      - 'dependencies'
+exclude-labels:
+  - 'skip-changelog'
+
+change-template: '- $TITLE (#$NUMBER) - @$AUTHOR'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+  patch:
+    labels:
+      - 'patch'
+  default: patch
+template: |
+  ## What's New 👀
+  
+  $CHANGES
+  
+  For more details, see [full changelogs](https://github.com/mitsuki31/jmatrix/compare/$PREVIOUS_TAG...$NEXT_MINOR_VERSION)
+  
