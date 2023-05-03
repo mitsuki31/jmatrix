@@ -5,7 +5,7 @@
 // -**- Package -**- //
 package com.mitsuki.jmatrix.util;
 
-// -**- Built-in Package (java.io) -**- //
+// -**- Built-in Package -**- //
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
@@ -14,11 +14,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
-// -**- Built-in Package (java.lang) -**- //
+import java.util.List;
+import java.util.Arrays;
+
 import java.lang.NullPointerException;
 import java.lang.IllegalArgumentException;
 
-// -**- Built-in Package (java.math) -**- //
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -40,64 +41,58 @@ import com.mitsuki.jmatrix.util.XMLParser;
 public class Options
 {
     /**
-    * {@link Enum} contains all available options.<br>
+    * {@code Enum} contains all available options.<br>
     *
     * @since 1.0.0
     * @see   #getOptions(String)
     */
     public enum OPT {
-        VERSION, HELP, COPYRIGHT
-    };
+        VERSION("-V", "version", "ver"),
+        HELP("-h", "help"),
+        COPYRIGHT("-cr", "copyright");
+
+        private final List<String> aliases;
+
+        OPT(String ... aliases) {
+            this.aliases = Arrays.asList(aliases);
+        }
+    }
 
     // -- Private Attributes
     private static XMLParser XML = new XMLParser(XMLParser.XMLType.CONFIG);
     private static String PROGNAME = XML.getProperty("programName").toLowerCase();
     private static String PACKAGE = getPackageName(Options.class);
     private static String THISCLASS = getClassName(Options.class);
-    private static String contentsPath = String.format("assets%scontents%s", OSUtils.sep, OSUtils.sep);
+    private static String contentsPath = String.format("contents%s", OSUtils.sep);
 
     /**
-    * Method that checks the input argument then returns specific option.
-    * <br>
-    * <ul>
-    *     <li>[{@code -V}, {@code ver}, {@code version}]  ->  returns {@code VERSION} value.</li>
-    *     <li.[{@code -h}, {@code help}]                  ->  returns {@code HELP} value.</li>
-    *     <li>[{@code -cr}, {@code copyright}]            ->  returns {@code COPYRIGHT} value.</li>
-    * </ul>
-    * <br>
+    * Method that checks the input argument then returns specific opt>
     *
-    * @param  inputOpt  the {@link String} that wants to be checked.
+    * @param  inputOpt  the {@code String} that wants to be checked.
     *
-    * @return the {@link Options#OPT} contains specified value.
+    * @return the corresponding {@code OPT} value.
     *
     * @since  1.0.0
     * @see    Options#OPT
     */
     public static OPT getOptions(String inputOpt) {
-        if (inputOpt != null) {
-            if (inputOpt.equals("-V") || inputOpt.equals("version") || inputOpt.equals("ver")) {
-                return OPT.VERSION;
+        for (OPT opt : OPT.values()) {
+            if (opt.aliases.contains(inputOpt)) {
+                return opt;
             }
-            else if (inputOpt.equals("-h") || inputOpt.equals("help")) {
-                return OPT.HELP;
-            }
-            else if (inputOpt.equals("-cr") || inputOpt.equals("copyright")) {
-                return OPT.COPYRIGHT;
-            }
-            else {
-                try {
-                    throw new IllegalArgumentException(String.format("Unknown argument option for input \"%s\"", inputOpt));
-                } catch (final Exception e) {
-                    try {
-                        throw new JMBaseException(e);
-                    } catch (final JMBaseException ex) {
-                        raiseError(ex, 0);
-                        System.err.println(System.lineSeparator() + getHelpMsg()[0]);
-                        System.err.println("    " +
-                            "java -jar <jar_file> [-h|-V|-cr]");
-                        System.exit(-1);
-                    }
-                }
+        }
+
+        try {
+            throw new IllegalArgumentException(String.format("Unknown argument option for input \"%s\"", inputOpt));
+        } catch (final Exception e) {
+            try {
+                throw new JMBaseException(e);
+            } catch (final JMBaseException ex) {
+                raiseError(ex, 0);
+                System.err.println(System.lineSeparator() + getHelpMsg()[0]);
+                System.err.println("    " +
+                    "java -jar <jar_file> [-h|-V|-cr]");
+                System.exit(-1);
             }
         }
 
@@ -158,8 +153,8 @@ public class Options
     * @since  1.0.0
     * @see    #getClassNameFromTemplate(T)
     */
-    public static <T> Class<T> getClassFromTemplate(T template) {
-        return (Class<T>) template.getClass();
+    public static <T> Class<?> getClassFromTemplate(T template) {
+        return template.getClass();
     }
 
     /**
@@ -385,10 +380,8 @@ public class Options
     * @see    #readFile
     * @see    #getFileAsStream(String)
     * @see    java.lang.StringBuilder
-    * @see    com.mitsuki.jmatrix.util.XMLParser#getProperty(String)
     */
     public static String[ ] getCopyright() {
-        final String license = readFile(getFileAsStream("LICENSE"))[0];
         final String[ ] contents = readFile(getFileAsStream(contentsPath + "additional.content"));
         String[ ] copyright = new String[contents.length];
 
@@ -413,10 +406,6 @@ public class Options
 
             if (copyright[i].contains("${AUTHOR}")) {
                 copyright[i] = copyright[i].replace("${AUTHOR}", XML.getProperty("author"));
-            }
-
-            if (copyright[i].contains("${LICENSE}")) {
-                copyright[i] = copyright[i].replace("${LICENSE}", license);
             }
         }
 
@@ -461,7 +450,7 @@ public class Options
         for (int i = 0; i < tmp.length; i++) {
             if (tmp[i].startsWith(del)) ct++;
         }
-        
+
         // If the contents doesn't contains any comment
         if (ct == 0) return contents;
 

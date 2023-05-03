@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <program_name>${package.name}</program_name>
+    <version type="${package.releaseType}">v${package.version.core}</version>
+    <beta_num>${package.betaNum}</beta_num>
+    <package>${project.groupId}.${project.artifactId}</package>
+    <author>${author.name}</author>
+</configuration>

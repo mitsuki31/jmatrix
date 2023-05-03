@@ -119,7 +119,7 @@ public class XMLParser implements XMLData
 
     // -- Private Attributes
     private static XMLType xmlType = null;
-    private final static String configPath = String.format("assets%sconfiguration%sconfig.xml", OSUtils.sep, OSUtils.sep);
+    private final static String configPath = String.format("configuration%sconfig.xml", OSUtils.sep);
     private static InputStream configStream = null;
 
 

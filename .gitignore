@@ -1,0 +1,56 @@
+# -------------- #
+#   .gitignore   #
+# -------------- #
+# Created by Ryuu Mitsuki
+
+
+## ================== ##
+##        JAVA        ##
+## ================== ##
+
+# Compiled class file
+**/*.class
+
+# Compiled Maven project
+target/
+
+# Log file
+**/*.log
+
+# Package Files #
+**/*.jar
+**/*.war
+**/*.nar
+**/*.ear
+**/*.zip
+**/*.tar.gz
+**/*.rar
+
+
+## ================== ##
+##       PYTHON       ##
+## ================== ##
+
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+
+# C extensions
+**/*.so
+
+# Jupyter Notebook
+**/.ipynb_checkpoints
+
+# IPython
+**/profile_default/
+**/ipython_config.py
+
+# Environments
+**/.env
+**/.venv
+**/env/
+**/venv/
+**/ENV/
+**/env.bak/
+**/venv.bak/
