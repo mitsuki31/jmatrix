@@ -41,8 +41,6 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'java', 'python' ]
-        java_ver: [ '11' ]
-        python_ver: [ '3.7' ]
 
     steps:
     - name: Checkout Repository
@@ -54,14 +52,14 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: temurin
-        java-version: ${{ matrix.java_ver }}
+        java-version: '11'
 
     # Setup the Python
     - name: Setup Python
       if: ${{ matrix.language == 'python' }}
       uses: actions/setup-python@v3
       with:
-        python-version: ${{ matrix.python_ver }}
+        python-version: '3.7'
 
     # Install and setup Python dependencies
     - name: Install Python Dependencies
