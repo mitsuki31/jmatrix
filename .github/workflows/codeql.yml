@@ -26,21 +26,11 @@ on:
       - '**/*.java'
       - '**/*.py'
   schedule:
-    - cron: '26 7 * * 4'
+    - cron: '30 7 * * 6'
 
 jobs:
-  check-bot-activity:
-    name: Checking bot activity...
-    runs-on: 'ubuntu-latest'
-    if: ${{ github.event.pull_request.head.repo.owner.name == 'dependabot' }}
-    steps:
-      - name: Bot activity detected
-        run: |
-          echo "This activity is from Dependabot"
-          exit 0
-
   analyze:
-    name: Analyze
+    name: Analyze Code
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       actions: read
@@ -51,10 +41,8 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'java', 'python' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
-        # Use only 'java' to analyze code written in Java, Kotlin or both
-        # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+        java_ver: [ '11' ]
+        python_ver: [ '3.7' ]
 
     steps:
     - name: Checkout Repository
@@ -66,14 +54,14 @@ jobs:
       uses: actions/setup-java@v3
       with:
         distribution: temurin
-        java-version: 11
+        java-version: ${{ matrix.java_ver }}
 
     # Setup the Python
     - name: Setup Python
       if: ${{ matrix.language == 'python' }}
       uses: actions/setup-python@v3
       with:
-        python-version: '3.x'
+        python-version: ${{ matrix.python_ver }}
 
     # Install and setup Python dependencies
     - name: Install Python Dependencies
@@ -110,17 +98,12 @@ jobs:
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
-    - if: ${{ matrix.language == 'python' }}
-      name: Build Project for Python
+    # Now CodeQL will checking the code with Maven
+    # instead checking it separately.
+    - name: Build the Project with Maven
       run: |
         echo "Building the project..."
-        python src/python/*.py
-
-    - if: ${{ matrix.language == 'java' }}
-      name: Build Project for Java
-      run: |
-        echo "Building the project..."
-        javac -d bin @assets/properties/source_files.list
+        mvn clean install
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
