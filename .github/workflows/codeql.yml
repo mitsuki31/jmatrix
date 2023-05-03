@@ -29,18 +29,8 @@ on:
     - cron: '26 7 * * 4'
 
 jobs:
-  check-bot-activity:
-    name: Checking bot activity...
-    runs-on: 'ubuntu-latest'
-    if: ${{ github.event.pull_request.head.repo.owner.name == 'dependabot' }}
-    steps:
-      - name: Bot activity detected
-        run: |
-          echo "This activity is from Dependabot"
-          exit 0
-
   analyze:
-    name: Analyze
+    name: Analyze Code
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       actions: read
@@ -110,17 +100,12 @@ jobs:
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
-    - if: ${{ matrix.language == 'python' }}
-      name: Build Project for Python
+    # Now CodeQL will checking the code with Maven
+    # instead checking it separately.
+    - name: Build the Project with Maven
       run: |
         echo "Building the project..."
-        python src/python/*.py
-
-    - if: ${{ matrix.language == 'java' }}
-      name: Build Project for Java
-      run: |
-        echo "Building the project..."
-        javac -d bin @assets/properties/source_files.list
+        mvn package
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
