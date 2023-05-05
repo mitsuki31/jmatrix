@@ -34,9 +34,9 @@
 <summary><h3><a name="list-of-contents"></a>List of Contents</h3>
 </summary>
 
-- [How to Build the Project?](README.md#build-project)
-    - [Build using Make](README.md#make-build)
-        - [Compile all source files](README.md#make-compile)
+- [How to Build the Project?](#build-project)
+    - [Build using Make](#make-build)
+        - [Compile all source files](#make-compile)
         - [Create a new jar file](#make-package)
     - [Build using Maven](#maven-build)
         - [Compile all source files](#maven-compile)
@@ -91,7 +91,7 @@
 ---
 
 The output directory for both builder (`Make` and `Maven`) is `"target/"` directory.<br>
-See [#29](https://github.com/mitsuki31/jmatrix/pull/29).
+See "`New Features`" section at [#29](https://github.com/mitsuki31/jmatrix/pull/29).
 
 ## <a name="authors"></a> Authors
 [Ryuu Mitsuki](https://github.com/mitsuki31)
