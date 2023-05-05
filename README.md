@@ -27,7 +27,7 @@
 - Latest version of `Make` or `Maven`.
 
 > **Note**
-> JMatrix is a matrix builder written in Java.<br>
+> JMatrix is a matrix builder written in Java.  
 > Can creates the matrix, operates addition, subtraction, multiplication and clear the matrix array *(other operations will be added soon)*.<br>
 
 <details>
@@ -67,7 +67,7 @@
 
 ### <a name="maven-build"></a> Build using Maven
 1. <a name="maven-compile"></a> Compile all source files
-    > **Note** `Maven` will start downloading all required dependencies for the project *(if not found)*.<br>
+    > **Note** `Maven` will start downloading all required dependencies for the project *(if not found)*.  
     > So be patient, and take a coffee :coffee:.
     ```bash
     mvn compile
@@ -90,8 +90,10 @@
 
 ---
 
-The output directory for both builder (`Make` and `Maven`) is `"target/"` directory.<br>
-See "`New Features`" section at [#29](https://github.com/mitsuki31/jmatrix/pull/29).
+The output directory for both builder (`Make` and `Maven`) is `"target/"` directory.  
+See "`New Features`" section at [#29](https://github.com/mitsuki31/jmatrix/pull/29).  
+
+For more detailed information, please refer to [JMatrix Wiki](https://github.com/mitsuki31/jmatrix/wiki/Home).
 
 ## <a name="authors"></a> Authors
 [Ryuu Mitsuki](https://github.com/mitsuki31)
