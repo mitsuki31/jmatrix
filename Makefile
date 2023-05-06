@@ -93,9 +93,9 @@ all:
 
 check-verbose:
 ifneq "$(MAKE_VERBOSE)" "true"
-	@echo "Verbose output is DEACTIVATE."
+	@echo "Verbose output is DEACTIVATED."
 else
-	@echo "Verbose output is ACTIVATE."
+	@echo "Verbose output is ACTIVATED."
 endif
 
 
