@@ -1,8 +1,20 @@
 // :: ------------------- :: //
-/* --   JMATRIX BUILDER   -- */
+/* --   MATRIX BUILDER   -- */
 // :: ------------------- :: //
 
-// Developed by Ryuu Mitsuki
+// Copyright 2023 Ryuu Mitsuki
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 
 // -**- Package -**- //
@@ -624,7 +636,7 @@ public class Matrix
             }
         }
 
-        this.ENTRIES = result; // copy the result to Matrix
+        this.ENTRIES = result; // copy the result to this matrix
     }
 
 
@@ -688,28 +700,22 @@ public class Matrix
     * @see    #sum(Matrix, Matrix)
     */
     public static double[ ][ ] sum(double[ ][ ] matrixA, double[ ][ ] matrixB) {
-        // Throw "NullMatrixException" if matrix array is null
-        if (matrixA == null || matrixB == null) {
-            try {
-                throw new NullMatrixException("Cannot operate summation to null matrix");
-            } catch (final NullMatrixException nme) {
-                try {
-                    throw new JMBaseException(nme);
-                } catch (final JMBaseException jme) {
-                    Options.raiseError(jme);
-                }
+        try {
+            // Throw "NullMatrixException" if matrix array is null
+            if (matrixA == null) {
+                throw new NullMatrixException("Cannot operate summation, because <param1> is \"null\" array");
+            } else if (matrixB == null) {
+                throw new NullMatrixException("Cannot operate summation, because <param2> is \"null\" array");
             }
-        }
-        // Else throw "IllegalMatrixSizeException" if the both matrices and are not same size
-        else if (matrixA.length != matrixB.length || matrixA[0].length != matrixB[0].length) {
-            try {
+            // Else throw "IllegalMatrixSizeException" if the both matrices and are not same size
+            else if (matrixA.length != matrixB.length || matrixA[0].length != matrixB[0].length) {
                 throw new IllegalMatrixSizeException("Cannot summing up two arrays with a different size");
-            } catch (final IllegalMatrixSizeException imse) {
-                try {
-                    throw new JMBaseException(imse);
-                } catch (final JMBaseException jme) {
-                    Options.raiseError(jme);
-                }
+            }
+        } catch (final Exception e) {
+            try {
+                throw new JMBaseException(e);
+            } catch (final JMBaseException jme) {
+                Options.raiseError(jme);
             }
         }
 
@@ -749,7 +755,7 @@ public class Matrix
                 throw new NullMatrixException("Cannot operate summation, because <param2> is \"null\" matrix");
             }
             // Else throw "IllegalMatrixSizeException" if both matrices size are not same
-            else if (matrixA.ENTRIES.length != matrixB.ENTRIES.length || matrixA.ENTRIES[0].length != matrixB.ENTRIES[0].length) {
+            else if (matrixA.ROWS != matrixB.ROWS || matrixA.COLS != matrixB.COLS) {
                 throw new IllegalMatrixSizeException("Cannot summing up two matrices with a different size");
             }
         } catch (final Exception e) {
@@ -820,7 +826,7 @@ public class Matrix
             }
         }
 
-        this.ENTRIES = result; // copy the result to Matrix
+        this.ENTRIES = result; // copy the result to this matrix
     }
 
 
@@ -884,28 +890,22 @@ public class Matrix
     * @see    #sub(Matrix, Matrix)
     */
     public static double[ ][ ] sub(double[ ][ ] matrixA, double[ ][ ] matrixB) {
-        // Throw "NullMatrixException" if matrix array is null
-        if (matrixA == null || matrixB == null) {
-            try {
-                throw new NullMatrixException("Cannot subtract null matrix");
-            } catch (final NullMatrixException nme) {
-                try {
-                    throw new JMBaseException(nme);
-                } catch (final JMBaseException jme) {
-                    Options.raiseError(jme);
-                }
+        try {
+            // Throw "NullMatrixException" if matrix array is null
+            if (matrixA == null) {
+                throw new NullMatrixException("Cannot operate subtraction, because <param1> is \"null\" array");
+            } else if (matrixB == null) {
+                throw new NullMatrixException("Cannot operate subtraction, because <param2> is \"null\" array");
             }
-        }
-        // Else throw "IllegalMatrixSizeException" if the both matrix and are not same size
-        else if (matrixA.length != matrixB.length || matrixA[0].length != matrixB[0].length) {
-            try {
+            // Else throw "IllegalMatrixSizeException" if the both matrix and are not same size
+            else if (matrixA.length != matrixB.length || matrixA[0].length != matrixB[0].length) {
                 throw new IllegalMatrixSizeException("Cannot subtract two matrices with different size");
-            } catch (final IllegalMatrixSizeException imse) {
-                try {
-                    throw new JMBaseException(imse);
-                } catch (final JMBaseException jme) {
-                    Options.raiseError(jme);
-                }
+            }
+        } catch (final Exception e) {
+            try {
+                throw new JMBaseException(e);
+            } catch (final JMBaseException jme) {
+                Options.raiseError(jme);
             }
         }
 
@@ -991,10 +991,12 @@ public class Matrix
                 throw new NullMatrixException("Cannot operate multiplication, because current matrix is \"null\"");
             } else if (other.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" matrix");
+            } else if (this.COLS != other.ROWS) {
+                throw new IllegalMatrixSizeException("Column and rows of two matrices is different size");
             }
-        } catch (final NullMatrixException nme) {
+        } catch (final Exception e) {
             try {
-                throw new JMBaseException(nme);
+                throw new JMBaseException(e);
             } catch (final JMBaseException jme) {
                 Options.raiseError(jme);
             }
@@ -1031,10 +1033,12 @@ public class Matrix
                 throw new NullMatrixException("Cannot operate multiplication, because current matrix is \"null\"");
             } else if (array == null) {
                 throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" array");
+            } else if (this.COLS != array.length) {
+                throw new IllegalMatrixSizeException("Column and rows of two matrices is different size");
             }
-        } catch (final NullMatrixException nme) {
+        } catch (final Exception e) {
             try {
-                throw new JMBaseException(nme);
+                throw new JMBaseException(e);
             } catch (final JMBaseException jme) {
                 Options.raiseError(jme);
             }
@@ -1068,15 +1072,19 @@ public class Matrix
     * @see    #mult(Matrix, Matrix)
     */
     public static double[ ][ ] mult(double[ ][ ] matrixA, double[ ][ ] matrixB) {
-        if (matrixA == null || matrixB == null) {
+        try {
+            if (matrixA == null) {
+                throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" array");
+            } else if (matrixB == null) {
+                throw new NullMatrixException("Cannot operate multiplication, because <param2> is \"null\" array");
+            } else if (matrixA[0].length != matrixB.length) {
+                throw new IllegalMatrixSizeException("Column and rows of two matrices is different size");
+            }
+        } catch (final Exception e) {
             try {
-                throw new NullMatrixException("Cannot multiply null matrix");
-            } catch (final NullMatrixException nme) {
-                try {
-                    throw new JMBaseException(nme);
-                } catch (final JMBaseException jme) {
-                    Options.raiseError(jme);
-                }
+                throw new JMBaseException(e);
+            } catch (final JMBaseException jme) {
+                Options.raiseError(jme);
             }
         }
 
@@ -1112,10 +1120,12 @@ public class Matrix
                 throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" matrix");
             } else if (matrixB.ENTRIES == null) {
                 throw new NullMatrixException("Cannot operate multiplication, because <param2> is \"null\" matrix");
+            } else if (matrixA.COLS != matrixB.ROWS) {
+                throw new IllegalMatrixSizeException("Column and rows of two matrices is different size");
             }
-        } catch (final NullMatrixException nme) {
+        } catch (final Exception e) {
             try {
-                throw new JMBaseException(nme);
+                throw new JMBaseException(e);
             } catch (final JMBaseException jme) {
                 Options.raiseError(jme);
             }
