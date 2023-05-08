@@ -1,5 +1,5 @@
 // :: ------------------- :: //
-/* --   MATRIX BUILDER   -- */
+/* --   MATRIX BUILDER    -- */
 // :: ------------------- :: //
 
 // Copyright 2023 Ryuu Mitsuki
@@ -143,12 +143,6 @@ public class Matrix
 
         this.ENTRIES = new double[rows][cols];
 
-        if (rows != cols) {
-            this.isSquare = false;
-        } else {
-            this.isSquare = true;
-        }
-
         // Fill all matrix entries with "val"
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -172,12 +166,6 @@ public class Matrix
         this.ROWS = array.length;
         this.COLS = array[0].length;
         this.ENTRIES = array;
-
-        if (this.ROWS == this.COLS) {
-            this.isSquare = true;
-        } else {
-            this.isSquare = false;
-        }
     }
 
     //// ----------------------- ////
@@ -257,12 +245,6 @@ public class Matrix
         this.ENTRIES = new double[rows][cols];
 
         this.index = 0; // reset index row
-
-        if (rows != cols) {
-            this.isSquare = false;
-        } else {
-            this.isSquare = true;
-        }
     }
 
 
@@ -280,12 +262,6 @@ public class Matrix
         this.ROWS = array.length;
         this.COLS = array[0].length;
         this.ENTRIES = array;
-
-        if (this.ROWS == this.COLS) {
-            this.isSquare = true;
-        } else {
-            this.isSquare = false;
-        }
     }
 
 
@@ -358,19 +334,6 @@ public class Matrix
 
         return this; // return self
     }
-
-    /**
-    * Checks whether the current matrix is square matrix type.<br>
-    * The matrix with square type is when the both sizes (<i>rows and columns</i>) are same.<br>
-    *
-    * @return  return boolean {@code true} if the matrix is square type, else return {@code false}.
-    *
-    * @since   1.0.0
-    */
-    public boolean isSquare() {
-        return this.isSquare;
-    }
-
 
 
     //// ---------------- ////
@@ -987,12 +950,10 @@ public class Matrix
     public void mult(Matrix other) {
         try {
             // Throw "NullMatrixException" if current Matrix or given Matrix is null
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException("Cannot operate multiplication, because current matrix is \"null\"");
-            } else if (other.ENTRIES == null) {
-                throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" matrix");
+            if (this.ENTRIES == null || other.ENTRIES == null) {
+                throw new NullMatrixException("The matrix or one of the operands is null. Please ensure that both matrices are initialized before performing multiplication.");
             } else if (this.COLS != other.ROWS) {
-                throw new IllegalMatrixSizeException("Column and rows of two matrices is different size");
+                throw new IllegalMatrixSizeException("The number of columns in the first matrix is different from the number of rows in the second matrix");
             }
         } catch (final Exception e) {
             try {
@@ -1029,12 +990,10 @@ public class Matrix
     public void mult(double[ ][ ] array) {
         try {
             // Throw "NullMatrixException" if current Matrix or given Matrix is null
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException("Cannot operate multiplication, because current matrix is \"null\"");
-            } else if (array == null) {
-                throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" array");
+            if (this.ENTRIES == null || array == null) {
+                throw new NullMatrixException("The matrix or one of the operands is null. Please ensure that both matrices are initialized before performing multiplication.");
             } else if (this.COLS != array.length) {
-                throw new IllegalMatrixSizeException("Column and rows of two matrices is different size");
+                throw new IllegalMatrixSizeException("The number of columns in the first matrix is different from the number of rows in the second matrix");
             }
         } catch (final Exception e) {
             try {
@@ -1073,12 +1032,10 @@ public class Matrix
     */
     public static double[ ][ ] mult(double[ ][ ] matrixA, double[ ][ ] matrixB) {
         try {
-            if (matrixA == null) {
-                throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" array");
-            } else if (matrixB == null) {
-                throw new NullMatrixException("Cannot operate multiplication, because <param2> is \"null\" array");
+            if (matrixA == null || matrixB == null) {
+                throw new NullMatrixException("The matrix or one of the operands is null. Please ensure that both matrices are initialized before performing multiplication.");
             } else if (matrixA[0].length != matrixB.length) {
-                throw new IllegalMatrixSizeException("Column and rows of two matrices is different size");
+                throw new IllegalMatrixSizeException("The number of columns in the first matrix is different from the number of rows in the second matrix.");
             }
         } catch (final Exception e) {
             try {
@@ -1116,12 +1073,10 @@ public class Matrix
     public static Matrix mult(Matrix matrixA, Matrix matrixB) {
         try {
             // Throw "NullMatrixException" if given Matrix is null
-            if (matrixA.ENTRIES == null) {
-                throw new NullMatrixException("Cannot operate multiplication, because <param1> is \"null\" matrix");
-            } else if (matrixB.ENTRIES == null) {
-                throw new NullMatrixException("Cannot operate multiplication, because <param2> is \"null\" matrix");
+            if (matrixA.ENTRIES == null || matrixB.ENTRIES == null) {
+                throw new NullMatrixException("The matrix or one of the operands is null. Please ensure that both matrices are initialized before performing multiplication.");
             } else if (matrixA.COLS != matrixB.ROWS) {
-                throw new IllegalMatrixSizeException("Column and rows of two matrices is different size");
+                throw new IllegalMatrixSizeException("The number of columns in the first matrix is different from the number of rows in the second matrix.");
             }
         } catch (final Exception e) {
             try {
@@ -1151,14 +1106,14 @@ public class Matrix
 
     /**
     * Method that will displays current matrix to standard output.<br>
-    * Displays <code>null_matrix</code> if the current matrix is {@code null}.<br>
+    * Displays {@literal <null_matrix>} if the current matrix is {@code null}.<br>
     * <br>
     *
     * Output example:<br>
     * <code>
-    * &nbsp; [&nbsp; &nbsp;[n, n, n, ...]<br>
-    * &nbsp; &nbsp; &nbsp; [n, n, n, ...]<br>
-    * &nbsp; &nbsp; &nbsp; [.. .. .. ...]&nbsp; &nbsp;]
+    * {@literal   [   [n, n, n, ...]}<br>
+    * {@literal       [n, n, n, ...]}<br>
+    * {@literal       [n, n, n, ...]   ]}<br>
     * </code>
     * <br>
     *
@@ -1178,30 +1133,34 @@ public class Matrix
 
     /**
     * Method that will displays specified column of current matrix to standard output.<br>
-    * Displays <code>null_matrix</code> if the current matrix is {@code null}.<br>
+    * Displays {@literal <null_matrix>} if the current matrix is {@code null}.<br>
     * <br>
     *
     * Output example:<br>
     * <code>
-    * &nbsp; [n, n, n, ...]
+    * {@literal   [n, n, n, ...]}
     * </code>
     * <br>
     *
-    * @param index  the index column to be selected.
+    * @param  index  the row index.
     *
-    * @since 0.2.0
-    * @see   #display()
-    * @see   #display(int[][])
-    * @see   #display(int[][], int)
+    * @throws InvalidIndexException
+    *         if the given index is negative value or
+    *         the index is larger than number of rows.
+    *
+    * @since  0.2.0
+    * @see    #display()
+    * @see    #display(int[][])
+    * @see    #display(int[][], int)
     */
     public final void display(int index) {
         if (this.ENTRIES != null) {
             // Checking index value from argument parameter
             try {
                 if (index < 0) {
-                    throw new InvalidIndexException("Index must be a positive value");
+                    throw new InvalidIndexException("Index cannot be a negative value");
                 } else if (index > this.ROWS - 1) {
-                    throw new InvalidIndexException("Given index cannot be larger than total matrix rows");
+                    throw new InvalidIndexException("Given index cannot be larger than number of rows");
                 }
             } catch (final InvalidIndexException iie) {
                 try {
@@ -1220,14 +1179,14 @@ public class Matrix
 
     /**
     * Method that will displays specified array to standard output.<br>
-    * Displays <code>&lt;null_matrix&lt;</code> if the given {@code array} is {@code null}.<br>
+    * Displays {@literal <null_matrix>} if the given array is {@code null}.<br>
     * <br>
     *
     * Output example:<br>
     * <code>
-    * &nbsp; [&nbsp; &nbsp;[n, n, n, ...]<br>
-    * &nbsp; &nbsp; &nbsp; [n, n, n, ...]<br>
-    * &nbsp; &nbsp; &nbsp; [.. .. .. ...]&nbsp; &nbsp;]
+    * {@literal   [   [n, n, n, ...]}<br>
+    * {@literal       [n, n, n, ...]}<br>
+    * {@literal       [n, n, n, ...]   ]}<br>
     * </code>
     * <br>
     *
@@ -1240,17 +1199,7 @@ public class Matrix
     */
     public static final void display(double[ ][ ] array) {
         if (array != null) {
-            final int rows = array.length;
-            final int cols = array[0].length;
-
-            System.out.print("[   ");
-            for (int r = 0; r < rows; r++) {
-                System.out.print(Arrays.toString(array[r]));
-                if (r != rows - 1) {
-                    System.out.print("\n    ");
-                }
-            }
-            System.out.println("   ]");
+            System.out.println((new Matrix(array)).toString());
         } else {
             System.out.println("<null_matrix>");
         }
@@ -1259,31 +1208,35 @@ public class Matrix
 
     /**
     * Method that will displays specified column of given array to standard output.<br>
-    * Displays <code>&lt;null_matrix&lt;</code> if the given array is {@code null}.<br>
+    * Displays {@literal <null_matrix>} if the given array is {@code null}.<br>
     * <br>
     *
     * Output example:<br>
     * <code>
-    * &nbsp; [n, n, n, ...]
+    * {@literal   [n, n, n, ...]}
     * </code>
     * <br>
     *
-    * @param array  the array to be selected its column.
-    * @param index  the index for selecting the array column.
+    * @param  array  the array to be displayed.
+    * @param  index  the row index.
     *
-    * @since 0.2.0
-    * @see #display()
-    * @see #display(int)
-    * @see #display(double[][])
+    * @throws InvalidIndexException
+    *         if the given index is negative value or
+    *         the index is larger than number of rows.
+    *
+    * @since  0.2.0
+    * @see    #display()
+    * @see    #display(int)
+    * @see    #display(double[][])
     */
     public static final void display(double[ ][ ] array, int index) {
         if (array != null) {
             try {
                 // Checking index value
                 if (index < 0) {
-                    throw new InvalidIndexException("Index at <param2> must be a positive value");
+                    throw new InvalidIndexException("Index cannot be a negative value");
                 } else if (index > array.length - 1) {
-                    throw new InvalidIndexException("Given index cannot be larger than total array rows");
+                    throw new InvalidIndexException("Given index cannot be larger than number of rows");
                 }
             } catch (final InvalidIndexException iie) {
                 try {
@@ -1302,61 +1255,22 @@ public class Matrix
 
     /**
     * Method that will transposes current matrix.<br>
-    * If the matrix type is square, the sizes won't be inverted.<br>
+    * If the matrix type are not square, then the row would be column
+    * and the column would be row.<br>
     *
     * @since 0.2.0
     * @see   #transpose(double[][])
     * @see   #transpose(Matrix)
     */
     public void transpose() {
-        if (this.ENTRIES == null) {
-            try {
-                throw new NullMatrixException("Cannot transpose \"null\" matrix");
-            } catch (final NullMatrixException nme) {
-                try {
-                    throw new JMBaseException(nme);
-                } catch (final JMBaseException jme) {
-                    Options.raiseError(jme);
-                }
-            }
-        }
-
-        double[ ][ ] transposedMatrix; // create null transposed matrix
-
-        if (this.isSquare) {
-            // Initialize new matrix with same size as current matrix size
-            transposedMatrix = new double[this.ROWS][this.COLS];
-
-            // Iterate over elements and transpose each element
-            for (int i = 0; i < this.ROWS; i++) {
-                for (int j = 0; j < this.COLS; j++) {
-                    transposedMatrix[i][j] = this.ENTRIES[j][i];
-                }
-            }
-        } else {
-            // Initialize new matrix with inverted size as current matrix size
-            /*
-              - rows    = columns
-              - columns = rows
-            */
-            transposedMatrix = new double[this.COLS][this.ROWS];
-
-            for (int i = 0; i < this.COLS; i++) {
-                for (int j = 0; j < this.ROWS; j++) {
-                    transposedMatrix[i][j] = this.ENTRIES[j][i];
-                }
-            }
-
-            this.create(this.COLS, this.ROWS); // transpose matrix size
-        }
-
-        this.ENTRIES = transposedMatrix; // assign with transposed matrix
+        this.create(Matrix.transpose(this).getEntries());
     }
 
 
     /**
     * Method that will transposes specified array.<br>
-    * If the matrix type is square, the sizes won't be inverted.<br>
+    * If the matrix type are not square, then the row would be column
+    * and the column would be row.<br>
     *
     * @param  array  the array to be transposed.
     *
@@ -1367,62 +1281,26 @@ public class Matrix
     * @see    #transpose(Matrix)
     */
     public static double[ ][ ] transpose(double[ ][ ] array) {
-        if (array == null) {
-            try {
+        try {
+            if (array == null) {
                 throw new NullMatrixException("Cannot transpose \"null\" array");
-            } catch (final NullMatrixException nme) {
-                try {
-                    throw new JMBaseException(nme);
-                } catch (final JMBaseException jme) {
-                    Options.raiseError(jme);
-                }
+            }
+        } catch (final NullMatrixException nme) {
+            try {
+                throw new JMBaseException(nme);
+            } catch (final JMBaseException jme) {
+                Options.raiseError(jme);
             }
         }
 
-        boolean isSquare;
-        double[ ][ ] transposedMatrix; // create null transposed matrix
-
-        final int rows = array.length,
-                  cols = array[0].length;
-
-        // Check for square matrix
-        if (rows == cols) {
-            isSquare = true;
-        } else {
-            isSquare = false;
-        }
-
-        /** ---
-        - If the matrix type is square matrix, then transposed matrix
-        -   size should be same as previous matrix size.
-        - However, if not a square matrix then the transposed matrix
-        -   size should be inverted
-        --- **/
-        if (isSquare) {
-            transposedMatrix = new double[rows][cols];
-
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    transposedMatrix[i][j] = array[j][i];
-                }
-            }
-        } else {
-            transposedMatrix = new double[cols][rows];
-
-            for (int i = 0; i < cols; i++) {
-                for (int j = 0; j < rows; j++) {
-                    transposedMatrix[i][j] = array[j][i];
-                }
-            }
-        }
-
-        return transposedMatrix;
+        return Matrix.transpose(new Matrix(array)).getEntries();
     }
 
 
     /**
     * Method that will transposes specified matrix object.<br>
-    * If the matrix type is square, the sizes won't be inverted.<br>
+    * If the matrix type are not square, then the row would be column
+    * and the column would be row.<br>
     *
     * @param  other  the matrix to be transposed.
     *
@@ -1433,21 +1311,21 @@ public class Matrix
     * @see   #transpose(double[][])
     */
     public static Matrix transpose(Matrix other) {
-        if (other == null) {
-            try {
+        try {
+            if (other.ENTRIES == null) {
                 throw new NullMatrixException("Cannot transpose \"null\" matrix");
-            } catch (final NullMatrixException nme) {
-                try {
-                    throw new JMBaseException(nme);
-                } catch (final JMBaseException jme) {
-                    Options.raiseError(jme);
-                }
+            }
+        } catch (final NullMatrixException nme) {
+            try {
+                throw new JMBaseException(nme);
+            } catch (final JMBaseException jme) {
+                Options.raiseError(jme);
             }
         }
 
         Matrix transposedMatrix = new Matrix(); // create null transposed matrix
 
-        if (other.isSquare) {
+        if (other.isSquare()) {
             // Create new matrix with same size as "other" size
             transposedMatrix.create(other.ROWS, other.COLS);
 
@@ -1476,12 +1354,57 @@ public class Matrix
     }
 
 
+    /**
+    * Checks whether the current matrix is a square matrix type.<br>
+    * A matrix can be called a square type if the number of rows
+    * are equals to the number of columns.<br>
+    *
+    * @return {@code true} if the matrix is square, otherwise returns {@code false}.
+    *
+    * @since  1.0.0
+    */
+    public boolean isSquare() {
+        return Matrix.isSquare(this);
+    }
+
+
+    /**
+    * Checks whether the given matrix is a square matrix type.<br>
+    * A matrix can be called a square type if the number of rows
+    * are equals to the number of columns.<br>
+    *
+    * @param  array  the array.
+    *
+    * @return {@code true} if the given matrix is square, otherwise returns {@code false}.
+    */
+    public static boolean isSquare(double[ ][ ] array) {
+        return (array.length == array[0].length);
+    }
+
+
+    /**
+    * Checks whether the given matrix is a square matrix type.<br>
+    * A matrix can be called a square type if the number of rows
+    * are equals to the number of columns.<br>
+    *
+    * @param  m  the Matrix object.
+    *
+    * @return {@code true} if the given matrix is square, otherwise returns {@code false}.
+    */
+    public static boolean isSquare(Matrix m) {
+        return (m.ROWS == m.COLS);
+    }
+
+
 
     /**
     * Clears all values inside current matrix.<br>
     * This method will converts the matrix into null type matrix.<br>
     *
-    * @since 0.2.0
+    * @throws NullMatrixException
+    *         if the current matrix is a {@code null} matrix.
+    *
+    * @since  0.2.0
     */
     public void clear() {
         if (this.ENTRIES == null) {
@@ -1508,40 +1431,31 @@ public class Matrix
     /**
     * Sorts all values of current matrix.<br>
     *
-    * @since 0.2.0
-    * @see   #sort(double[][])
-    * @see   #sort(Matrix)
-    * @see   java.util.Arrays#sort
+    * @throws NullMatrixException
+    *         if the given matrix is a {@code null} matrix.
+    *
+    * @since  0.2.0
+    * @see    #sort(double[][])
+    * @see    #sort(Matrix)
+    * @see    java.util.Arrays#sort
     */
     public void sort() {
-        if (this.ENTRIES == null) {
-            try {
-                throw new NullMatrixException("Cannot sorting all values, because current matrix is \"null\"");
-            } catch (final NullMatrixException nme) {
-                try {
-                    throw new JMBaseException(nme);
-                } catch (final JMBaseException jme) {
-                    Options.raiseError(jme);
-                }
-            }
-        }
-
-        // Just simply iterate matrix rows, then sort each columns
-        for (int r = 0; r < this.ROWS; r++) {
-            Arrays.sort(this.ENTRIES[r]);
-        }
+        this.ENTRIES = Matrix.sort(this).getEntries();
     }
 
 
     /**
     * Sorts all values of specified array.<br>
     *
-    * @param array  the array to be sorted.
+    * @param  array  the array to be sorted.
     *
-    * @since 0.2.0
-    * @see   #sort()
-    * @see   #sort(Matrix)
-    * @see   java.util.Arrays#sort
+    * @throws NullMatrixException
+    *         if the given array is a {@code null} array.
+    *
+    * @since  0.2.0
+    * @see    #sort()
+    * @see    #sort(Matrix)
+    * @see    java.util.Arrays#sort
     */
     public static void sort(double[ ][ ] array) {
         if (array == null) {
@@ -1568,6 +1482,9 @@ public class Matrix
     * @param  obj  the matrix to be sorted.
     *
     * @return the sorted matrix object.
+    *
+    * @throws NullMatrixException
+    *         if the given matrix is a {@code null} matrix.
     *
     * @since  1.0.0
     * @see    #sort()
@@ -1601,15 +1518,67 @@ public class Matrix
 
     /**
     * Gets the sizes of current matrix.<br>
+    * Row: {@code m.getSize()[0];}<br>
+    * Column: {@code m.getSize()[1];}<br>
     *
-    * @return a list which contains total rows<sup>[0]</sup> and columns<sup>[1]</sup>.
+    * @return an {@code Integer} list containing total rows<sup>[0]</sup> and columns<sup>[1]</sup>.
     *
     * @since  0.1.0
     */
     public int[ ] getSize() {
         // It would return list: [<rows>, <cols>]
-        final int[ ] size = { this.ROWS, this.COLS };
-        return size;
+        return new int[ ] { this.ROWS, this.COLS };
+    }
+
+
+    /**
+    * Returns the value at the specified row and column in the matrix.<br>
+    * If given index is a negative value, then it will count from the last.<br>
+    *
+    * @param  row  the row index (min 0).
+    * @param  col  the column index (min 0).
+    *
+    * @return the value at the specified position in the matrix.
+    *
+    * @throws NullMatrixException
+    *         if the matrix is null and no entries are defined
+    * @throws InvalidIndexException
+    *         if the row or column index is out of range
+    *
+    * @since  1.0.0
+    * @see    #getEntries()
+    */
+    public double get(int row, int col) {
+        try {
+            if (this.ENTRIES == null) {
+                throw new NullMatrixException("Matrix is null and no entries are defined");
+            } else if (row >= this.ROWS || (row < 0 && (row + this.ROWS) >= this.ROWS || (row + this.ROWS) < 0)) {
+                throw new InvalidIndexException("Invalid row index: " + row + " (matrix size: " + this.ROWS + "x" + this.COLS + ")");
+            } else if (col >= this.COLS || (col < 0 && (col + this.COLS) >= this.COLS || (col + this.COLS) < 0)) {
+                throw new InvalidIndexException("Invalid column index: " + col + " (matrix size: " + this.ROWS + "x" + this.COLS + ")");
+            }
+        } catch (final Exception e) {
+            try {
+                throw new JMBaseException(e);
+            } catch (final JMBaseException jme) {
+                Options.raiseError(jme);
+            }
+        }
+
+        // If the given index is negative value,
+        // then it will count from last.
+        // Example:
+        //      m.get(-1, -1);
+        //
+        // Code above will returns last entry of the last row.
+        if (row < 0) {
+            row += this.ROWS;
+        }
+        if (col < 0) {
+            col += this.COLS;
+        }
+
+        return this.ENTRIES[row][col];
     }
 
     /**
@@ -1618,6 +1587,7 @@ public class Matrix
     * @return the entries array of this matrix.
     *
     * @since  1.0.0
+    * @see    #get(int, int)
     */
     public double[ ][ ] getEntries() {
         return this.ENTRIES;
