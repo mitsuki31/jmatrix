@@ -6,13 +6,7 @@
 package com.mitsuki.jmatrix.util;
 
 // -**- Built-in Package -**- //
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.FileNotFoundException;
+import java.io.*;
 
 import java.util.List;
 import java.util.Arrays;
@@ -20,22 +14,17 @@ import java.util.Arrays;
 import java.lang.NullPointerException;
 import java.lang.IllegalArgumentException;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 // -**- Local Package -**- //
 import com.mitsuki.jmatrix.core.JMBaseException;
-import com.mitsuki.jmatrix.util.OSUtils;
 import com.mitsuki.jmatrix.util.XMLParser;
 
 /**
-* This class provides all requirements for {@code JMatrix} package.<br>
+* This class provides all requirements for <b>JMatrix</b> package.<br>
 *
-* @version 1.0
+* @version 1.1
 * @since   1.0.0
 * @author  Ryuu Mitsuki
 *
-* @see     com.mitsuki.jmatrix.util.OSUtils
 * @see     com.mitsuki.jmatrix.util.XMLParser
 */
 public class Options
@@ -63,7 +52,7 @@ public class Options
     private static String PROGNAME = XML.getProperty("programName").toLowerCase();
     private static String PACKAGE = getPackageName(Options.class);
     private static String THISCLASS = getClassName(Options.class);
-    private static String contentsPath = String.format("contents%s", OSUtils.sep);
+    private static String contentsPath = "contents/";
 
     /**
     * Method that checks the input argument then returns specific opt>
@@ -105,10 +94,11 @@ public class Options
     ///// ---------------------- /////
 
     /**
-    * Gets the package name of specific class. For example:
-    * <br>
+    * Gets the package name of specific class.<br>
+    * For example:<br>
+    *
     * <code>
-    *     Options.getPackageName(MyClass.class);
+    * {@literal     Options.getPackageName(MyClass.class);}
     * </code>
     * <br>
     *
@@ -124,10 +114,11 @@ public class Options
     }
 
     /**
-    * Gets the full package name (with class name) of specific class. For example:
-    * <br>
+    * Gets the full package name (with class name) of specific class.<br>
+    * For example:<br>
+    *
     * <code>
-    *     Options.getClassName(MyClass.class);
+    * {@literal     Options.getClassName(MyClass.class);}
     * </code>
     * <br>
     *
@@ -143,7 +134,7 @@ public class Options
     }
 
     /**
-    * Returns the class of the given template object.<br>
+    * Returns the {@code Class} of the given template object.<br>
     *
     * @param  template  the template object to retrieve the class.
     * @param  <T>       the type of the template object.
@@ -297,12 +288,15 @@ public class Options
     }
 
     /**
-    * Returns the stream of specified file path.<br>
-    * This method is similar to {@link java.lang.ClassLoader#getResourceAsStream(String)}, but this method is a simple way.<br>
+    * Returns the {@link InputStream} of specified resource file.<br>
+    * This method is similar to {@link ClassLoader#getResourceAsStream(String)}, but this method is a simple way.<br>
     *
-    * @param  filePath  a path to specific file.
+    * @param  filePath  a path to specific resource file.
     *
     * @return returns the {@link java.io.InputStream}
+    *
+    * @throws NullPointerException
+    *         if the stream returns null, because the wrong file path.
     *
     * @since  1.0.0
     * @see    java.lang.ClassLoader
@@ -325,12 +319,15 @@ public class Options
     }
 
     /**
-    * Writes the contents to specific file.<br>
+    * Writes the contents to specified file path.<br>
     *
     * @param  filePath  the {@link String} that contains path to specific file.
     * @param  contents  the contents to be writen into specific file.
     *
-    * @return returns {@code true} if succeed, else return {@code false}
+    * @return {@code true} if succeed, else return {@code false}
+    *
+    * @throws IOException
+    *         if there is an error while writing to file.
     *
     * @since  1.0.0
     * @see    java.io.FileWriter
