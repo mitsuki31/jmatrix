@@ -30,7 +30,7 @@ import com.mitsuki.jmatrix.util.XMLParser;
 public class Options
 {
     /**
-    * {@code Enum} contains all available options.<br>
+    * {@code Enum} that contains all available options.<br>
     *
     * @since 1.0.0
     * @see   #getOptions(String)
@@ -55,7 +55,7 @@ public class Options
     private static String contentsPath = "contents/";
 
     /**
-    * Method that checks the input argument then returns specific opt>
+    * Method that checks the input argument then returns specific option.
     *
     * @param  inputOpt  the {@code String} that wants to be checked.
     *
@@ -94,17 +94,17 @@ public class Options
     ///// ---------------------- /////
 
     /**
-    * Gets the package name of specific class.<br>
-    * For example:<br>
+    * Gets the package name of specified class.
     *
-    * <code>
-    * {@literal     Options.getPackageName(MyClass.class);}
-    * </code>
-    * <br>
+    * <p>For example:</p>
     *
-    * @param  cls  a class name to retrieves it's package name.
+    * <pre>{@code
+    *     Options.getPackageName(MyClass.class);
+    * }</pre>
     *
-    * @return the {@link String} that contains package name of specified class.
+    * @param  cls  the {@code Class} object to retrieves it's package name.
+    *
+    * @return the {@code String} that contains package name of specified class.
     *
     * @since  1.0.0
     * @see    #getClassName(Class<?>)
@@ -114,17 +114,17 @@ public class Options
     }
 
     /**
-    * Gets the full package name (with class name) of specific class.<br>
-    * For example:<br>
+    * Gets the full package name (with class name) of specified class.
     *
-    * <code>
-    * {@literal     Options.getClassName(MyClass.class);}
-    * </code>
-    * <br>
+    * <p>For example:</p>
     *
-    * @param  cls  a class name to retrieves it's full package name.
+    * <pre>{@code
+    *     Options.getClassName(MyClass.class);
+    * }</pre>
     *
-    * @return a {@link String} that contains full package name of specified class.
+    * @param  cls  the {@code Class} object to retrieves it's full package name.
+    *
+    * @return the {@code String} that contains full package name of specified class.
     *
     * @since  1.0.0
     * @see    #getPackageName(Class<?>)
@@ -134,12 +134,12 @@ public class Options
     }
 
     /**
-    * Returns the {@code Class} of the given template object.<br>
+    * Returns the {@code Class} object of the given template object.<br>
     *
-    * @param  template  the template object to retrieve the class.
+    * @param  template  the template object.
     * @param  <T>       the type of the template object.
     *
-    * @return the class of the template object.
+    * @return the {@code Class} object of the template object.
     *
     * @since  1.0.0
     * @see    #getClassNameFromTemplate(T)
@@ -151,7 +151,7 @@ public class Options
     /**
     * Returns {@code String} contains the name of the class of the given template object.<br>
     *
-    * @param  template  the template object to retrieves the class name from.
+    * @param  template  the template object.
     * @param  <T>       the type of the template object.
     *
     * @return the name of the class of the template object.
@@ -236,11 +236,11 @@ public class Options
 
 
     /**
-    * Reads and returns the contents of specified file.<br>
+    * Reads and returns the list of contents from specified file.<br>
     *
-    * @param  filePath a path to specific file.
+    * @param  filePath  a path to specific file.
     *
-    * @return the contents of specified file.
+    * @return a list containing the contents of specified file.
     *
     * @since  1.0.0
     * @see    #readFile(InputStream)
@@ -262,11 +262,11 @@ public class Options
     }
 
     /**
-    * Reads and returns the contents of specified file.<br>
+    * Reads and returns the list of contents from specified file.<br>
     *
     * @param  stream  a stream that contains path to specific file.
     *
-    * @return the contents of specified file.
+    * @return a list containing the contents of specified file.
     *
     * @since  1.0.0
     * @see    #readFile(String)
@@ -288,15 +288,17 @@ public class Options
     }
 
     /**
-    * Returns the {@link InputStream} of specified resource file.<br>
-    * This method is similar to {@link ClassLoader#getResourceAsStream(String)}, but this method is a simple way.<br>
+    * Returns an {@link InputStream} object for a file located in
+    * the classpath specified by its file path.<br>
+    * This method is similar to {@link ClassLoader#getResourceAsStream(String)},
+    * but this method is a simple way.<br>
     *
     * @param  filePath  a path to specific resource file.
     *
-    * @return returns the {@link java.io.InputStream}
+    * @return an {@link InputStream} of the file located at the specified file path.
     *
-    * @throws NullPointerException
-    *         if the stream returns null, because the wrong file path.
+    * @throws Exception
+    *         if there is an error while attempting to load the file.
     *
     * @since  1.0.0
     * @see    java.lang.ClassLoader
@@ -307,9 +309,9 @@ public class Options
         try {
             ClassLoader cl = Options.class.getClassLoader();
             stream = cl.getResourceAsStream(filePath);
-        } catch (final NullPointerException nme) {
+        } catch (final Exception e) {
             try {
-                throw new JMBaseException(nme);
+                throw new JMBaseException(e);
             } catch (final JMBaseException jme) {
                 raiseError(jme, -1);
             }
@@ -321,10 +323,10 @@ public class Options
     /**
     * Writes the contents to specified file path.<br>
     *
-    * @param  filePath  the {@link String} that contains path to specific file.
-    * @param  contents  the contents to be writen into specific file.
+    * @param  filePath  the {@code String} that contains path to specified file.
+    * @param  contents  the list of contents to be written into specified file.
     *
-    * @return {@code true} if succeed, else return {@code false}
+    * @return {@code true} if succeed, otherwise return {@code false}
     *
     * @throws IOException
     *         if there is an error while writing to file.
@@ -342,7 +344,9 @@ public class Options
             try {
                 throw new JMBaseException(e);
             } catch (final JMBaseException ex) {
-                raiseError(ex, -1);
+                // the exit code should be zero, so that
+                // would print the exception and return false.
+                raiseError(ex, 0);
             }
         }
 
@@ -355,7 +359,7 @@ public class Options
     ///// ------------------ /////
 
     /**
-    * Returns the help message contents.<br>
+    * Returns a list containing the help message contents.<br>
     *
     * @return the contents of help message.
     *
@@ -369,7 +373,7 @@ public class Options
     }
 
     /**
-    * Returns the copyright contents.<br>
+    * Returns a list containing the copyright contents.<br>
     *
     * @return the contents of copyright.
     *
@@ -477,7 +481,7 @@ public class Options
     * @see   java.lang.Exception
     * @see   java.lang.Exception#printStackTrace
     */
-    public final static void raiseError(final Exception ex) {
+    public static final void raiseError(final Exception ex) {
         ex.printStackTrace();
         System.err.println(System.lineSeparator() +
             "Exited with error code: 1");
@@ -498,7 +502,7 @@ public class Options
     * @see   java.lang.Exception
     * @see   java.lang.Exception#printStackTrace
     */
-    public final static void raiseError(final Exception ex, final int exitStatus) {
+    public static final void raiseError(final Exception ex, final int exitStatus) {
         ex.printStackTrace();
         if (exitStatus != 0) {
             System.err.printf(System.lineSeparator() +
@@ -520,7 +524,7 @@ public class Options
     * @see   java.lang.Exception
     * @see   java.lang.Exception#printStackTrace
     */
-    public final static void raiseErrorMsg(final Exception ex) {
+    public static final void raiseErrorMsg(final Exception ex) {
         System.err.printf("[%s] Error: %s%s", PROGNAME, ex.getMessage(), System.lineSeparator());
         System.err.println(System.lineSeparator() +
             "Exited with error code: 1");
@@ -541,7 +545,7 @@ public class Options
     * @see   java.lang.Exception
     * @see   java.lang.Exception#printStackTrace
     */
-    public final static void raiseErrorMsg(final Exception ex, final int exitStatus) {
+    public static final void raiseErrorMsg(final Exception ex, final int exitStatus) {
         System.err.printf("[%s] Error: %s%s", PROGNAME, ex.getMessage(), System.lineSeparator());
         if (exitStatus != 0) {
             System.err.printf(System.lineSeparator() +
