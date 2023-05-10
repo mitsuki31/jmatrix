@@ -1,6 +1,6 @@
-///// ----------------- /////
-///       XMLParser       ///
-///// ----------------- /////
+// ------------------- //
+/*      XMLParser      */
+// ------------------- //
 
 // -**- Package -**- //
 package com.mitsuki.jmatrix.util;
@@ -8,8 +8,6 @@ package com.mitsuki.jmatrix.util;
 // -**- Built-in Package -**- //
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
@@ -91,24 +89,19 @@ interface XMLData
 
 
 /**
-* This class provides requirements to parse XML document. Construct example:
-* <br>
-* <code>
-*     XMLParser cfg = new XMLParser(XMLParser.XMLType.CONFIG);
-* </code>
-* <br>
+* This class provides requirements to parse XML document.<br>
 *
 * @since   1.0.0
-* @version 1.0
+* @version 1.1
 * @author  Ryuu Mitsuki
 *
 * @see     com.mitsuki.jmatrix.util.Options
-* @see     com.mitsuki.jmatrix.util.OSUtils
 */
 public class XMLParser implements XMLData
 {
     /**
     * {@code Enum} that contains types of XML document.<br>
+    * Currently there is only one option (CONFIG).<br>
     *
     * @since 1.0.0
     * @see   #getCurrentType()
@@ -118,16 +111,36 @@ public class XMLParser implements XMLData
     };
 
     // -- Private Attributes
-    private static XMLType xmlType = null;
-    private final static String configPath = String.format("configuration%sconfig.xml", OSUtils.sep);
-    private static InputStream configStream = null;
+    private XMLType xmlType = null;
+    private final static String configPath = "configuration/config.xml";
 
+    /**
+    * Creates new XMLParser object.<br>
+    *
+    * @param type  a chosen XML type.
+    *
+    * @since 1.0.0
+    */
+    public XMLParser(XMLType type) {
+        switch (type) {
+            case CONFIG:
+                this.xmlType = XMLType.CONFIG;
+                break;
 
-    // -- Static Block
-    static {
-        configStream = XMLParser.class.getClassLoader().getResourceAsStream(configPath);
+            default:
+                try {
+                    throw new IllegalArgumentException("Invalid XML type for input \"" + type + "\"");
+                } catch (final IllegalArgumentException iae) {
+                    try {
+                        throw new JMBaseException(iae);
+                    } catch (final JMBaseException jme) {
+                        Options.raiseError(jme, -1);
+                    }
+                }
+        }
 
         try {
+            InputStream configStream = XMLParser.class.getClassLoader().getResourceAsStream(configPath);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = factory.newDocumentBuilder();
 
@@ -153,32 +166,6 @@ public class XMLParser implements XMLData
         }
     }
 
-    /**
-    * Creates new {@code XMLParser} object.<br>
-    *
-    * @param type  a chosen XML type.
-    *
-    * @since 1.0.0
-    */
-    public XMLParser(XMLType type) {
-        switch (type) {
-            case CONFIG:
-                xmlType = XMLType.CONFIG;
-                break;
-
-            default:
-                try {
-                    throw new IllegalArgumentException("Invalid XML type for input \"" + type + "\"");
-                } catch (final IllegalArgumentException iae) {
-                    try {
-                        throw new JMBaseException(iae);
-                    } catch (final JMBaseException jme) {
-                        Options.raiseError(jme, -1);
-                    }
-                }
-        }
-    }
-
 
     /**
     * This method retrieves the XML data.<br>
@@ -190,14 +177,7 @@ public class XMLParser implements XMLData
     * @since  1.0.0
     */
     public String getProperty(final String choice) {
-        if (choice != null) {
-            switch (xmlType) {
-                case CONFIG:
-                    return XMLData.getData(choice);
-            }
-        }
-
-        return null;
+        return (choice != null) ? XMLData.getData(choice) : null;
     }
 
     /**
@@ -210,37 +190,5 @@ public class XMLParser implements XMLData
     */
     public XMLType getCurrentType() {
         return this.xmlType;
-    }
-
-
-    private static void initializeParser() {
-        try {
-            // -- config.xml --
-            Document doc = buildToDoc(configStream);
-            Element xml = doc.getDocumentElement();
-
-            XMLConfig.programName = xml.getElementsByTagName("program_name").item(0).getTextContent();
-            XMLConfig.author = xml.getElementsByTagName("author").item(0).getTextContent();
-            XMLConfig.version = xml.getElementsByTagName("version").item(0).getTextContent();
-            XMLConfig.releaseType = xml.getElementsByTagName("version").item(0)
-                .getAttributes().getNamedItem("type").getNodeValue();
-            XMLConfig.packageName = xml.getElementsByTagName("package").item(0).getTextContent();
-
-        } catch (final Exception e) {
-            try {
-                throw new JMBaseException(e);
-            } catch (final JMBaseException jme) {
-                Options.raiseError(jme, -1);
-            }
-        }
-    }
-
-    private static Document buildToDoc(InputStream stream)
-    throws Exception {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = factory.newDocumentBuilder();
-        Document doc = docBuilder.parse(configStream);
-
-        return doc;
     }
 }
