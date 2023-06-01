@@ -2126,7 +2126,7 @@ public class Matrix {
     * Repeating the process on the transposed matrix returns
     * the elements to their original position.
     *
-    * @param  m                    the <b>Matrix<b> object to be transposed.
+    * @param  m                    the <b>Matrix</b> object to be transposed.
     *
     * @return                      the transposed of given matrix.
     *
