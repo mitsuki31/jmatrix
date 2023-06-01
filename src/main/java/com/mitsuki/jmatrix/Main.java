@@ -1,16 +1,13 @@
 package com.mitsuki.jmatrix;
 
-import java.lang.IllegalArgumentException;
-import java.lang.NullPointerException;
-
 import com.mitsuki.jmatrix.util.Options;
 import com.mitsuki.jmatrix.util.XMLParser;
 
 public class Main
 {
     public static void main(String[ ] args) {
-        String arg1 = null,
-               arg2 = null;
+        String arg1 = null;
+        String arg2 = null;
 
         XMLParser XML = new XMLParser(XMLParser.XMLType.CONFIG);
 
