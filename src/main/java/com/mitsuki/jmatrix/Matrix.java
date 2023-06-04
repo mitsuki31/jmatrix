@@ -525,12 +525,22 @@ public class Matrix {
     /**
     * Duplicates this matrix to another matrix object.
     *
-    * @return                      the copied of this matrix with all of its attributes.
+    * <p><b>Deprecated:</b> This method is deprecated due to its usage of shallow copy,
+    * which may lead to unexpected behavior. It is recommended to use {@link #deepCopy()} method instead,
+    * which performs a deep copy of the matrix.</p>
     *
-    * @throws NullMatrixException  if the entries of this matrix is {@code null}.
+    * @return                          the copied of this matrix with all of its attributes.
     *
-    * @since                       0.2.0
+    * @throws     NullMatrixException  if the entries of this matrix is {@code null}.
+    *
+    * @since                           0.2.0
+    * @see                             #deepCopy()
+    *
+    * @deprecated                      This method is deprecated and may result in unexpected behavior.
+    *                                  Use {@link #deepCopy()} for performing a deep copy of the matrix instead.
+    *
     */
+    @Deprecated
     public Matrix copy() {
         try {
             if (this.ENTRIES == null) {
@@ -543,6 +553,37 @@ public class Matrix {
 
         // Create new and copy the matrix
         return new Matrix(this.getEntries());
+    }
+
+
+    /**
+    * Creates a copy of this matrix and performs a deep copy.
+    *
+    * @return the copied of this matrix.
+    *
+    * @since  1.0.0
+    */
+    public Matrix deepCopy() {
+        /*
+        * Instead throw an exception, for now on when the entries of
+        * this matrix is null, it would just creates new matrix object
+        * with null entries.
+        */
+        if (this.ENTRIES == null) {
+            return new Matrix();
+        }
+
+        int rows = this.ROWS;
+        int cols = this.COLS;
+        Matrix copiedMatrix = new Matrix(rows, cols);
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                copiedMatrix.ENTRIES[r][c] = this.ENTRIES[r][c];
+            }
+        }
+
+        return copiedMatrix;
     }
 
 
