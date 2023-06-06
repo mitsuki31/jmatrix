@@ -28,75 +28,133 @@
 
 > **Note**
 > JMatrix is a matrix builder written in Java.  
-> Can creates the matrix, operates addition, subtraction, multiplication and clear the matrix array *(other operations will be added soon)*.<br>
+> Can creates the matrix, operates basic matrix operations such as addition, subtraction, multiplication
+> and transposition *(other operations will be added soon)*.<br>
 
 <details>
-<summary><h3><a name="list-of-contents"></a>List of Contents</h3>
+<summary><h3><a name="table-of-contents"></a>Table of Contents</h3>
 </summary>
 
 - [How to Build the Project?](#build-project)
-    - [Build using Make](#make-build)
-        - [Compile all source files](#make-compile)
-        - [Create a new jar file](#make-package)
-    - [Build using Maven](#maven-build)
-        - [Compile all source files](#maven-compile)
-        - [Create a new jar file](#maven-package)
-- [Authors](#authors)
+- [Constructor Summary](#constructor-summary)
+    * [Matrix\()](#cr_matrix-1)
+    * [Matrix\(int, int)](#cr_matrix-2)
+    * [Matrix\(int, int, int)](#cr_matrix-3)
+    * [Matrix\(double[][])](#cr_matrix-4)
+- [Author](#author)
 - [License](#license)
 </details>
 
 ## <a name="build-project"></a> How to Build the Project?
+Want to build the project with different Java version?  
+Please consider refer to [:bookmark:Build the Project](https://github.com/mitsuki31/jmatrix/wiki/Getting%20Started#build-project)
+section for more information.
 
-### <a name="make-build"></a> Build using Make
-1. <a name="make-compile"></a> Compile all source files
-    ```bash
-    make compile
-    ```
+## <a name="constructor-summary"></a> Constructor Summary
+There are 4 constructors that can be used for constructing the matrix.  
+> :man::question: Still don't understand about matrix? Check the [:bookmark:About Matrix][what-is-matrix] section
+> to get little knowledge about matrix.
 
-2. <a name="make-package"></a> Create a new jar file
-    ```bash
-    make package
-    ```
-<br>
+### <a name="cr_matrix-1"></a> Matrix()
+This constructor doesn't need any arguments, but it would constructs the **Matrix**
+with `null` entries. In this case, the matrix itself can't do any operations until
+get initialized and have valid elements. For example:
 
-> Build the project with one line command.
-> ```bash
-> make compile package
-> ```
+```java
+// Create null entries matrix
+Matrix m = new Matrix();
+```
+
+But don't worry, you can also check whether the matrix has `null` entries with this code:
+
+```java
+boolean isNullEntries(Matrix m) {
+    // Check whether the matrix has null entries using
+    // "getEntries()" method
+    if (m.getEntries() == null) {
+        return true;
+    }
+
+    return false;
+}
+```
+
+### <a name="cr_matrix-2"></a> Matrix(int, int)
+Want to create `null matrix` (a.k.a. `zero matrix`)? This constructor is the answer.  
+With just two arguments, which is for size of [row][matrix-row] and [column][matrix-col].  
+The matrix can be called `null matrix` when all of matrix's elements is zero.
+For example:
+
+```java
+// Create null matrix with size 3x4
+Matrix m = new Matrix(3, 4);
+```
+
+Code above would constructs a new `null matrix` with size `3x4`. Use `display()` method to display
+the matrix, and the output should looks like this:
+
+```
+[   [0.0, 0.0, 0.0, 0.0],
+    [0.0, 0.0, 0.0, 0.0],
+    [0.0, 0.0, 0.0, 0.0]   ]
+```
+
+### <a name="cr_matrix-3"></a> Matrix(int, int, int)
+This constructor is similar with [Matrix\(int, int)](#cr_matrix-2) but with an additional
+argument which is the value to filled out the entire elements of constructed matrix. For example:
+
+```java
+// Create new matrix with size 4x4 and 5 as default elements
+Matrix m = new Matrix(4, 4, 5);
+
+m.display();
+```
+
+Code above should output like this:
+
+```
+[   [5.0, 5.0, 5.0, 5.0],
+    [5.0, 5.0, 5.0, 5.0],
+    [5.0, 5.0, 5.0, 5.0],
+    [5.0, 5.0, 5.0, 5.0]   ]
+```
+
+### <a name="cr_matrix-4"></a> Matrix(double\[]\[])
+This constructor is very **RECOMMENDED** for constructing a new [matrix][what-is-matrix].  
+It because you can declare the entries first, and then you can convert it to **Matrix** object whenever you want.
+For example:
+
+```java
+// Declare and initialize entries "a"
+double[][] a = {
+    { 1, 2, 3 }
+    { 4, 5, 6 }
+};
+
+// Convert to Matrix
+Matrix m = new Matrix(a);
+```
+
+Or you can do the same thing with this code:
+
+```java
+// Create new matrix
+Matrix m = new Matrix(new double[][] {
+    { 1, 2, 3 }
+    { 4, 5, 6 }
+});
+```
 
 
-### <a name="maven-build"></a> Build using Maven
-1. <a name="maven-compile"></a> Compile all source files
-    > **Note** `Maven` will start downloading all required dependencies for the project *(if not found)*.  
-    > So be patient, and take a coffee :coffee:.
-    ```bash
-    mvn compile
-    ```
-
-2. <a name="maven-package"></a> Create a new jar file
-   ```bash
-   mvn package
-   ```
-<br>
-
-> Build the project with one line command.
-> ```bash
-> mvn package
-> ```
-> Or
-> ```bash
-> mvn compile package
-> ```
-
----
-
-The output directory for both builder (`Make` and `Maven`) is `"target/"` directory.  
-See "`New Features`" section at [#29](https://github.com/mitsuki31/jmatrix/pull/29).  
-
-For more detailed information, please refer to [JMatrix Wiki](https://github.com/mitsuki31/jmatrix/wiki/Home).
-
-## <a name="authors"></a> Authors
+## <a name="author"></a> Author
 [Ryuu Mitsuki](https://github.com/mitsuki31)
 
 ## <a name="license"></a> :balance_scale: License
 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+
+<!-- Shortcut -->
+[jmatrix]: https://github.com/mitsuki31/jmatrix.git
+[what-is-matrix]: https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix
+[matrix-row]: https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#matrix-row
+[matrix-col]: https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#matrix-column
