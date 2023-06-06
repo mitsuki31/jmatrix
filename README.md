@@ -127,7 +127,7 @@ For example:
 ```java
 // Declare and initialize entries "a"
 double[][] a = {
-    { 1, 2, 3 }
+    { 1, 2, 3 },
     { 4, 5, 6 }
 };
 
@@ -140,7 +140,7 @@ Or you can do the same thing with this code:
 ```java
 // Create new matrix
 Matrix m = new Matrix(new double[][] {
-    { 1, 2, 3 }
+    { 1, 2, 3 },
     { 4, 5, 6 }
 });
 ```
