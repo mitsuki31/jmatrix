@@ -23,12 +23,14 @@ package com.mitsuki.jmatrix;
 // -**- Local Package -**- //
 import com.mitsuki.jmatrix.core.*;
 import com.mitsuki.jmatrix.util.Options;
+import com.mitsuki.jmatrix.util.MatrixUtils;
 
 // -**- Built-in Package -**- //
 import java.util.Arrays;
 
 /**
-* The <b>Matrix</b> class represents a two-dimensional (2D) array of doubles.
+* The <b>Matrix</b> class represents a two-dimensional (2D) array of {@code double}s.
+*
 * <p>It provides methods for creating, accessing and manipulating matrices,
 * as well as basic matrix operations such as:
 * <ul>
@@ -62,9 +64,20 @@ import java.util.Arrays;
 *       [10.0, 12.0]   ]
 * </pre>
 *
+* <p>For creating the {@code null matrix} also known as {@code zero matrix},
+* it just simply by using the {@link #Matrix(int, int)} constructor.
+*
+* <pre><code class="language-java">&nbsp;
+*   Matrix m = new Matrix(5, 5);
+* </code></pre>
+*
+* <p>Code above will create and construct a new {@code null matrix}
+* with dimensions {@code 5x5}.
+*
+*
 * @author   <a href="https://github.com/mitsuki31" target="_blank">
 *           Ryuu Mitsuki</a>
-* @version  1.4, 1 June 2023
+* @version  1.6, 6 June 2023
 * @since    0.1.0
 * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
 *           Apache License 2.0</a>
@@ -72,7 +85,7 @@ import java.util.Arrays;
 * @see      <a href="https://en.m.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">
 *           "Matrix - Wikipedia"</a>
 */
-public class Matrix {
+public class Matrix implements MatrixUtils {
     /**
     * Stores the entries array of this matrix.
     *
@@ -128,7 +141,7 @@ public class Matrix {
 
 
     /**
-    * A threshold for double comparison.
+    * A threshold for {@code double} comparison.
     */
     public static final double THRESHOLD = 1e-6;
 
@@ -204,8 +217,12 @@ public class Matrix {
             }
         }
 
+        // Copy the sizes from input parameters
         this.ROWS = rows;
         this.COLS = cols;
+
+        // Initialize the entries, but does not assign any values.
+        // Which means it would creates null/zero matrix with specified dimensions.
         this.ENTRIES = new double[rows][cols];
     }
 
@@ -267,9 +284,11 @@ public class Matrix {
             }
         }
 
+        // Copy the sizes from input parameters
         this.ROWS = rows;
         this.COLS = cols;
 
+        // Initialize the entries
         this.ENTRIES = new double[rows][cols];
 
         // Fill all matrix entries with "val"
@@ -325,9 +344,19 @@ public class Matrix {
             Options.raiseError(nme);
         }
 
+        // Retrieve the sizes
         this.ROWS = arr.length;
         this.COLS = arr[0].length;
-        this.ENTRIES = arr;
+
+        // Initialize the entries
+        this.ENTRIES = new double[this.ROWS][this.COLS];
+
+        // Iterate over each elements to prevent the shallow copy
+        for (int r = 0; r < this.ROWS; r++) {
+            for (int c = 0; c < this.COLS; c++) {
+                this.ENTRIES[r][c] = arr[r][c];
+            }
+        }
     }
 
 
@@ -483,8 +512,11 @@ public class Matrix {
             }
         }
 
+        // Copy the sizes from input parameters
         this.ROWS = rows;
         this.COLS = cols;
+
+        // Initialize the entries
         this.ENTRIES = new double[rows][cols];
     }
 
@@ -516,9 +548,19 @@ public class Matrix {
             Options.raiseError(nme);
         }
 
+        // Retrieve the sizes
         this.ROWS = arr.length;
         this.COLS = arr[0].length;
-        this.ENTRIES = arr;
+
+        // Initialize the entries
+        this.ENTRIES = new double[this.ROWS][this.COLS];
+
+        // Iterate over each elements to prevent the shallow copy
+        for (int r = 0; r < this.ROWS; r++) {
+            for (int c = 0; c < this.COLS; c++) {
+                this.ENTRIES[r][c] = arr[r][c];
+            }
+        }
     }
 
 
@@ -536,9 +578,10 @@ public class Matrix {
     * @since                           0.2.0
     * @see                             #deepCopy()
     *
-    * @deprecated                      This method is deprecated and may result in unexpected behavior.
-    *                                  Use {@link #deepCopy()} for performing a deep copy of the matrix instead.
-    *
+    * @deprecated                      This method is deprecated and may
+    *                                  result in unexpected behavior.
+    *                                  Use {@link #deepCopy()} for performing a
+    *                                  deep copy of the matrix instead.
     */
     @Deprecated
     public Matrix copy() {
@@ -557,33 +600,16 @@ public class Matrix {
 
 
     /**
-    * Creates a copy of this matrix and performs a deep copy.
+    * Creates a deep copy of this matrix.
     *
-    * @return the copied of this matrix.
+    * @return a new <b>Matrix</b> object which is a deep copy of this matrix.
     *
     * @since  1.0.0
+    * @see    MatrixUtils#deepCopyOf(Matrix)
+    * @see    com.mitsuki.jmatrix.util.MatrixUtils
     */
     public Matrix deepCopy() {
-        /*
-        * Instead throw an exception, for now on when the entries of
-        * this matrix is null, it would just creates new matrix object
-        * with null entries.
-        */
-        if (this.ENTRIES == null) {
-            return new Matrix();
-        }
-
-        int rows = this.ROWS;
-        int cols = this.COLS;
-        Matrix copiedMatrix = new Matrix(rows, cols);
-
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                copiedMatrix.ENTRIES[r][c] = this.ENTRIES[r][c];
-            }
-        }
-
-        return copiedMatrix;
+        return MatrixUtils.deepCopyOf(this);
     }
 
 
@@ -596,7 +622,7 @@ public class Matrix {
     *
     * <p><b>For example:</b></p>
     *
-    * <pre><code class="language-java">
+    * <pre><code class="language-java">&nbsp;
     *   double[][] a = {
     *       { 5, 6, 7 },
     *       { 4, 5, 6 }
@@ -613,7 +639,7 @@ public class Matrix {
     *
     * <p><b>Output:</b></p>
     *
-    * <pre>
+    * <pre>&nbsp;
     *   [   [1.0, 2.0, 3.0],
     *       [4.0, 5.0, 6.0]   ]
     * </pre>
@@ -882,7 +908,7 @@ public class Matrix {
     *
     * <p><b>For example:</b></p>
     *
-    * <pre><code class="language-java">
+    * <pre><code class="language-java">&nbsp;
     *   double[][] a = {
     *       { 5, 6, 7 },
     *       { 4, 5, 6 }
@@ -899,7 +925,7 @@ public class Matrix {
     *
     * <p><b>Output:</b></p>
     *
-    * <pre>
+    * <pre>&nbsp;
     *   [   [1.0, 2.0, 3.0],
     *       [4.0, 5.0, 6.0]   ]
     * </pre>
@@ -1660,6 +1686,33 @@ public class Matrix {
     * <p>The number of columns in this matrix and the number of rows in
     * given matrix should be same before performing multiplication.
     *
+    * <p><b>For example:</b></p>
+    *
+    * <pre><code class="language-java">&nbsp;
+    *   double[][] x = {
+    *       { 3, 7 },
+    *       { 1, 5 }
+    *   };
+    *
+    *   double[][] y = {
+    *       { 12, 4 },
+    *       { 7, 3 }
+    *   };
+    *
+    *   Matrix m = new Matrix(x);
+    *   Matrix n = new Matrix(y);
+    *
+    *   m.mult(n);
+    *   m.display();
+    * </code></pre>
+    *
+    * <p><b>Output:</b></p>
+    *
+    * <pre>&nbsp;
+    *   [   [85.0, 33.0],
+    *       [47.0, 19.0]   ]
+    * </pre>
+    *
     * @param  m                           the matrix object as multiplicand.
     *
     * @throws IllegalMatrixSizeException  if the number of columns in this matrix
@@ -1714,6 +1767,34 @@ public class Matrix {
     *
     * <p>The number of columns in this matrix and the number of rows in
     * given 2D array should be same before performing multiplication.
+    *
+    * <p><b>For example:</b></p>
+    *
+    * <pre><code class="language-java">&nbsp;
+    *   double[][] x = {
+    *       { 9, -2 },
+    *       { 0, 5 },
+    *       {-8, 10 }
+    *   };
+    *
+    *   double[][] y = {
+    *       { 6, 2, 2 },
+    *       { 8, 1, 4 }
+    *   };
+    *
+    *   Matrix m = new Matrix(x);
+    *
+    *   m.mult(y);
+    *   m.display();
+    * </code></pre>
+    *
+    * <p><b>Output:</b></p>
+    *
+    * <pre>&nbsp;
+    *   [   [38.0, 16.0],
+    *       [40.0, 5.0],
+    *       [32.0, -6.0]   ]
+    * </pre>
     *
     * @param  a                           an array as multiplicand.
     *
@@ -1771,6 +1852,31 @@ public class Matrix {
     * <p>The number of columns in first array and number of rows in
     * second array should be same before performing multiplication.
     *
+    * <p><b>For example:</b></p>
+    *
+    * <pre><code class="language-java">&nbsp;
+    *   double[][] x = {
+    *       { 1, 1, 1 },
+    *       { 2, 2, 2 }
+    *   };
+    *
+    *   double[][] y = {
+    *       { 3, 4 },
+    *       { 3, 4 },
+    *       { 3, 4 }
+    *   };
+    *
+    *   double[][] res = Matrix.mult(x, y);
+    *   Matrix.display(res);
+    * </code></pre>
+    *
+    * <p><b>Output:</b></p>
+    *
+    * <pre>&nbsp;
+    *   [   [9.0, 12.0],
+    *       [18.0, 24.0]   ]
+    * </pre>
+    *
     * @param  a                           the first array as multiplier.
     * @param  b                           the second array as multiplicand.
     *
@@ -1825,6 +1931,34 @@ public class Matrix {
     *
     * <p>The number of columns in first matrix and number of rows in
     * second matrix should be same before performing multiplication.
+    *
+    * <p><b>For example:</b></p>
+    *
+    * <pre><code class="language-java">&nbsp;
+    *   double[][] x = {
+    *       { 1, 1, 1 },
+    *       { 2, 2, 2 }
+    *   };
+    *
+    *   double[][] y = {
+    *       { 3, 4 },
+    *       { 3, 4 },
+    *       { 3, 4 }
+    *   };
+    *
+    *   Matrix m = new Matrix(x);
+    *   Matrix n = new Matrix(y);
+    *
+    *   Matrix res = Matrix.mult(m, n);
+    *   res.display();
+    * </code></pre>
+    *
+    * <p><b>Output:</b></p>
+    *
+    * <pre>&nbsp;
+    *   [   [9.0, 12.0],
+    *       [18.0, 24.0]   ]
+    * </pre>
     *
     * @param  a                           the first <b>Matrix</b> object as multiplier.
     * @param  b                           the second <b>Matrix</b> object as multiplicand.
@@ -1882,6 +2016,24 @@ public class Matrix {
     *
     * <p>Multiplies all entries of this matrix by a specified scalar value.
     *
+    * <p><b>For example:</b></p>
+    *
+    * <pre><code class="language-java">&nbsp;
+    *   // Create 3x3 identity matrix
+    *   Matrix m = Matrix.identity(3);
+    *
+    *   m.mult(10);
+    *   m.display();
+    * </code></pre>
+    *
+    * <p><b>Output:</b></p>
+    *
+    * <pre>&nbsp;
+    *   [   [10.0, 0.0, 0.0],
+    *       [0.0, 10.0, 0.0],
+    *       [0.0, 0.0, 10.0]   ]
+    * </pre>
+    *
     * @param  x                    the scalar value to multiply each entry of this matrix.
     *
     * @throws NullMatrixException  if the entries of given matrix is {@code null}.
@@ -1891,7 +2043,12 @@ public class Matrix {
     * @see                         #mult(Matrix)
     */
     public void mult(double x) {
-        this.ENTRIES = Matrix.mult(this, x).getEntries();
+        // Use this code would create shallow copy
+        // this.ENTRIES = Matrix.mult(this, x).getEntries();
+
+        // Instead call "create" method to recreate
+        // this matrix with new elements
+        this.create( Matrix.mult(this, x).getEntries() );
     }
 
 
@@ -1981,7 +2138,7 @@ public class Matrix {
     * @see   #display(int)
     * @see   #getEntries()
     */
-    public final void display() {
+    final public void display() {
         if (this.ENTRIES != null) {
             System.out.println(this.toString());
         } else {
@@ -2012,7 +2169,7 @@ public class Matrix {
     * @see                           #display()
     * @see                           #getEntries()
     */
-    public final void display(int index) {
+    final public void display(int index) {
         if (this.ENTRIES != null) {
             // Checking index value from argument parameter
             try {
@@ -2053,7 +2210,7 @@ public class Matrix {
     * @since      0.1.0
     * @see        #display(double[][], int)
     */
-    public static final void display(double[ ][ ] arr) {
+    final public static void display(double[ ][ ] arr) {
         if (arr != null || arr.length != 0) {
             System.out.println((new Matrix(arr)).toString());
         } else {
@@ -2084,7 +2241,7 @@ public class Matrix {
     * @since                         0.2.0
     * @see                           #display(double[][])
     */
-    public static final void display(double[ ][ ] arr, int index) {
+    final public static void display(double[ ][ ] arr, int index) {
         if (arr != null || arr.length != 0) {
             try {
                 // Checking index value
@@ -2110,9 +2267,46 @@ public class Matrix {
     * Performs transposition for this matrix.
     *
     * <p>If this matrix type are not square, then it would switches the row and column
-    * indices of this matrix.
-    * Repeating the process on the transposed matrix returns
-    * the elements to their original position.
+    * indices of this matrix. Which means the matrix size would be switched
+    * (for example, {@code 2x4 -> 4x2}).
+    *
+    * <p>The transposed matrix always get denoted by upperscript <b>T</b>, <b>t</b> or <b>tr</b>,
+    * for example:
+    * <ul>
+    * <li> <b>A</b><sup>T</sup>
+    * <li> <b>A</b><sup>t</sup>
+    * <li> <b>A</b><sup>tr</sup>
+    * </ul>
+    *
+    * <p><b>Example code:</b></p>
+    *
+    * <pre><code class="language-java">&nbsp;
+    *   Matrix m = new Matrix(
+    *       new double[][] {
+    *           { 1, 7, 8 },
+    *           { 3, 0, 2 }
+    *       }
+    *   );
+    *
+    *   // Perform the tranposition
+    *   m.transpose();
+    *   m.display();
+    * </code></pre>
+    *
+    * <p>This code would transpose the matrix {@code m}, which means
+    * the size would be switched. Here is the output:
+    *
+    * <pre>&nbsp;
+    *   [   [1.0, 3.0],
+    *       [7.0, 0.0],
+    *       [8.0, 2.0]   ]
+    * </pre>
+    *
+    * <p><b>Note:</b></p>
+    *
+    * <p>Repeating the process on the transposed matrix returns
+    * the elements to their original position. Also can be written
+    * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
     *
     * @throws NullMatrixException  if the entries of this matrix is {@code null}
     *
@@ -2121,7 +2315,7 @@ public class Matrix {
     * @see                         #transpose(double[][])
     */
     public void transpose() {
-        this.create(Matrix.transpose(this).getEntries());
+        this.create( Matrix.transpose(this).getEntries() );
     }
 
 
@@ -2130,9 +2324,14 @@ public class Matrix {
     * array with the transposed elements.
     *
     * <p>If the given 2D array type are not square, then it would switches the row and column
-    * indices of the array.
-    * Repeating the process on the transposed matrix returns
-    * the elements to their original position.
+    * indices of the array. Which means the array size would be switched
+    * (for example, {@code 2x4 -> 4x2}).<br>
+    *
+    * <p><b>Note:</b></p>
+    *
+    * <p>Repeating the process on the transposed 2D array returns
+    * the elements to their original position. Also can be written
+    * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
     *
     * @param  arr                  the 2D array to be transposed.
     *
@@ -2163,9 +2362,47 @@ public class Matrix {
     * matrix with the transposed elements.
     *
     * <p>If the given matrix type are not square, then it would switches the row and column
-    * indices of the matrix.
-    * Repeating the process on the transposed matrix returns
-    * the elements to their original position.
+    * indices of the matrix. Which means the matrix size would be switched
+    * (for example, {@code 2x4 -> 4x2}).<br>
+    *
+    * <p>The transposed matrix always get denoted by upperscript <b>T</b>, <b>t</b> or <b>tr</b>,
+    * for example:
+    * <ul>
+    * <li> <b>A</b><sup>T</sup>
+    * <li> <b>A</b><sup>t</sup>
+    * <li> <b>A</b><sup>tr</sup>
+    * </ul>
+    *
+    * <p><b>Example code:</b></p>
+    *
+    * <pre><code class="language-java">&nbsp;
+    *   Matrix m = new Matrix(
+    *       new double[][] {
+    *           { 1, 7, 8 },
+    *           { 3, 0, 2 }
+    *       }
+    *   );
+    *
+    *   // Transpose and create new matrix named "mT",
+    *   // which the capital "T" is to indicates the
+    *   // transposed matrix of matrix "m".
+    *   Matrix mT = Matrix.transpose(m);
+    * </code></pre>
+    *
+    * <p>This code would transpose the matrix {@code m}, which means
+    * the size would be switched. Here is the output:
+    *
+    * <pre>&nbsp;
+    *   [   [1.0, 3.0],
+    *       [7.0, 0.0],
+    *       [8.0, 2.0]   ]
+    * </pre>
+    *
+    * <p><b>Note:</b></p>
+    *
+    * <p>Repeating the process on the transposed matrix returns
+    * the elements to their original position. Also can be written
+    * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
     *
     * @param  m                    the <b>Matrix</b> object to be transposed.
     *
