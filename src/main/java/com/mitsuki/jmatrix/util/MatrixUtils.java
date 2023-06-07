@@ -28,7 +28,7 @@ import com.mitsuki.jmatrix.Matrix;
 *
 * @author   <a href="https://github.com/mitsuki31" target="_blank">
 *           Ryuu Mitsuki</a>
-* @version  1.0, 6 June 2023
+* @version  1.1, 7 June 2023
 * @since    1.0.0
 * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
 *           Apache License 2.0</a>
@@ -36,11 +36,11 @@ import com.mitsuki.jmatrix.Matrix;
 */
 public interface MatrixUtils {
     /**
-    * Creates a deep copy of the given <b>Matrix</b>.
+    * Creates a deep copy of the given {@linkplain Matrix}.
     *
-    * @param  m  the <b>Matrix</b> to be copied.
+    * @param  m  the {@linkplain Matrix} object.
     *
-    * @return    a new <b>Matrix</b> object that is a deep copy of
+    * @return    a new {@linkplain Matrix} object that is a deep copy of
     *            the input matrix, or {@code null} if the entries
     *            of input matrix is {@code null}.
     *
@@ -74,7 +74,7 @@ public interface MatrixUtils {
     *
     * @param  a   the array to be copied.
     *
-    * @return     a new array that is a deep copy of
+    * @return     a new two-dimensional array that is a deep copy of
     *             the input array, or {@code null} if the input array
     *             is {@code null} or empty.
     *
@@ -107,8 +107,8 @@ public interface MatrixUtils {
     /**
     * Checks whether the given two matrices have equal sizes.
     *
-    * @param  a  the first matrix to compare.
-    * @param  b  the second matrix to compare.
+    * @param  a  the first {@linkplain Matrix} to compare.
+    * @param  b  the second {@linkplain Matrix} to compare.
     *
     * @return    {@code true} if the matrices have equal sizes, {@code false} otherwise.
     *
@@ -130,8 +130,8 @@ public interface MatrixUtils {
     /**
     * Checks whether the given two arrays have equal sizes.
     *
-    * @param  a  the first array to compare.
-    * @param  b  the second array to compare.
+    * @param  a  the first two-dimensional array to compare.
+    * @param  b  the second two-dimensional array to compare.
     *
     * @return    {@code true} if the arrays have equal sizes, {@code false} otherwise.
     *
@@ -153,8 +153,8 @@ public interface MatrixUtils {
     /**
     * Checks whether the given two matrices are equal by comparing their entries.
     *
-    * @param  a  the first matrix to compare.
-    * @param  b  the second matrix to compare.
+    * @param  a  the first {@linkplain Matrix} to compare.
+    * @param  b  the second {@linkplain Matrix} to compare.
     *
     * @return    {@code true} if the matrices are equal, {@code false} otherwise.
     *
@@ -185,8 +185,8 @@ public interface MatrixUtils {
     /**
     * Checks whether the given two arrays are equal by comparing their entries.
     *
-    * @param  a  the first array to compare.
-    * @param  b  the second array to compare.
+    * @param  a  the first two-dimensional array to compare.
+    * @param  b  the second two-dimensional array to compare.
     *
     * @return    {@code true} if the arrays are equal, {@code false} otherwise.
     *
@@ -211,5 +211,23 @@ public interface MatrixUtils {
         }
 
         return true;
+    }
+
+    /**
+     * Checks whether the given {@linkplain Matrix} has {@code null} entries.
+     *
+     * @param  m  the {@linkplain Matrix} object.
+     *
+     * @return {@code true} if the matrix has {@code null} entries, {@code false} otherwise.
+     *
+     * @since  1.0.0
+     * @see    Matrix#getEntries()
+     */
+    public static boolean isNullEntries(Matrix m) {
+        if (m == null || m.getEntries() == null) {
+            return true;
+        }
+
+        return false;
     }
 }
