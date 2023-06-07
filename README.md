@@ -26,9 +26,10 @@ It can creates, accessing the matrix, and also operating basic [matrix operation
 - [Addition](https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#-addition)
 - [Subtraction](https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#-subtraction)
 - [Multiplication](https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#-multiplication)
-- Transposition
+- [Transposition](https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#-transposition)
 - *(other matrix operations will be added soon)*
 
+---
 
 **Prerequisites:**
 - [**Java**][java] *(min. version 11)*.
