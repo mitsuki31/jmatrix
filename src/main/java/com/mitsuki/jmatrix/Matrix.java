@@ -77,11 +77,12 @@ import java.util.Arrays;
 *
 * @author   <a href="https://github.com/mitsuki31" target="_blank">
 *           Ryuu Mitsuki</a>
-* @version  1.6, 6 June 2023
+* @version  1.7, 7 June 2023
 * @since    0.1.0
 * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
 *           Apache License 2.0</a>
 *
+* @see      com.mitsuki.jmatrix.util.MatrixUtils
 * @see      <a href="https://en.m.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">
 *           "Matrix - Wikipedia"</a>
 */
@@ -2211,7 +2212,7 @@ public class Matrix implements MatrixUtils {
     * @see        #display(double[][], int)
     */
     final public static void display(double[ ][ ] arr) {
-        if (arr != null || arr.length != 0) {
+        if (arr != null) {
             System.out.println((new Matrix(arr)).toString());
         } else {
             System.out.println("<null_matrix>");
@@ -2242,7 +2243,7 @@ public class Matrix implements MatrixUtils {
     * @see                           #display(double[][])
     */
     final public static void display(double[ ][ ] arr, int index) {
-        if (arr != null || arr.length != 0) {
+        if (arr != null) {
             try {
                 // Checking index value
                 if (index < 0) {
@@ -2798,7 +2799,8 @@ public class Matrix implements MatrixUtils {
     *   System.out.println(lastEntry);
     * </code></pre>
     *
-    * <p><b>Output:</b>&nbsp; 4</p>
+    * <p><b>Output:</b></p>
+    * <pre>4</pre>
     *
     * @param  row                    the row index.
     * @param  col                    the column index.
@@ -2850,11 +2852,17 @@ public class Matrix implements MatrixUtils {
     /**
     * Returns the {@code double} 2D array representation of this matrix elements.
     *
-    * @return the entries array of this matrix.
+    * <p><b>Note:</b></p>
+    * If the matrix constructed by using {@link #Matrix()} constructor,
+    * this method would returns {@code null} instead (similar with the entries).
+    *
+    * @return a two-dimensional array that represents entries of this matrix,
+    *         returns {@code null} instead if the entries is uninitialized.
     *
     * @since  1.0.0
     * @see    #get(int, int)
     * @see    #getSize()
+    * @see    MatrixUtils#isNullEntries(Matrix)
     */
     public double[ ][ ] getEntries() {
         return this.ENTRIES;
