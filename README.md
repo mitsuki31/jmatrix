@@ -19,17 +19,23 @@
 <!-- [END] Badges -->
 
 
-**Developed by Ryuu Mitsuki<br>**
+**Developed by Ryuu Mitsuki**  
 
-**Minimal Requirements:<br>**
-- `Java 11`.
-- `Python 3.7`.
-- Latest version of `Make` or `Maven`.
+**JMatrix** is a package that can builds the [matrix][what-is-matrix], and it's written in [**Java**][java].  
+It can creates, accessing the matrix, and also operating basic [matrix operations](https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#-matrix-operations) such as:
+- [Addition](https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#-addition)
+- [Subtraction](https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#-subtraction)
+- [Multiplication](https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#-multiplication)
+- Transposition
+- *(other matrix operations will be added soon)*
 
-> **Note**
-> JMatrix is a matrix builder written in Java.  
-> Can creates the matrix, operates basic matrix operations such as addition, subtraction, multiplication
-> and transposition *(other operations will be added soon)*.<br>
+
+**Prerequisites:**
+- [**Java**][java] *(min. version 11)*.
+- [**Python**](https://www.python.org) *(min. version 3.7)*.
+- Latest version of [**Make**](https://www.mingw-w64.org/downloads/) or [**Maven**](https://maven.apache.org/download.cgi).
+- [**Git Bash**](https://git-scm.com/downloads) *(Optional)*.  
+> **Note** If you use [Maven](https://maven.apache.org) to build the project, you don't need to install [Python](https://www.python.org).
 
 <details>
 <summary><h3><a name="table-of-contents"></a>Table of Contents</h3>
@@ -100,7 +106,7 @@ the matrix, and the output should looks like this:
 ```
 
 ### <a name="cr_matrix-3"></a> Matrix(int, int, int)
-This constructor is similar with [Matrix\(int, int)](#cr_matrix-2) but with an additional
+This constructor is similar with [`Matrix(int, int)`](#cr_matrix-2) but with an additional
 argument which is the value to filled out the entire elements of constructed matrix. For example:
 
 ```java
@@ -154,6 +160,7 @@ Matrix m = new Matrix(new double[][] {
 
 
 <!-- Shortcut -->
+[java]: https://www.oracle.com/java/technologies/downloads
 [jmatrix]: https://github.com/mitsuki31/jmatrix.git
 [what-is-matrix]: https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix
 [matrix-row]: https://github.com/mitsuki31/jmatrix/wiki/About%20Matrix#matrix-row
