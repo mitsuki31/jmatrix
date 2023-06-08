@@ -11,7 +11,7 @@
         <package.version.core>1.0.0</package.version.core>
         <package.mainClass>com.mitsuki.jmatrix.Main</package.mainClass>
         <package.releaseType>beta</package.releaseType>
-        <package.betaNum>x</package.betaNum>
+        <package.betaNum>7</package.betaNum>
 
         <!-- Encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,7 +34,24 @@
     <groupId>com.mitsuki</groupId>
     <artifactId>jmatrix</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0-beta.x</version>
+    <version>1.0.0-beta.7</version>
+
+    <profiles>
+        <!--
+            This profile will include all source files while packaging
+            Use it for packaging with command `mvn package -P include-src`
+        -->
+        <profile>
+            <id>include-src</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/java</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
 
     <build>
         <resources>
@@ -116,12 +133,6 @@
                             <Manifest-Version>1.2</Manifest-Version>
                         </manifestEntries>
                     </archive>
-                    <includes>
-                        <include>**/*.class</include>
-                        <include>LICENSE</include>
-                        <include>**/*.content</include>
-                        <include>**/*.xml</include>
-                    </includes>
                 </configuration>
             </plugin>
 
