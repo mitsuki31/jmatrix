@@ -1,10 +1,33 @@
-Usage:
-    java -jar <jar_file> [options]
+USAGE:
+    java -jar <path_to_jmatrix_jar> [options]
 
-Options:
+OPTIONS:
     -h, help              display this help
     -cr, copyright        print the copyright
     -V, ver, version      display version number with release type
 
-JMatrix - com.mitsuki.jmatrix
-Developed by Ryuu Mitsuki
+DESCRIPTION:
+    JMatrix is a Java library designed to simplify matrix operations.
+    It provides a set of intuitive methods to perform common matrix
+    operations with ease.
+
+    With JMatrix, you can create matrices of various dimensions,
+    initialize them with values, and perform some basic matrix operations.
+    It supports both square and rectangular matrix.
+
+    JMatrix provides some basic matrix operations, such as:
+
+      -  Addition
+      -  Subtraction
+      -  Multiplication
+      -  Transposition
+
+ISSUES:
+    Report any issues or suggestions, and help improve JMatrix:
+    https://github.com/mitsuki31/jmatrix/issues/new
+
+AUTHOR:
+    Ryuu Mitsuki
+
+LICENSE:
+    Apache-2.0 License
