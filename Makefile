@@ -202,8 +202,8 @@ cleanbin:
 	@echo "$(PREFIX) All cleaned up."
 
 	$(if $(shell test -e $(jar) && echo "1"),\
-		@echo 'File "$(jar:/=)" is still exists.',\
-		$(warning File "$(jar_name)" is missing or has been deleted.)\
+		@echo 'File "$(subst ./,,$(jar))" is still exists.',\
+		@echo 'File "$(subst ./,,$(jar))" is missing or has been deleted.'\
 	)
 
 
