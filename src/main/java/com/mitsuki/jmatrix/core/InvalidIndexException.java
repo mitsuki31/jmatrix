@@ -4,8 +4,6 @@
 
 package com.mitsuki.jmatrix.core;
 
-import com.mitsuki.jmatrix.core.JMBaseException;
-
 public class InvalidIndexException extends JMBaseException
 {
     private String message = null;
