@@ -77,35 +77,36 @@ endif
 all:
 	$(info [Makefile-jmatrix])
 	@echo "Options:"
-	@echo "   * compile       - Compile the program. \
-		\n   * package       - Create archived package (jar) of compiled program.\
-		\n                        WARNING: Program need to be compiled first! \
-		\n   * clean         - Clean all of compiled program and created jar. \
-		\n   * cleanbin      - Clean all generated class files only. \
-		\n   * check-verbose - Check the verbose status. \
-		\n   * usage         - Print the example usages for build the project."
-
-	@echo "\nAdditional Options:"
+	@echo "   * compile       - Compile the program."
+	@echo "   * package       - Create archived package (jar) of compiled program."
+	@echo "                        WARNING: Program need to be compiled first!"
+	@echo "   * clean         - Clean all of compiled program and created jar."
+	@echo "   * cleanbin      - Clean all generated class files only."
+	@echo "   * check-verbose - Check the verbose status."
+	@echo "   * usage         - Print the example usages for build the project."
+	@echo ""
+	@echo "Additional Options:"
 	@echo "   * Activating verbose output"
-
-	@echo "\n       \`export VERBOSE=true\`"
-	@echo "\n     Or:"
-	@echo "\n       \`make [options] VERBOSE=true\`\n"
-
+	@echo ""
+	@echo "       \`export VERBOSE=true\`"
+	@echo ""
+	@echo "     Or:"
+	@echo ""
+	@echo "       \`make [options] VERBOSE=true\`"
+	@echo ""
+	@echo ""
 	@echo "   * Include source files while packaging"
-
-	@echo "\n       \`export INCLUDE-SRC=true\`"
-	@echo "\n     Or:"
-	@echo "\n       \`make [options] INCLUDE-SRC=true\`\n"
-
-	@echo "\nUsage:"
-	@echo "     $$ make [option1] [option2] [...]"
-	@echo "     $$ make compile package"
-
-	@echo "\nTips:"
+	@echo ""
+	@echo "       \`make [options] INCLUDE-SRC=true\`"
+	@echo ""
+	@echo "Usage:"
+	@echo "     $$ make [options] [...] [arguments]"
+	@echo "     $$ make [options] VERBOSE[=<bool>] INCLUDE-SRC[=<bool>]"
+	@echo ""
+	@echo "Tips:"
 	@echo "   - Combine the options, Makefile can understand multiple rules."
-
-	@echo "\nAuthor:"
+	@echo ""
+	@echo "Author:"
 	@echo "   Ryuu Mitsuki"
 
 
@@ -119,16 +120,18 @@ endif
 
 
 compile: $(SOURCES_LIST) $(SRCFILES)
-	@echo "\n>> [ COMPILE PROGRAM ] <<"
+	@echo ""
+	@echo ">> [ COMPILE PROGRAM ] <<"
 
 	@echo "$(PREFIX) Compiling all source files..."
 	@$(CC) -d $(CLASSES_PATH) @$<
-	@echo "$(PREFIX) Successfully compile all source files."
+	@echo "$(PREFIX) Successfully compiled all source files."
 
 	$(eval HAS_COMPILED := $(wildcard $(CLASSES_PATH)))
 	$(eval HAS_OUTPUT := $(wildcard $(OUTPUT_PATH)))
 
-	@echo "\n>> [ GENERATE LIST ] <<"
+	@echo ""
+	@echo ">> [ GENERATE LIST ] <<"
 	@echo "$(PREFIX) Generating list of class files..."
 
 ifeq "$(MAKE_VERBOSE)" "true"
@@ -145,12 +148,14 @@ package: $(CLSFILES)
 		$(error $(PREFIX) Program is uncompiled, compile it with `make compile` command)\
 	)
 
-	@echo "\n>> [ CREATE JAR ] <<"
+	@echo ""
+	@echo ">> [ CREATE JAR ] <<"
 
 	@echo "$(PREFIX) Copying all program resources to output directory..."
-	@cp -r $(RESOURCES_PATH)* $(CLASSES_PATH)
-	@echo "$(PREFIX) All resources have been copied.\n"
+	@cp -r --preserve=all $(RESOURCES_PATH)* $(CLASSES_PATH)
+	@echo "$(PREFIX) All resources have been copied."
 
+	@echo ""
 	@echo "$(PREFIX) Creating jar for compiled classes..."
 
 ifeq "$(MAKE_VERBOSE)" "true"
@@ -164,7 +169,8 @@ else
 endif
 
 ifeq "$(INCLUDE-SRC)" "true"
-	@echo "\n$(PREFIX) INCLUDE-SRC option is ACTIVATED"
+	@echo ""
+	@echo "$(PREFIX) INCLUDE-SRC option is ACTIVATED"
 	@echo "$(PREFIX) Adding the source files into jar..."
 ifeq "$(MAKE_VERBOSE)" "true"
 	@jar uvf $(jar) -C $(SOURCES_PATH) .
@@ -174,30 +180,36 @@ endif
 endif
 
 	@echo "$(PREFIX) Successfully created the jar file."
-	@echo "\nSAVED IN: \"$(jar)\""
+	@echo ""
+	@echo "SAVED IN: \"$(jar)\""
 
 
 clean:
-	@echo "\n>> [ CLEAN WORKING DIRECTORY ] <<"
+	@echo ""
+	@echo ">> [ CLEAN WORKING DIRECTORY ] <<"
 	@echo "$(PREFIX) Cleaning the \"$(OUTPUT_PATH)\" directory recursively..."
 	@-rm -r $(OUTPUT_PATH)
-	@echo "\n$(PREFIX) All cleaned up."
+	@echo ""
+	@echo "$(PREFIX) All cleaned up."
 
 
 cleanbin:
-	@echo "\n>> [ CLEAN ONLY CLASS OBJECTS ] <<"
+	@echo ""
+	@echo ">> [ CLEAN ONLY CLASS OBJECTS ] <<"
 	@echo "$(PREFIX) Cleaning the class files only..."
 	@-rm -r $(CLASSES_PATH)
-	@echo "\n$(PREFIX) All cleaned up."
+	@echo ""
+	@echo "$(PREFIX) All cleaned up."
 
 	$(if $(shell test -e $(jar) && echo "1"),\
-		@echo 'File "$(jar:/=)" is still exists.',\
-		$(warning File "$(jar_name)" is missing or has been deleted.)\
+		@echo 'File "$(subst ./,,$(jar))" is still exists.',\
+		@echo 'File "$(subst ./,,$(jar))" is missing or has been deleted.'\
 	)
 
 
 $(SOURCES_LIST): $(wildcard $(PYTHON_PATH)*.py)
-	@echo "\n>> [ GENERATE LIST ] <<"
+	@echo ""
+	@echo ">> [ GENERATE LIST ] <<"
 	@echo "$(PREFIX) Generating list of source files..."
 
 ifeq "$(MAKE_VERBOSE)" "true"
@@ -210,22 +222,26 @@ endif
 
 
 usage:
-	@echo "[Makefile Usage]\n"
+	@echo "[Makefile Usage]"
 
-	@echo "Parameters:\n    $$ make [option1] [option2] [...]\n"
+	@echo ""
+	@echo "Parameters:"
+	@echo "    $$ make [option1] [option2] [...]"
 
+	@echo ""
 	@echo "Generate \"jar\" file (simple)"
-	@echo "\
-	make\n\
-	  └── compile\n\
-	          └── package\n\
-	                 └── cleanbin (optional)\n"
+	@echo ""
+	@echo "make"
+	@echo "  └── compile"
+	@echo "          └── package"
+	@echo "                 └── cleanbin (optional)"
 
+	@echo ""
 	@echo "Generate \"jar\" file (complex)"
-	@echo "\
-	make\n\
-	  └── compile\n\
-	         └── package\n\
-	                └── && mv target/*.jar .\n\
-	                       └── && make\n\
-	                              └── clean\n"
+	@echo ""
+	@echo "make"
+	@echo "  └── compile"
+	@echo "         └── package"
+	@echo "                └── && mv target/*.jar ."
+	@echo "                       └── && make"
+	@echo "                                └── clean"

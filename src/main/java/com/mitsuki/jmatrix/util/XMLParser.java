@@ -7,19 +7,14 @@ package com.mitsuki.jmatrix.util;
 
 // -**- Built-in Package -**- //
 import java.io.InputStream;
-import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMException;
 
 // -**- Local Package -**- //
 import com.mitsuki.jmatrix.core.JMBaseException;
-import com.mitsuki.jmatrix.util.Options;
 
 
 /**
@@ -147,15 +142,15 @@ public class XMLParser implements XMLData
             Document doc = docBuilder.parse(configStream);
             Element xml = doc.getDocumentElement();
 
-            XMLConfig.programName = xml.getElementsByTagName("program_name").item(0).getTextContent();
-            XMLConfig.author = xml.getElementsByTagName("author").item(0).getTextContent();
-            XMLConfig.version = xml.getElementsByTagName("version").item(0).getTextContent();
+            XMLConfig.programName = xml.getElementsByTagName("program_name").item(0).getTextContent().strip();
+            XMLConfig.author = xml.getElementsByTagName("author").item(0).getTextContent().strip();
+            XMLConfig.version = xml.getElementsByTagName("version").item(0).getTextContent().strip();
             XMLConfig.releaseType = xml.getElementsByTagName("version").item(0)
-                .getAttributes().getNamedItem("type").getNodeValue();
-            XMLConfig.packageName = xml.getElementsByTagName("package").item(0).getTextContent();
+                .getAttributes().getNamedItem("type").getNodeValue().strip();
+            XMLConfig.packageName = xml.getElementsByTagName("package").item(0).getTextContent().strip();
 
             if (!XMLConfig.version.equals("release")) {
-                XMLConfig.betaNum = xml.getElementsByTagName("beta_num").item(0).getTextContent();
+                XMLConfig.betaNum = xml.getElementsByTagName("beta_num").item(0).getTextContent().strip();
             }
         } catch (final Exception e) {
             try {
