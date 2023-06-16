@@ -6,14 +6,12 @@ __all__    = ['GenerateList']
 
 import os
 import sys
-import platform
 from utils import Utils, FileUtils
 
 class GenerateList:
     """
     This class provides methods that generates list of source files and class files.
-
-    For generating list, this class uses command that based on the operating system.
+    Currently only works on Linux/Unix system, Windows user need to install MinGW and Git Bash.
 
     Working directory:
         : 'src/main/java/' - For searching all of source files (*.java).
@@ -21,11 +19,11 @@ class GenerateList:
         : 'target/generated-list/' - The output directory for generated list.
     """
     __PATH: dict = {
-        ('target_path'): (os.sep).join(['src', 'main', 'java']),
-        ('class_path'): (os.sep).join(['target', 'classes']) + os.sep,
-        ('out_path'): (os.sep).join(['target', 'generated-list']) + os.sep,
-        ('source'): (os.sep).join(['target', 'generated-list', 'sourceFiles.lst']),
-        ('output'): (os.sep).join(['target', 'generated-list', 'outputFiles.lst'])
+        ('target_path'): ('/').join(['src', 'main', 'java']),
+        ('class_path'): ('/').join(['target', 'classes']) + '/',
+        ('out_path'): ('/').join(['target', 'generated-list']) + '/',
+        ('source'): ('/').join(['target', 'generated-list', 'sourceFiles.lst']),
+        ('output'): ('/').join(['target', 'generated-list', 'outputFiles.lst'])
     }
 
     __verbose: bool = False
@@ -125,10 +123,7 @@ class GenerateList:
         Raises:
             None
         """
-        if platform.system().lower() in ('linux', 'unix'):
-            command = self.__command['unix']['source']
-        elif platform.system().lower() in ('win', 'win32', 'win64', 'windows'):
-            command = self.__command['windows']['source']
+        command = self.__command['unix']['source']
 
         if self.__verbose:
             Utils.pr_banner('GENERATING LIST')
@@ -136,6 +131,7 @@ class GenerateList:
 
         err_code: int = os.system(command)
 
+        # Return if an error occured
         if err_code != 0:
             sys.exit(err_code)
 
@@ -178,10 +174,7 @@ class GenerateList:
         Raises:
             None
         """
-        if platform.system().lower() in ('linux', 'unix'):
-            cmd = self.__command['unix']['output']
-        elif platform.system().lower() in ('win', 'win32', 'win64', 'windows'):
-            cmd = self.__command['windows']['output']
+        cmd = self.__command['unix']['output']
 
         if self.__verbose:
             Utils.pr_banner('GENERATING LIST')
@@ -189,6 +182,7 @@ class GenerateList:
 
         err_code: int = os.system(cmd)
 
+        # Return if an error occured
         if err_code != 0:
             sys.exit(err_code)
 
@@ -209,7 +203,7 @@ class GenerateList:
 
         for output_file in output_lst:
             for out in output_file.split():
-                new_output_lst.append(os.path.join(*(out.split(os.sep)[2:])))
+                new_output_lst.append(os.path.join(*(out.split('/')[2:])))
         new_output_lst.sort()
 
         if self.__verbose:
