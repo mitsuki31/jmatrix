@@ -2934,13 +2934,17 @@ public class Matrix implements MatrixUtils {
             // Typecast the given object to Matrix class
             Matrix otherMatrix = (Matrix) obj;
 
-            // Check the null entries for other matrix
-            if ( MatrixUtils.isNullEntries(otherMatrix) ) {
-                return false;
+            /*
+            * Check the null entries for both matrices.
+            * If both matrices has null entries, returns true.
+            */
+            if ( MatrixUtils.isNullEntries(this) &&
+                    MatrixUtils.isNullEntries(otherMatrix) ) {
+                return true;
             }
 
             /*
-            * Check whether the entire elements are equal
+            * Check whether the entire elements are equal.
             * The "isEquals" method would also checks the dimensions,
             * which is would returns false if both are not same.
             */
