@@ -2901,6 +2901,22 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /**
+     * Compares this matrix with the specified object for equality.
+     *
+     * <p>Returns {@code true} if and only if the specified object is
+     * also a matrix and both matrices have the same dimensions and
+     * equal elements at corresponding positions.
+     *
+     * @param  obj  The object to compare for equality with this matrix.
+     *
+     * @return      {@code true} if the specified object is equal to this matrix, {@code false} otherwise.
+     *
+     * @since       1.0.0
+     * @see         MatrixUtils#isEquals(Matrix, Matrix)
+     * @see         MatrixUtils#isEqualsSize(Matrix, Matrix)
+     * @see         com.mitsuki.jmatrix.util.MatrixUtils
+     */
     @Override
     public boolean equals(Object obj) {
         // If the memory references are equal, returns true
@@ -2918,12 +2934,16 @@ public class Matrix implements MatrixUtils {
             // Typecast the given object to Matrix class
             Matrix otherMatrix = (Matrix) obj;
 
-            // Check for null entries
+            // Check the null entries for other matrix
             if ( MatrixUtils.isNullEntries(otherMatrix) ) {
                 return false;
             }
 
-            // Check whether the entire elements are equal
+            /*
+            * Check whether the entire elements are equal
+            * The "isEquals" method would also checks the dimensions,
+            * which is would returns false if both are not same.
+            */
             else if ( MatrixUtils.isEquals(this, otherMatrix) ) {
                 return true;
             }
