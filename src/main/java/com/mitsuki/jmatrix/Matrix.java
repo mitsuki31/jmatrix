@@ -77,7 +77,7 @@ import java.util.Arrays;
 *
 * @author   <a href="https://github.com/mitsuki31" target="_blank">
 *           Ryuu Mitsuki</a>
-* @version  1.7, 7 June 2023
+* @version  1.8, 16 June 2023
 * @since    0.1.0
 * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
 *           Apache License 2.0</a>
@@ -2898,5 +2898,37 @@ public class Matrix implements MatrixUtils {
         strMatrix += "   ]"; // row tail
 
         return strMatrix;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        // If the memory references are equal, returns true
+        if (this == obj) {
+            return true;
+        }
+
+        // If the given object is null, returns false
+        if (obj == null) {
+            return false;
+        }
+
+        // Check for the given object are instance of Matrix class
+        if (obj instanceof Matrix) {
+            // Typecast the given object to Matrix class
+            Matrix otherMatrix = (Matrix) obj;
+
+            // Check for null entries
+            if ( MatrixUtils.isNullEntries(otherMatrix) ) {
+                return false;
+            }
+
+            // Check whether the entire elements are equal
+            else if ( MatrixUtils.isEquals(this, otherMatrix) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
