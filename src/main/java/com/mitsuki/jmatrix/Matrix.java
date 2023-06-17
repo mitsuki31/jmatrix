@@ -29,121 +29,121 @@ import com.mitsuki.jmatrix.util.MatrixUtils;
 import java.util.Arrays;
 
 /**
-* The <b>Matrix</b> class represents a two-dimensional (2D) array of {@code double}s.
-*
-* <p>It provides methods for creating, accessing and manipulating matrices,
-* as well as basic matrix operations such as:
-* <ul>
-* <li> {@linkplain #sum(Matrix)    Addition}
-* <li> {@linkplain #sub(Matrix)    Subtraction}
-* <li> {@linkplain #mult(Matrix)   Matrix multiplication}
-* <li> {@linkplain #mult(double)   Scalar multiplication}
-* <li> {@linkplain #transpose()    Transposition}
-* </ul>
-*
-* <p><b>For example:</b></p>
-*
-* <pre><code class="language-java">&nbsp;
-*   double[][] entries = {
-*       {1.0, 2.0},
-*       {3.0, 4.0},
-*       {5.0, 6.0}
-*   };
-*
-*   Matrix m = new Matrix(entries);
-*   m.mult(2.0);
-*
-*   m.display();
-* </code></pre>
-*
-* <p><b>Output:</b></p>
-*
-* <pre>&nbsp;
-*   [   [2.0, 4.0],
-*       [6.0, 8.0],
-*       [10.0, 12.0]   ]
-* </pre>
-*
-* <p>For creating the {@code null matrix} also known as {@code zero matrix},
-* it just simply by using the {@link #Matrix(int, int)} constructor.
-*
-* <pre><code class="language-java">&nbsp;
-*   Matrix m = new Matrix(5, 5);
-* </code></pre>
-*
-* <p>Code above will create and construct a new {@code null matrix}
-* with dimensions {@code 5x5}.
-*
-*
-* @author   <a href="https://github.com/mitsuki31" target="_blank">
-*           Ryuu Mitsuki</a>
-* @version  1.8, 16 June 2023
-* @since    0.1.0
-* @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
-*           Apache License 2.0</a>
-*
-* @see      com.mitsuki.jmatrix.util.MatrixUtils
-* @see      <a href="https://en.m.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">
-*           "Matrix - Wikipedia"</a>
-*/
+ * The <b>Matrix</b> class represents a two-dimensional (2D) array of {@code double}s.
+ *
+ * <p>It provides methods for creating, accessing and manipulating matrices,
+ * as well as basic matrix operations such as:
+ * <ul>
+ * <li> {@linkplain #sum(Matrix)    Addition}
+ * <li> {@linkplain #sub(Matrix)    Subtraction}
+ * <li> {@linkplain #mult(Matrix)   Matrix multiplication}
+ * <li> {@linkplain #mult(double)   Scalar multiplication}
+ * <li> {@linkplain #transpose()    Transposition}
+ * </ul>
+ *
+ * <p><b>For example:</b></p>
+ *
+ * <pre><code class="language-java">&nbsp;
+ *   double[][] entries = {
+ *       {1.0, 2.0},
+ *       {3.0, 4.0},
+ *       {5.0, 6.0}
+ *   };
+ *
+ *   Matrix m = new Matrix(entries);
+ *   m.mult(2.0);
+ *
+ *   m.display();
+ * </code></pre>
+ *
+ * <p><b>Output:</b></p>
+ *
+ * <pre>&nbsp;
+ *   [   [2.0, 4.0],
+ *       [6.0, 8.0],
+ *       [10.0, 12.0]   ]
+ * </pre>
+ *
+ * <p>For creating the {@code null matrix} also known as {@code zero matrix},
+ * it just simply by using the {@link #Matrix(int, int)} constructor.
+ *
+ * <pre><code class="language-java">&nbsp;
+ *   Matrix m = new Matrix(5, 5);
+ * </code></pre>
+ *
+ * <p>Code above will create and construct a new {@code null matrix}
+ * with dimensions {@code 5x5}.
+ *
+ *
+ * @author   <a href="https://github.com/mitsuki31" target="_blank">
+ *           Ryuu Mitsuki</a>
+ * @version  1.8, 16 June 2023
+ * @since    0.1.0
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ *           Apache License 2.0</a>
+ *
+ * @see      com.mitsuki.jmatrix.util.MatrixUtils
+ * @see      <a href="https://en.m.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">
+ *           "Matrix - Wikipedia"</a>
+ */
 public class Matrix implements MatrixUtils {
     /**
-    * Stores the entries array of this matrix.
-    *
-    * <p>Please refer to {@link #getEntries()} method
-    * to retrieve the entries array of this matrix.
-    *
-    * @see #getEntries()
-    */
+     * Stores the entries array of this matrix.
+     *
+     * <p>Please refer to {@link #getEntries()} method
+     * to retrieve the entries array of this matrix.
+     *
+     * @see #getEntries()
+     */
     private double[ ][ ] ENTRIES = null;
 
     /**
-    * Stores the number of rows of this matrix.
-    *
-    * <p>Please refer to {@link #getSize()} method
-    * to retrieve the number of rows and columns of this matrix.
-    *
-    * @see #getSize()
-    */
+     * Stores the number of rows of this matrix.
+     *
+     * <p>Please refer to {@link #getSize()} method
+     * to retrieve the number of rows and columns of this matrix.
+     *
+     * @see #getSize()
+     */
     private int ROWS = 0;
 
     /**
-    * Stores the number of columns of this matrix.
-    *
-    * <p>Please refer to {@link #getSize()} method
-    * to retrieve the number of rows and columns of this matrix.
-    *
-    * @see #getSize()
-    */
+     * Stores the number of columns of this matrix.
+     *
+     * <p>Please refer to {@link #getSize()} method
+     * to retrieve the number of rows and columns of this matrix.
+     *
+     * @see #getSize()
+     */
     private int COLS = 0;
 
     /**
-    * Deprecated variable.
-    */
+     * Deprecated variable.
+     */
     private int index = 0;
 
     /**
-    * Stores the selected index row of this matrix
-    * from {@link #select(int)} method.
-    *
-    * @see #select(int)
-    * @see #change(double ...)
-    */
+     * Stores the selected index row of this matrix
+     * from {@link #select(int)} method.
+     *
+     * @see #select(int)
+     * @see #change(double ...)
+     */
     private int selectedIndex = 0;
 
     /**
-    * Stores {@code boolean} value that detects if the
-    * user has called {@link #select(int)} method.
-    *
-    * @see #select(int)
-    * @see #change(double ...)
-    */
+     * Stores {@code boolean} value that detects if the
+     * user has called {@link #select(int)} method.
+     *
+     * @see #select(int)
+     * @see #change(double ...)
+     */
     private boolean hasSelect = false;
 
 
     /**
-    * A threshold for {@code double} comparison.
-    */
+     * A threshold for {@code double} comparison.
+     */
     public static final double THRESHOLD = 1e-6;
 
 
@@ -152,51 +152,51 @@ public class Matrix implements MatrixUtils {
     //// ----------------- ////
 
     /**
-    * Constructs new <b>Matrix</b> object without any parameter.
-    *
-    * <p>This would creates a new <b>Matrix</b> object with {@code null} entries.
-    * To create a {@code null matrix}, consider to using {@link #Matrix(int, int)}.
-    *
-    * @since 0.2.0
-    * @see   #Matrix(int, int)
-    * @see   #Matrix(int, int, int)
-    * @see   #Matrix(double[][])
-    */
+     * Constructs new <b>Matrix</b> object without any parameter.
+     *
+     * <p>This would creates a new <b>Matrix</b> object with {@code null} entries.
+     * To create a {@code null matrix}, consider to using {@link #Matrix(int, int)}.
+     *
+     * @since 0.2.0
+     * @see   #Matrix(int, int)
+     * @see   #Matrix(int, int, int)
+     * @see   #Matrix(double[][])
+     */
     public Matrix() {}
 
 
     /**
-    * Constructs new <b>Matrix</b> object with specified number of rows and columns.
-    *
-    * <p>Furthermore, this constructor would creates a new {@code null matrix} or {@code zero matrix}.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   Matrix m = new Matrix(3, 3);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [0.0, 0.0, 0.0],
-    *       [0.0, 0.0, 0.0],
-    *       [0.0, 0.0, 0.0]   ]
-    * </pre>
-    *
-    * @param  rows                      a value for number of rows of matrix.
-    * @param  cols                      a value for number of columns of matrix.
-    *
-    * @throws IllegalArgumentException  if the two input sizes is negative value
-    *                                   or one of two input sizes are equals to zero.
-    *
-    * @since                            0.1.0
-    * @see                              #Matrix()
-    * @see                              #Matrix(int, int, int)
-    * @see                              #Matrix(double[][])
-    * @see                              #identity(int)
-    */
+     * Constructs new <b>Matrix</b> object with specified number of rows and columns.
+     *
+     * <p>Furthermore, this constructor would creates a new {@code null matrix} or {@code zero matrix}.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(3, 3);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [0.0, 0.0, 0.0],
+     *       [0.0, 0.0, 0.0],
+     *       [0.0, 0.0, 0.0]   ]
+     * </pre>
+     *
+     * @param  rows                      a value for number of rows of matrix.
+     * @param  cols                      a value for number of columns of matrix.
+     *
+     * @throws IllegalArgumentException  if the two input sizes is negative value
+     *                                   or one of two input sizes are equals to zero.
+     *
+     * @since                            0.1.0
+     * @see                              #Matrix()
+     * @see                              #Matrix(int, int, int)
+     * @see                              #Matrix(double[][])
+     * @see                              #identity(int)
+     */
     public Matrix(int rows, int cols) {
         // Check for negative or zero value size
         try {
@@ -229,41 +229,41 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Constructs new <b>Matrix</b> object with specified sizes of rows and columns.
-    *
-    * <p>Also fills out entire elements of matrix with the given value.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   Matrix m = new Matrix(3, 3, 5);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [5.0, 5.0, 5.0]
-    *       [5.0, 5.0, 5.0],
-    *       [5.0, 5.0, 5.0]   ]
-    * </pre>
-    *
-    * @param  rows                      a value for number of rows of matrix.
-    * @param  cols                      a value for number of columns of matrix.
-    * @param  val                       a value to filled out into all matrix elements.
-    *
-    * @throws IllegalArgumentException  if the one or two input sizes is negative value
-    *                                   or if they are equals to zero.
-    *
-    * @since                            0.1.0
-    * @see                              #Matrix()
-    * @see                              #Matrix(int, int)
-    * @see                              #Matrix(double[][])
-    * @see                              #identity(int)
-    *
-    * @warning                          It is recommended to use {@link #Matrix(double[][])}
-    *                                   instead for efficiency on constructing a matrix array.
-    */
+     * Constructs new <b>Matrix</b> object with specified sizes of rows and columns.
+     *
+     * <p>Also fills out entire elements of matrix with the given value.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(3, 3, 5);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [5.0, 5.0, 5.0]
+     *       [5.0, 5.0, 5.0],
+     *       [5.0, 5.0, 5.0]   ]
+     * </pre>
+     *
+     * @param  rows                      a value for number of rows of matrix.
+     * @param  cols                      a value for number of columns of matrix.
+     * @param  val                       a value to filled out into all matrix elements.
+     *
+     * @throws IllegalArgumentException  if the one or two input sizes is negative value
+     *                                   or if they are equals to zero.
+     *
+     * @since                            0.1.0
+     * @see                              #Matrix()
+     * @see                              #Matrix(int, int)
+     * @see                              #Matrix(double[][])
+     * @see                              #identity(int)
+     *
+     * @warning                          It is recommended to use {@link #Matrix(double[][])}
+     *                                   instead for efficiency on constructing a matrix array.
+     */
     public Matrix(int rows, int cols, int val) {
         // Check for negative or zero value at input arguments
         try {
@@ -301,39 +301,39 @@ public class Matrix implements MatrixUtils {
     }
 
     /**
-    * Constructs new <b>Matrix</b> object with the given 2D array.
-    *
-    * <p>Converts the 2D array into <b>Matrix</b> object, without changing its values.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] entries = {
-    *       { 1, 2 },
-    *       { 3, 4 }
-    *   };
-    *
-    *   Matrix m = new Matrix(entries);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [1.0, 2.0],
-    *       [3.0, 4.0]   ]
-    * </pre>
-    *
-    * @param  arr                  an 2D array to be converted into <b>Matrix</b> object.
-    *
-    * @throws NullMatrixException  if the given array is {@code null} or empty.
-    *
-    * @since                       1.0.0
-    * @see                         #Matrix()
-    * @see                         #Matrix(int, int)
-    * @see                         #Matrix(int, int, int)
-    * @see                         #identity(int)
-    */
+     * Constructs new <b>Matrix</b> object with the given 2D array.
+     *
+     * <p>Converts the 2D array into <b>Matrix</b> object, without changing its values.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] entries = {
+     *       { 1, 2 },
+     *       { 3, 4 }
+     *   };
+     *
+     *   Matrix m = new Matrix(entries);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [1.0, 2.0],
+     *       [3.0, 4.0]   ]
+     * </pre>
+     *
+     * @param  arr                  an 2D array to be converted into <b>Matrix</b> object.
+     *
+     * @throws NullMatrixException  if the given array is {@code null} or empty.
+     *
+     * @since                       1.0.0
+     * @see                         #Matrix()
+     * @see                         #Matrix(int, int)
+     * @see                         #Matrix(int, int, int)
+     * @see                         #identity(int)
+     */
     public Matrix(double[ ][ ] arr) {
         try {
             // Check for null array
@@ -366,40 +366,40 @@ public class Matrix implements MatrixUtils {
     // ----------------- //
 
     /**
-    * Constructs an identity matrix with dimensions {@code n x n}.
-    *
-    * <p>This method generates and constructs an identity matrix of size {@code n x n}.<br>
-    * To check the matrix is diagonal matrix, please refer to {@link #isDiagonal()} method.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   Matrix m = Matrix.identity(3);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [1.0, 0.0, 0.0],
-    *       [0.0, 1.0, 0.0],
-    *       [0.0, 0.0, 1.0]   ]
-    * </pre>
-    *
-    * @param  n                           the size of the identity matrix
-    *                                     to be generated (min 1).
-    *
-    * @return                             a new identity matrix with
-    *                                     dimensions {@code n x n}.
-    *
-    * @throws IllegalMatrixSizeException  if the given size matrix is
-    *                                     less than 1.
-    *
-    * @since                              1.0.0
-    * @see                                #Matrix(int, int)
-    * @see                                #Matrix(double[][])
-    * @see                                #isDiagonal()
-    */
+     * Constructs an identity matrix with dimensions {@code n x n}.
+     *
+     * <p>This method generates and constructs an identity matrix of size {@code n x n}.<br>
+     * To check the matrix is diagonal matrix, please refer to {@link #isDiagonal()} method.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = Matrix.identity(3);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [1.0, 0.0, 0.0],
+     *       [0.0, 1.0, 0.0],
+     *       [0.0, 0.0, 1.0]   ]
+     * </pre>
+     *
+     * @param  n                           the size of the identity matrix
+     *                                     to be generated (min 1).
+     *
+     * @return                             a new identity matrix with
+     *                                     dimensions {@code n x n}.
+     *
+     * @throws IllegalMatrixSizeException  if the given size matrix is
+     *                                     less than 1.
+     *
+     * @since                              1.0.0
+     * @see                                #Matrix(int, int)
+     * @see                                #Matrix(double[][])
+     * @see                                #isDiagonal()
+     */
     public static Matrix identity(int n) {
         try {
             if (n < 1) {
@@ -432,21 +432,21 @@ public class Matrix implements MatrixUtils {
     //// --------------------- ////
 
     /**
-    * Calculates the dot product of a specified cell in two arrays.
-    *
-    * <p>This method is used for matrix multiplication operation.
-    *
-    * @param  a    the first array.
-    * @param  b    the second array.
-    * @param  row  the row index of the cell to be calculated.
-    * @param  col  the column index of the cell to be calculated.
-    *
-    * @return      the dot product of the specified cell of two arrays.
-    *
-    * @since       0.2.0
-    * @see         #mult(Matrix)
-    * @see         #mult(double[][])
-    */
+     * Calculates the dot product of a specified cell in two arrays.
+     *
+     * <p>This method is used for matrix multiplication operation.
+     *
+     * @param  a    the first array.
+     * @param  b    the second array.
+     * @param  row  the row index of the cell to be calculated.
+     * @param  col  the column index of the cell to be calculated.
+     *
+     * @return      the dot product of the specified cell of two arrays.
+     *
+     * @since       0.2.0
+     * @see         #mult(Matrix)
+     * @see         #mult(double[][])
+     */
     private static double multCell(double[ ][ ] a, double[ ][ ] b, int row, int col) {
         double result = 0;
         for (int i = 0; i < b.length; i++) {
@@ -463,35 +463,35 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Creates a new matrix with specified number of rows and columns.
-    *
-    * <p>This method would creates a {@code null} matrix type in implicit way.<br>
-    * If the entries of this matrix are not {@code null} then this method would overwrites
-    * all entries with zero (also known as, {@code null} matrix type).
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   Matrix m = new Matrix();
-    *   m.create(3, 4);
-    * </code></pre>
-    *
-    * <p><b>Code above equivalents to:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   Matrix m = new Matrix(3, 4);
-    * </code></pre>
-    *
-    * @param  rows                      a value for number of rows (min 1).
-    * @param  cols                      a value for number of columns (min 1).
-    *
-    * @throws IllegalArgumentException  if one or both inputs are
-    *                                   negative value or equals to zero.
-    *
-    * @since                            0.2.0
-    * @see                              #create(double[][])
-    * @see                              #Matrix(int, int)
-    */
+     * Creates a new matrix with specified number of rows and columns.
+     *
+     * <p>This method would creates a {@code null} matrix type in implicit way.<br>
+     * If the entries of this matrix are not {@code null} then this method would overwrites
+     * all entries with zero (also known as, {@code null} matrix type).
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix();
+     *   m.create(3, 4);
+     * </code></pre>
+     *
+     * <p><b>Code above equivalents to:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(3, 4);
+     * </code></pre>
+     *
+     * @param  rows                      a value for number of rows (min 1).
+     * @param  cols                      a value for number of columns (min 1).
+     *
+     * @throws IllegalArgumentException  if one or both inputs are
+     *                                   negative value or equals to zero.
+     *
+     * @since                            0.2.0
+     * @see                              #create(double[][])
+     * @see                              #Matrix(int, int)
+     */
     public void create(int rows, int cols) {
         // Check for negative or zero value at input arguments
         try {
@@ -523,21 +523,21 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Creates a new matrix or overwrites the elements of this matrix with the given 2D array.
-    *
-    * <p>Dimensions of new matrix (also known as, the number of rows and columns)
-    * will be equated with the dimensions from given 2D array.<br>
-    * If the entries of this matrix are not {@code null} then this method would overwrites
-    * all entries with the entries from given 2D array.
-    *
-    * @param  arr                  the 2D array to be created into new <b>Matrix</b> object.
-    *
-    * @throws NullMatrixException  if the given array is {@code null} or empty.
-    *
-    * @since                       1.0.0
-    * @see                         #create(int, int)
-    * @see                         #Matrix(double[][])
-    */
+     * Creates a new matrix or overwrites the elements of this matrix with the given 2D array.
+     *
+     * <p>Dimensions of new matrix (also known as, the number of rows and columns)
+     * will be equated with the dimensions from given 2D array.<br>
+     * If the entries of this matrix are not {@code null} then this method would overwrites
+     * all entries with the entries from given 2D array.
+     *
+     * @param  arr                  the 2D array to be created into new <b>Matrix</b> object.
+     *
+     * @throws NullMatrixException  if the given array is {@code null} or empty.
+     *
+     * @since                       1.0.0
+     * @see                         #create(int, int)
+     * @see                         #Matrix(double[][])
+     */
     public void create(double[ ][ ] arr) {
         try {
             // Check for null array
@@ -566,24 +566,24 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Duplicates this matrix to another matrix object.
-    *
-    * <p><b>Deprecated:</b> This method is deprecated due to its usage of shallow copy,
-    * which may lead to unexpected behavior. It is recommended to use {@link #deepCopy()} method instead,
-    * which performs a deep copy of the matrix.</p>
-    *
-    * @return                          the copied of this matrix with all of its attributes.
-    *
-    * @throws     NullMatrixException  if the entries of this matrix is {@code null}.
-    *
-    * @since                           0.2.0
-    * @see                             #deepCopy()
-    *
-    * @deprecated                      This method is deprecated and may
-    *                                  result in unexpected behavior.
-    *                                  Use {@link #deepCopy()} for performing a
-    *                                  deep copy of the matrix instead.
-    */
+     * Duplicates this matrix to another matrix object.
+     *
+     * <p><b>Deprecated:</b> This method is deprecated due to its usage of shallow copy,
+     * which may lead to unexpected behavior. It is recommended to use {@link #deepCopy()} method instead,
+     * which performs a deep copy of the matrix.</p>
+     *
+     * @return                          the copied of this matrix with all of its attributes.
+     *
+     * @throws     NullMatrixException  if the entries of this matrix is {@code null}.
+     *
+     * @since                           0.2.0
+     * @see                             #deepCopy()
+     *
+     * @deprecated                      This method is deprecated and may
+     *                                  result in unexpected behavior.
+     *                                  Use {@link #deepCopy()} for performing a
+     *                                  deep copy of the matrix instead.
+     */
     @Deprecated
     public Matrix copy() {
         try {
@@ -601,62 +601,62 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Creates a deep copy of this matrix.
-    *
-    * @return a new <b>Matrix</b> object which is a deep copy of this matrix.
-    *
-    * @since  1.0.0
-    * @see    MatrixUtils#deepCopyOf(Matrix)
-    * @see    com.mitsuki.jmatrix.util.MatrixUtils
-    */
+     * Creates a deep copy of this matrix.
+     *
+     * @return a new <b>Matrix</b> object which is a deep copy of this matrix.
+     *
+     * @since  1.0.0
+     * @see    MatrixUtils#deepCopyOf(Matrix)
+     * @see    com.mitsuki.jmatrix.util.MatrixUtils
+     */
     public Matrix deepCopy() {
         return MatrixUtils.deepCopyOf(this);
     }
 
 
     /**
-    * Selects the matrix row with the specified index.
-    *
-    * <p>This method should be combined with {@link #change(double ...) change} method.<br>
-    * The indexing is similar to array which zero is the first index.
-    * And the index cannot be a negative value.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] a = {
-    *       { 5, 6, 7 },
-    *       { 4, 5, 6 }
-    *   };
-    *
-    *   Matrix m = new Matrix(a);
-    *
-    *   // Change the values of first row
-    *   double[] newRow = { 1, 2, 3 };
-    *   m.select(0).change(newRow);
-    *
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [1.0, 2.0, 3.0],
-    *       [4.0, 5.0, 6.0]   ]
-    * </pre>
-    *
-    * @param  index                  the index row to be selected.
-    *
-    * @return                        self.
-    *
-    * @throws InvalidIndexException  if the input index is negative value
-    *                                or larger than number of matrix rows.
-    * @throws NullMatrixException    if entries of this matrix is {@code null}.
-    *
-    * @since                         0.2.0
-    * @see                           #change(double ...)
-    * @see                           #change(double)
-    */
+     * Selects the matrix row with the specified index.
+     *
+     * <p>This method should be combined with {@link #change(double ...) change} method.<br>
+     * The indexing is similar to array which zero is the first index.
+     * And the index cannot be a negative value.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 5, 6, 7 },
+     *       { 4, 5, 6 }
+     *   };
+     *
+     *   Matrix m = new Matrix(a);
+     *
+     *   // Change the values of first row
+     *   double[] newRow = { 1, 2, 3 };
+     *   m.select(0).change(newRow);
+     *
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [1.0, 2.0, 3.0],
+     *       [4.0, 5.0, 6.0]   ]
+     * </pre>
+     *
+     * @param  index                  the index row to be selected.
+     *
+     * @return                        self.
+     *
+     * @throws InvalidIndexException  if the input index is negative value
+     *                                or larger than number of matrix rows.
+     * @throws NullMatrixException    if entries of this matrix is {@code null}.
+     *
+     * @since                         0.2.0
+     * @see                           #change(double ...)
+     * @see                           #change(double)
+     */
     public Matrix select(final int index) {
         try {
             // Check for null matrix
@@ -690,24 +690,24 @@ public class Matrix implements MatrixUtils {
     //// ---------------- ////
 
     /**
-    * Fills the column with specified array.
-    *
-    * <p>It can be an array or insert the values one by one.
-    *
-    * @param      values                    the values to be added into matrix column.
-    *
-    * @throws     IllegalArgumentException  if the given argument is overcapacity to matrix column
-    *                                       or not enough argument to fill the column.
-    * @throws     MatrixArrayFullException  if the matrix cannot be added more values.
-    * @throws     NullMatrixException       if this matrix is a {@code null} object.
-    *
-    * @since                                0.1.0
-    * @see                                  #add(int)
-    *
-    * @deprecated                           Highly inefficient method to create a matrix array.
-    *                                       It is very recommended to use {@link #Matrix(double[][])}
-    *                                       or {@link #create(double[][])} instead.
-    */
+     * Fills the column with specified array.
+     *
+     * <p>It can be an array or insert the values one by one.
+     *
+     * @param      values                    the values to be added into matrix column.
+     *
+     * @throws     IllegalArgumentException  if the given argument is overcapacity to matrix column
+     *                                       or not enough argument to fill the column.
+     * @throws     MatrixArrayFullException  if the matrix cannot be added more values.
+     * @throws     NullMatrixException       if this matrix is a {@code null} object.
+     *
+     * @since                                0.1.0
+     * @see                                  #add(int)
+     *
+     * @deprecated                           Highly inefficient method to create a matrix array.
+     *                                       It is very recommended to use {@link #Matrix(double[][])}
+     *                                       or {@link #create(double[][])} instead.
+     */
     @Deprecated
     public void add(double ... values) {
         try {
@@ -751,20 +751,20 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Fills the column with repeated of specified value.
-    *
-    * @param      value                     the value to filled out the matrix column.
-    *
-    * @throws     MatrixArrayFullException  if the matrix cannot be added more values.
-    * @throws     NullMatrixException       if this matrix is {@code null}.
-    *
-    * @since                                0.1.0
-    * @see                                  #add(double ...)
-    *
-    * @deprecated                           Highly inefficient method to create a matrix array.
-    *                                       It is very recommended to use {@link #Matrix(double[][])}
-    *                                       or {@link #create(double[][])} instead.
-    */
+     * Fills the column with repeated of specified value.
+     *
+     * @param      value                     the value to filled out the matrix column.
+     *
+     * @throws     MatrixArrayFullException  if the matrix cannot be added more values.
+     * @throws     NullMatrixException       if this matrix is {@code null}.
+     *
+     * @since                                0.1.0
+     * @see                                  #add(double ...)
+     *
+     * @deprecated                           Highly inefficient method to create a matrix array.
+     *                                       It is very recommended to use {@link #Matrix(double[][])}
+     *                                       or {@link #create(double[][])} instead.
+     */
     @Deprecated
     public void add(double value) {
         try {
@@ -818,46 +818,46 @@ public class Matrix implements MatrixUtils {
     //// ------------------- ////
 
     /**
-    * Changes all values at specified row with the given values.
-    *
-    * <p>Only use this method when already called {@link #select(int) select} method.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] a = {
-    *       { 5, 6, 7 },
-    *       { 4, 5, 6 }
-    *   };
-    *
-    *   Matrix m = new Matrix(a);
-    *
-    *   // Change the values of first row
-    *   double[] newRow = { 1, 2, 3 };
-    *   m.select(0).change(newRow);
-    *
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [1.0, 2.0, 3.0],
-    *       [4.0, 5.0, 6.0]   ]
-    * </pre>
-    *
-    * @param  values                    the values to changes all column entries at specified row.
-    *
-    * @throws IllegalArgumentException  if the given argument is overcapacity to matrix column
-    *                                   or not enough argument to fill the column.
-    * @throws InvalidIndexException     if attempts to call this method
-    *                                   but have not called {@link #select(int) select} method
-    *                                   or the selected index is a negative value.
-    *
-    * @since                            0.2.0
-    * @see                              #select(int)
-    * @see                              #change(double)
-    */
+     * Changes all values at specified row with the given values.
+     *
+     * <p>Only use this method when already called {@link #select(int) select} method.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 5, 6, 7 },
+     *       { 4, 5, 6 }
+     *   };
+     *
+     *   Matrix m = new Matrix(a);
+     *
+     *   // Change the values of first row
+     *   double[] newRow = { 1, 2, 3 };
+     *   m.select(0).change(newRow);
+     *
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [1.0, 2.0, 3.0],
+     *       [4.0, 5.0, 6.0]   ]
+     * </pre>
+     *
+     * @param  values                    the values to changes all column entries at specified row.
+     *
+     * @throws IllegalArgumentException  if the given argument is overcapacity to matrix column
+     *                                   or not enough argument to fill the column.
+     * @throws InvalidIndexException     if attempts to call this method
+     *                                   but have not called {@link #select(int) select} method
+     *                                   or the selected index is a negative value.
+     *
+     * @since                            0.2.0
+     * @see                              #select(int)
+     * @see                              #change(double)
+     */
     public void change(double ... values) {
         // Checking values size which from argument parameter
         try {
@@ -903,44 +903,44 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Changes all values at specified column with the repeated of given value.
-    *
-    * <p>Only use this method when already called {@link #select(int) select} method.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] a = {
-    *       { 5, 6, 7 },
-    *       { 4, 5, 6 }
-    *   };
-    *
-    *   Matrix m = new Matrix(a);
-    *
-    *   // Change the values of first row
-    *   double[] newRow = { 1, 2, 3 };
-    *   m.select(0).change(newRow);
-    *
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [1.0, 2.0, 3.0],
-    *       [4.0, 5.0, 6.0]   ]
-    * </pre>
-    *
-    * @param  value                  the value to changes all values at specified column.
-    *
-    * @throws InvalidIndexException  if attempts to call this method
-    *                                but have not called {@link #select(int) select} method
-    *                                or the selected index is a negative value.
-    *
-    * @since                         0.2.0
-    * @see                           #select(int)
-    * @see                           #change(double ...)
-    */
+     * Changes all values at specified column with the repeated of given value.
+     *
+     * <p>Only use this method when already called {@link #select(int) select} method.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 5, 6, 7 },
+     *       { 4, 5, 6 }
+     *   };
+     *
+     *   Matrix m = new Matrix(a);
+     *
+     *   // Change the values of first row
+     *   double[] newRow = { 1, 2, 3 };
+     *   m.select(0).change(newRow);
+     *
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [1.0, 2.0, 3.0],
+     *       [4.0, 5.0, 6.0]   ]
+     * </pre>
+     *
+     * @param  value                  the value to changes all values at specified column.
+     *
+     * @throws InvalidIndexException  if attempts to call this method
+     *                                but have not called {@link #select(int) select} method
+     *                                or the selected index is a negative value.
+     *
+     * @since                         0.2.0
+     * @see                           #select(int)
+     * @see                           #change(double ...)
+     */
     public void change(double value) {
         try {
             if (!this.hasSelect) {
@@ -991,48 +991,48 @@ public class Matrix implements MatrixUtils {
     /////////////////////////
 
     /**
-    * Operates addition for this matrix and the given matrix.
-    *
-    * <p>Both matrices should be same dimensions or sizes before performing addition.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] entriesA = {
-    *       { 1, 2 },
-    *       { 3, 4 }
-    *   };
-    *
-    *   double[][] entriesB = {
-    *       { 5, 6 },
-    *       { 7, 8 }
-    *   };
-    *
-    *   Matrix m = new Matrix(entriesA);
-    *   Matrix n = new Matrix(entriesB);
-    *
-    *   m.sum(n);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [6.0, 8.0],
-    *       [10.0, 12.0]   ]
-    * </pre>
-    *
-    * @param  m                           the <b>Matrix</b> object as addend.
-    *
-    * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
-    * @throws NullMatrixException         if one or both matrices is {@code null}
-    *                                     or its entries is {@code null}.
-    *
-    * @since                              0.1.0
-    * @see                                #sum(double[][])
-    * @see                                #sum(double[][], double[][])
-    * @see                                #sum(Matrix, Matrix)
-    */
+     * Operates addition for this matrix and the given matrix.
+     *
+     * <p>Both matrices should be same dimensions or sizes before performing addition.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] entriesA = {
+     *       { 1, 2 },
+     *       { 3, 4 }
+     *   };
+     *
+     *   double[][] entriesB = {
+     *       { 5, 6 },
+     *       { 7, 8 }
+     *   };
+     *
+     *   Matrix m = new Matrix(entriesA);
+     *   Matrix n = new Matrix(entriesB);
+     *
+     *   m.sum(n);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [6.0, 8.0],
+     *       [10.0, 12.0]   ]
+     * </pre>
+     *
+     * @param  m                           the <b>Matrix</b> object as addend.
+     *
+     * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
+     * @throws NullMatrixException         if one or both matrices is {@code null}
+     *                                     or its entries is {@code null}.
+     *
+     * @since                              0.1.0
+     * @see                                #sum(double[][])
+     * @see                                #sum(double[][], double[][])
+     * @see                                #sum(Matrix, Matrix)
+     */
     public void sum(Matrix m) {
         try {
             // Throw "NullMatrixException" if the matrix is null
@@ -1076,47 +1076,47 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates addition for this matrix and the given 2D array.
-    *
-    * <p>Both matrices should be same dimensions or sizes before performing addition.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] entriesA = {
-    *       { 1, 2 },
-    *       { 3, 4 }
-    *   };
-    *
-    *   double[][] entriesB = {
-    *       { 1, 3 },
-    *       { 7, 12 }
-    *   };
-    *
-    *   Matrix m = new Matrix(entriesA);
-    *
-    *   m.sum(entriesB);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [2.0, 5.0],
-    *       [10.0, 16.0]   ]
-    * </pre>
-    *
-    * @param  arr                         the 2D array as addend.
-    *
-    * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
-    * @throws NullMatrixException         if the entries of this matrix is {@code null}
-    *                                     or if the given array is {@code null} or empty.
-    *
-    * @since                              0.1.0
-    * @see                                #sum(Matrix)
-    * @see                                #sum(double[][], double[][])
-    * @see                                #sum(Matrix, Matrix)
-    */
+     * Operates addition for this matrix and the given 2D array.
+     *
+     * <p>Both matrices should be same dimensions or sizes before performing addition.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] entriesA = {
+     *       { 1, 2 },
+     *       { 3, 4 }
+     *   };
+     *
+     *   double[][] entriesB = {
+     *       { 1, 3 },
+     *       { 7, 12 }
+     *   };
+     *
+     *   Matrix m = new Matrix(entriesA);
+     *
+     *   m.sum(entriesB);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [2.0, 5.0],
+     *       [10.0, 16.0]   ]
+     * </pre>
+     *
+     * @param  arr                         the 2D array as addend.
+     *
+     * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
+     * @throws NullMatrixException         if the entries of this matrix is {@code null}
+     *                                     or if the given array is {@code null} or empty.
+     *
+     * @since                              0.1.0
+     * @see                                #sum(Matrix)
+     * @see                                #sum(double[][], double[][])
+     * @see                                #sum(Matrix, Matrix)
+     */
     public void sum(double[ ][ ] arr) {
         try {
             // Throw "NullMatrixException" if entries of this matrix is null
@@ -1161,49 +1161,49 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates addition for two 2D arrays from input parameters.
-    *
-    * <p>Both matrices should be same dimensions or sizes before performing addition.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] entriesA = {
-    *       { 4, 4 },
-    *       { 3, 3 }
-    *   };
-    *
-    *   double[][] entriesB = {
-    *       { 2, 2 },
-    *       { 1, 1 }
-    *   };
-    *
-    *   double[][] result = Matrix.sum(
-    *       entriesA, entriesB);
-    *
-    *   Matrix.display(result);
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [6.0, 6.0],
-    *       [4.0, 4.0]   ]
-    * </pre>
-    *
-    * @param  a                           the first 2D array as addend.
-    * @param  b                           the second 2D array as addend.
-    *
-    * @return                             the 2D array which contains the sum of two arrays.
-    *
-    * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
-    * @throws NullMatrixException         if one or both given arrays is {@code null} or empty.
-    *
-    * @since                              0.2.0
-    * @see                                #sum(Matrix)
-    * @see                                #sum(double[][])
-    * @see                                #sum(Matrix, Matrix)
-    */
+     * Operates addition for two 2D arrays from input parameters.
+     *
+     * <p>Both matrices should be same dimensions or sizes before performing addition.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] entriesA = {
+     *       { 4, 4 },
+     *       { 3, 3 }
+     *   };
+     *
+     *   double[][] entriesB = {
+     *       { 2, 2 },
+     *       { 1, 1 }
+     *   };
+     *
+     *   double[][] result = Matrix.sum(
+     *       entriesA, entriesB);
+     *
+     *   Matrix.display(result);
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [6.0, 6.0],
+     *       [4.0, 4.0]   ]
+     * </pre>
+     *
+     * @param  a                           the first 2D array as addend.
+     * @param  b                           the second 2D array as addend.
+     *
+     * @return                             the 2D array which contains the sum of two arrays.
+     *
+     * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
+     * @throws NullMatrixException         if one or both given arrays is {@code null} or empty.
+     *
+     * @since                              0.2.0
+     * @see                                #sum(Matrix)
+     * @see                                #sum(double[][])
+     * @see                                #sum(Matrix, Matrix)
+     */
     public static double[ ][ ] sum(double[ ][ ] a, double[ ][ ] b) {
         try {
             // Throw "NullMatrixException" if the array is null or empty
@@ -1247,51 +1247,51 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates addition for two matrices from input parameters.
-    *
-    * <p>Both matrices should be same dimensions or sizes before performing addition.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] a = {
-    *       { 12, 0 },
-    *       { 3, -4 }
-    *   };
-    *
-    *   double[][] b = {
-    *       { -7, 5 },
-    *       { 2, 9 }
-    *   };
-    *
-    *   Matrix m = new Matrix(a);
-    *   Matrix n = new Matrix(b);
-    *
-    *   Matrix result = Matrix.sum(m, n);
-    *   result.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [5.0, 5.0],
-    *       [5.0, 5.0]   ]
-    * </pre>
-    *
-    * @param  a                           the first <b>Matrix</b> object as addend.
-    * @param  b                           the second <b>Matrix</b> object as addend.
-    *
-    * @return                             the <b>Matrix</b> object which
-    *                                     contains the sum of two matrices.
-    *
-    * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
-    * @throws NullMatrixException         if either object or entries of one or both matrices is {@code null}.
-    *
-    * @since                              0.2.0
-    * @see                                #sum(Matrix)
-    * @see                                #sum(double[][])
-    * @see                                #sum(double[][], double[][])
-    */
+     * Operates addition for two matrices from input parameters.
+     *
+     * <p>Both matrices should be same dimensions or sizes before performing addition.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 12, 0 },
+     *       { 3, -4 }
+     *   };
+     *
+     *   double[][] b = {
+     *       { -7, 5 },
+     *       { 2, 9 }
+     *   };
+     *
+     *   Matrix m = new Matrix(a);
+     *   Matrix n = new Matrix(b);
+     *
+     *   Matrix result = Matrix.sum(m, n);
+     *   result.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [5.0, 5.0],
+     *       [5.0, 5.0]   ]
+     * </pre>
+     *
+     * @param  a                           the first <b>Matrix</b> object as addend.
+     * @param  b                           the second <b>Matrix</b> object as addend.
+     *
+     * @return                             the <b>Matrix</b> object which
+     *                                     contains the sum of two matrices.
+     *
+     * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
+     * @throws NullMatrixException         if either object or entries of one or both matrices is {@code null}.
+     *
+     * @since                              0.2.0
+     * @see                                #sum(Matrix)
+     * @see                                #sum(double[][])
+     * @see                                #sum(double[][], double[][])
+     */
     public static Matrix sum(Matrix a, Matrix b) {
         try {
             // Throw "NullMatrixException" if the entries of given matrix is null
@@ -1341,43 +1341,43 @@ public class Matrix implements MatrixUtils {
     ///////////////////////////
 
     /**
-    * Operates subtraction for this matrix and the given matrix.
-    *
-    * <p>Both matrices should be same dimensions or sizes before performing subtraction.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] a = {
-    *       { 1, 3, 5 },
-    *       { 7, 9, 11 }
-    *   };
-    *
-    *   Matrix m = new Matrix(a);
-    *   Matrix n = new Matrix(2, 3, 5);
-    *
-    *   m.sub(n);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [-4.0, -2.0, 0.0],
-    *       [2.0, 4.0, 6.0]   ]
-    * </pre>
-    *
-    * @param  m                           the matrix object as subtrahend.
-    *
-    * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
-    * @throws NullMatrixException         if either object or entries of one or both matrices
-    *                                     is {@code null}.
-    *
-    * @since                              0.1.0
-    * @see                                #sub(double[][])
-    * @see                                #sub(double[][], double[][])
-    * @see                                #sub(Matrix, Matrix)
-    */
+     * Operates subtraction for this matrix and the given matrix.
+     *
+     * <p>Both matrices should be same dimensions or sizes before performing subtraction.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 1, 3, 5 },
+     *       { 7, 9, 11 }
+     *   };
+     *
+     *   Matrix m = new Matrix(a);
+     *   Matrix n = new Matrix(2, 3, 5);
+     *
+     *   m.sub(n);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [-4.0, -2.0, 0.0],
+     *       [2.0, 4.0, 6.0]   ]
+     * </pre>
+     *
+     * @param  m                           the matrix object as subtrahend.
+     *
+     * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
+     * @throws NullMatrixException         if either object or entries of one or both matrices
+     *                                     is {@code null}.
+     *
+     * @since                              0.1.0
+     * @see                                #sub(double[][])
+     * @see                                #sub(double[][], double[][])
+     * @see                                #sub(Matrix, Matrix)
+     */
     public void sub(Matrix m) {
         try {
             // Throw "NullMatrixException" if either object or entries
@@ -1422,43 +1422,43 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates subtraction for this matrix and the given 2D array.
-    *
-    * <p>Both matrices should be same dimemsions or sizes before performing subtraction.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] a = {
-    *       { 1 ,2, 3 },
-    *       { 4, 5, 6 }
-    *   };
-    *
-    *   Matrix m = new Matrix(a);
-    *   Matrix n = new Matrix(2, 3, 2);
-    *
-    *   m.sub(n);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [-1.0, 0.0, 1.0],
-    *       [2.0, 3.0, 4.0]   ]
-    * </pre>
-    *
-    * @param  arr                         an array as subtrahend.
-    *
-    * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
-    * @throws NullMatrixException         if the entries of this matrix is {@code null}
-    *                                     or if the given array is {@code null} or empty.
-    *
-    * @since                              0.1.0
-    * @see                                #sub(Matrix)
-    * @see                                #sub(double[][], double[][])
-    * @see                                #sub(Matrix, Matrix)
-    */
+     * Operates subtraction for this matrix and the given 2D array.
+     *
+     * <p>Both matrices should be same dimemsions or sizes before performing subtraction.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 1 ,2, 3 },
+     *       { 4, 5, 6 }
+     *   };
+     *
+     *   Matrix m = new Matrix(a);
+     *   Matrix n = new Matrix(2, 3, 2);
+     *
+     *   m.sub(n);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [-1.0, 0.0, 1.0],
+     *       [2.0, 3.0, 4.0]   ]
+     * </pre>
+     *
+     * @param  arr                         an array as subtrahend.
+     *
+     * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
+     * @throws NullMatrixException         if the entries of this matrix is {@code null}
+     *                                     or if the given array is {@code null} or empty.
+     *
+     * @since                              0.1.0
+     * @see                                #sub(Matrix)
+     * @see                                #sub(double[][], double[][])
+     * @see                                #sub(Matrix, Matrix)
+     */
     public void sub(double[ ][ ] arr) {
         try {
             // Throw "NullMatrixException" if entries of this matrix is null
@@ -1503,51 +1503,51 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates subtraction for two 2D arrays from input parameters and
-    * produces new 2D array contains the difference of given two arrays.
-    *
-    * <p>Both matrices should be same dimensions or sizes before performing subtraction.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] a = {
-    *       { 5, 6, 7 },
-    *       { 0, -2, 3 },
-    *       { 1, 0, 9 }
-    *   };
-    *
-    *   double[][] b = {
-    *       { 3, 0, 4 },
-    *       { 0, 4, 6 },
-    *       { 1, 2, 5 }
-    *   };
-    *
-    *   double[][] res = Matrix.sub(a, b);
-    *   Matrix.display(res);
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [2, 6, 3],
-    *       [0, -6, -3],
-    *       [0, -2, 4]
-    * </pre>
-    *
-    * @param  a                           the first array as minuend.
-    * @param  b                           the second array as subtrahend.
-    *
-    * @return                             the array which contains the difference of two arrays.
-    *
-    * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
-    * @throws NullMatrixException         if one or both given arrays is {@code null} or empty.
-    *
-    * @since                              0.2.0
-    * @see                                #sub(Matrix)
-    * @see                                #sub(double[][])
-    * @see                                #sub(Matrix, Matrix)
-    */
+     * Operates subtraction for two 2D arrays from input parameters and
+     * produces new 2D array contains the difference of given two arrays.
+     *
+     * <p>Both matrices should be same dimensions or sizes before performing subtraction.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 5, 6, 7 },
+     *       { 0, -2, 3 },
+     *       { 1, 0, 9 }
+     *   };
+     *
+     *   double[][] b = {
+     *       { 3, 0, 4 },
+     *       { 0, 4, 6 },
+     *       { 1, 2, 5 }
+     *   };
+     *
+     *   double[][] res = Matrix.sub(a, b);
+     *   Matrix.display(res);
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [2, 6, 3],
+     *       [0, -6, -3],
+     *       [0, -2, 4]
+     * </pre>
+     *
+     * @param  a                           the first array as minuend.
+     * @param  b                           the second array as subtrahend.
+     *
+     * @return                             the array which contains the difference of two arrays.
+     *
+     * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
+     * @throws NullMatrixException         if one or both given arrays is {@code null} or empty.
+     *
+     * @since                              0.2.0
+     * @see                                #sub(Matrix)
+     * @see                                #sub(double[][])
+     * @see                                #sub(Matrix, Matrix)
+     */
     public static double[ ][ ] sub(double[ ][ ] a, double[ ][ ] b) {
         try {
             // Throw "NullMatrixException" if one or both arrays is null
@@ -1590,51 +1590,51 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates subtraction for two matrices from input parameters and
-    * produces new matrix contains the difference of given two matrices.
-    *
-    * <p>Both matrices should be same dimensions or sizes before performing subtraction.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] a = {
-    *       { 1, 1, 1 },
-    *       { 2, 2, 2 },
-    *       { 1, 0, 9 }
-    *   };
-    *
-    *   double[][] b = {
-    *       { 3, 0, 4 },
-    *       { 0, 4, 6 },
-    *       { 1, 2, 5 }
-    *   };
-    *
-    *   double[][] result = Matrix.sub(a, b);
-    *   Matrix.display(result);
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [2, 6, 3],
-    *       [0, -6, -3],
-    *       [0, -2, 4]
-    * </pre>
-    *
-    * @param  a                           the first <b>Matrix</b> object as minuend.
-    * @param  b                           the second <b>Matrix</b> object as subtrahend.
-    *
-    * @return                             the matrix which contains the difference of two matrices.
-    *
-    * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
-    * @throws NullMatrixException         if the entries of given matrix is {@code null}.
-    *
-    * @since                              0.2.0
-    * @see                                #sub(Matrix)
-    * @see                                #sub(double[][])
-    * @see                                #sub(double[][], double[][])
-    */
+     * Operates subtraction for two matrices from input parameters and
+     * produces new matrix contains the difference of given two matrices.
+     *
+     * <p>Both matrices should be same dimensions or sizes before performing subtraction.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 1, 1, 1 },
+     *       { 2, 2, 2 },
+     *       { 1, 0, 9 }
+     *   };
+     *
+     *   double[][] b = {
+     *       { 3, 0, 4 },
+     *       { 0, 4, 6 },
+     *       { 1, 2, 5 }
+     *   };
+     *
+     *   double[][] result = Matrix.sub(a, b);
+     *   Matrix.display(result);
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [2, 6, 3],
+     *       [0, -6, -3],
+     *       [0, -2, 4]
+     * </pre>
+     *
+     * @param  a                           the first <b>Matrix</b> object as minuend.
+     * @param  b                           the second <b>Matrix</b> object as subtrahend.
+     *
+     * @return                             the matrix which contains the difference of two matrices.
+     *
+     * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
+     * @throws NullMatrixException         if the entries of given matrix is {@code null}.
+     *
+     * @since                              0.2.0
+     * @see                                #sub(Matrix)
+     * @see                                #sub(double[][])
+     * @see                                #sub(double[][], double[][])
+     */
     public static Matrix sub(Matrix a, Matrix b) {
         try {
             // Throw "NullMatrixException" if both matrices is null
@@ -1682,50 +1682,50 @@ public class Matrix implements MatrixUtils {
     //////////////////////////////
 
     /**
-    * Operates multiplication for this matrix and the given matrix.
-    *
-    * <p>The number of columns in this matrix and the number of rows in
-    * given matrix should be same before performing multiplication.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] x = {
-    *       { 3, 7 },
-    *       { 1, 5 }
-    *   };
-    *
-    *   double[][] y = {
-    *       { 12, 4 },
-    *       { 7, 3 }
-    *   };
-    *
-    *   Matrix m = new Matrix(x);
-    *   Matrix n = new Matrix(y);
-    *
-    *   m.mult(n);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [85.0, 33.0],
-    *       [47.0, 19.0]   ]
-    * </pre>
-    *
-    * @param  m                           the matrix object as multiplicand.
-    *
-    * @throws IllegalMatrixSizeException  if the number of columns in this matrix
-    *                                     is different from the number of rows in given matrix.
-    * @throws NullMatrixException         if the entries of this matrix or
-    *                                     the given matrix is {@code null}.
-    *
-    * @since                              0.2.0
-    * @see                                #mult(double[][])
-    * @see                                #mult(double[][], double[][])
-    * @see                                #mult(Matrix, Matrix)
-    */
+     * Operates multiplication for this matrix and the given matrix.
+     *
+     * <p>The number of columns in this matrix and the number of rows in
+     * given matrix should be same before performing multiplication.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] x = {
+     *       { 3, 7 },
+     *       { 1, 5 }
+     *   };
+     *
+     *   double[][] y = {
+     *       { 12, 4 },
+     *       { 7, 3 }
+     *   };
+     *
+     *   Matrix m = new Matrix(x);
+     *   Matrix n = new Matrix(y);
+     *
+     *   m.mult(n);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [85.0, 33.0],
+     *       [47.0, 19.0]   ]
+     * </pre>
+     *
+     * @param  m                           the matrix object as multiplicand.
+     *
+     * @throws IllegalMatrixSizeException  if the number of columns in this matrix
+     *                                     is different from the number of rows in given matrix.
+     * @throws NullMatrixException         if the entries of this matrix or
+     *                                     the given matrix is {@code null}.
+     *
+     * @since                              0.2.0
+     * @see                                #mult(double[][])
+     * @see                                #mult(double[][], double[][])
+     * @see                                #mult(Matrix, Matrix)
+     */
     public void mult(Matrix m) {
         try {
             // Throw "NullMatrixException" if this matrix or given Matrix is null
@@ -1764,51 +1764,51 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates multiplication for this matrix and the given 2D array.
-    *
-    * <p>The number of columns in this matrix and the number of rows in
-    * given 2D array should be same before performing multiplication.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] x = {
-    *       { 9, -2 },
-    *       { 0, 5 },
-    *       {-8, 10 }
-    *   };
-    *
-    *   double[][] y = {
-    *       { 6, 2, 2 },
-    *       { 8, 1, 4 }
-    *   };
-    *
-    *   Matrix m = new Matrix(x);
-    *
-    *   m.mult(y);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [38.0, 16.0],
-    *       [40.0, 5.0],
-    *       [32.0, -6.0]   ]
-    * </pre>
-    *
-    * @param  a                           an array as multiplicand.
-    *
-    * @throws IllegalMatrixSizeException  if the number of columns in this matrix
-    *                                     is different from the number of rows in given 2D array.
-    * @throws NullMatrixException         if the entries of this matrix is {@code null}
-    *                                     or the given array is {@code null} or empty.
-    *
-    * @since                              0.2.0
-    * @see                                #mult(Matrix)
-    * @see                                #mult(double[][], double[][])
-    * @see                                #mult(Matrix, Matrix)
-    */
+     * Operates multiplication for this matrix and the given 2D array.
+     *
+     * <p>The number of columns in this matrix and the number of rows in
+     * given 2D array should be same before performing multiplication.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] x = {
+     *       { 9, -2 },
+     *       { 0, 5 },
+     *       {-8, 10 }
+     *   };
+     *
+     *   double[][] y = {
+     *       { 6, 2, 2 },
+     *       { 8, 1, 4 }
+     *   };
+     *
+     *   Matrix m = new Matrix(x);
+     *
+     *   m.mult(y);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [38.0, 16.0],
+     *       [40.0, 5.0],
+     *       [32.0, -6.0]   ]
+     * </pre>
+     *
+     * @param  a                           an array as multiplicand.
+     *
+     * @throws IllegalMatrixSizeException  if the number of columns in this matrix
+     *                                     is different from the number of rows in given 2D array.
+     * @throws NullMatrixException         if the entries of this matrix is {@code null}
+     *                                     or the given array is {@code null} or empty.
+     *
+     * @since                              0.2.0
+     * @see                                #mult(Matrix)
+     * @see                                #mult(double[][], double[][])
+     * @see                                #mult(Matrix, Matrix)
+     */
     public void mult(double[ ][ ] a) {
         try {
             // Throw "NullMatrixException" if this matrix or given Matrix is null
@@ -1847,51 +1847,51 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates matrix multiplication for two 2D arrays from input parameters
-    * and produces new 2D array contains the product of given two arrays.
-    *
-    * <p>The number of columns in first array and number of rows in
-    * second array should be same before performing multiplication.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] x = {
-    *       { 1, 1, 1 },
-    *       { 2, 2, 2 }
-    *   };
-    *
-    *   double[][] y = {
-    *       { 3, 4 },
-    *       { 3, 4 },
-    *       { 3, 4 }
-    *   };
-    *
-    *   double[][] res = Matrix.mult(x, y);
-    *   Matrix.display(res);
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [9.0, 12.0],
-    *       [18.0, 24.0]   ]
-    * </pre>
-    *
-    * @param  a                           the first array as multiplier.
-    * @param  b                           the second array as multiplicand.
-    *
-    * @return                             the array which contains the product of two arrays.
-    *
-    * @throws IllegalMatrixSizeException  if the number of columns in first array
-    *                                     is different from the number of rows in second array.
-    * @throws NullMatrixException         if the given 2D array is {@code null} or empty.
-    *
-    * @since                              0.2.0
-    * @see                                #mult(Matrix)
-    * @see                                #mult(double[][])
-    * @see                                #mult(Matrix, Matrix)
-    */
+     * Operates matrix multiplication for two 2D arrays from input parameters
+     * and produces new 2D array contains the product of given two arrays.
+     *
+     * <p>The number of columns in first array and number of rows in
+     * second array should be same before performing multiplication.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] x = {
+     *       { 1, 1, 1 },
+     *       { 2, 2, 2 }
+     *   };
+     *
+     *   double[][] y = {
+     *       { 3, 4 },
+     *       { 3, 4 },
+     *       { 3, 4 }
+     *   };
+     *
+     *   double[][] res = Matrix.mult(x, y);
+     *   Matrix.display(res);
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [9.0, 12.0],
+     *       [18.0, 24.0]   ]
+     * </pre>
+     *
+     * @param  a                           the first array as multiplier.
+     * @param  b                           the second array as multiplicand.
+     *
+     * @return                             the array which contains the product of two arrays.
+     *
+     * @throws IllegalMatrixSizeException  if the number of columns in first array
+     *                                     is different from the number of rows in second array.
+     * @throws NullMatrixException         if the given 2D array is {@code null} or empty.
+     *
+     * @since                              0.2.0
+     * @see                                #mult(Matrix)
+     * @see                                #mult(double[][])
+     * @see                                #mult(Matrix, Matrix)
+     */
     public static double[ ][ ] mult(double[ ][ ] a, double[ ][ ] b) {
         try {
             if (a == null || a.length == 0) {
@@ -1927,54 +1927,54 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates matrix multiplication for two matrices from input parameters
-    * and produces new matrix contains the product of given two matrices.
-    *
-    * <p>The number of columns in first matrix and number of rows in
-    * second matrix should be same before performing multiplication.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] x = {
-    *       { 1, 1, 1 },
-    *       { 2, 2, 2 }
-    *   };
-    *
-    *   double[][] y = {
-    *       { 3, 4 },
-    *       { 3, 4 },
-    *       { 3, 4 }
-    *   };
-    *
-    *   Matrix m = new Matrix(x);
-    *   Matrix n = new Matrix(y);
-    *
-    *   Matrix res = Matrix.mult(m, n);
-    *   res.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [9.0, 12.0],
-    *       [18.0, 24.0]   ]
-    * </pre>
-    *
-    * @param  a                           the first <b>Matrix</b> object as multiplier.
-    * @param  b                           the second <b>Matrix</b> object as multiplicand.
-    *
-    * @return                             the matrix which contains the product of two matrices.
-    *
-    * @throws IllegalMatrixSizeException  if the number of columns in first matrix
-    *                                     is different from the number of rows in second matrix.
-    * @throws NullMatrixException         if the entries of given matrix is {@code null}.
-    *
-    * @since                              0.2.0
-    * @see                                #mult(Matrix)
-    * @see                                #mult(double[][])
-    * @see                                #mult(double[][], double[][])
-    */
+     * Operates matrix multiplication for two matrices from input parameters
+     * and produces new matrix contains the product of given two matrices.
+     *
+     * <p>The number of columns in first matrix and number of rows in
+     * second matrix should be same before performing multiplication.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] x = {
+     *       { 1, 1, 1 },
+     *       { 2, 2, 2 }
+     *   };
+     *
+     *   double[][] y = {
+     *       { 3, 4 },
+     *       { 3, 4 },
+     *       { 3, 4 }
+     *   };
+     *
+     *   Matrix m = new Matrix(x);
+     *   Matrix n = new Matrix(y);
+     *
+     *   Matrix res = Matrix.mult(m, n);
+     *   res.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [9.0, 12.0],
+     *       [18.0, 24.0]   ]
+     * </pre>
+     *
+     * @param  a                           the first <b>Matrix</b> object as multiplier.
+     * @param  b                           the second <b>Matrix</b> object as multiplicand.
+     *
+     * @return                             the matrix which contains the product of two matrices.
+     *
+     * @throws IllegalMatrixSizeException  if the number of columns in first matrix
+     *                                     is different from the number of rows in second matrix.
+     * @throws NullMatrixException         if the entries of given matrix is {@code null}.
+     *
+     * @since                              0.2.0
+     * @see                                #mult(Matrix)
+     * @see                                #mult(double[][])
+     * @see                                #mult(double[][], double[][])
+     */
     public static Matrix mult(Matrix a, Matrix b) {
         try {
             // Throw "NullMatrixException" if given Matrix is null
@@ -2013,36 +2013,36 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates scalar multiplication for this matrix.
-    *
-    * <p>Multiplies all entries of this matrix by a specified scalar value.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   // Create 3x3 identity matrix
-    *   Matrix m = Matrix.identity(3);
-    *
-    *   m.mult(10);
-    *   m.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [10.0, 0.0, 0.0],
-    *       [0.0, 10.0, 0.0],
-    *       [0.0, 0.0, 10.0]   ]
-    * </pre>
-    *
-    * @param  x                    the scalar value to multiply each entry of this matrix.
-    *
-    * @throws NullMatrixException  if the entries of given matrix is {@code null}.
-    *
-    * @since                       1.0.0
-    * @see                         #mult(Matrix, x)
-    * @see                         #mult(Matrix)
-    */
+     * Operates scalar multiplication for this matrix.
+     *
+     * <p>Multiplies all entries of this matrix by a specified scalar value.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   // Create 3x3 identity matrix
+     *   Matrix m = Matrix.identity(3);
+     *
+     *   m.mult(10);
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [10.0, 0.0, 0.0],
+     *       [0.0, 10.0, 0.0],
+     *       [0.0, 0.0, 10.0]   ]
+     * </pre>
+     *
+     * @param  x                    the scalar value to multiply each entry of this matrix.
+     *
+     * @throws NullMatrixException  if the entries of given matrix is {@code null}.
+     *
+     * @since                       1.0.0
+     * @see                         #mult(Matrix, x)
+     * @see                         #mult(Matrix)
+     */
     public void mult(double x) {
         // Use this code would create shallow copy
         // this.ENTRIES = Matrix.mult(this, x).getEntries();
@@ -2054,42 +2054,42 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Operates scalar multiplication for the given matrix and produces
-    * a new scalar matrix.
-    *
-    * <p>Multiplies all entries of the given <b>Matrix</b> object by a specified scalar value.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   // Create 4x4 identity matrix
-    *   Matrix m = Matrix.identity(4);
-    *
-    *   Matrix res = Matrix.mult(m, 3);
-    *   res.display();
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [3.0, 0.0, 0.0, 0.0],
-    *       [0.0, 3.0, 0.0, 0.0],
-    *       [0.0, 0.0, 3.0, 0.0],
-    *       [0.0, 0.0, 0.0, 3.0]   ]
-    * </pre>
-    *
-    * @param  m                    the <b>Matrix</b> object to multiply.
-    * @param  x                    the scalar value to multiply each entry of given matrix.
-    *
-    * @return                      a new <b>Matrix</b> object with entries equal
-    *                              to the original matrix entries multiplied by {@code x}.
-    *
-    * @throws NullMatrixException  if the entries of given matrix is {@code null}.
-    *
-    * @since                       1.0.0
-    * @see                         #mult(x)
-    * @see                         #mult(Matrix, Matrix)
-    */
+     * Operates scalar multiplication for the given matrix and produces
+     * a new scalar matrix.
+     *
+     * <p>Multiplies all entries of the given <b>Matrix</b> object by a specified scalar value.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   // Create 4x4 identity matrix
+     *   Matrix m = Matrix.identity(4);
+     *
+     *   Matrix res = Matrix.mult(m, 3);
+     *   res.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [3.0, 0.0, 0.0, 0.0],
+     *       [0.0, 3.0, 0.0, 0.0],
+     *       [0.0, 0.0, 3.0, 0.0],
+     *       [0.0, 0.0, 0.0, 3.0]   ]
+     * </pre>
+     *
+     * @param  m                    the <b>Matrix</b> object to multiply.
+     * @param  x                    the scalar value to multiply each entry of given matrix.
+     *
+     * @return                      a new <b>Matrix</b> object with entries equal
+     *                              to the original matrix entries multiplied by {@code x}.
+     *
+     * @throws NullMatrixException  if the entries of given matrix is {@code null}.
+     *
+     * @since                       1.0.0
+     * @see                         #mult(x)
+     * @see                         #mult(Matrix, Matrix)
+     */
     public static Matrix mult(Matrix m, double x) {
         try {
             // Throw "NullMatrixException" if given Matrix is null
@@ -2121,24 +2121,24 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Displays and prints this matrix to standard output in Python-style.
-    *
-    * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
-    * of this matrix is {@code null}.<br>
-    * To retrieve the elements of this matrix, please refer to {@link #getEntries()} method.
-    *
-    * <p><b>Output example:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [n, n, n, ...],
-    *       [n, n, n, ...],
-    *       [n, n, n, ...]   ]
-    * </pre>
-    *
-    * @since 0.1.0
-    * @see   #display(int)
-    * @see   #getEntries()
-    */
+     * Displays and prints this matrix to standard output in Python-style.
+     *
+     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
+     * of this matrix is {@code null}.<br>
+     * To retrieve the elements of this matrix, please refer to {@link #getEntries()} method.
+     *
+     * <p><b>Output example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [n, n, n, ...],
+     *       [n, n, n, ...],
+     *       [n, n, n, ...]   ]
+     * </pre>
+     *
+     * @since 0.1.0
+     * @see   #display(int)
+     * @see   #getEntries()
+     */
     final public void display() {
         if (this.ENTRIES != null) {
             System.out.println(this.toString());
@@ -2149,27 +2149,27 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Displays and prints the specified row of this matrix to standard output in Python-style.
-    *
-    * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
-    * of this matrix is {@code null}.<br>
-    * To retrieve the elements of this matrix, please refer to {@link #getEntries()} method.
-    *
-    * <p><b>Output example:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [n, n, n, ...]
-    * </pre>
-    *
-    * @param  index                  the index row of this matrix.
-    *
-    * @throws InvalidIndexException  if the given index is negative value or
-    *                                the index is larger than number of rows.
-    *
-    * @since                         0.2.0
-    * @see                           #display()
-    * @see                           #getEntries()
-    */
+     * Displays and prints the specified row of this matrix to standard output in Python-style.
+     *
+     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
+     * of this matrix is {@code null}.<br>
+     * To retrieve the elements of this matrix, please refer to {@link #getEntries()} method.
+     *
+     * <p><b>Output example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [n, n, n, ...]
+     * </pre>
+     *
+     * @param  index                  the index row of this matrix.
+     *
+     * @throws InvalidIndexException  if the given index is negative value or
+     *                                the index is larger than number of rows.
+     *
+     * @since                         0.2.0
+     * @see                           #display()
+     * @see                           #getEntries()
+     */
     final public void display(int index) {
         if (this.ENTRIES != null) {
             // Checking index value from argument parameter
@@ -2193,24 +2193,24 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Displays and prints the given 2D array to standard output in Python-style.
-    *
-    * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
-    * of given 2D array is {@code null} or empty.
-    *
-    * <p><b>Output example:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [   [n, n, n, ...],
-    *       [n, n, n, ...],
-    *       [n, n, n, ...]   ]
-    * </pre>
-    *
-    * @param arr  the 2D array to be displayed.
-    *
-    * @since      0.1.0
-    * @see        #display(double[][], int)
-    */
+     * Displays and prints the given 2D array to standard output in Python-style.
+     *
+     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
+     * of given 2D array is {@code null} or empty.
+     *
+     * <p><b>Output example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [n, n, n, ...],
+     *       [n, n, n, ...],
+     *       [n, n, n, ...]   ]
+     * </pre>
+     *
+     * @param arr  the 2D array to be displayed.
+     *
+     * @since      0.1.0
+     * @see        #display(double[][], int)
+     */
     final public static void display(double[ ][ ] arr) {
         if (arr != null) {
             System.out.println((new Matrix(arr)).toString());
@@ -2221,27 +2221,27 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Displays and prints the specified row of given 2D array to standard output
-    * in Python-style.
-    *
-    * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
-    * of given 2D array is {@code null} or empty.
-    *
-    * <p><b>Output example:</b></p>
-    *
-    * <pre>&nbsp;
-    *   [n, n, n, ...]
-    * </pre>
-    *
-    * @param  arr                    the 2D array to be displayed.
-    * @param  index                  the index row of 2D array.
-    *
-    * @throws InvalidIndexException  if the given index is negative value or
-    *                                the index is larger than number of rows.
-    *
-    * @since                         0.2.0
-    * @see                           #display(double[][])
-    */
+     * Displays and prints the specified row of given 2D array to standard output
+     * in Python-style.
+     *
+     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
+     * of given 2D array is {@code null} or empty.
+     *
+     * <p><b>Output example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [n, n, n, ...]
+     * </pre>
+     *
+     * @param  arr                    the 2D array to be displayed.
+     * @param  index                  the index row of 2D array.
+     *
+     * @throws InvalidIndexException  if the given index is negative value or
+     *                                the index is larger than number of rows.
+     *
+     * @since                         0.2.0
+     * @see                           #display(double[][])
+     */
     final public static void display(double[ ][ ] arr, int index) {
         if (arr != null) {
             try {
@@ -2265,85 +2265,85 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Performs transposition for this matrix.
-    *
-    * <p>If this matrix type are not square, then it would switches the row and column
-    * indices of this matrix. Which means the matrix size would be switched
-    * (for example, {@code 2x4 -> 4x2}).
-    *
-    * <p>The transposed matrix always get denoted by upperscript <b>T</b>, <b>t</b> or <b>tr</b>,
-    * for example:
-    * <ul>
-    * <li> <b>A</b><sup>T</sup>
-    * <li> <b>A</b><sup>t</sup>
-    * <li> <b>A</b><sup>tr</sup>
-    * </ul>
-    *
-    * <p><b>Example code:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   Matrix m = new Matrix(
-    *       new double[][] {
-    *           { 1, 7, 8 },
-    *           { 3, 0, 2 }
-    *       }
-    *   );
-    *
-    *   // Perform the tranposition
-    *   m.transpose();
-    *   m.display();
-    * </code></pre>
-    *
-    * <p>This code would transpose the matrix {@code m}, which means
-    * the size would be switched. Here is the output:
-    *
-    * <pre>&nbsp;
-    *   [   [1.0, 3.0],
-    *       [7.0, 0.0],
-    *       [8.0, 2.0]   ]
-    * </pre>
-    *
-    * <p><b>Note:</b></p>
-    *
-    * <p>Repeating the process on the transposed matrix returns
-    * the elements to their original position. Also can be written
-    * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
-    *
-    * @throws NullMatrixException  if the entries of this matrix is {@code null}
-    *
-    * @since                       0.2.0
-    * @see                         #transpose(Matrix)
-    * @see                         #transpose(double[][])
-    */
+     * Performs transposition for this matrix.
+     *
+     * <p>If this matrix type are not square, then it would switches the row and column
+     * indices of this matrix. Which means the matrix size would be switched
+     * (for example, {@code 2x4 -> 4x2}).
+     *
+     * <p>The transposed matrix always get denoted by upperscript <b>T</b>, <b>t</b> or <b>tr</b>,
+     * for example:
+     * <ul>
+     * <li> <b>A</b><sup>T</sup>
+     * <li> <b>A</b><sup>t</sup>
+     * <li> <b>A</b><sup>tr</sup>
+     * </ul>
+     *
+     * <p><b>Example code:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(
+     *       new double[][] {
+     *           { 1, 7, 8 },
+     *           { 3, 0, 2 }
+     *       }
+     *   );
+     *
+     *   // Perform the tranposition
+     *   m.transpose();
+     *   m.display();
+     * </code></pre>
+     *
+     * <p>This code would transpose the matrix {@code m}, which means
+     * the size would be switched. Here is the output:
+     *
+     * <pre>&nbsp;
+     *   [   [1.0, 3.0],
+     *       [7.0, 0.0],
+     *       [8.0, 2.0]   ]
+     * </pre>
+     *
+     * <p><b>Note:</b></p>
+     *
+     * <p>Repeating the process on the transposed matrix returns
+     * the elements to their original position. Also can be written
+     * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
+     *
+     * @throws NullMatrixException  if the entries of this matrix is {@code null}
+     *
+     * @since                       0.2.0
+     * @see                         #transpose(Matrix)
+     * @see                         #transpose(double[][])
+     */
     public void transpose() {
         this.create( Matrix.transpose(this).getEntries() );
     }
 
 
     /**
-    * Performs transposition for the given 2D array and produces new
-    * array with the transposed elements.
-    *
-    * <p>If the given 2D array type are not square, then it would switches the row and column
-    * indices of the array. Which means the array size would be switched
-    * (for example, {@code 2x4 -> 4x2}).<br>
-    *
-    * <p><b>Note:</b></p>
-    *
-    * <p>Repeating the process on the transposed 2D array returns
-    * the elements to their original position. Also can be written
-    * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
-    *
-    * @param  arr                  the 2D array to be transposed.
-    *
-    * @return                      the transposed of given array.
-    *
-    * @throws NullMatrixException  if the given array is {@code null} or empty.
-    *
-    * @since                       0.2.0
-    * @see                         #transpose()
-    * @see                         #transpose(Matrix)
-    */
+     * Performs transposition for the given 2D array and produces new
+     * array with the transposed elements.
+     *
+     * <p>If the given 2D array type are not square, then it would switches the row and column
+     * indices of the array. Which means the array size would be switched
+     * (for example, {@code 2x4 -> 4x2}).<br>
+     *
+     * <p><b>Note:</b></p>
+     *
+     * <p>Repeating the process on the transposed 2D array returns
+     * the elements to their original position. Also can be written
+     * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
+     *
+     * @param  arr                  the 2D array to be transposed.
+     *
+     * @return                      the transposed of given array.
+     *
+     * @throws NullMatrixException  if the given array is {@code null} or empty.
+     *
+     * @since                       0.2.0
+     * @see                         #transpose()
+     * @see                         #transpose(Matrix)
+     */
     public static double[ ][ ] transpose(double[ ][ ] arr) {
         try {
             if (arr == null || arr.length == 0) {
@@ -2359,62 +2359,62 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Performs transposition for the given matrix and produces new
-    * matrix with the transposed elements.
-    *
-    * <p>If the given matrix type are not square, then it would switches the row and column
-    * indices of the matrix. Which means the matrix size would be switched
-    * (for example, {@code 2x4 -> 4x2}).<br>
-    *
-    * <p>The transposed matrix always get denoted by upperscript <b>T</b>, <b>t</b> or <b>tr</b>,
-    * for example:
-    * <ul>
-    * <li> <b>A</b><sup>T</sup>
-    * <li> <b>A</b><sup>t</sup>
-    * <li> <b>A</b><sup>tr</sup>
-    * </ul>
-    *
-    * <p><b>Example code:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   Matrix m = new Matrix(
-    *       new double[][] {
-    *           { 1, 7, 8 },
-    *           { 3, 0, 2 }
-    *       }
-    *   );
-    *
-    *   // Transpose and create new matrix named "mT",
-    *   // which the capital "T" is to indicates the
-    *   // transposed matrix of matrix "m".
-    *   Matrix mT = Matrix.transpose(m);
-    * </code></pre>
-    *
-    * <p>This code would transpose the matrix {@code m}, which means
-    * the size would be switched. Here is the output:
-    *
-    * <pre>&nbsp;
-    *   [   [1.0, 3.0],
-    *       [7.0, 0.0],
-    *       [8.0, 2.0]   ]
-    * </pre>
-    *
-    * <p><b>Note:</b></p>
-    *
-    * <p>Repeating the process on the transposed matrix returns
-    * the elements to their original position. Also can be written
-    * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
-    *
-    * @param  m                    the <b>Matrix</b> object to be transposed.
-    *
-    * @return                      the transposed of given matrix.
-    *
-    * @throws NullMatrixException  if the entries of given matrix is {@code null}.
-    *
-    * @since                       0.2.0
-    * @see                         #transpose()
-    * @see                         #transpose(double[][])
-    */
+     * Performs transposition for the given matrix and produces new
+     * matrix with the transposed elements.
+     *
+     * <p>If the given matrix type are not square, then it would switches the row and column
+     * indices of the matrix. Which means the matrix size would be switched
+     * (for example, {@code 2x4 -> 4x2}).<br>
+     *
+     * <p>The transposed matrix always get denoted by upperscript <b>T</b>, <b>t</b> or <b>tr</b>,
+     * for example:
+     * <ul>
+     * <li> <b>A</b><sup>T</sup>
+     * <li> <b>A</b><sup>t</sup>
+     * <li> <b>A</b><sup>tr</sup>
+     * </ul>
+     *
+     * <p><b>Example code:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(
+     *       new double[][] {
+     *           { 1, 7, 8 },
+     *           { 3, 0, 2 }
+     *       }
+     *   );
+     *
+     *   // Transpose and create new matrix named "mT",
+     *   // which the capital "T" is to indicates the
+     *   // transposed matrix of matrix "m".
+     *   Matrix mT = Matrix.transpose(m);
+     * </code></pre>
+     *
+     * <p>This code would transpose the matrix {@code m}, which means
+     * the size would be switched. Here is the output:
+     *
+     * <pre>&nbsp;
+     *   [   [1.0, 3.0],
+     *       [7.0, 0.0],
+     *       [8.0, 2.0]   ]
+     * </pre>
+     *
+     * <p><b>Note:</b></p>
+     *
+     * <p>Repeating the process on the transposed matrix returns
+     * the elements to their original position. Also can be written
+     * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
+     *
+     * @param  m                    the <b>Matrix</b> object to be transposed.
+     *
+     * @return                      the transposed of given matrix.
+     *
+     * @throws NullMatrixException  if the entries of given matrix is {@code null}.
+     *
+     * @since                       0.2.0
+     * @see                         #transpose()
+     * @see                         #transpose(double[][])
+     */
     public static Matrix transpose(Matrix m) {
         try {
             if (m == null || m.ENTRIES == null) {
@@ -2455,41 +2455,41 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Checks whether this matrix is a square matrix.
-    *
-    * <p>The matrix can be called a square type if the number of rows
-    * are equals to the number of columns.
-    *
-    * @return                      {@code true} if this matrix is square,
-    *                              otherwise returns {@code false}.
-    *
-    * @throws NullMatrixException  if the entries of this matrix is {@code null}.
-    *
-    * @since                       1.0.0
-    * @see                         #isSquare(double[][])
-    * @see                         #isSquare(Matrix)
-    */
+     * Checks whether this matrix is a square matrix.
+     *
+     * <p>The matrix can be called a square type if the number of rows
+     * are equals to the number of columns.
+     *
+     * @return                      {@code true} if this matrix is square,
+     *                              otherwise returns {@code false}.
+     *
+     * @throws NullMatrixException  if the entries of this matrix is {@code null}.
+     *
+     * @since                       1.0.0
+     * @see                         #isSquare(double[][])
+     * @see                         #isSquare(Matrix)
+     */
     public boolean isSquare() {
         return Matrix.isSquare(this);
     }
 
     /**
-    * Checks whether the given 2D array represents a square matrix.
-    *
-    * <p>The matrix can be called a square type if the number of rows
-    * are equals to the number of columns.
-    *
-    * @param  arr                  the 2D array to be checked.
-    *
-    * @return                      {@code true} if the array is square,
-    *                              otherwise returns {@code false}.
-    *
-    * @throws NullMatrixException  if the given 2D array is {@code null} or empty.
-    *
-    * @since                       1.0.0
-    * @see                         #isSquare()
-    * @see                         #isSquare(Matrix)
-    */
+     * Checks whether the given 2D array represents a square matrix.
+     *
+     * <p>The matrix can be called a square type if the number of rows
+     * are equals to the number of columns.
+     *
+     * @param  arr                  the 2D array to be checked.
+     *
+     * @return                      {@code true} if the array is square,
+     *                              otherwise returns {@code false}.
+     *
+     * @throws NullMatrixException  if the given 2D array is {@code null} or empty.
+     *
+     * @since                       1.0.0
+     * @see                         #isSquare()
+     * @see                         #isSquare(Matrix)
+     */
     public static boolean isSquare(double[ ][ ] arr) {
         try {
             if (arr == null || arr.length == 0) {
@@ -2504,22 +2504,22 @@ public class Matrix implements MatrixUtils {
     }
 
     /**
-    * Checks whether the given matrix is a square matrix.
-    *
-    * <p>The matrix can be called a square type if the number of rows
-    * are equals to the number of columns.
-    *
-    * @param  m                    the <b>Matrix</b> object to be checked.
-    *
-    * @return                      {@code true} if the matrix is square,
-    *                              otherwise returns {@code false}.
-    *
-    * @throws NullMatrixException  if the entries of given matrix is {@code null}.
-    *
-    * @since                       1.0.0
-    * @see                         #isSquare()
-    * @see                         #isSquare(double[][])
-    */
+     * Checks whether the given matrix is a square matrix.
+     *
+     * <p>The matrix can be called a square type if the number of rows
+     * are equals to the number of columns.
+     *
+     * @param  m                    the <b>Matrix</b> object to be checked.
+     *
+     * @return                      {@code true} if the matrix is square,
+     *                              otherwise returns {@code false}.
+     *
+     * @throws NullMatrixException  if the entries of given matrix is {@code null}.
+     *
+     * @since                       1.0.0
+     * @see                         #isSquare()
+     * @see                         #isSquare(double[][])
+     */
     public static boolean isSquare(Matrix m) {
         try {
             if (m == null || m.ENTRIES == null) {
@@ -2535,41 +2535,41 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Checks whether this matrix is a diagonal matrix.
-    *
-    * <p>A diagonal matrix is a square matrix in which all the entries outside the main
-    * diagonal (the diagonal line from the top-left to the bottom-right) are zero.
-    *
-    * @return                             {@code true} if this matrix is diagonal,
-    *                                     otherwise returns {@code false}.
-    *
-    * @throws IllegalMatrixSizeException  if this matrix is not a square type.
-    *
-    * @since                              1.0.0
-    * @see                                #isDiagonal(Matrix)
-    * @see                                #isDiagonal(double[][])
-    */
+     * Checks whether this matrix is a diagonal matrix.
+     *
+     * <p>A diagonal matrix is a square matrix in which all the entries outside the main
+     * diagonal (the diagonal line from the top-left to the bottom-right) are zero.
+     *
+     * @return                             {@code true} if this matrix is diagonal,
+     *                                     otherwise returns {@code false}.
+     *
+     * @throws IllegalMatrixSizeException  if this matrix is not a square type.
+     *
+     * @since                              1.0.0
+     * @see                                #isDiagonal(Matrix)
+     * @see                                #isDiagonal(double[][])
+     */
     public boolean isDiagonal() {
         return Matrix.isDiagonal(this);
     }
 
     /**
-    * Checks whether the given matrix is a diagonal matrix.
-    *
-    * <p>A diagonal matrix is a square matrix in which all the entries outside the main
-    * diagonal (the diagonal line from the top-left to the bottom-right) are zero.
-    *
-    * @param  m                           the <b>Matrix</b> object to be checked.
-    *
-    * @return                             {@code true} if the matrix is diagonal,
-    *                                     otherwise returns {@code false}.
-    *
-    * @throws IllegalMatrixSizeException  if the given matrix is not a square type.
-    *
-    * @since                              1.0.0
-    * @see                                #isDiagonal()
-    * @see                                #isDiagonal(double[][])
-    */
+     * Checks whether the given matrix is a diagonal matrix.
+     *
+     * <p>A diagonal matrix is a square matrix in which all the entries outside the main
+     * diagonal (the diagonal line from the top-left to the bottom-right) are zero.
+     *
+     * @param  m                           the <b>Matrix</b> object to be checked.
+     *
+     * @return                             {@code true} if the matrix is diagonal,
+     *                                     otherwise returns {@code false}.
+     *
+     * @throws IllegalMatrixSizeException  if the given matrix is not a square type.
+     *
+     * @since                              1.0.0
+     * @see                                #isDiagonal()
+     * @see                                #isDiagonal(double[][])
+     */
     public static boolean isDiagonal(Matrix m) {
         try {
             if (!m.isSquare()) {
@@ -2594,22 +2594,22 @@ public class Matrix implements MatrixUtils {
     }
 
     /**
-    * Checks whether the given 2D array represents a diagonal matrix.
-    *
-    * <p>A diagonal matrix is a square matrix in which all the entries outside the main
-    * diagonal (the diagonal line from the top-left to the bottom-right) are zero.
-    *
-    * @param  arr                         the 2D array to be checked.
-    *
-    * @return                             {@code true} if the array represents a diagonal matrix,
-    *                                     otherwise returns {@code false}.
-    *
-    * @throws IllegalMatrixSizeException  if the 2D array is not a square type.
-    *
-    * @since                              1.0.0
-    * @see                                #isDiagonal()
-    * @see                                #isDiagonal(Matrix)
-    */
+     * Checks whether the given 2D array represents a diagonal matrix.
+     *
+     * <p>A diagonal matrix is a square matrix in which all the entries outside the main
+     * diagonal (the diagonal line from the top-left to the bottom-right) are zero.
+     *
+     * @param  arr                         the 2D array to be checked.
+     *
+     * @return                             {@code true} if the array represents a diagonal matrix,
+     *                                     otherwise returns {@code false}.
+     *
+     * @throws IllegalMatrixSizeException  if the 2D array is not a square type.
+     *
+     * @since                              1.0.0
+     * @see                                #isDiagonal()
+     * @see                                #isDiagonal(Matrix)
+     */
     public static boolean isDiagonal(double[ ][ ] arr) {
         try {
             if (!Matrix.isSquare(arr)) {
@@ -2636,15 +2636,15 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Clears and changes all elements of this matrix to zero.
-    *
-    * <p>Also this method would converts this matrix into {@code null} matrix or zero matrix.
-    *
-    * @throws NullMatrixException  if the entries of this matrix is {@code null}.
-    *
-    * @since                       0.2.0
-    * @see                         #sort()
-    */
+     * Clears and changes all elements of this matrix to zero.
+     *
+     * <p>Also this method would converts this matrix into {@code null} matrix or zero matrix.
+     *
+     * @throws NullMatrixException  if the entries of this matrix is {@code null}.
+     *
+     * @since                       0.2.0
+     * @see                         #sort()
+     */
     public void clear() {
         try {
             if (this.ENTRIES == null) {
@@ -2664,32 +2664,32 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Sorts the rows of this matrix in ascending order.
-    *
-    * @throws NullMatrixException  if the entries of this matrix is {@code null}.
-    *
-    * @since                       0.2.0
-    * @see                         #sort(Matrix)
-    * @see                         #sort(double[][])
-    * @see                         Arrays#sort(double[])
-    */
+     * Sorts the rows of this matrix in ascending order.
+     *
+     * @throws NullMatrixException  if the entries of this matrix is {@code null}.
+     *
+     * @since                       0.2.0
+     * @see                         #sort(Matrix)
+     * @see                         #sort(double[][])
+     * @see                         Arrays#sort(double[])
+     */
     public void sort() {
         this.ENTRIES = Matrix.sort(this).getEntries();
     }
 
 
     /**
-    * Sorts the rows of the given 2D array in ascending order.
-    *
-    * @param  arr                  the 2D array to be sorted.
-    *
-    * @throws NullMatrixException  if the given array is {@code null} or empty.
-    *
-    * @since                       0.2.0
-    * @see                         #sort()
-    * @see                         #sort(Matrix)
-    * @see                         Arrays#sort(double[])
-    */
+     * Sorts the rows of the given 2D array in ascending order.
+     *
+     * @param  arr                  the 2D array to be sorted.
+     *
+     * @throws NullMatrixException  if the given array is {@code null} or empty.
+     *
+     * @since                       0.2.0
+     * @see                         #sort()
+     * @see                         #sort(Matrix)
+     * @see                         Arrays#sort(double[])
+     */
     public static void sort(double[ ][ ] arr) {
         try {
             if (arr == null || arr.length == 0) {
@@ -2707,19 +2707,19 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Sorts the rows of the given matrix in ascending order.
-    *
-    * @param  m                    the <b>Matrix</b> object to be sorted.
-    *
-    * @return                      the sorted <b>Matrix</b> object.
-    *
-    * @throws NullMatrixException  if the given matrix or the entries is {@code null} or empty.
-    *
-    * @since                       1.0.0
-    * @see                         #sort()
-    * @see                         #sort(double[][])
-    * @see                         Arrays#sort(double[])
-    */
+     * Sorts the rows of the given matrix in ascending order.
+     *
+     * @param  m                    the <b>Matrix</b> object to be sorted.
+     *
+     * @return                      the sorted <b>Matrix</b> object.
+     *
+     * @throws NullMatrixException  if the given matrix or the entries is {@code null} or empty.
+     *
+     * @since                       1.0.0
+     * @see                         #sort()
+     * @see                         #sort(double[][])
+     * @see                         Arrays#sort(double[])
+     */
     public static Matrix sort(Matrix m) {
         // Check for null matrix
         try {
@@ -2743,36 +2743,36 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Retrieves the sizes (also known as, number of rows and columns) of this matrix.
-    *
-    * <p>If the entries of this matrix is {@code null} it will returns zero for both sizes.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <p>Retrieve the number of rows and columns:
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   int[] sizes = m.getSize();
-    * </code></pre>
-    *
-    * <p>Only retrieve the number of rows:
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   int sizeRow = m.getSize()[0];
-    * </code></pre>
-    *
-    * <p>Only retrieve the number of columns:
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   int sizeColumn = m.getSize()[1];
-    * </code></pre>
-    *
-    * @return an {@code Integer} list containing number of rows<sup>[0]</sup>
-    *         and columns<sup>[1]</sup>.
-    *
-    * @since  0.1.0
-    * @see    #getEntries()
-    */
+     * Retrieves the sizes (also known as, number of rows and columns) of this matrix.
+     *
+     * <p>If the entries of this matrix is {@code null} it will returns zero for both sizes.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <p>Retrieve the number of rows and columns:
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   int[] sizes = m.getSize();
+     * </code></pre>
+     *
+     * <p>Only retrieve the number of rows:
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   int sizeRow = m.getSize()[0];
+     * </code></pre>
+     *
+     * <p>Only retrieve the number of columns:
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   int sizeColumn = m.getSize()[1];
+     * </code></pre>
+     *
+     * @return an {@code Integer} list containing number of rows<sup>[0]</sup>
+     *         and columns<sup>[1]</sup>.
+     *
+     * @since  0.1.0
+     * @see    #getEntries()
+     */
     public int[ ] getSize() {
         // It would return list: [<rows>, <cols>]
         return new int[ ] { this.ROWS, this.COLS };
@@ -2780,40 +2780,40 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-    * Returns the value at the specified row and column in this matrix.
-    *
-    * <p>If the given index is a negative value, then it will count from the last entry.<br>
-    * For getting all elements of this matrix, please refer to {@link #getEntries()} method.
-    *
-    * <p><b>For example:</b></p>
-    *
-    * <pre><code class="language-java">&nbsp;
-    *   double[][] arr = {
-    *       { 1, 2 },
-    *       { 3, 4 }
-    *   };
-    *
-    *   Matrix m = new Matrix(arr);
-    *   double lastEntry = m.get(-1, -1);
-    *
-    *   System.out.println(lastEntry);
-    * </code></pre>
-    *
-    * <p><b>Output:</b></p>
-    * <pre>4</pre>
-    *
-    * @param  row                    the row index.
-    * @param  col                    the column index.
-    *
-    * @return                        the value at the specified position in this matrix.
-    *
-    * @throws InvalidIndexException  if the given index is out of range.
-    * @throws NullMatrixException    if the entries of this matrix is {@code null}.
-    *
-    * @since                         1.0.0
-    * @see                           #getEntries()
-    * @see                           #getSize()
-    */
+     * Returns the value at the specified row and column in this matrix.
+     *
+     * <p>If the given index is a negative value, then it will count from the last entry.<br>
+     * For getting all elements of this matrix, please refer to {@link #getEntries()} method.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] arr = {
+     *       { 1, 2 },
+     *       { 3, 4 }
+     *   };
+     *
+     *   Matrix m = new Matrix(arr);
+     *   double lastEntry = m.get(-1, -1);
+     *
+     *   System.out.println(lastEntry);
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     * <pre>4</pre>
+     *
+     * @param  row                    the row index.
+     * @param  col                    the column index.
+     *
+     * @return                        the value at the specified position in this matrix.
+     *
+     * @throws InvalidIndexException  if the given index is out of range.
+     * @throws NullMatrixException    if the entries of this matrix is {@code null}.
+     *
+     * @since                         1.0.0
+     * @see                           #getEntries()
+     * @see                           #getSize()
+     */
     public double get(int row, int col) {
         try {
             if (this.ENTRIES == null) {
@@ -2850,33 +2850,33 @@ public class Matrix implements MatrixUtils {
     }
 
     /**
-    * Returns the {@code double} 2D array representation of this matrix elements.
-    *
-    * <p><b>Note:</b></p>
-    * If the matrix constructed by using {@link #Matrix()} constructor,
-    * this method would returns {@code null} instead (similar with the entries).
-    *
-    * @return a two-dimensional array that represents entries of this matrix,
-    *         returns {@code null} instead if the entries is uninitialized.
-    *
-    * @since  1.0.0
-    * @see    #get(int, int)
-    * @see    #getSize()
-    * @see    MatrixUtils#isNullEntries(Matrix)
-    */
+     * Returns the {@code double} 2D array representation of this matrix elements.
+     *
+     * <p><b>Note:</b></p>
+     * If the matrix constructed by using {@link #Matrix()} constructor,
+     * this method would returns {@code null} instead (similar with the entries).
+     *
+     * @return a two-dimensional array that represents entries of this matrix,
+     *         returns {@code null} instead if the entries is uninitialized.
+     *
+     * @since  1.0.0
+     * @see    #get(int, int)
+     * @see    #getSize()
+     * @see    MatrixUtils#isNullEntries(Matrix)
+     */
     public double[ ][ ] getEntries() {
         return this.ENTRIES;
     }
 
     /**
-    * Returns a {@code String} representation of this matrix.
-    *
-    * <p>Please refer to {@link #display()} to display this matrix in simply way.
-    *
-    * @return the {@code String} representation of this matrix in Python-style array notation.
-    *
-    * @since  1.0.0
-    */
+     * Returns a {@code String} representation of this matrix.
+     *
+     * <p>Please refer to {@link #display()} to display this matrix in simply way.
+     *
+     * @return the {@code String} representation of this matrix in Python-style array notation.
+     *
+     * @since  1.0.0
+     */
     @Override
     public String toString() {
         final int rows = this.ROWS;
