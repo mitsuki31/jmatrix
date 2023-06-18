@@ -22,7 +22,7 @@ public class Test_MatrixConstructor {
     }
 
     @Test
-    public void test_NullMatrix() {
+    public void test_ZeroMatrix() {
         Matrix m = new Matrix(3, 1);
         Matrix n = new Matrix(4, 5);
 
