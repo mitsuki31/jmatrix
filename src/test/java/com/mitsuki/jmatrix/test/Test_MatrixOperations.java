@@ -105,4 +105,43 @@ public class Test_MatrixOperations {
         assertEquals(true, Matrix.sub(m, n).equals(res));
         assertEquals(true, Matrix.sub(mI, nI).equals(resI));
     }
+
+    @Test
+    public void test_ScalarMultiplication() {
+        Matrix m = new Matrix(new double[][] {
+            { 4, 8, 2, -10 },
+            { 3, 5, -4, 15 }
+        });
+
+        Matrix mI = Matrix.identity(8);
+
+        Matrix res = new Matrix(new double[][] {
+            { 20, 40, 10, -50 },
+            { 15, 25, -20, 75 }
+        });
+
+        Matrix resI = new Matrix(new double[][] {
+            { 5, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 5, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 5, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 5, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 5, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 5, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 5, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 5 }
+        });
+
+        final double constant = 5.0;
+
+        assertEquals(false, MatrixUtils.isNullEntries(m));
+        assertEquals(false, m.isSquare());
+
+        assertEquals(false, MatrixUtils.isNullEntries(mI));
+        assertEquals(true, mI.isSquare());
+        assertEquals(true, mI.isDiagonal());
+
+        // Check the scalar multiplication results
+        assertEquals(true, Matrix.mult(m, constant).equals(res));
+        assertEquals(true, Matrix.mult(mI, constant).equals(resI));
+    }
 }
