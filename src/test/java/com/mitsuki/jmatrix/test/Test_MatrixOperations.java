@@ -189,4 +189,43 @@ public class Test_MatrixOperations {
         assertEquals(true, Matrix.mult(m, n).equals(res));
         assertEquals(true, Matrix.mult(mI, nI).equals(resI));
     }
+
+    @Test
+    public void test_MatrixTransposition() {
+        Matrix m = new Matrix(new double[][] {
+            { 6, 2, 3, 4, 1 },
+            { 9, 2, -1, -9, 0 },
+            { 11, -3, 2, 5, 3 }
+        });
+
+        Matrix x = new Matrix(new double[][] {
+            { 3, 4, 5 },
+            { 2, 1, 9 },
+            { 0, 7, 8 }
+        });
+
+        Matrix mT = new Matrix(new double[][] {
+            { 6, 9, 11 },
+            { 2, 2, -3 },
+            { 3, -1, 2 },
+            { 4, -9, 5 },
+            { 1, 0, 3 }
+        });
+
+        Matrix xT = new Matrix(new double[][] {
+            { 3, 2, 0 },
+            { 4, 1, 7 },
+            { 5, 9, 8 }
+        });
+
+        assertEquals(false, MatrixUtils.isNullEntries(m));
+        assertEquals(false, MatrixUtils.isNullEntries(x));
+        assertEquals(false, m.isSquare());
+        assertEquals(true, x.isSquare());
+        assertEquals(false, x.isDiagonal());
+
+        // Check the matrix transposition results
+        assertEquals(true, Matrix.transpose(m).equals(mT));
+        assertEquals(true, Matrix.transpose(x).equals(xT));
+    }
 }
