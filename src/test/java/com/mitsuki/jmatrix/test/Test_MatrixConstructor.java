@@ -39,6 +39,10 @@ public class Test_MatrixConstructor {
         assertEquals(false, m.isSquare());
         assertEquals(true, m.equals(m));
         assertEquals(false, m.equals(n));
+
+        n = m.deepCopy();  // deep copy matrix "m"
+        assertEquals(true, m.equals(n));
+        assertEquals(false, (m == n));  // check for memory references
     }
 
     @Test
@@ -68,5 +72,6 @@ public class Test_MatrixConstructor {
 
         n = m.deepCopy();  // deep copy matrix "m"
         assertEquals(true, m.equals(n));
+        assertEquals(false, (m == n));  // check for memory references
     }
 }
