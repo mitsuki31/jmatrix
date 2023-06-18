@@ -74,4 +74,25 @@ public class Test_MatrixConstructor {
         assertEquals(true, m.equals(n));
         assertEquals(false, (m == n));  // check for memory references
     }
+
+    @Test
+    public void test_ConstructArrayOfMatrices() {
+        // Create the array of matrices
+        Matrix[] m4 = new Matrix[] {
+            Matrix.identity(3),          // 3x3 identity matrix
+            new Matrix(5, 5, 5),         // 5x5 square matrix with elements equal to 5
+            new Matrix(8, 8),            // 8x8 zero matrix
+            new Matrix(new double[][] {  // 3x3 square matrix, created with 2d array
+                { 0, 1, 2 },
+                { 3, 4, 5 },
+                { 6, 7, 8 }
+            })
+        };
+
+        for (byte i = 0; i < m4.length; i++) {
+            assertEquals(true, (m4[i] instanceof Matrix));
+            assertEquals(false, MatrixUtils.isNullEntries(m4[i]));
+            assertEquals(false, m4[i].equals(new Matrix()));
+        }
+    }
 }
