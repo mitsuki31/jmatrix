@@ -144,4 +144,49 @@ public class Test_MatrixOperations {
         assertEquals(true, Matrix.mult(m, constant).equals(res));
         assertEquals(true, Matrix.mult(mI, constant).equals(resI));
     }
+
+    @Test
+    public void test_MatrixMultiplication() {
+        Matrix m = new Matrix(new double[][] {
+            { 1, 3, 5 },
+            { 2, 4, 6 }
+        });
+
+        Matrix n = new Matrix(new double[][] {
+            { 9, 8 },
+            { 7, 6 },
+            { 5, 4 }
+        });
+
+        // Create 4x4 diagonal matrix with value on main diagonal = 8.5
+        Matrix mI = Matrix.mult(Matrix.identity(4), 8.5);
+
+        // Create 4x4 diagonal matrix with value on main diagonal = -4.5
+        Matrix nI = Matrix.mult(Matrix.identity(4), -4.5);
+
+        Matrix res = new Matrix(new double[][] {
+            { 55, 46 },
+            { 76, 64 }
+        });
+
+        Matrix resI = new Matrix(new double[][] {
+            { -38.25, 0, 0, 0 },
+            { 0, -38.25, 0, 0 },
+            { 0, 0, -38.25, 0 },
+            { 0, 0, 0, -38.25 }
+        });
+
+        assertEquals(false, MatrixUtils.isNullEntries(m));
+        assertEquals(false, MatrixUtils.isNullEntries(n));
+        assertEquals(false, (m.isSquare() && n.isSquare()));
+
+        assertEquals(false, MatrixUtils.isNullEntries(mI));
+        assertEquals(false, MatrixUtils.isNullEntries(nI));
+        assertEquals(true, (mI.isSquare() && nI.isSquare()));
+        assertEquals(true, (mI.isDiagonal() && nI.isDiagonal()));
+
+        // Check the matrix multiplication results
+        assertEquals(true, Matrix.mult(m, n).equals(res));
+        assertEquals(true, Matrix.mult(mI, nI).equals(resI));
+    }
 }
