@@ -29,7 +29,10 @@ public class Test_MatrixOperations {
         assertEquals(false, m.equals(n));
         assertEquals(false, m.isSquare());
 
-        // Check the addition operation
+        // Before operate the addition, ensure both operands are same dimensions
+        assertEquals(true, MatrixUtils.isEqualsSize(m, n));
+
+        // Check the addition results
         assertEquals(true, Matrix.sum(m, n).equals(res));
     }
 }
