@@ -48,4 +48,22 @@ public class Test_MatrixConstructor {
         assertEquals(true, mI.isDiagonal());
         assertEquals(true, mI.isSquare());
     }
+
+    @Test
+    public void test_SquareMatrix() {
+        // 5x5 square matrix with each entries equal to 5
+        Matrix m = new Matrix(5, 5, 5);
+        // 2x2 square matrix with each entries equal to 8
+        Matrix n = new Matrix(2, 2, 8);
+
+        assertEquals(false, MatrixUtils.isNullEntries(m));
+        assertEquals(false, MatrixUtils.isNullEntries(n));
+        assertEquals(false, m.equals(n));
+        assertEquals(true, m.isSquare());
+        assertEquals(false, m.isDiagonal());
+        assertEquals(true, (m.getSize()[0] == 5 && m.getSize()[1] == 5));
+
+        n = m.deepCopy();  // deep copy matrix "m"
+        assertEquals(true, m.equals(n));
+    }
 }
