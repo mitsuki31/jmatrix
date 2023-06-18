@@ -37,4 +37,15 @@ public class Test_MatrixConstructor {
         assertEquals(true, m.equals(m));
         assertEquals(false, m.equals(n));
     }
+
+    @Test
+    public void test_IdentityMatrix() {
+        Matrix mI = Matrix.identity(6); // 6x6 identity matrix
+        Matrix nI = Matrix.identity(8); // 8x8 identity matrix
+
+        assertEquals(false, mI.equals(nI));
+        assertEquals(false, MatrixUtils.isNullEntries(mI));
+        assertEquals(true, mI.isDiagonal());
+        assertEquals(true, mI.isSquare());
+    }
 }
