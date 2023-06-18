@@ -19,21 +19,41 @@ public class Test_MatrixOperations {
             { -10, 5, 16 }
         });
 
+        Matrix mI = Matrix.identity(6);
+        Matrix nI = Matrix.identity(6);
+
         Matrix res = new Matrix(new double[][] {
             { 7, 10, 0 },
             { -5, 12, 20 }
         });
 
+        Matrix resI = new Matrix(new double[][] {
+            { 2, 0, 0, 0, 0, 0 },
+            { 0, 2, 0, 0, 0, 0 },
+            { 0, 0, 2, 0, 0, 0 },
+            { 0, 0, 0, 2, 0, 0 },
+            { 0, 0, 0, 0, 2, 0 },
+            { 0, 0, 0, 0, 0, 2 }
+        });
+
         assertEquals(false, MatrixUtils.isNullEntries(m));
         assertEquals(false, MatrixUtils.isNullEntries(n));
         assertEquals(false, m.equals(n));
-        assertEquals(false, m.isSquare());
+        assertEquals(false, (m.isSquare() && n.isSquare()));
+
+        assertEquals(false, MatrixUtils.isNullEntries(mI));
+        assertEquals(false, MatrixUtils.isNullEntries(nI));
+        assertEquals(true, mI.equals(nI));
+        assertEquals(true, (mI.isSquare() && nI.isSquare()));
+        assertEquals(true, (mI.isDiagonal() && nI.isDiagonal()));
 
         // Before operate the addition, ensure both operands are same dimensions
         assertEquals(true, MatrixUtils.isEqualsSize(m, n));
+        assertEquals(true, MatrixUtils.isEqualsSize(mI, nI));
 
         // Check the addition results
         assertEquals(true, Matrix.sum(m, n).equals(res));
+        assertEquals(true, Matrix.sum(mI, nI).equals(resI));
     }
 
     @Test
