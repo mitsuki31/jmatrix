@@ -72,6 +72,9 @@ public class Test_MatrixOperations {
             { -1, 4 }
         });
 
+        Matrix mI = Matrix.identity(12);
+        Matrix nI = Matrix.identity(12);
+
         Matrix res = new Matrix(new double[][] {
             { -10, 17 },
             { 2, -5 },
@@ -79,15 +82,27 @@ public class Test_MatrixOperations {
             { 2, -9 }
         });
 
+        // The result of "mI" - "nI" = 0 (zero matrix)
+        // with dimensions still the same (12x12)
+        Matrix resI = new Matrix(12, 12);
+
         assertEquals(false, MatrixUtils.isNullEntries(m));
         assertEquals(false, MatrixUtils.isNullEntries(n));
         assertEquals(false, m.equals(n));
-        assertEquals(false, m.isSquare());
+        assertEquals(false, (m.isSquare() && n.isSquare()));
+
+        assertEquals(false, MatrixUtils.isNullEntries(mI));
+        assertEquals(false, MatrixUtils.isNullEntries(nI));
+        assertEquals(true, mI.equals(nI));
+        assertEquals(true, (mI.isSquare() && nI.isSquare()));
+        assertEquals(true, (mI.isDiagonal() && nI.isDiagonal()));
 
         // Before operate the subtraction, ensure both operands are same dimensions
         assertEquals(true, MatrixUtils.isEqualsSize(m, n));
+        assertEquals(true, MatrixUtils.isEqualsSize(mI, nI));
 
         // Check the subtraction results
         assertEquals(true, Matrix.sub(m, n).equals(res));
+        assertEquals(true, Matrix.sub(mI, nI).equals(resI));
     }
 }
