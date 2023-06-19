@@ -102,7 +102,7 @@ public class Test_MatrixOperations {
         Matrix mI = Matrix.identity(12);
         Matrix nI = Matrix.identity(12);
 
-        Matrix res = new Matrix(new double[][] {
+        Matrix expectedRes = new Matrix(new double[][] {
             { -10, 17 },
             { 2, -5 },
             { 4, 13 },
@@ -111,26 +111,49 @@ public class Test_MatrixOperations {
 
         // The result of "mI" - "nI" = 0 (zero matrix)
         // with dimensions still the same (12x12)
-        Matrix resI = new Matrix(12, 12);
+        Matrix expectedResI = new Matrix(12, 12);
 
-        assertEquals(false, MatrixUtils.isNullEntries(m));
-        assertEquals(false, MatrixUtils.isNullEntries(n));
-        assertEquals(false, m.equals(n));
-        assertEquals(false, (m.isSquare() && n.isSquare()));
+        // Test and check for null entries
+        assertFalse(MatrixUtils.isNullEntries(m));
+        assertFalse(MatrixUtils.isNullEntries(n));
+        assertNotNull(m.getEntries());
+        assertNotNull(n.getEntries());
 
-        assertEquals(false, MatrixUtils.isNullEntries(mI));
-        assertEquals(false, MatrixUtils.isNullEntries(nI));
-        assertEquals(true, mI.equals(nI));
-        assertEquals(true, (mI.isSquare() && nI.isSquare()));
-        assertEquals(true, (mI.isDiagonal() && nI.isDiagonal()));
+        assertFalse(MatrixUtils.isNullEntries(mI));
+        assertFalse(MatrixUtils.isNullEntries(nI));
+        assertNotNull(mI.getEntries());
+        assertNotNull(nI.getEntries());
 
-        // Before operate the subtraction, ensure both operands are same dimensions
-        assertEquals(true, MatrixUtils.isEqualsSize(m, n));
-        assertEquals(true, MatrixUtils.isEqualsSize(mI, nI));
+        // Test and check the dimensions
+        assertEquals(4, m.getSize()[0]);
+        assertEquals(2, m.getSize()[1]);
+        assertEquals(4, n.getSize()[0]);
+        assertEquals(2, n.getSize()[1]);
+        assertTrue(MatrixUtils.isEqualsSize(m, n));
 
-        // Check the subtraction results
-        assertEquals(true, Matrix.sub(m, n).equals(res));
-        assertEquals(true, Matrix.sub(mI, nI).equals(resI));
+        assertEquals(12, mI.getSize()[0]);
+        assertEquals(12, mI.getSize()[1]);
+        assertEquals(12, nI.getSize()[0]);
+        assertEquals(12, nI.getSize()[1]);
+        assertTrue(MatrixUtils.isEqualsSize(mI, nI));
+
+        // Test and check the matrix type
+        assertFalse(m.isSquare());
+        assertFalse(n.isSquare());
+
+        assertTrue(mI.isSquare());
+        assertTrue(nI.isSquare());
+        assertTrue(mI.isDiagonal());
+        assertTrue(nI.isDiagonal());
+
+        // Perform subtraction and check the results
+        Matrix res = Matrix.sub(m, n);
+        Matrix resI = Matrix.sub(mI, nI);
+
+        assertEquals(expectedRes, res);
+        assertEquals(expectedResI, resI);
+        assertTrue(res.equals(expectedRes));
+        assertTrue(resI.equals(expectedResI));
     }
 
     @Test
