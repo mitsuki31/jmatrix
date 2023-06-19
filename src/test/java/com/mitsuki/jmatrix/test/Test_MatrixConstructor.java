@@ -22,13 +22,13 @@ public class Test_MatrixConstructor {
         assertNull(x.getEntries());
         assertNull(y.getEntries());
 
-        // Test and check each size
+        // Test and check the dimensions
         assertEquals(null, x.getSize());
         assertEquals(null, y.getSize());
 
         assertFalse(MatrixUtils.isEqualsSize(x, y));
 
-        // Test and check for equality
+        // Test and check for equality of elements
         assertTrue(x.equals(y));
 
         y.create(new double[][] { {5, 5}, {4, 4} });  // initialize new entries
@@ -59,30 +59,28 @@ public class Test_MatrixConstructor {
         assertNotNull(m.getEntries());
         assertNotNull(n.getEntries());
 
-        // Test and check each size
+        // Test and check the dimensions
         assertEquals(3, m.getSize()[0]);
         assertEquals(1, m.getSize()[1]);
         assertEquals(4, n.getSize()[0]);
         assertEquals(5, n.getSize()[1]);
 
         assertFalse(MatrixUtils.isEqualsSize(m, n));
+        assertTrue(MatrixUtils.isEqualsSize(m.getEntries(), a));
+        assertTrue(MatrixUtils.isEqualsSize(n.getEntries(), b));
 
         // Test and check the matrix type
         assertFalse(m.isSquare());
         assertFalse(n.isSquare());
 
-        // Test and check for equality
+        // Test and check for equality of elements
         assertFalse(m.equals(n));
-
-        assertTrue(MatrixUtils.isEqualsSize(m.getEntries(), a));
         assertTrue(MatrixUtils.isEquals(m.getEntries(), a));
-
-        assertTrue(MatrixUtils.isEqualsSize(n.getEntries(), b));
         assertTrue(MatrixUtils.isEquals(n.getEntries(), b));
 
         n = m.deepCopy();  // deep copy matrix "m"
         assertTrue(m.equals(n));
-        assertTrue(MatrixUtils.isEqualsSize(m, n));
+        assertTrue(MatrixUtils.isEqualsSize(n, m));
         assertFalse((m == n));  // check for memory references
 
         n.create(new double[][] { {5}, {5}, {5}, {5} });
@@ -111,17 +109,17 @@ public class Test_MatrixConstructor {
         assertTrue(nI.isSquare());
         assertTrue(nI.isDiagonal());
 
-        // Test and check for equality
-        assertFalse(mI.equals(nI));
-
+        // Test and check the dimensions
         assertTrue(MatrixUtils.isEqualsSize(mI, x));
         assertTrue(MatrixUtils.isEqualsSize(nI, y));
-
-        assertFalse(mI.equals(x));
-        assertFalse(nI.equals(y));
         assertFalse(MatrixUtils.isEqualsSize(mI, nI));
 
-        mI.clear();  // clear and convert it into zero matrix
+        // Test and check for equality of elements
+        assertFalse(mI.equals(nI));
+        assertFalse(mI.equals(x));
+        assertFalse(nI.equals(y));
+
+        mI.clear();  // clear elements and convert it into zero matrix
         assertTrue(mI.equals(x));
     }
 
@@ -132,16 +130,32 @@ public class Test_MatrixConstructor {
         // 2x2 square matrix with each entries equal to 8
         Matrix n = new Matrix(2, 2, 8);
 
-        assertEquals(false, MatrixUtils.isNullEntries(m));
-        assertEquals(false, MatrixUtils.isNullEntries(n));
-        assertEquals(false, m.equals(n));
-        assertEquals(true, m.isSquare());
-        assertEquals(false, m.isDiagonal());
-        assertEquals(true, (m.getSize()[0] == 5 && m.getSize()[1] == 5));
+        // Test and check for null entries
+        assertFalse(MatrixUtils.isNullEntries(m));
+        assertFalse(MatrixUtils.isNullEntries(n));
+        assertNotNull(m.getEntries());
+        assertNotNull(n.getEntries());
+
+        // Test and check each size
+        assertEquals(5, m.getSize()[0]);
+        assertEquals(5, m.getSize()[1]);
+        assertEquals(2, n.getSize()[0]);
+        assertEquals(2, n.getSize()[1]);
+
+        assertFalse(MatrixUtils.isEqualsSize(m, n));
+        assertTrue(MatrixUtils.isEqualsSize(m, new Matrix(5, 5)));
+        assertTrue(MatrixUtils.isEqualsSize(n, new Matrix(2, 2)));
+
+        // Test and check the matrix type
+        assertTrue(m.isSquare());
+        assertFalse(m.isDiagonal());
+
+        // Test and check for equality
+        assertFalse(m.equals(n));
 
         n = m.deepCopy();  // deep copy matrix "m"
-        assertEquals(true, m.equals(n));
-        assertEquals(false, (m == n));  // check for memory references
+        assertTrue(m.equals(n));
+        assertFalse((m == n));  // check for memory references
     }
 
     @Test
@@ -159,9 +173,9 @@ public class Test_MatrixConstructor {
         };
 
         for (byte i = 0; i < m4.length; i++) {
-            assertEquals(true, (m4[i] instanceof Matrix));
-            assertEquals(false, MatrixUtils.isNullEntries(m4[i]));
-            assertEquals(false, m4[i].equals(new Matrix()));
+            assertTrue((m4[i] instanceof Matrix));
+            assertFalse(MatrixUtils.isNullEntries(m4[i]));
+            assertFalse(m4[i].equals(new Matrix()));
         }
     }
 }
