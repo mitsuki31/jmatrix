@@ -5,6 +5,10 @@ import com.mitsuki.jmatrix.util.MatrixUtils;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 public class Test_MatrixOperations {
     @Test
@@ -22,12 +26,12 @@ public class Test_MatrixOperations {
         Matrix mI = Matrix.identity(6);
         Matrix nI = Matrix.identity(6);
 
-        Matrix res = new Matrix(new double[][] {
+        Matrix expectedRes = new Matrix(new double[][] {
             { 7, 10, 0 },
             { -5, 12, 20 }
         });
 
-        Matrix resI = new Matrix(new double[][] {
+        Matrix expectedResI = new Matrix(new double[][] {
             { 2, 0, 0, 0, 0, 0 },
             { 0, 2, 0, 0, 0, 0 },
             { 0, 0, 2, 0, 0, 0 },
@@ -36,24 +40,47 @@ public class Test_MatrixOperations {
             { 0, 0, 0, 0, 0, 2 }
         });
 
-        assertEquals(false, MatrixUtils.isNullEntries(m));
-        assertEquals(false, MatrixUtils.isNullEntries(n));
-        assertEquals(false, m.equals(n));
-        assertEquals(false, (m.isSquare() && n.isSquare()));
+        // Test and check for null entries
+        assertFalse(MatrixUtils.isNullEntries(m));
+        assertFalse(MatrixUtils.isNullEntries(n));
+        assertNotNull(m.getEntries());
+        assertNotNull(n.getEntries());
 
-        assertEquals(false, MatrixUtils.isNullEntries(mI));
-        assertEquals(false, MatrixUtils.isNullEntries(nI));
-        assertEquals(true, mI.equals(nI));
-        assertEquals(true, (mI.isSquare() && nI.isSquare()));
-        assertEquals(true, (mI.isDiagonal() && nI.isDiagonal()));
+        assertFalse(MatrixUtils.isNullEntries(mI));
+        assertFalse(MatrixUtils.isNullEntries(nI));
+        assertNotNull(mI.getEntries());
+        assertNotNull(nI.getEntries());
 
-        // Before operate the addition, ensure both operands are same dimensions
-        assertEquals(true, MatrixUtils.isEqualsSize(m, n));
-        assertEquals(true, MatrixUtils.isEqualsSize(mI, nI));
+        // Test and check the dimensions
+        assertEquals(2, m.getSize()[0]);
+        assertEquals(3, m.getSize()[1]);
+        assertEquals(2, n.getSize()[0]);
+        assertEquals(3, n.getSize()[1]);
+        assertTrue(MatrixUtils.isEqualsSize(m, n));
 
-        // Check the addition results
-        assertEquals(true, Matrix.sum(m, n).equals(res));
-        assertEquals(true, Matrix.sum(mI, nI).equals(resI));
+        assertEquals(6, mI.getSize()[0]);
+        assertEquals(6, mI.getSize()[1]);
+        assertEquals(6, nI.getSize()[0]);
+        assertEquals(6, nI.getSize()[1]);
+        assertTrue(MatrixUtils.isEqualsSize(mI, nI));
+
+        // Test and check the matrix type
+        assertFalse(m.isSquare());
+        assertFalse(n.isSquare());
+
+        assertTrue(mI.isSquare());
+        assertTrue(mI.isDiagonal());
+        assertTrue(nI.isSquare());
+        assertTrue(nI.isDiagonal());
+
+        // Perform addition and check the results
+        Matrix res = Matrix.sum(m, n);
+        Matrix resI = Matrix.sum(mI, nI);
+
+        assertEquals(expectedRes, res);
+        assertEquals(expectedResI, resI);
+        assertTrue(res.equals(expectedRes));
+        assertTrue(resI.equals(expectedResI));
     }
 
     @Test
