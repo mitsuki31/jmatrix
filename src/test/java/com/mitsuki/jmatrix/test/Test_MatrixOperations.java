@@ -301,7 +301,7 @@ public class Test_MatrixOperations {
             { 0, 7, 8 }
         });
 
-        Matrix mT = new Matrix(new double[][] {
+        Matrix expected_mT = new Matrix(new double[][] {
             { 6, 9, 11 },
             { 2, 2, -3 },
             { 3, -1, 2 },
@@ -309,20 +309,38 @@ public class Test_MatrixOperations {
             { 1, 0, 3 }
         });
 
-        Matrix xT = new Matrix(new double[][] {
+        Matrix expected_xT = new Matrix(new double[][] {
             { 3, 2, 0 },
             { 4, 1, 7 },
             { 5, 9, 8 }
         });
 
-        assertEquals(false, MatrixUtils.isNullEntries(m));
-        assertEquals(false, MatrixUtils.isNullEntries(x));
-        assertEquals(false, m.isSquare());
-        assertEquals(true, x.isSquare());
-        assertEquals(false, x.isDiagonal());
+        // Test and check for null entries
+        assertFalse(MatrixUtils.isNullEntries(m));
+        assertFalse(MatrixUtils.isNullEntries(x));
+        assertNotNull(m.getEntries());
+        assertNotNull(x.getEntries());
 
-        // Check the matrix transposition results
-        assertEquals(true, Matrix.transpose(m).equals(mT));
-        assertEquals(true, Matrix.transpose(x).equals(xT));
+        // Test and check the dimensions
+        assertEquals(3, m.getSize()[0]);
+        assertEquals(5, m.getSize()[1]);
+
+        assertEquals(3, x.getSize()[0]);
+        assertEquals(3, x.getSize()[1]);
+
+        // Test and check the matrix type
+        assertFalse(m.isSquare());
+
+        assertTrue(x.isSquare());
+        assertFalse(x.isDiagonal());
+
+        // Perform matrix transposition and check the results
+        Matrix mT = Matrix.transpose(m);
+        Matrix xT = Matrix.transpose(x);
+
+        assertEquals(expected_mT, mT);
+        assertEquals(expected_xT, xT);
+        assertTrue(mT.equals(expected_mT));
+        assertTrue(xT.equals(expected_xT));
     }
 }
