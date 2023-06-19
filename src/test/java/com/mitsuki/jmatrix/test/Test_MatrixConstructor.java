@@ -14,7 +14,8 @@ public class Test_MatrixConstructor {
 
         assertEquals(true, MatrixUtils.isNullEntries(x));
         assertEquals(true, (x.getEntries() == null));
-        assertEquals(true, (0 == x.getSize()[0] && 0 == x.getSize()[1]));
+        assertEquals(null, x.getSize());
+        assertEquals(null, y.getSize());
         assertEquals(true, x.equals(y));
 
         y.create(new double[][] { {5, 5}, {4, 4} });  // initialize new entries
