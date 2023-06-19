@@ -77,7 +77,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.8, 16 June 2023
+ * @version  1.9, 19 June 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -2745,7 +2745,9 @@ public class Matrix implements MatrixUtils {
     /**
      * Retrieves the sizes (also known as, number of rows and columns) of this matrix.
      *
-     * <p>If the entries of this matrix is {@code null} it will returns zero for both sizes.
+     * <p>If the entries of this matrix is {@code null} it will returns {@code null} instead.
+     * This also prevents unexpected results that could be happen when comparing the matrix sizes.<br>
+     * To check whether the matrix has {@code null} entries, please refer to {@link MatrixUtils#isNullEntries(Matrix)}.
      *
      * <p><b>For example:</b></p>
      *
@@ -2774,6 +2776,9 @@ public class Matrix implements MatrixUtils {
      * @see    #getEntries()
      */
     public int[ ] getSize() {
+        // Now if this matrix has null entries, then returns null
+        if (this.ENTRIES == null) return null;
+
         // It would return list: [<rows>, <cols>]
         return new int[ ] { this.ROWS, this.COLS };
     }
