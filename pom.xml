@@ -10,7 +10,7 @@
         <package.name>JMatrix</package.name>
         <package.version.core>1.0.0</package.version.core>
         <package.mainClass>com.mitsuki.jmatrix.Main</package.mainClass>
-        <package.releaseType>pre_release</package.releaseType>
+        <package.releaseType>stable</package.releaseType>
         <package.betaNum>0</package.betaNum>
 
         <!-- Encoding -->
@@ -33,7 +33,7 @@
     <groupId>com.mitsuki</groupId>
     <artifactId>jmatrix</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0-pre_release</version>
+    <version>1.0.0</version>
 
     <profiles>
         <!--
