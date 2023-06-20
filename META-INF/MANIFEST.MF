@@ -3,4 +3,4 @@ Built-By: Ryuu Mitsuki
 License-File: LICENSE
 Main-Class: com.mitsuki.jmatrix.Main
 Program-Name: JMatrix
-Program-Version: v1.0.0-pre_release.0
+Program-Version: v1.0.0
