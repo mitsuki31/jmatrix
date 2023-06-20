@@ -270,7 +270,7 @@ class FixConfig:
         """
         config_data:   dict = kwargs.get('config_data', {})
         fixed_version: str  = config_data.get('package.version.core', 'null')
-        if config_data.get('package.releaseType', 'null').lower() != 'release':
+        if config_data.get('package.releaseType', 'null').lower() not in ('release', 'stable'):
             fixed_version += '-' + config_data.get('package.releaseType', 'null') + \
                              '.' + config_data.get('package.betaNum', 'null')
 
