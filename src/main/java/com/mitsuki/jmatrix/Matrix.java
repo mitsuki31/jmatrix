@@ -77,7 +77,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.9, 19 June 2023
+ * @version  2.0, 22 June 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -185,38 +185,35 @@ public class Matrix implements MatrixUtils {
      *       [0.0, 0.0, 0.0]   ]
      * </pre>
      *
-     * @param  rows                      a value for number of rows of matrix.
-     * @param  cols                      a value for number of columns of matrix.
+     * @param  rows                        a value for number of rows of matrix (min 1).
+     * @param  cols                        a value for number of columns of matrix (min 1).
      *
-     * @throws IllegalArgumentException  if the two input sizes is negative value
-     *                                   or one of two input sizes are equals to zero.
+     * @throws IllegalMatrixSizeException  if the two input sizes is negative value
+     *                                     or one of two input sizes are equals to zero.
      *
-     * @since                            0.1.0
-     * @see                              #Matrix()
-     * @see                              #Matrix(int, int, int)
-     * @see                              #Matrix(double[][])
-     * @see                              #identity(int)
+     * @since                              0.1.0
+     * @see                                #Matrix()
+     * @see                                #Matrix(int, int, int)
+     * @see                                #Matrix(double[][])
+     * @see                                #identity(int)
      */
     public Matrix(int rows, int cols) {
+        Throwable cause = null;
+
         // Check for negative or zero value size
-        try {
-            if (rows < 0) {
-                throw new IllegalArgumentException(
-                    "Value for number of rows cannot be negative value.");
-            } else if (cols < 0) {
-                throw new IllegalArgumentException(
-                    "Value for number of columns cannot be negative value.");
-            } else if (rows == 0 || cols == 0) {
-                throw new IllegalArgumentException(
-                    "Cannot create a matrix with zero size between rows and columns.");
-            }
-        } catch (final IllegalArgumentException iae) {
-            try {
-                throw new JMBaseException(iae);
-            } catch (final JMBaseException jme) {
-                Options.raiseError(jme);
-            }
+        if (rows < 0) {
+            cause = new IllegalMatrixSizeException(
+                "Value for number of rows cannot be negative value.");
+        } else if (cols < 0) {
+            cause = new IllegalMatrixSizeException(
+                "Value for number of columns cannot be negative value.");
+        } else if (rows == 0 || cols == 0) {
+            cause = new IllegalMatrixSizeException(
+                "Cannot create a matrix with zero size between rows and columns.");
         }
+
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
 
         // Copy the sizes from input parameters
         this.ROWS = rows;
@@ -248,42 +245,39 @@ public class Matrix implements MatrixUtils {
      *       [5.0, 5.0, 5.0]   ]
      * </pre>
      *
-     * @param  rows                      a value for number of rows of matrix.
-     * @param  cols                      a value for number of columns of matrix.
-     * @param  val                       a value to filled out into all matrix elements.
+     * @param  rows                        a value for number of rows of matrix (min 1).
+     * @param  cols                        a value for number of columns of matrix (min 1).
+     * @param  val                         a value to filled out into all matrix elements.
      *
-     * @throws IllegalArgumentException  if the one or two input sizes is negative value
-     *                                   or if they are equals to zero.
+     * @throws IllegalMatrixSizeException  if the one or two input sizes is negative value
+     *                                     or if they are equals to zero.
      *
-     * @since                            0.1.0
-     * @see                              #Matrix()
-     * @see                              #Matrix(int, int)
-     * @see                              #Matrix(double[][])
-     * @see                              #identity(int)
+     * @since                              0.1.0
+     * @see                                #Matrix()
+     * @see                                #Matrix(int, int)
+     * @see                                #Matrix(double[][])
+     * @see                                #identity(int)
      *
-     * @warning                          It is recommended to use {@link #Matrix(double[][])}
-     *                                   instead for efficiency on constructing a matrix array.
+     * @warning                            It is recommended to use {@link #Matrix(double[][])}
+     *                                     instead for efficiency on constructing a matrix array.
      */
-    public Matrix(int rows, int cols, int val) {
+    public Matrix(int rows, int cols, double val) {
+        Throwable cause = null;
+
         // Check for negative or zero value at input arguments
-        try {
-            if (rows < 0) {
-                throw new IllegalArgumentException(
-                    "Value for number of rows cannot be negative value.");
-            } else if (cols < 0) {
-                throw new IllegalArgumentException(
-                    "Value for number of columns cannot be negative value.");
-            } else if (rows == 0 || cols == 0) {
-                throw new IllegalArgumentException(
-                    "Cannot create a matrix with zero size between rows and columns.");
-            }
-        } catch (final IllegalArgumentException iae) {
-            try {
-                throw new JMBaseException(iae);
-            } catch (final JMBaseException jme) {
-                Options.raiseError(jme);
-            }
+        if (rows < 0) {
+            cause = new IllegalMatrixSizeException(
+                "Value for number of rows cannot be negative value.");
+        } else if (cols < 0) {
+            cause = new IllegalMatrixSizeException(
+                "Value for number of columns cannot be negative value.");
+        } else if (rows == 0 || cols == 0) {
+            cause = new IllegalMatrixSizeException(
+                "Cannot create a matrix with zero size between rows and columns.");
         }
+
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
 
         // Copy the sizes from input parameters
         this.ROWS = rows;
@@ -301,9 +295,9 @@ public class Matrix implements MatrixUtils {
     }
 
     /**
-     * Constructs new <b>Matrix</b> object with the given 2D array.
+     * Constructs new <b>Matrix</b> object with the given two-dimensional array.
      *
-     * <p>Converts the 2D array into <b>Matrix</b> object, without changing its values.
+     * <p>Converts the two-dimensional array into <b>Matrix</b> object, without changing its values.
      *
      * <p><b>For example:</b></p>
      *
@@ -324,7 +318,7 @@ public class Matrix implements MatrixUtils {
      *       [3.0, 4.0]   ]
      * </pre>
      *
-     * @param  arr                  an 2D array to be converted into <b>Matrix</b> object.
+     * @param  arr                  a two-dimensional array to be converted into <b>Matrix</b> object.
      *
      * @throws NullMatrixException  if the given array is {@code null} or empty.
      *
@@ -335,17 +329,13 @@ public class Matrix implements MatrixUtils {
      * @see                         #identity(int)
      */
     public Matrix(double[ ][ ] arr) {
-        try {
-            // Check for null array
-            if (arr == null || arr.length == 0) {
-                throw new NullMatrixException(
-                    "Given 2D array is null. Please ensure the array has valid elements.");
-            }
-        } catch (final NullMatrixException nme) {
-            Options.raiseError(nme);
+        // Throw the exception immediately if given array is null
+        if (arr == null || arr.length == 0) {
+            Options.raiseError(new NullMatrixException(
+                "Given two-dimensional array is null. Please ensure the array has valid elements."));
         }
 
-        // Retrieve the sizes
+        // Retrieve the value of each sizes
         this.ROWS = arr.length;
         this.COLS = arr[0].length;
 
@@ -401,13 +391,10 @@ public class Matrix implements MatrixUtils {
      * @see                                #isDiagonal()
      */
     public static Matrix identity(int n) {
-        try {
-            if (n < 1) {
-                throw new IllegalMatrixSizeException(
-                    "Sizes of identity matrix cannot be lower than 1.");
-            }
-        } catch (final IllegalMatrixSizeException imse) {
-            Options.raiseError(imse);
+        // Check for negative value on input argument
+        if (n < 1) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Sizes of identity matrix cannot be lower than 1."));
         }
 
         // Create the identity matrix with size "n x n"
