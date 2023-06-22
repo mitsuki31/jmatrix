@@ -77,7 +77,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.0, 22 June 2023
+ * @version  2.1, 23 June 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -207,8 +207,6 @@ public class Matrix implements MatrixUtils {
      * @see                                #identity(int)
      */
     public Matrix(int rows, int cols) {
-        Throwable cause = null;
-
         // Check for negative or zero value size
         if (rows < 0) {
             cause = new IllegalMatrixSizeException(
@@ -271,8 +269,6 @@ public class Matrix implements MatrixUtils {
      *                                     instead for efficiency on constructing a matrix array.
      */
     public Matrix(int rows, int cols, double val) {
-        Throwable cause = null;
-
         // Check for negative or zero value at input arguments
         if (rows < 0) {
             cause = new IllegalMatrixSizeException(
