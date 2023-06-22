@@ -323,7 +323,7 @@ public class Matrix implements MatrixUtils {
      *       [3.0, 4.0]   ]
      * </pre>
      *
-     * @param  arr                  a two-dimensional array to be converted into <b>Matrix</b> object.
+     * @param  arr                  the two-dimensional array.
      *
      * @throws NullMatrixException  if the given array is {@code null} or empty.
      *
@@ -334,7 +334,7 @@ public class Matrix implements MatrixUtils {
      * @see                         #identity(int)
      */
     public Matrix(double[ ][ ] arr) {
-        // Throw the exception immediately if given array is null
+        // Raise the exception immediately if given array is null
         if (arr == null || arr.length == 0) {
             Options.raiseError(new NullMatrixException(
                 "Given two-dimensional array is null. Please ensure the array has valid elements."));
@@ -457,9 +457,8 @@ public class Matrix implements MatrixUtils {
     /**
      * Creates a new matrix with specified number of rows and columns.
      *
-     * <p>This method would creates a {@code null} matrix type in implicit way.<br>
-     * If the entries of this matrix are not {@code null} then this method would overwrites
-     * all entries with zero (also known as, {@code null} matrix type).
+     * <p>This method would creates a zero matrix in implicit way, it does not
+     * matter whether this matrix has {@code null} entries (uninitialized) or has entries.
      *
      * <p><b>For example:</b></p>
      *
@@ -474,36 +473,30 @@ public class Matrix implements MatrixUtils {
      *   Matrix m = new Matrix(3, 4);
      * </code></pre>
      *
-     * @param  rows                      a value for number of rows (min 1).
-     * @param  cols                      a value for number of columns (min 1).
+     * @param  rows                        a value for number of rows (min 1).
+     * @param  cols                        a value for number of columns (min 1).
      *
-     * @throws IllegalArgumentException  if one or both inputs are
-     *                                   negative value or equals to zero.
+     * @throws IllegalMatrixSizeException  if one or both inputs are
+     *                                     negative value or equals to zero.
      *
-     * @since                            0.2.0
-     * @see                              #create(double[][])
-     * @see                              #Matrix(int, int)
+     * @since                              0.2.0
+     * @see                                #create(double[][])
+     * @see                                #Matrix(int, int)
      */
     public void create(int rows, int cols) {
-        // Check for negative or zero value at input arguments
-        try {
-            if (rows < 0) {
-                throw new IllegalArgumentException(
-                    "Value for number of rows cannot be negative value.");
-            } else if (cols < 0) {
-                throw new IllegalArgumentException(
-                    "Value for number of columns cannot be negative value.");
-            } else if (rows == 0 || cols == 0) {
-                throw new IllegalArgumentException(
-                    "Cannot create a matrix with zero size between rows and columns.");
-            }
-        } catch (final IllegalArgumentException iae) {
-            try {
-                throw new JMBaseException(iae);
-            } catch(final JMBaseException jme) {
-                Options.raiseError(jme);
-            }
+        // Check for negative or zero value on input arguments
+        if (rows < 0) {
+            cause = new IllegalMatrixSizeException(
+                "Value for number of rows cannot be negative value.");
+        } else if (cols < 0) {
+            cause = new IllegalMatrixSizeException(
+                "Value for number of columns cannot be negative value.");
+        } else if (rows == 0 || cols == 0) {
+            cause = new IllegalMatrixSizeException(
+                "Cannot create a matrix with zero size between rows and columns.");
         }
+
+        if (cause != null) Options.raiseError(cause);
 
         // Copy the sizes from input parameters
         this.ROWS = rows;
@@ -515,14 +508,12 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Creates a new matrix or overwrites the elements of this matrix with the given 2D array.
+     * Creates a new matrix or overwrites the elements of this matrix with the given two-dimensional array.
      *
      * <p>Dimensions of new matrix (also known as, the number of rows and columns)
-     * will be equated with the dimensions from given 2D array.<br>
-     * If the entries of this matrix are not {@code null} then this method would overwrites
-     * all entries with the entries from given 2D array.
+     * will be equated with the dimensions from given two-dimensional array.
      *
-     * @param  arr                  the 2D array to be created into new <b>Matrix</b> object.
+     * @param  arr                  the two-dimensional array.
      *
      * @throws NullMatrixException  if the given array is {@code null} or empty.
      *
@@ -531,14 +522,10 @@ public class Matrix implements MatrixUtils {
      * @see                         #Matrix(double[][])
      */
     public void create(double[ ][ ] arr) {
-        try {
-            // Check for null array
-            if (arr == null || arr.length == 0) {
-                throw new NullMatrixException(
-                    "Given 2D array is null. Please ensure the array has valid elements.");
-            }
-        } catch (final NullMatrixException nme) {
-            Options.raiseError(nme);
+        // Raise the exception immediately if given array is null
+        if (arr == null || arr.length == 0) {
+            Options.raiseError(new NullMatrixException(
+                "Given two-dimensional array is null. Please ensure the array has valid elements."));
         }
 
         // Retrieve the sizes
