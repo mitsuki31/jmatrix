@@ -140,6 +140,15 @@ public class Matrix implements MatrixUtils {
      */
     private boolean hasSelect = false;
 
+    /**
+     * This variable stores the exception that want to be thrown.
+     *
+     * <p>The value itself is currently {@code null} unless it stored an exception.
+     *
+     * @see java.lang.Throwable
+     */
+    private static Throwable cause = null;
+
 
     /**
      * A threshold for {@code double} comparison.
