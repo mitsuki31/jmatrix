@@ -1106,9 +1106,9 @@ public class Matrix implements MatrixUtils {
         double[ ][ ] result = new double[this.ROWS][arr[0].length];
 
         // Using nested loop for iterate over each element of matrix
-        for (int i = 0; i < this.ROWS; i++) {
-            for (int j = 0; j < this.COLS; j++) {
-                result[i][j] = this.ENTRIES[i][j] + arr[i][j];
+        for (int r = 0; r < this.ROWS; r++) {
+            for (int c = 0; c < this.COLS; c++) {
+                result[r][c] = this.ENTRIES[r][c] + arr[r][c];
             }
         }
 
@@ -1117,8 +1117,8 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Operates addition for two two-dimensional arrays from input parameters and returns
-     * new two-dimensional array which contains the sum of given two arrays.
+     * Operates addition for two two-dimensional arrays from input parameters and
+     * produces new two-dimensional array contains the sum of given two arrays.
      *
      * <p>Both operands should be same dimensions or sizes before performing addition.
      *
@@ -1192,9 +1192,9 @@ public class Matrix implements MatrixUtils {
         // Create a new array for the result
         double[ ][ ] result = new double[a.length][b[0].length];
 
-        for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < b[0].length; j++) {
-                result[i][j] = a[i][j] + b[i][j];
+        for (int r = 0; r < a.length; r++) {
+            for (int c = 0; c < b[0].length; c++) {
+                result[r][c] = a[r][c] + b[r][c];
             }
         }
 
@@ -1203,8 +1203,8 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Operates addition for two matrices from input parameters and returns
-     * new <b>Matrix</b> object which contains the sum of given two matrices.
+     * Operates addition for two matrices from input parameters and
+     * produces new <b>Matrix</b> object contains the sum of given two matrices.
      *
      * <p>Both operands should be same dimensions or sizes before performing addition.
      *
@@ -1299,7 +1299,7 @@ public class Matrix implements MatrixUtils {
     /**
      * Operates subtraction for this matrix and the given matrix.
      *
-     * <p>Both matrices should be same dimensions or sizes before performing subtraction.
+     * <p>Both operands should be same dimensions or sizes before performing subtraction.
      *
      * <p><b>For example:</b></p>
      *
@@ -1323,7 +1323,7 @@ public class Matrix implements MatrixUtils {
      *       [2.0, 4.0, 6.0]   ]
      * </pre>
      *
-     * @param  m                           the matrix object as subtrahend.
+     * @param  m                           the <b>Matrix</b> object as subtrahend.
      *
      * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
      * @throws NullMatrixException         if either object or entries of one or both matrices
@@ -1335,36 +1335,35 @@ public class Matrix implements MatrixUtils {
      * @see                                #sub(Matrix, Matrix)
      */
     public void sub(Matrix m) {
-        try {
-            // Throw "NullMatrixException" if either object or entries
-            // of this matrix or given Matrix is null
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "This matrix is null. " +
-                    "Please ensure the matrix are initialized before performing subtraction."
-                );
-            } else if (m == null || m.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Given matrix is null. " +
-                    "Please ensure the matrix are initialized before performing subtraction."
-                );
-            }
-            // Else throw "IllegalMatrixSizeException" if both matrices are not same size
-            else if (this.ROWS != m.getSize()[0] || this.COLS != m.getSize()[1]) {
-                throw new IllegalMatrixSizeException(
-                    String.format(
-                        "Cannot perform subtraction for two matrices with different dimensions. " +
-                        "A = %dx%d, B = %dx%d",
-                        this.ROWS, this.COLS, m.getSize()[0], m.getSize()[1]
-                    )
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Throw "NullMatrixException" if either object or entries
+        // of this matrix or given matrix is null
+        if (this.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "This matrix is null. " +
+                "Please ensure the matrix are initialized before performing subtraction."
+            );
+        } else if (m == null || m.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "Given matrix is null. " +
+                "Please ensure the matrix are initialized before performing subtraction."
+            );
+        }
+        // Else throw "IllegalMatrixSizeException" if both matrices are not same size
+        else if (this.ROWS != m.ROWS || this.COLS != m.COLS) {
+            cause = new IllegalMatrixSizeException(
+                String.format(
+                    "Cannot perform subtraction for two matrices with different dimensions. " +
+                    "A = %dx%d, B = %dx%d",
+                    this.ROWS, this.COLS, m.ROWS, m.COLS
+                )
+            );
         }
 
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
+
         // Create new matrix for the result
-        double[ ][ ] result = new double[this.ROWS][m.getSize()[1]];
+        double[ ][ ] result = new double[this.ROWS][m.COLS];
 
         // Iterate over each element of all matrices and subtract each values together
         for (int r = 0; r < this.ROWS; r++) {
@@ -1378,9 +1377,9 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Operates subtraction for this matrix and the given 2D array.
+     * Operates subtraction for this matrix and the given two-dimensional array.
      *
-     * <p>Both matrices should be same dimemsions or sizes before performing subtraction.
+     * <p>Both operands should be same dimemsions or sizes before performing subtraction.
      *
      * <p><b>For example:</b></p>
      *
@@ -1404,7 +1403,7 @@ public class Matrix implements MatrixUtils {
      *       [2.0, 3.0, 4.0]   ]
      * </pre>
      *
-     * @param  arr                         an array as subtrahend.
+     * @param  arr                         the two-dimensional array as subtrahend.
      *
      * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
      * @throws NullMatrixException         if the entries of this matrix is {@code null}
@@ -1416,33 +1415,32 @@ public class Matrix implements MatrixUtils {
      * @see                                #sub(Matrix, Matrix)
      */
     public void sub(double[ ][ ] arr) {
-        try {
-            // Throw "NullMatrixException" if entries of this matrix is null
-            // or the given 2D array is null or empty
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "This matrix is null. " +
-                    "Please ensure the matrix are initialized before performing subtraction."
-                );
-            } else if (arr == null || arr.length == 0) {
-                throw new NullMatrixException(
-                    "Given array is null. " +
-                    "Please ensure the array has valid elements before performing subtraction."
-                );
-            }
-            // Else throw "IllegalMatrixSizeException" if the matrices are not same size
-            else if (this.ROWS != arr.length || this.COLS != arr[0].length) {
-                throw new IllegalMatrixSizeException(
-                    String.format(
-                        "Cannot perform subtraction for two matrices with different dimensions. " +
-                        "A = %dx%d, B = %dx%d",
-                        this.ROWS, this.COLS, arr.length, arr[0].length
-                    )
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Throw "NullMatrixException" if entries of this matrix is null
+        // or the given two-dimensional array is null or empty
+        if (this.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "This matrix is null. " +
+                "Please ensure the matrix are initialized before performing subtraction."
+            );
+        } else if (arr == null || arr.length == 0) {
+            cause = new NullMatrixException(
+                "Given array is null. " +
+                "Please ensure the array has valid elements before performing subtraction."
+            );
         }
+        // Else throw "IllegalMatrixSizeException" if the matrices are not same size
+        else if (this.ROWS != arr.length || this.COLS != arr[0].length) {
+            cause = new IllegalMatrixSizeException(
+                String.format(
+                    "Cannot perform subtraction for two matrices with different dimensions. " +
+                    "A = %dx%d, B = %dx%d",
+                    this.ROWS, this.COLS, arr.length, arr[0].length
+                )
+            );
+        }
+
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][arr[0].length];
@@ -1459,10 +1457,10 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Operates subtraction for two 2D arrays from input parameters and
-     * produces new 2D array contains the difference of given two arrays.
+     * Operates subtraction for two two-dimensional arrays from input parameters and
+     * produces new two-dimensional array contains the difference of given two arrays.
      *
-     * <p>Both matrices should be same dimensions or sizes before performing subtraction.
+     * <p>Both operands should be same dimensions or sizes before performing subtraction.
      *
      * <p><b>For example:</b></p>
      *
@@ -1486,15 +1484,15 @@ public class Matrix implements MatrixUtils {
      * <p><b>Output:</b></p>
      *
      * <pre>&nbsp;
-     *   [   [2, 6, 3],
-     *       [0, -6, -3],
-     *       [0, -2, 4]
+     *   [   [2.0, 6.0, 3.0],
+     *       [0.0, -6.0, -3.0],
+     *       [0.0, -2.0, 4.0]   ]
      * </pre>
      *
-     * @param  a                           the first array as minuend.
-     * @param  b                           the second array as subtrahend.
+     * @param  a                           the first two-dimensional array as minuend.
+     * @param  b                           the second two-dimensional array as subtrahend.
      *
-     * @return                             the array which contains the difference of two arrays.
+     * @return                             a two-dimensional array which contains the difference of two arrays.
      *
      * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
      * @throws NullMatrixException         if one or both given arrays is {@code null} or empty.
@@ -1505,39 +1503,37 @@ public class Matrix implements MatrixUtils {
      * @see                                #sub(Matrix, Matrix)
      */
     public static double[ ][ ] sub(double[ ][ ] a, double[ ][ ] b) {
-        try {
-            // Throw "NullMatrixException" if one or both arrays is null
-            if (a == null || a.length == 0) {
-                throw new NullMatrixException(
-                    "Given array A is null. " +
-                    "Please ensure the array has valid elements before performing subtraction."
-                );
-            } else if (b == null || b.length == 0) {
-                throw new NullMatrixException(
-                    "Given array B is null. " +
-                    "Please ensure the array has valid elements before performing subtraction."
-                );
-            }
-            // Else throw "IllegalMatrixSizeException" if the both matrix and are not same size
-            else if (a.length != b.length || a[0].length != b[0].length) {
-                throw new IllegalMatrixSizeException(
-                    String.format(
-                        "Cannot perform subtraction for two matrices with different dimensions. " +
-                        "A = %dx%d, B = %dx%d",
-                        a.length, a[0].length, b.length, b[0].length
-                    )
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Throw "NullMatrixException" if one or both arrays is null
+        if (a == null || a.length == 0) {
+            cause = new NullMatrixException(
+                "Given array A is null. " +
+                "Please ensure the array has valid elements before performing subtraction."
+            );
+        } else if (b == null || b.length == 0) {
+            cause = new NullMatrixException(
+                "Given array B is null. " +
+                "Please ensure the array has valid elements before performing subtraction."
+            );
         }
+        // Else throw "IllegalMatrixSizeException" if the both matrix and are not same size
+        else if (a.length != b.length || a[0].length != b[0].length) {
+            cause = new IllegalMatrixSizeException(
+                String.format(
+                    "Cannot perform subtraction for two matrices with different dimensions. " +
+                    "A = %dx%d, B = %dx%d",
+                    a.length, a[0].length, b.length, b[0].length
+                )
+            );
+        }
+
+        if (cause != null) Options.raiseError(cause);
 
         // Create a new matrix array
         double[ ][ ] result = new double[a.length][b[0].length];
 
-        for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < b[0].length; j++) {
-                result[i][j] = a[i][j] - b[i][j];
+        for (int r = 0; r < a.length; r++) {
+            for (int c = 0; c < b[0].length; c++) {
+                result[r][c] = a[r][c] - b[r][c];
             }
         }
 
@@ -1547,7 +1543,7 @@ public class Matrix implements MatrixUtils {
 
     /**
      * Operates subtraction for two matrices from input parameters and
-     * produces new matrix contains the difference of given two matrices.
+     * produces new <b>Matrix</b> object contains the difference of given two matrices.
      *
      * <p>Both matrices should be same dimensions or sizes before performing subtraction.
      *
@@ -1573,15 +1569,15 @@ public class Matrix implements MatrixUtils {
      * <p><b>Output:</b></p>
      *
      * <pre>&nbsp;
-     *   [   [2, 6, 3],
-     *       [0, -6, -3],
-     *       [0, -2, 4]
+     *   [   [-2.0, 1.0, -3.0],
+     *       [2.0, -2.0, -4.0],
+     *       [0.0, -2.0, 4.0]   ]
      * </pre>
      *
      * @param  a                           the first <b>Matrix</b> object as minuend.
      * @param  b                           the second <b>Matrix</b> object as subtrahend.
      *
-     * @return                             the matrix which contains the difference of two matrices.
+     * @return                             the <b>Matrix</b> object which contains the difference of two matrices.
      *
      * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
      * @throws NullMatrixException         if the entries of given matrix is {@code null}.
@@ -1592,35 +1588,33 @@ public class Matrix implements MatrixUtils {
      * @see                                #sub(double[][], double[][])
      */
     public static Matrix sub(Matrix a, Matrix b) {
-        try {
-            // Throw "NullMatrixException" if both matrices is null
-            if (a == null || a.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Given matrix A is null. " +
-                    "Please ensure the matrix are initialized before performing subtraction."
-                );
-            } else if (b == null || b.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Given matrix B is null. " +
-                    "Please ensure the matrix are initialized before performing subtraction."
-                );
-            }
-            // Else throw "IllegalMatrixSizeException" if both matrices size are not same
-            else if (a.ROWS != b.ROWS || a.COLS != b.COLS) {
-                throw new IllegalMatrixSizeException(
-                    String.format(
-                        "Cannot perform subtraction for two matrices with different dimensions. " +
-                        "A = %dx%d, B = %dx%d",
-                        a.ROWS, a.COLS, b.ROWS, b.COLS
-                    )
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Throw "NullMatrixException" if both matrices is null
+        if (a == null || a.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "Given matrix A is null. " +
+                "Please ensure the matrix are initialized before performing subtraction."
+            );
+        } else if (b == null || b.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "Given matrix B is null. " +
+                "Please ensure the matrix are initialized before performing subtraction."
+            );
+        }
+        // Else throw "IllegalMatrixSizeException" if both matrices size are not same
+        else if (a.getSize()[0] != b.getSize()[0] || a.getSize()[1] != b.getSize()[1]) {
+            cause = new IllegalMatrixSizeException(
+                String.format(
+                    "Cannot perform subtraction for two matrices with different dimensions. " +
+                    "A = %dx%d, B = %dx%d",
+                    a.getSize()[0], a.getSize()[1], b.getSize()[0], b.getSize()[1]
+                )
+            );
         }
 
+        if (cause != null) Options.raiseError(cause);
+
         // Create new matrix object
-        Matrix matrixRes = new Matrix(a.ROWS, b.COLS);
+        Matrix matrixRes = new Matrix(a.getSize()[0], b.getSize()[1]);
 
         for (int r = 0; r < a.ROWS; r++) {
             for (int c = 0; c < b.COLS; c++) {
