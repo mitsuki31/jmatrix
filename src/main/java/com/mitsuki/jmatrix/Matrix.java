@@ -580,7 +580,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Creates a deep copy of this matrix.
+     * Creates and returns a deep copy of this matrix.
      *
      * @return a new <b>Matrix</b> object which is a deep copy of this matrix.
      *
@@ -637,25 +637,23 @@ public class Matrix implements MatrixUtils {
      * @see                           #change(double)
      */
     public Matrix select(final int index) {
-        try {
-            // Check for null matrix
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Matrix is null. Please ensure the matrix are initialized.");
-            }
-            // Check for negative index
-            else if (index < 0) {
-                throw new InvalidIndexException(
-                    "Given index is negative value. Please ensure the index is positive value.");
-            }
-            // Check for given index is greater than total rows
-            else if (index > this.ROWS - 1) {
-                throw new InvalidIndexException(
-                    "Given index is too larger than number of rows.");
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Check for null matrix
+        if (this.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized.");
         }
+        // Check for negative index
+        else if (index < 0) {
+            cause = new InvalidIndexException(
+                "Given index is negative value. Please ensure the index is positive value.");
+        }
+        // Check for given index is greater than total rows
+        else if (index > this.ROWS - 1) {
+            cause = new InvalidIndexException(
+                "Given index is too larger than number of rows.");
+        }
+
+        if (cause != null) Options.raiseError(cause);
 
         this.selectedIndex = index;
         this.hasSelect = true;
