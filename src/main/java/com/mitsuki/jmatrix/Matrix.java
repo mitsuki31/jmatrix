@@ -951,7 +951,7 @@ public class Matrix implements MatrixUtils {
     /**
      * Operates addition for this matrix and the given matrix.
      *
-     * <p>Both matrices should be same dimensions or sizes before performing addition.
+     * <p>Both operands should be same dimensions or sizes before performing addition.
      *
      * <p><b>For example:</b></p>
      *
@@ -992,32 +992,31 @@ public class Matrix implements MatrixUtils {
      * @see                                #sum(Matrix, Matrix)
      */
     public void sum(Matrix m) {
-        try {
-            // Throw "NullMatrixException" if the matrix is null
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "This matrix is null. " +
-                    "Please ensure the matrix are initialized before performing addition."
-                );
-            } else if (m == null || m.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Given matrix is null. " +
-                    "Please ensure the matrix are initialized before performing addition."
-                );
-            }
-            // Else throw "IllegalMatrixSizeException" if the matrices size are not same
-            else if (this.ROWS != m.ROWS || this.COLS != m.COLS) {
-                throw new IllegalMatrixSizeException(
-                    String.format(
-                        "Cannot perform addition for two matrices with different dimensions. " +
-                        "A = %dx%d, B = %dx%d",
-                        this.ROWS, this.COLS, m.getSize()[0], m.getSize()[1]
-                    )
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Throw "NullMatrixException" if the matrix is null
+        if (this.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "This matrix is null. " +
+                "Please ensure the matrix are initialized before performing addition."
+            );
+        } else if (m == null || m.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "Given matrix is null. " +
+                "Please ensure the matrix are initialized before performing addition."
+            );
         }
+        // Else throw "IllegalMatrixSizeException" if the matrices size are not same
+        else if (this.ROWS != m.ROWS || this.COLS != m.COLS) {
+            cause = new IllegalMatrixSizeException(
+                String.format(
+                    "Cannot perform addition for two matrices with different dimensions. " +
+                    "A = %dx%d, B = %dx%d",
+                    this.ROWS, this.COLS, m.getSize()[0], m.getSize()[1]
+                )
+            );
+        }
+
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][m.COLS];
@@ -1034,9 +1033,9 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Operates addition for this matrix and the given 2D array.
+     * Operates addition for this matrix and the given two-dimensional array.
      *
-     * <p>Both matrices should be same dimensions or sizes before performing addition.
+     * <p>Both operands should be same dimensions or sizes before performing addition.
      *
      * <p><b>For example:</b></p>
      *
@@ -1064,7 +1063,7 @@ public class Matrix implements MatrixUtils {
      *       [10.0, 16.0]   ]
      * </pre>
      *
-     * @param  arr                         the 2D array as addend.
+     * @param  arr                         the two-dimensional array as addend.
      *
      * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
      * @throws NullMatrixException         if the entries of this matrix is {@code null}
@@ -1076,33 +1075,32 @@ public class Matrix implements MatrixUtils {
      * @see                                #sum(Matrix, Matrix)
      */
     public void sum(double[ ][ ] arr) {
-        try {
-            // Throw "NullMatrixException" if entries of this matrix is null
-            // or if the given 2D array is null or empty
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "This matrix is null. " +
-                    "Please ensure the matrix are initialized before performing addition."
-                );
-            } else if (arr == null || arr.length == 0) {
-                throw new NullMatrixException(
-                    "Given array is null. " +
-                    "Please ensure the array has valid elements."
-                );
-            }
-            // Else throw "IllegalMatrixSizeException" if the matrices are not same dimensions
-            else if (this.ROWS != arr.length || this.COLS != arr[0].length) {
-                throw new IllegalMatrixSizeException(
-                    String.format(
-                        "Cannot perform addition for two matrices with different dimensions. " +
-                        "A = %dx%d, B = %dx%d",
-                        this.ROWS, this.COLS, arr.length, arr[0].length
-                    )
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Throw "NullMatrixException" if entries of this matrix is null
+        // or if the given two-dimensional array is null or empty
+        if (this.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "This matrix is null. " +
+                "Please ensure the matrix are initialized before performing addition."
+            );
+        } else if (arr == null || arr.length == 0) {
+            cause = new NullMatrixException(
+                "Given array is null. " +
+                "Please ensure the array has valid elements."
+            );
         }
+        // Else throw "IllegalMatrixSizeException" if the matrices are not same dimensions
+        else if (this.ROWS != arr.length || this.COLS != arr[0].length) {
+            cause = new IllegalMatrixSizeException(
+                String.format(
+                    "Cannot perform addition for two matrices with different dimensions. " +
+                    "A = %dx%d, B = %dx%d",
+                    this.ROWS, this.COLS, arr.length, arr[0].length
+                )
+            );
+        }
+
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][arr[0].length];
@@ -1119,9 +1117,10 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Operates addition for two 2D arrays from input parameters.
+     * Operates addition for two two-dimensional arrays from input parameters and returns
+     * new two-dimensional array which contains the sum of given two arrays.
      *
-     * <p>Both matrices should be same dimensions or sizes before performing addition.
+     * <p>Both operands should be same dimensions or sizes before performing addition.
      *
      * <p><b>For example:</b></p>
      *
@@ -1149,10 +1148,10 @@ public class Matrix implements MatrixUtils {
      *       [4.0, 4.0]   ]
      * </pre>
      *
-     * @param  a                           the first 2D array as addend.
-     * @param  b                           the second 2D array as addend.
+     * @param  a                           the first two-dimensional array as addend.
+     * @param  b                           the second two-dimensional array as addend.
      *
-     * @return                             the 2D array which contains the sum of two arrays.
+     * @return                             the two-dimensional array which contains the sum of two arrays.
      *
      * @throws IllegalMatrixSizeException  if the two operands are not same dimensions.
      * @throws NullMatrixException         if one or both given arrays is {@code null} or empty.
@@ -1163,33 +1162,32 @@ public class Matrix implements MatrixUtils {
      * @see                                #sum(Matrix, Matrix)
      */
     public static double[ ][ ] sum(double[ ][ ] a, double[ ][ ] b) {
-        try {
-            // Throw "NullMatrixException" if the array is null or empty
-            if (a == null || a.length == 0) {
-                throw new NullMatrixException(
-                    "Given array A is null. " +
-                    "Please ensure the array has valid elements."
-                );
-            } else if (b == null || b.length == 0) {
-                throw new NullMatrixException(
-                    "Given array B is null. " +
-                    "Please ensure the array has valid elements."
-                );
-            }
-            // Else throw "IllegalMatrixSizeException" if the both arrays
-            // are not same dimensions
-            else if (a.length != b.length || a[0].length != b[0].length) {
-                throw new IllegalMatrixSizeException(
-                    String.format(
-                        "Cannot perform addition for two matrices with different dimensions. " +
-                        "A = %dx%d, B = %dx%d",
-                        a.length, a[0].length, b.length, b[0].length
-                    )
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Throw "NullMatrixException" if the array is null or empty
+        if (a == null || a.length == 0) {
+            cause = new NullMatrixException(
+                "Given array A is null. " +
+                "Please ensure the array has valid elements."
+            );
+        } else if (b == null || b.length == 0) {
+            cause = new NullMatrixException(
+                "Given array B is null. " +
+                "Please ensure the array has valid elements."
+            );
         }
+        // Else throw "IllegalMatrixSizeException" if the both arrays
+        // are not same dimensions
+        else if (a.length != b.length || a[0].length != b[0].length) {
+            cause = new IllegalMatrixSizeException(
+                String.format(
+                    "Cannot perform addition for two matrices with different dimensions. " +
+                    "A = %dx%d, B = %dx%d",
+                    a.length, a[0].length, b.length, b[0].length
+                )
+            );
+        }
+
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
 
         // Create a new array for the result
         double[ ][ ] result = new double[a.length][b[0].length];
@@ -1205,9 +1203,10 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Operates addition for two matrices from input parameters.
+     * Operates addition for two matrices from input parameters and returns
+     * new <b>Matrix</b> object which contains the sum of given two matrices.
      *
-     * <p>Both matrices should be same dimensions or sizes before performing addition.
+     * <p>Both operands should be same dimensions or sizes before performing addition.
      *
      * <p><b>For example:</b></p>
      *
@@ -1251,40 +1250,39 @@ public class Matrix implements MatrixUtils {
      * @see                                #sum(double[][], double[][])
      */
     public static Matrix sum(Matrix a, Matrix b) {
-        try {
-            // Throw "NullMatrixException" if the entries of given matrix is null
-            if (a == null || a.ENTRIES == null ) {
-                throw new NullMatrixException(
-                    "Given matrix A is null. " +
-                    "Please ensure the matrix are initialized before performing addition."
-                );
-            } else if (b == null || b.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Given matrix B is null. " +
-                    "Please ensure the matrix are initialized before performing addition."
-                );
-            }
-            // Else throw "IllegalMatrixSizeException" if both matrices
-            // are not same dimensions
-            else if (a.ROWS != b.ROWS || a.COLS != b.COLS) {
-                throw new IllegalMatrixSizeException(
-                    String.format(
-                        "Cannot perform addition for two matrices with different dimensions. " +
-                        "A = %dx%d, B = %dx%d",
-                        a.ROWS, a.COLS, b.ROWS, b.COLS
-                    )
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Throw "NullMatrixException" if the entries of given matrix is null
+        if (a == null || a.getEntries() == null) {
+            cause = new NullMatrixException(
+                "Given matrix A is null. " +
+                "Please ensure the matrix are initialized before performing addition."
+            );
+        } else if (b == null || b.getEntries() == null) {
+            cause = new NullMatrixException(
+                "Given matrix B is null. " +
+                "Please ensure the matrix are initialized before performing addition."
+            );
+        }
+        // Else throw "IllegalMatrixSizeException" if both matrices
+        // are not same dimensions
+        else if (a.getSize()[0] != b.getSize()[0] || a.getSize()[1] != b.getSize()[1]) {
+            cause = new IllegalMatrixSizeException(
+                String.format(
+                    "Cannot perform addition for two matrices with different dimensions. " +
+                    "A = %dx%d, B = %dx%d",
+                    a.getSize()[0], a.getSize()[1], b.getSize()[0], b.getSize()[1]
+                )
+            );
         }
 
-        // Create new matrix object
-        Matrix matrixRes = new Matrix(a.ENTRIES.length, b.ENTRIES[0].length);
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
 
-        for (int i = 0; i < a.ENTRIES.length; i++) {
-            for (int j = 0; j < b.ENTRIES[0].length; j++) {
-                matrixRes.ENTRIES[i][j] = a.ENTRIES[i][j] + b.ENTRIES[i][j];
+        // Create new matrix object
+        Matrix matrixRes = new Matrix(a.getSize()[0], b.getSize()[1]);
+
+        for (int r = 0; r < a.getSize()[0]; r++) {
+            for (int c = 0; c < b.getSize()[1]; c++) {
+                matrixRes.ENTRIES[r][c] = a.get(r, c) + b.get(r, c);
             }
         }
 
