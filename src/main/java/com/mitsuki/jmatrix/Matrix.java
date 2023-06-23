@@ -2271,34 +2271,42 @@ public class Matrix implements MatrixUtils {
      * the elements to their original position. Also can be written
      * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
      *
-     * @throws NullMatrixException  if the entries of this matrix is {@code null}
+     * @throws NullMatrixException  if the entries of this matrix is {@code null}.
      *
      * @since                       0.2.0
      * @see                         #transpose(Matrix)
      * @see                         #transpose(double[][])
      */
     public void transpose() {
+        // Throw the exception immediately if this matrix has null entries
+        if (this.ENTRIES == null) {
+            Options.raiseError(new NullMatrixException(
+                "This matrix is null. " +
+                "Please ensure the matrix are initialized before performing transposition."
+            ));
+        }
+
         this.create( Matrix.transpose(this).getEntries() );
     }
 
 
     /**
-     * Performs transposition for the given 2D array and produces new
+     * Performs transposition for the given two-dimensional array and produces new
      * array with the transposed elements.
      *
-     * <p>If the given 2D array type are not square, then it would switches the row and column
+     * <p>If the given two-dimensional array type are not square, then it would switches the row and column
      * indices of the array. Which means the array size would be switched
-     * (for example, {@code 2x4 -> 4x2}).<br>
+     * (for example, {@code 2x4 -> 4x2}).
      *
      * <p><b>Note:</b></p>
      *
-     * <p>Repeating the process on the transposed 2D array returns
+     * <p>Repeating the process on the transposed two-dimensional array returns
      * the elements to their original position. Also can be written
      * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
      *
-     * @param  arr                  the 2D array to be transposed.
+     * @param  arr                  the two-dimensional array to be transposed.
      *
-     * @return                      the transposed of given array.
+     * @return                      the transposed of given two-dimensional array.
      *
      * @throws NullMatrixException  if the given array is {@code null} or empty.
      *
@@ -2307,13 +2315,11 @@ public class Matrix implements MatrixUtils {
      * @see                         #transpose(Matrix)
      */
     public static double[ ][ ] transpose(double[ ][ ] arr) {
-        try {
-            if (arr == null || arr.length == 0) {
-                throw new NullMatrixException(
-                    "Given array is null. Please ensure the array has valid elements.");
-            }
-        } catch (final NullMatrixException nme) {
-            Options.raiseError(nme);
+        if (arr == null || arr.length == 0) {
+            Options.raiseError(new NullMatrixException(
+                "Given array is null. " +
+                "Please ensure the array has valid elements before performing transposition."
+            ));
         }
 
         return Matrix.transpose(new Matrix(arr)).getEntries();
@@ -2326,7 +2332,7 @@ public class Matrix implements MatrixUtils {
      *
      * <p>If the given matrix type are not square, then it would switches the row and column
      * indices of the matrix. Which means the matrix size would be switched
-     * (for example, {@code 2x4 -> 4x2}).<br>
+     * (for example, {@code 2x4 -> 4x2}).
      *
      * <p>The transposed matrix always get denoted by upperscript <b>T</b>, <b>t</b> or <b>tr</b>,
      * for example:
@@ -2350,6 +2356,7 @@ public class Matrix implements MatrixUtils {
      *   // which the capital "T" is to indicates the
      *   // transposed matrix of matrix "m".
      *   Matrix mT = Matrix.transpose(m);
+     *   mT.display();
      * </code></pre>
      *
      * <p>This code would transpose the matrix {@code m}, which means
@@ -2378,41 +2385,40 @@ public class Matrix implements MatrixUtils {
      * @see                         #transpose(double[][])
      */
     public static Matrix transpose(Matrix m) {
-        try {
-            if (m == null || m.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Matrix is null. Please ensure the matrix are initialized.");
-            }
-        } catch (final NullMatrixException nme) {
-            Options.raiseError(nme);
+        // Throw the exception immediately if the given matrix has null entries
+        if (m == null || m.getEntries() == null) {
+            Options.raiseError(new NullMatrixException(
+                "Given matrix is null. " +
+                "Please ensure the matrix are initialized before performing transposition."
+            ));
         }
 
-        // Create null matrix object for the transposed matrix
-        Matrix transposedMatrix = new Matrix();
+        // Declare new entries for the transposed matrix
+        double[ ][ ] transposedEntries;
 
         // Check whether the matrix is square
         if (m.isSquare()) {
-            // Initialize and create new matrix
-            transposedMatrix.create(m.ROWS, m.COLS);
+            // Initialize the entries
+            transposedEntries = new double[m.getSize()[0]][m.getSize()[1]];
 
             // Iterate over elements and transpose each element
-            for (int i = 0; i < m.ROWS; i++) {
-                for (int j = 0; j < m.COLS; j++) {
-                    transposedMatrix.ENTRIES[i][j] = m.ENTRIES[j][i];
+            for (int r = 0; r < m.getSize()[0]; r++) {
+                for (int c = 0; c < m.getSize()[1]; c++) {
+                    transposedEntries[r][c] = m.get(c, r);
                 }
             }
         } else {
-            // Initialize and create new matrix with row and column inverted
-            transposedMatrix.create(m.COLS, m.ROWS);
+            // Initialize the entries with row and column switched
+            transposedEntries = new double[m.getSize()[1]][m.getSize()[0]];
 
-            for (int i = 0; i < m.COLS; i++) {
-                for (int j = 0; j < m.ROWS; j++) {
-                    transposedMatrix.ENTRIES[i][j] = m.ENTRIES[j][i];
+            for (int c = 0; c < m.getSize()[1]; c++) {
+                for (int r = 0; r < m.getSize()[0]; r++) {
+                    transposedEntries[c][r] = m.get(r, c);
                 }
             }
         }
 
-        return transposedMatrix;
+        return new Matrix(transposedEntries);
     }
 
 
