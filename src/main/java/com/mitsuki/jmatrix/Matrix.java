@@ -496,6 +496,7 @@ public class Matrix implements MatrixUtils {
                 "Cannot create a matrix with zero size between rows and columns.");
         }
 
+        // Throw the exception if got one
         if (cause != null) Options.raiseError(cause);
 
         // Copy the sizes from input parameters
@@ -836,37 +837,26 @@ public class Matrix implements MatrixUtils {
      * @see                              #change(double)
      */
     public void change(double ... values) {
-        // Checking values size which from argument parameter
-        try {
-            if (values.length > this.COLS) {
-                throw new IllegalArgumentException(
-                    "Too many values for matrix with columns: " + this.COLS);
-            }
-            else if (values.length < this.COLS) {
-                throw new IllegalArgumentException(
-                    "Not enough values for matrix with columns: " + this.COLS);
-            }
-            else if (!this.hasSelect) {
-                throw new InvalidIndexException(
-                    "Selected index is null. " +
-                    "Please ensure you have already called \"select(int)\" method."
-                );
-            }
-            else if (this.selectedIndex < 0) {
-                throw new InvalidIndexException(
-                    "Selected index is negative value. " +
-                    "Please ensure the index is a non-negative value."
-                );
-            }
-        } catch (final IllegalArgumentException iae) {
-            try {
-                throw new JMBaseException(iae);
-            } catch (final JMBaseException jme) {
-                Options.raiseError(jme);
-            }
-        } catch (final InvalidIndexException iie) {
-            Options.raiseError(iie);
+        // Check whether the values size is greater than number of columns of this matrix
+        if (values.length > this.COLS) {
+            cause = new JMBaseException(new IllegalArgumentException(
+                "Too many values for matrix with columns: " + this.COLS));
         }
+        // Check whether the values size is lower than number of columns of this matrix
+        else if (values.length < this.COLS) {
+            cause = new JMBaseException(new IllegalArgumentException(
+                "Not enough values for matrix with columns: " + this.COLS));
+        }
+        // Check if the user have not select any index row
+        else if (!this.hasSelect) {
+            cause = new InvalidIndexException(
+                "Selected index is null. " +
+                "Please ensure you have already called \"select(int)\" method."
+            );
+        }
+
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
 
         // Change values of matrix column with values from argument parameter
         for (int i = 0; i < this.COLS; i++) {
@@ -895,8 +885,7 @@ public class Matrix implements MatrixUtils {
      *   Matrix m = new Matrix(a);
      *
      *   // Change the values of first row
-     *   double[] newRow = { 1, 2, 3 };
-     *   m.select(0).change(newRow);
+     *   m.select(0).change(5);
      *
      *   m.display();
      * </code></pre>
@@ -904,7 +893,7 @@ public class Matrix implements MatrixUtils {
      * <p><b>Output:</b></p>
      *
      * <pre>&nbsp;
-     *   [   [1.0, 2.0, 3.0],
+     *   [   [5.0, 5.0, 5.0],
      *       [4.0, 5.0, 6.0]   ]
      * </pre>
      *
@@ -919,21 +908,13 @@ public class Matrix implements MatrixUtils {
      * @see                           #change(double ...)
      */
     public void change(double value) {
-        try {
-            if (!this.hasSelect) {
-                throw new InvalidIndexException(
-                    "Selected index is null. " +
-                    "Please ensure you have already called \"select(int)\" method."
-                );
-            }
-            else if (this.selectedIndex < 0) {
-                throw new InvalidIndexException(
-                    "Selected index is negative value. " +
-                    "Please ensure the index is a non-negative value."
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        // Check if the user have not select any index row
+        // If user have not then it will immediately raise the exception
+        if (!this.hasSelect) {
+            Options.raiseError(new InvalidIndexException(
+                "Selected index is null. " +
+                "Please ensure you have already called \"select(int)\" method."
+            ));
         }
 
         // Create new array with same value
