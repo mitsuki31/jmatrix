@@ -2429,7 +2429,7 @@ public class Matrix implements MatrixUtils {
      * are equals to the number of columns.
      *
      * @return                      {@code true} if this matrix is square,
-     *                              otherwise returns {@code false}.
+     *                              returns {@code false} otherwise.
      *
      * @throws NullMatrixException  if the entries of this matrix is {@code null}.
      *
@@ -2442,30 +2442,26 @@ public class Matrix implements MatrixUtils {
     }
 
     /**
-     * Checks whether the given 2D array represents a square matrix.
+     * Checks whether the given two-dimensional array represents a square matrix.
      *
      * <p>The matrix can be called a square type if the number of rows
      * are equals to the number of columns.
      *
-     * @param  arr                  the 2D array to be checked.
+     * @param  arr                  the two-dimensional array to be checked.
      *
      * @return                      {@code true} if the array is square,
-     *                              otherwise returns {@code false}.
+     *                              returns {@code false} otherwise.
      *
-     * @throws NullMatrixException  if the given 2D array is {@code null} or empty.
+     * @throws NullMatrixException  if the given two-dimensional array is {@code null} or empty.
      *
      * @since                       1.0.0
      * @see                         #isSquare()
      * @see                         #isSquare(Matrix)
      */
     public static boolean isSquare(double[ ][ ] arr) {
-        try {
-            if (arr == null || arr.length == 0) {
-                throw new NullMatrixException(
-                    "Given array is null. Please ensure the array has valid elements.");
-            }
-        } catch (final NullMatrixException nme) {
-            Options.raiseError(nme);
+        if (arr == null || arr.length == 0) {
+            Options.raiseError(new NullMatrixException(
+                "Given array is null. Please ensure the array has valid elements."));
         }
 
         return (arr.length == arr[0].length);
@@ -2480,7 +2476,7 @@ public class Matrix implements MatrixUtils {
      * @param  m                    the <b>Matrix</b> object to be checked.
      *
      * @return                      {@code true} if the matrix is square,
-     *                              otherwise returns {@code false}.
+     *                              returns {@code false} otherwise.
      *
      * @throws NullMatrixException  if the entries of given matrix is {@code null}.
      *
@@ -2489,16 +2485,12 @@ public class Matrix implements MatrixUtils {
      * @see                         #isSquare(double[][])
      */
     public static boolean isSquare(Matrix m) {
-        try {
-            if (m == null || m.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Matrix is null. Please ensure the matrix are initialized.");
-            }
-        } catch (final NullMatrixException nme) {
-            Options.raiseError(nme);
+        if (m == null || m.getEntries() == null) {
+            Options.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized."));
         }
 
-        return (m.ROWS == m.COLS);
+        return (m.getSize()[0] == m.getSize()[1]);
     }
 
 
@@ -2509,7 +2501,7 @@ public class Matrix implements MatrixUtils {
      * diagonal (the diagonal line from the top-left to the bottom-right) are zero.
      *
      * @return                             {@code true} if this matrix is diagonal,
-     *                                     otherwise returns {@code false}.
+     *                                     returns {@code false} otherwise.
      *
      * @throws IllegalMatrixSizeException  if this matrix is not a square type.
      *
@@ -2539,20 +2531,16 @@ public class Matrix implements MatrixUtils {
      * @see                                #isDiagonal(double[][])
      */
     public static boolean isDiagonal(Matrix m) {
-        try {
-            if (!m.isSquare()) {
-                throw new IllegalMatrixSizeException(
-                    "Matrix is non-square type. " +
-                    "Please ensure the matrix has the same number of rows and columns."
-                );
-            }
-        } catch (final IllegalMatrixSizeException imse) {
-            Options.raiseError(imse);
+        if (!m.isSquare()) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Matrix is non-square type. " +
+                "Please ensure the matrix has the same number of rows and columns."
+            ));
         }
 
-        for (int row = 0; row < m.ROWS; row++) {
-            for (int col = 0; col < m.COLS; col++) {
-                if (row != col && Math.abs(m.ENTRIES[row][col]) > Matrix.THRESHOLD) {
+        for (int row = 0; row < m.getSize()[0]; row++) {
+            for (int col = 0; col < m.getSize()[1]; col++) {
+                if (row != col && Math.abs(m.get(row, col)) > Matrix.THRESHOLD) {
                     return false;
                 }
             }
@@ -2562,32 +2550,28 @@ public class Matrix implements MatrixUtils {
     }
 
     /**
-     * Checks whether the given 2D array represents a diagonal matrix.
+     * Checks whether the given two-dimensional array represents a diagonal matrix.
      *
      * <p>A diagonal matrix is a square matrix in which all the entries outside the main
      * diagonal (the diagonal line from the top-left to the bottom-right) are zero.
      *
-     * @param  arr                         the 2D array to be checked.
+     * @param  arr                         the two-dimensional array to be checked.
      *
      * @return                             {@code true} if the array represents a diagonal matrix,
-     *                                     otherwise returns {@code false}.
+     *                                     returns {@code false} otherwise.
      *
-     * @throws IllegalMatrixSizeException  if the 2D array is not a square type.
+     * @throws IllegalMatrixSizeException  if the two-dimensional array is not a square type.
      *
      * @since                              1.0.0
      * @see                                #isDiagonal()
      * @see                                #isDiagonal(Matrix)
      */
     public static boolean isDiagonal(double[ ][ ] arr) {
-        try {
-            if (!Matrix.isSquare(arr)) {
-                throw new IllegalMatrixSizeException(
-                    "Given array is non-square type. " +
-                    "Please ensure the array has the same number of rows and columns."
-                );
-            }
-        } catch (final IllegalMatrixSizeException imse) {
-            Options.raiseError(imse);
+        if (!Matrix.isSquare(arr)) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Given array is non-square type. " +
+                "Please ensure the array has the same number of rows and columns."
+            ));
         }
 
         for (int row = 0; row < arr.length; row++) {
@@ -2614,18 +2598,14 @@ public class Matrix implements MatrixUtils {
      * @see                         #sort()
      */
     public void clear() {
-        try {
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Matrix is null. Please ensure the matrix have been initialized.");
-            }
-        } catch (final NullMatrixException nme) {
-            Options.raiseError(nme);
+        if (this.ENTRIES == null) {
+            Options.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix have been initialized."));
         }
 
         for (int r = 0; r < this.ROWS; r++) {
             for (int c = 0; c < this.COLS; c++) {
-                this.ENTRIES[r][c] = 0;
+                this.ENTRIES[r][c] = 0.0;
             }
         }
     }
@@ -2642,14 +2622,27 @@ public class Matrix implements MatrixUtils {
      * @see                         Arrays#sort(double[])
      */
     public void sort() {
-        this.ENTRIES = Matrix.sort(this).getEntries();
+        if (this.ENTRIES == null) {
+            Options.raiseError(new NullMatrixException(
+                "This matrix is null. Please ensure the matrix are initialized."));
+        }
+
+        // Sort elements of this matrix and store it
+        double[ ][ ] sortedEntries = Matrix.sort(this).getEntries();
+
+        // Change all the elements on this matrix with the sorted elements
+        for (int r = 0; r < this.ROWS; r++) {
+            for (int c = 0; c < this.COLS; c++) {
+                this.ENTRIES[r][c] = sortedEntries[r][c];
+            }
+        }
     }
 
 
     /**
-     * Sorts the rows of the given 2D array in ascending order.
+     * Sorts the rows of the given two-dimensional array in ascending order.
      *
-     * @param  arr                  the 2D array to be sorted.
+     * @param  arr                  the two-dimensional array to be sorted.
      *
      * @throws NullMatrixException  if the given array is {@code null} or empty.
      *
@@ -2659,13 +2652,9 @@ public class Matrix implements MatrixUtils {
      * @see                         Arrays#sort(double[])
      */
     public static void sort(double[ ][ ] arr) {
-        try {
-            if (arr == null || arr.length == 0) {
-                throw new NullMatrixException(
-                    "Given array is null. Please ensure the array has valid elements.");
-            }
-        } catch (final NullMatrixException nme) {
-                Options.raiseError(nme);
+        if (arr == null || arr.length == 0) {
+            Options.raiseError(new NullMatrixException(
+                "Given array is null. Please ensure the array has valid elements."));
         }
 
         for (int r = 0; r < arr.length; r++) {
@@ -2690,13 +2679,9 @@ public class Matrix implements MatrixUtils {
      */
     public static Matrix sort(Matrix m) {
         // Check for null matrix
-        try {
-            if (m == null || m.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Matrix is null. Please ensure the matrix are initialized.");
-            }
-        } catch (final NullMatrixException nme) {
-            Options.raiseError(nme);
+        if (m == null || m.getEntries() == null) {
+            Options.raiseError(new NullMatrixException(
+                "Given matrix is null. Please ensure the matrix are initialized."));
         }
 
         // Extract and sort the values
