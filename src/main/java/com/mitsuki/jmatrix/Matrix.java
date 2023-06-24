@@ -2773,28 +2773,27 @@ public class Matrix implements MatrixUtils {
      * @see                           #getSize()
      */
     public double get(int row, int col) {
-        try {
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Matrix is null. Please ensure the matrix are initialized.");
-            } else if (row >= this.ROWS || (row < 0 && (row + this.ROWS) >= this.ROWS || (row + this.ROWS) < 0)) {
-                throw new InvalidIndexException(
-                    String.format(
-                        "Invalid row index: %d (matrix size: %dx%d)",
-                        row, this.ROWS, this.COLS
-                    )
-                );
-            } else if (col >= this.COLS || (col < 0 && (col + this.COLS) >= this.COLS || (col + this.COLS) < 0)) {
-                throw new InvalidIndexException(
-                    String.format(
-                        "Invalid column index: %d (matrix size: %dx%d",
-                        col, this.ROWS, this.COLS
-                    )
-                );
-            }
-        } catch (final RuntimeException re) {
-            Options.raiseError(re);
+        if (this.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized.");
+        } else if (row >= this.ROWS || (row < 0 && (row + this.ROWS) >= this.ROWS || (row + this.ROWS) < 0)) {
+            cause = new InvalidIndexException(
+                String.format(
+                    "Invalid row index: %d (matrix size: %dx%d)",
+                    row, this.ROWS, this.COLS
+                )
+            );
+        } else if (col >= this.COLS || (col < 0 && (col + this.COLS) >= this.COLS || (col + this.COLS) < 0)) {
+            cause = new InvalidIndexException(
+                String.format(
+                    "Invalid column index: %d (matrix size: %dx%d",
+                    col, this.ROWS, this.COLS
+                )
+            );
         }
+
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
 
         // Check for negative index for both inputs
         if (row < 0) {
@@ -2808,7 +2807,7 @@ public class Matrix implements MatrixUtils {
     }
 
     /**
-     * Returns the {@code double} 2D array representation of this matrix elements.
+     * Returns the {@code double} two-dimensional array representation of this matrix elements.
      *
      * <p><b>Note:</b></p>
      * If the matrix constructed by using {@link #Matrix()} constructor,
