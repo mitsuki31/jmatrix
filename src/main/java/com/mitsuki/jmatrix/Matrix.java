@@ -77,7 +77,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.1, 23 June 2023
+ * @version  2.12, 24 June 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -2134,18 +2134,19 @@ public class Matrix implements MatrixUtils {
      */
     final public void display(int index) {
         if (this.ENTRIES != null) {
-            // Checking index value from argument parameter
-            try {
-                if (index < 0) {
-                    throw new InvalidIndexException(
-                        "Invalid given index. Index cannot be a negative value.");
-                } else if (index > this.ROWS - 1) {
-                    throw new InvalidIndexException(
-                        "Invalid given index. Index cannot be larger than number of rows.");
-                }
-            } catch (final InvalidIndexException iie) {
-                Options.raiseError(iie);
+            // Check for negative index and throw the exception
+            if (index < 0) {
+                cause = new InvalidIndexException(
+                    "Invalid given index. Index cannot be a negative value.");
             }
+            // Check if the given index greater than number of rows this matrix
+            else if (index > this.ROWS - 1) {
+                cause = new InvalidIndexException(
+                    "Invalid given index. Index cannot be larger than number of rows.");
+            }
+
+            // Throw the exception if got one
+            if (cause != null) Options.raiseError(cause);
 
             System.out.println(Arrays.toString(this.ENTRIES[index]));
         } else {
@@ -2155,10 +2156,10 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Displays and prints the given 2D array to standard output in Python-style.
+     * Displays and prints the given two-dimensional array to standard output in Python-style.
      *
-     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
-     * of given 2D array is {@code null} or empty.
+     * <p>Displays <code>{@literal <null_2darray>}</code> if the entries
+     * of given two-dimensional array is {@code null} or empty.
      *
      * <p><b>Output example:</b></p>
      *
@@ -2168,26 +2169,26 @@ public class Matrix implements MatrixUtils {
      *       [n, n, n, ...]   ]
      * </pre>
      *
-     * @param arr  the 2D array to be displayed.
+     * @param arr  the two-dimensional array to be displayed.
      *
      * @since      0.1.0
      * @see        #display(double[][], int)
      */
     final public static void display(double[ ][ ] arr) {
-        if (arr != null) {
-            System.out.println((new Matrix(arr)).toString());
+        if (arr == null || arr.length == 0) {
+            System.out.println("<null_2darray>");
         } else {
-            System.out.println("<null_matrix>");
+            System.out.println((new Matrix(arr)).toString());
         }
     }
 
 
     /**
-     * Displays and prints the specified row of given 2D array to standard output
+     * Displays and prints the specified row of given two-dimensional array to standard output
      * in Python-style.
      *
-     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
-     * of given 2D array is {@code null} or empty.
+     * <p>Displays <code>{@literal <null_2darray>}</code> if the entries
+     * of given two-dimensional array is {@code null} or empty.
      *
      * <p><b>Output example:</b></p>
      *
@@ -2195,8 +2196,8 @@ public class Matrix implements MatrixUtils {
      *   [n, n, n, ...]
      * </pre>
      *
-     * @param  arr                    the 2D array to be displayed.
-     * @param  index                  the index row of 2D array.
+     * @param  arr                    the two-dimensional array to be displayed.
+     * @param  index                  the index row of two-dimensional array.
      *
      * @throws InvalidIndexException  if the given index is negative value or
      *                                the index is larger than number of rows.
@@ -2205,23 +2206,22 @@ public class Matrix implements MatrixUtils {
      * @see                           #display(double[][])
      */
     final public static void display(double[ ][ ] arr, int index) {
-        if (arr != null) {
-            try {
-                // Checking index value
-                if (index < 0) {
-                    throw new InvalidIndexException(
-                        "Invalid given index. Index cannot be a negative value.");
-                } else if (index > arr.length - 1) {
-                    throw new InvalidIndexException(
-                        "Invalid given index. Index cannot be larger than number of rows.");
-                }
-            } catch (final InvalidIndexException iie) {
-                Options.raiseError(iie);
+        if (arr == null || arr.length == 0) {
+            System.out.println("<null_2darray>");
+        } else {
+            // Checking index value
+            if (index < 0) {
+                cause = new InvalidIndexException(
+                    "Invalid given index. Index cannot be a negative value.");
+            } else if (index > arr.length - 1) {
+                cause = new InvalidIndexException(
+                    "Invalid given index. Index cannot be larger than number of rows.");
             }
 
+            // Throw the exception if got one
+            if (cause != null) Options.raiseError(cause);
+
             System.out.println(Arrays.toString(arr[index]));
-        } else {
-            System.out.println("<null_matrix>");
         }
     }
 
