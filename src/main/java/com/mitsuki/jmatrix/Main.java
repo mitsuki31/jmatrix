@@ -83,12 +83,12 @@ public class Main
         String ver = XML.getProperty("version");
 
         // Only retrieve the release type if not release and stable release
-        if (!XML.getProperty("releaseType").equals("release") ||
-                !XML.getProperty("releaseType").equals("stable")) {
+        if ( !(XML.getProperty("releaseType").equals("release") ||
+                XML.getProperty("releaseType").equals("stable")) ) {
             ver += "-" + XML.getProperty("releaseType");
 
             // This will only retrieve a non-zero beta number
-            if (XML.getProperty("betaNum").equals("0")) {
+            if (!XML.getProperty("betaNum").equals("0")) {
                 ver += "." + XML.getProperty("betaNum");
             }
         }
