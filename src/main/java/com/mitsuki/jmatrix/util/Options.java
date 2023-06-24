@@ -11,22 +11,22 @@ import java.io.*;
 import java.util.List;
 import java.util.Arrays;
 
-import java.lang.NullPointerException;
-import java.lang.IllegalArgumentException;
-
 // -**- Local Package -**- //
 import com.mitsuki.jmatrix.core.JMBaseException;
 import com.mitsuki.jmatrix.util.XMLParser;
 
 /**
-* This class provides all requirements for <b>JMatrix</b> package.<br>
-*
-* @version 1.1
-* @since   1.0.0
-* @author  Ryuu Mitsuki
-*
-* @see     com.mitsuki.jmatrix.util.XMLParser
-*/
+ * This class provides all requirements for <b>JMatrix</b> library.
+ *
+ * @author   <a href="https://github.com/mitsuki31" target="_blank">
+ *           Ryuu Mitsuki</a>
+ * @version  1.2, 22 June 2023
+ * @since    1.0.0
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ *           Apache License 2.0</a>
+ *
+ * @see      com.mitsuki.jmatrix.util.XMLParser
+ */
 public class Options
 {
     /**
@@ -470,87 +470,99 @@ public class Options
     ///// --------------------- /////
 
     /**
-    * Raises an error or exception and prints the stack trace of the
-    * input exception object and then exits the program (default exit code: 1).<br>
-    *
-    * @param ex  the {@code Exception} object to be printed.
-    *
-    * @since 1.0.0
-    * @see   #raiseError(Exception, int)
-    * @see   #raiseErrorMsg(Exception)
-    * @see   java.lang.Exception
-    * @see   java.lang.Exception#printStackTrace
-    */
-    public static final void raiseError(final Exception ex) {
-        ex.printStackTrace();
+     * Raises an error or exception and prints the stack traces of the
+     * input {@link Throwable} object and then exits the program (default exit code: 1).
+     *
+     * @param cause  the {@link Throwable} object.
+     *
+     * @since        1.0.0
+     * @see          #raiseError(Exception, int)
+     * @see          #raiseErrorMsg(Exception)
+     * @see          java.lang.Throwable
+     * @see          java.lang.Throwable#printStackTrace
+     */
+    final public static void raiseError(final Throwable cause) {
+        cause.printStackTrace();
         System.err.println(System.lineSeparator() +
             "Exited with error code: 1");
         System.exit(1);
     }
 
     /**
-    * Raises an error or exception and prints the stack trace of the
-    * input exception object and then exits the program with the specified exit code.<br>
-    * Sets the {@code exitStatus} to {@code 0} (zero) if don't want the program to exits.<br>
-    *
-    * @param ex          the {@code Exception} object to be printed.
-    * @param exitStatus  the value that specifies the exit code.
-    *
-    * @since 1.0.0
-    * @see   #raiseError(Exception)
-    * @see   #raiseErrorMsg(Exception, int)
-    * @see   java.lang.Exception
-    * @see   java.lang.Exception#printStackTrace
-    */
-    public static final void raiseError(final Exception ex, final int exitStatus) {
-        ex.printStackTrace();
-        if (exitStatus != 0) {
+     * Raises an error or exception and prints the stack traces of the
+     * input {@link Throwable} object and then exits the program with the specified exit code.
+     *
+     * <p>Set the {@code errno} to {@code 0} (zero) if want the program to continue runs
+     * even the exception traces has been printed.
+     *
+     * @param cause  the {@link Throwable} object.
+     * @param errno  the value that specifies the exit code,
+     *               zero for continue running after prints the exception.
+     *
+     * @since        1.0.0
+     * @see          #raiseError(Throwable)
+     * @see          #raiseErrorMsg(Throwable, int)
+     * @see          java.lang.Throwable
+     * @see          java.lang.Throwable#printStackTrace
+     */
+    final public static void raiseError(final Throwable cause, final int errno) {
+        cause.printStackTrace();
+        if (errno != 0) {
             System.err.printf(System.lineSeparator() +
-                "Exited with error code: %d%s", exitStatus, System.lineSeparator());
-            System.exit(exitStatus);
+                "Exited with error code: %d%s", errno, System.lineSeparator());
+            System.exit(errno);
         }
     }
 
 
     /**
-    * Raises an error or exception but only prints the message
-    * and then exits the program (default exit code: 1).<br>
-    *
-    * @param ex  the {@code Exception} object to prints the message.
-    *
-    * @since 1.0.0
-    * @see   #raiseErrorMsg(Exception, int)
-    * @see   #raiseError(Exception)
-    * @see   java.lang.Exception
-    * @see   java.lang.Exception#printStackTrace
-    */
-    public static final void raiseErrorMsg(final Exception ex) {
-        System.err.printf("[%s] Error: %s%s", PROGNAME, ex.getMessage(), System.lineSeparator());
+     * Raises an error or exception but only prints its message
+     * and then exits the program (default exit code: 1).
+     *
+     * <p>This method only prints the message of given {@link Throwable}
+     * object, if want the traces also get printed use {@link #raiseError(Throwable)} instead.
+     *
+     * @param cause  the {@link Throwable} object.
+     *
+     * @since        1.0.0
+     * @see          #raiseErrorMsg(Throwable, int)
+     * @see          #raiseError(Throwable)
+     * @see          java.lang.Throwable
+     * @see          java.lang.Throwable#printStackTrace
+     */
+    final public static void raiseErrorMsg(final Throwable cause) {
+        System.err.printf("[%s] Error: %s%s", PROGNAME, cause.getMessage(), System.lineSeparator());
         System.err.println(System.lineSeparator() +
             "Exited with error code: 1");
         System.exit(1);
     }
 
     /**
-    * Raises an error or exception but only prints the message
-    * and then exits the program with the specified exit code.<br>
-    * Sets the {@code exitStatus} to {@code 0} (zero) if don't want the program to exits.<br>
-    *
-    * @param ex          the {@code Exception} object to prints the message.
-    * @param exitStatus  the value that specifies the exit code.
-    *
-    * @since 1.0.0
-    * @see   #raiseErrorMsg(Exception)
-    * @see   #raiseError(Exception, int)
-    * @see   java.lang.Exception
-    * @see   java.lang.Exception#printStackTrace
-    */
-    public static final void raiseErrorMsg(final Exception ex, final int exitStatus) {
-        System.err.printf("[%s] Error: %s%s", PROGNAME, ex.getMessage(), System.lineSeparator());
-        if (exitStatus != 0) {
+     * Raises an error or exception but only prints its message
+     * and then exits the program with the specified exit code.
+     *
+     * <p>Set the {@code errno} to {@code 0} (zero) if want the program to continue runs
+     * even the exception traces has been printed.
+     *
+     * <p>This method only prints the message of given {@link Throwable}
+     * object, if want the traces also get printed use {@link #raiseError(Throwable, int)} instead.
+     *
+     * @param cause  the {@link Throwable} object.
+     * @param errno  the value that specifies the exit code,
+     *               zero for continue running after prints the exception.
+     *
+     * @since        1.0.0
+     * @see          #raiseErrorMsg(Throwable)
+     * @see          #raiseError(Throwable, int)
+     * @see          java.lang.Throwable
+     * @see          java.lang.Throwable#printStackTrace
+     */
+    final public static void raiseErrorMsg(final Throwable cause, final int errno) {
+        System.err.printf("[%s] Error: %s%s", PROGNAME, cause.getMessage(), System.lineSeparator());
+        if (errno != 0) {
             System.err.printf(System.lineSeparator() +
-                "Exited with error code: %d%s", exitStatus, System.lineSeparator());
-            System.exit(exitStatus);
+                "Exited with error code: %d%s", errno, System.lineSeparator());
+            System.exit(errno);
         }
     }
 }
