@@ -2,31 +2,47 @@
 /*       OSUtils       */
 // ------------------- //
 
-// -**- Package -**- //
+/* Copyright (c) 2023 Ryuu Mitsuki
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mitsuki.jmatrix.util;
 
-// -**- Built-in Package -**- //
 import java.io.File;
 
 /**
-* This class provides operating system utilities<br>
-*
-* @version 1.0
-* @since   1.0.0
-* @author  Ryuu Mitsuki
-*
-* @see     com.mitsuki.jmatrix.util.Options
-* @see     com.mitsuki.jmatrix.util.XMLParser
-*/
+ * This class provides operating system utilities.
+ *
+ * @author   <a href="https://github.com/mitsuki31" target="_blank">
+ *           Ryuu Mitsuki</a>
+ * @version  1.1, 26 June 2023
+ * @since    1.0.0b.1
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ *           Apache License 2.0</a>
+ * @see      com.mitsuki.jmatrix.util.Options
+ * @see      com.mitsuki.jmatrix.util.XMLParser
+ */
 public class OSUtils
 {
     /**
-    * List name of operating system.<br>
-    * Uses {@link OSUtils#getOSName} to gets current operating system.<br>
-    *
-    * @since 1.0.0
-    * @see   OSUtils#getOSName
-    */
+     * List names of operating system.
+     *
+     * <p>Use {@link #getOSName()} to retrieve the name of current operating system.
+     *
+     * @since 1.0.0b.1
+     * @see   #getOSName()
+     */
     public enum OS {
         WINDOWS, LINUX, MAC, SOLARIS, OTHER
     };
@@ -34,23 +50,23 @@ public class OSUtils
     private static OS os = null;
 
     /**
-    * Gets path separator determined by operating system.<br>
-    *
-    * @since 1.0.0
-    * @see   File#separator
-    */
+     * Returns path separator based on operating system.
+     *
+     * @since 1.0.0b.1
+     * @see   File#separator
+     */
     public final static String sep = File.separator;
 
     /**
-    * Method that gets current operating system name.<br>
-    * If operating system name not available on {@link #OS}, then it will returns {@code OTHER} value.<br>
-    *
-    * @return the name of current operating system
-    *
-    * @since  1.0.0
-    * @see    System#getProperty
-    * @see    OSUtils#OS
-    */
+     * Retrieves and returns the name of current operating system.
+     *
+     * <p>If the operating system name unknown, then it will returns {@code OTHER}.
+     *
+     * @return the name of current operating system
+     *
+     * @since  1.0.0b.1
+     * @see    System#getProperty(String)
+     */
     public static OS getOSName() {
         if (os == null) {
             final String osName = System.getProperty("os.name").toLowerCase();
