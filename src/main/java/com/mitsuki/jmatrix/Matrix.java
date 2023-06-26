@@ -2,34 +2,36 @@
 /* --   MATRIX BUILDER    -- */
 // :: ------------------- :: //
 
-// Copyright (c) 2023 Ryuu Mitsuki
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/* Copyright (c) 2023 Ryuu Mitsuki
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-
-// -**- Package -**- //
 package com.mitsuki.jmatrix;
 
-// -**- Local Package -**- //
-import com.mitsuki.jmatrix.core.*;
+import com.mitsuki.jmatrix.core.IllegalMatrixSizeException;
+import com.mitsuki.jmatrix.core.InvalidIndexException;
+import com.mitsuki.jmatrix.core.JMBaseException;
+import com.mitsuki.jmatrix.core.MatrixArrayFullException;
+import com.mitsuki.jmatrix.core.NullMatrixException;
 import com.mitsuki.jmatrix.util.Options;
 import com.mitsuki.jmatrix.util.MatrixUtils;
 
-// -**- Built-in Package -**- //
 import java.util.Arrays;
 
 /**
  * The <b>Matrix</b> class represents a two-dimensional (2D) array of {@code double}s.
+ * An array with two dimensions (has a rows and columns), also can be called a matrix.
  *
  * <p>It provides methods for creating, accessing and manipulating matrices,
  * as well as basic matrix operations such as:
@@ -64,20 +66,20 @@ import java.util.Arrays;
  *       [10.0, 12.0]   ]
  * </pre>
  *
- * <p>For creating the {@code null matrix} also known as {@code zero matrix},
+ * <p>For creating the "null matrix" also known as "zero matrix",
  * it just simply by using the {@link #Matrix(int, int)} constructor.
  *
  * <pre><code class="language-java">&nbsp;
  *   Matrix m = new Matrix(5, 5);
  * </code></pre>
  *
- * <p>Code above will create and construct a new {@code null matrix}
+ * <p>Code above will create and construct a new "zero matrix"
  * with dimensions {@code 5x5}.
  *
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.12, 24 June 2023
+ * @version  2.13, 25 June 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -87,6 +89,7 @@ import java.util.Arrays;
  *           "Matrix - Wikipedia"</a>
  */
 public class Matrix implements MatrixUtils {
+
     /**
      * Stores the entries array of this matrix.
      *
@@ -164,7 +167,7 @@ public class Matrix implements MatrixUtils {
      * Constructs new <b>Matrix</b> object without any parameter.
      *
      * <p>This would creates a new <b>Matrix</b> object with {@code null} entries.
-     * To create a {@code null matrix}, consider to using {@link #Matrix(int, int)}.
+     * To create a "zero matrix", consider using {@link #Matrix(int, int)}.
      *
      * @since 0.2.0
      * @see   #Matrix(int, int)
@@ -177,7 +180,8 @@ public class Matrix implements MatrixUtils {
     /**
      * Constructs new <b>Matrix</b> object with specified number of rows and columns.
      *
-     * <p>Furthermore, this constructor would creates a new {@code null matrix} or {@code zero matrix}.
+     * <p>Furthermore, this constructor would creates a new "zero matrix"
+     * (matrix with all elements equal to zero).
      *
      * <p><b>For example:</b></p>
      *
@@ -227,7 +231,7 @@ public class Matrix implements MatrixUtils {
         this.COLS = cols;
 
         // Initialize the entries, but does not assign any values.
-        // Which means it would creates null/zero matrix with specified dimensions.
+        // Which means it would creates zero matrix with specified dimensions.
         this.ENTRIES = new double[rows][cols];
     }
 
@@ -316,6 +320,15 @@ public class Matrix implements MatrixUtils {
      *   m.display();
      * </code></pre>
      *
+     * <p>Code above equivalent with ...
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 1, 2 },
+     *       { 3, 4 }
+     *   });
+     * </code></pre>
+     *
      * <p><b>Output:</b></p>
      *
      * <pre>&nbsp;
@@ -327,7 +340,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws NullMatrixException  if the given array is {@code null} or empty.
      *
-     * @since                       1.0.0
+     * @since                       1.0.0b.1
      * @see                         #Matrix()
      * @see                         #Matrix(int, int)
      * @see                         #Matrix(int, int, int)
@@ -390,7 +403,7 @@ public class Matrix implements MatrixUtils {
      * @throws IllegalMatrixSizeException  if the given size matrix is
      *                                     less than 1.
      *
-     * @since                              1.0.0
+     * @since                              1.0.0b.7
      * @see                                #Matrix(int, int)
      * @see                                #Matrix(double[][])
      * @see                                #isDiagonal()
@@ -457,8 +470,9 @@ public class Matrix implements MatrixUtils {
     /**
      * Creates a new matrix with specified number of rows and columns.
      *
-     * <p>This method would creates a zero matrix in implicit way, it does not
-     * matter whether this matrix has {@code null} entries (uninitialized) or has entries.
+     * <p>This method would constructs and creates a "zero matrix" in implicit way,
+     * and forcibly converts this matrix into zero matrix with specified dimensions
+     * if this matrix has valid entries (which means it will deletes and creates a new one).
      *
      * <p><b>For example:</b></p>
      *
@@ -518,7 +532,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws NullMatrixException  if the given array is {@code null} or empty.
      *
-     * @since                       1.0.0
+     * @since                       1.0.0b.1
      * @see                         #create(int, int)
      * @see                         #Matrix(double[][])
      */
@@ -585,7 +599,7 @@ public class Matrix implements MatrixUtils {
      *
      * @return a new <b>Matrix</b> object which is a deep copy of this matrix.
      *
-     * @since  1.0.0
+     * @since  1.0.0b.7
      * @see    MatrixUtils#deepCopyOf(Matrix)
      * @see    com.mitsuki.jmatrix.util.MatrixUtils
      */
@@ -638,7 +652,7 @@ public class Matrix implements MatrixUtils {
      * @see                           #change(double)
      */
     public Matrix select(final int index) {
-        // Check for null matrix
+        // Check for matrix with null entries
         if (this.ENTRIES == null) {
             cause = new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized.");
@@ -2002,7 +2016,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws NullMatrixException  if the entries of this matrix is {@code null}.
      *
-     * @since                       1.0.0
+     * @since                       1.0.0b.7
      * @see                         #mult(Matrix, x)
      * @see                         #mult(Matrix)
      */
@@ -2052,7 +2066,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws NullMatrixException  if the entries of given matrix is {@code null}.
      *
-     * @since                       1.0.0
+     * @since                       1.0.0b.7
      * @see                         #mult(x)
      * @see                         #mult(Matrix, Matrix)
      */
@@ -2433,7 +2447,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws NullMatrixException  if the entries of this matrix is {@code null}.
      *
-     * @since                       1.0.0
+     * @since                       1.0.0b.1
      * @see                         #isSquare(double[][])
      * @see                         #isSquare(Matrix)
      */
@@ -2454,7 +2468,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws NullMatrixException  if the given two-dimensional array is {@code null} or empty.
      *
-     * @since                       1.0.0
+     * @since                       1.0.0b.7
      * @see                         #isSquare()
      * @see                         #isSquare(Matrix)
      */
@@ -2480,7 +2494,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws NullMatrixException  if the entries of given matrix is {@code null}.
      *
-     * @since                       1.0.0
+     * @since                       1.0.0b.7
      * @see                         #isSquare()
      * @see                         #isSquare(double[][])
      */
@@ -2505,7 +2519,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws IllegalMatrixSizeException  if this matrix is not a square type.
      *
-     * @since                              1.0.0
+     * @since                              1.0.0b.7
      * @see                                #isDiagonal(Matrix)
      * @see                                #isDiagonal(double[][])
      */
@@ -2526,7 +2540,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws IllegalMatrixSizeException  if the given matrix is not a square type.
      *
-     * @since                              1.0.0
+     * @since                              1.0.0b.7
      * @see                                #isDiagonal()
      * @see                                #isDiagonal(double[][])
      */
@@ -2562,7 +2576,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws IllegalMatrixSizeException  if the two-dimensional array is not a square type.
      *
-     * @since                              1.0.0
+     * @since                              1.0.0b.7
      * @see                                #isDiagonal()
      * @see                                #isDiagonal(Matrix)
      */
@@ -2672,13 +2686,13 @@ public class Matrix implements MatrixUtils {
      *
      * @throws NullMatrixException  if the given matrix or the entries is {@code null} or empty.
      *
-     * @since                       1.0.0
+     * @since                       1.0.0b.1
      * @see                         #sort()
      * @see                         #sort(double[][])
      * @see                         Arrays#sort(double[])
      */
     public static Matrix sort(Matrix m) {
-        // Check for null matrix
+        // Check for matrix with null entries
         if (m == null || m.getEntries() == null) {
             Options.raiseError(new NullMatrixException(
                 "Given matrix is null. Please ensure the matrix are initialized."));
@@ -2768,7 +2782,7 @@ public class Matrix implements MatrixUtils {
      * @throws InvalidIndexException  if the given index is out of range.
      * @throws NullMatrixException    if the entries of this matrix is {@code null}.
      *
-     * @since                         1.0.0
+     * @since                         1.0.0b.7
      * @see                           #getEntries()
      * @see                           #getSize()
      */
@@ -2816,7 +2830,7 @@ public class Matrix implements MatrixUtils {
      * @return a two-dimensional array that represents entries of this matrix,
      *         returns {@code null} instead if the entries is uninitialized.
      *
-     * @since  1.0.0
+     * @since  1.0.0b.5
      * @see    #get(int, int)
      * @see    #getSize()
      * @see    MatrixUtils#isNullEntries(Matrix)
@@ -2832,7 +2846,7 @@ public class Matrix implements MatrixUtils {
      *
      * @return the {@code String} representation of this matrix in Python-style array notation.
      *
-     * @since  1.0.0
+     * @since  1.0.0b.5
      */
     @Override
     public String toString() {
