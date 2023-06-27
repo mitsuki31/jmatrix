@@ -100,7 +100,8 @@ public class Options
         System.err.println(System.lineSeparator() + getHelpMsg()[0]);
         System.err.println("    " +
             "java -jar <jar_file> [-h|-V|-cr]");
-        System.exit(-1);
+
+        return null;
     }
 
 
