@@ -2,26 +2,42 @@
 /*       Options       */
 // ------------------- //
 
-// -**- Package -**- //
+/* Copyright (c) 2023 Ryuu Mitsuki
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mitsuki.jmatrix.util;
 
-// -**- Built-in Package -**- //
-import java.io.*;
-
-import java.util.List;
-import java.util.Arrays;
-
-// -**- Local Package -**- //
 import com.mitsuki.jmatrix.core.JMBaseException;
 import com.mitsuki.jmatrix.util.XMLParser;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.Arrays;
 
 /**
  * This class provides all requirements for <b>JMatrix</b> library.
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.2, 22 June 2023
- * @since    1.0.0
+ * @version  1.3, 27 June 2023
+ * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
  *
@@ -29,12 +45,13 @@ import com.mitsuki.jmatrix.util.XMLParser;
  */
 public class Options
 {
+
     /**
-    * {@code Enum} that contains all available options.<br>
-    *
-    * @since 1.0.0
-    * @see   #getOptions(String)
-    */
+     * {@code Enum} that contains all available options.
+     *
+     * @since 1.0.0b.1
+     * @see   #getOptions(String)
+     */
     public enum OPT {
         VERSION("-V", "version", "ver"),
         HELP("-h", "help"),
@@ -55,15 +72,18 @@ public class Options
     private static String contentsPath = "contents/";
 
     /**
-    * Method that checks the input argument then returns specific option.
-    *
-    * @param  inputOpt  the {@code String} that wants to be checked.
-    *
-    * @return the corresponding {@code OPT} value.
-    *
-    * @since  1.0.0
-    * @see    Options#OPT
-    */
+     * Method that checks the input argument then returns specific option.
+     *
+     * @param  inputOpt                  the {@code String} that wants to be checked.
+     *
+     * @return                           the corresponding {@code OPT} value.
+     *
+     * @throws IllegalArgumentException  if the given option name does not
+     *                                   match with any known options.
+     *                                   This exception will be thrown as the causing exception.
+     *
+     * @since                            1.0.0b.1
+     */
     public static OPT getOptions(String inputOpt) {
         for (OPT opt : OPT.values()) {
             if (opt.aliases.contains(inputOpt)) {
@@ -71,21 +91,16 @@ public class Options
             }
         }
 
-        try {
-            throw new IllegalArgumentException(String.format("Unknown argument option for input \"%s\"", inputOpt));
-        } catch (final Exception e) {
-            try {
-                throw new JMBaseException(e);
-            } catch (final JMBaseException ex) {
-                raiseError(ex, 0);
-                System.err.println(System.lineSeparator() + getHelpMsg()[0]);
-                System.err.println("    " +
-                    "java -jar <jar_file> [-h|-V|-cr]");
-                System.exit(-1);
-            }
-        }
+        raiseError(new JMBaseException(
+            new IllegalArgumentException(
+                String.format("Unknown argument option for input \"%s\"", inputOpt)
+            )
+        ), 0);
 
-        return null;
+        System.err.println(System.lineSeparator() + getHelpMsg()[0]);
+        System.err.println("    " +
+            "java -jar <jar_file> [-h|-V|-cr]");
+        System.exit(-1);
     }
 
 
@@ -94,71 +109,71 @@ public class Options
     ///// ---------------------- /////
 
     /**
-    * Gets the package name of specified class.
-    *
-    * <p>For example:</p>
-    *
-    * <pre>{@code
-    *     Options.getPackageName(MyClass.class);
-    * }</pre>
-    *
-    * @param  cls  the {@code Class} object to retrieves it's package name.
-    *
-    * @return the {@code String} that contains package name of specified class.
-    *
-    * @since  1.0.0
-    * @see    #getClassName(Class<?>)
-    */
+     * Returns the package name (without class name) of specified class.
+     *
+     * <p>For example:</p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *     Options.getPackageName(MyClass.class);
+     * </code></pre>
+     *
+     * @param  cls  the {@link Class} object.
+     *
+     * @return      the {@code String} that contains package name of specified class.
+     *
+     * @since       1.0.0b.1
+     * @see         #getClassName(Class)
+     */
     public static String getPackageName(Class<?> cls) {
         return cls.getPackage().getName();
     }
 
     /**
-    * Gets the full package name (with class name) of specified class.
-    *
-    * <p>For example:</p>
-    *
-    * <pre>{@code
-    *     Options.getClassName(MyClass.class);
-    * }</pre>
-    *
-    * @param  cls  the {@code Class} object to retrieves it's full package name.
-    *
-    * @return the {@code String} that contains full package name of specified class.
-    *
-    * @since  1.0.0
-    * @see    #getPackageName(Class<?>)
-    */
+     * Returns the full package name (with class name) of specified class.
+     *
+     * <p>For example:</p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *     Options.getClassName(MyClass.class);
+     * </code></pre>
+     *
+     * @param  cls  the {@link Class} object.
+     *
+     * @return      the {@code String} that contains full package name of specified class.
+     *
+     * @since       1.0.0b.1
+     * @see         #getPackageName(Class)
+     */
     public static String getClassName(Class<?> cls) {
         return cls.getName();
     }
 
     /**
-    * Returns the {@code Class} object of the given template object.<br>
-    *
-    * @param  template  the template object.
-    * @param  <T>       the type of the template object.
-    *
-    * @return the {@code Class} object of the template object.
-    *
-    * @since  1.0.0
-    * @see    #getClassNameFromTemplate(T)
-    */
+     * Returns the {@link Class} object of the given template object.
+     *
+     * @param  template  the template object.
+     * @param  <T>       the type of the template object.
+     *
+     * @return           the {@link Class} object of the given template object.
+     *
+     * @since            1.0.0b.1
+     * @see              #getClassNameFromTemplate
+     */
     public static <T> Class<?> getClassFromTemplate(T template) {
         return template.getClass();
     }
 
     /**
-    * Returns {@code String} contains the name of the class of the given template object.<br>
-    *
-    * @param  template  the template object.
-    * @param  <T>       the type of the template object.
-    *
-    * @return the name of the class of the template object.
-    *
-    * @since  1.0.0
-    * @see    #getClassFromTemplate(T)
-    */
+     * Returns {@code String} contains the name of the class of the given template object.
+     *
+     * @param  template  the template object.
+     * @param  <T>       the type of the template object.
+     *
+     * @return           the name of the class of the template object.
+     *
+     * @since            1.0.0b.1
+     * @see              #getClassFromTemplate
+     */
     public static <T> String getClassNameFromTemplate(T template) {
         String fullNameClass = template.getClass().getName();
         int lastIndex = fullNameClass.lastIndexOf('.');
@@ -179,56 +194,48 @@ public class Options
     ///// -------------------- /////
 
     /**
-    * Returns the total lines of specified file.<br>
-    *
-    * @param  filePath  a path to specific file.
-    *
-    * @return total lines of specified file.
-    *
-    * @since  1.0.0
-    * @see    #getLinesFile(InputStream)
-    * @see    java.io.FileReader
-    * @see    java.io.BufferedReader
-    */
+     * Returns the total lines of specified file.
+     *
+     * @param  filePath     a path to the specific file.
+     *
+     * @return              total lines of specified file.
+     *
+     * @since               1.0.0b.1
+     * @see                 #getLinesFile(InputStream)
+     * @see                 java.io.FileReader
+     * @see                 java.io.BufferedReader
+     */
     public static long getLinesFile(String filePath) {
         long lines = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             while (br.readLine() != null) lines++;
-        } catch (final IOException e) {
-            try {
-                throw new JMBaseException(e);
-            } catch (final JMBaseException ex) {
-                raiseError(ex, -1);
-            }
+        } catch (final IOException ioe) {
+            raiseError(new JMBaseException(ioe), -1);
         }
 
         return lines;
     }
 
     /**
-    * Returns the total lines of specified file.<br>
-    *
-    * @param  stream  a stream that contains path to specific file.
-    *
-    * @return total lines of specified file.
-    *
-    * @since  1.0.0
-    * @see    #getLinesFile(String)
-    * @see    java.io.InputStreamReader
-    * @see    java.io.BufferedReader
-    */
+     * Returns the total lines of specified file.
+     *
+     * @param  stream       a stream that contains path to the specific file.
+     *
+     * @return              total lines of specified file.
+     *
+     * @since               1.0.0b.1
+     * @see                 #getLinesFile(String)
+     * @see                 java.io.InputStreamReader
+     * @see                 java.io.BufferedReader
+     */
     public static long getLinesFile(InputStream stream) {
         long lines = 0;
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             while (br.readLine() != null) lines++;
-        } catch (final IOException e) {
-            try {
-                throw new JMBaseException(e);
-            } catch (final JMBaseException ex) {
-                raiseError(ex, -1);
-            }
+        } catch (final IOException ioe) {
+            raiseError(new JMBaseException(ioe), -1);
         }
 
         return lines;
@@ -236,118 +243,88 @@ public class Options
 
 
     /**
-    * Reads and returns the list of contents from specified file.<br>
-    *
-    * @param  filePath  a path to specific file.
-    *
-    * @return a list containing the contents of specified file.
-    *
-    * @since  1.0.0
-    * @see    #readFile(InputStream)
-    * @see    java.io.BufferedReader
-    * @see    java.io.FileReader
-    */
+     * Reads and returns the list of contents from specified file.
+     *
+     * @param  filePath     a path to the specific file.
+     *
+     * @return              a {@code String} array containing the contents of specified file.
+     *
+     * @since               1.0.0b.1
+     * @see                 #readFile(InputStream)
+     * @see                 java.io.BufferedReader
+     * @see                 java.io.FileReader
+     */
     public static String[ ] readFile(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             return br.lines().toArray(String[ ]::new);
-        } catch (final IOException e) {
-            try {
-                throw new JMBaseException(e);
-            } catch (final JMBaseException ex) {
-                raiseError(ex, -1);
-            }
+        } catch (final IOException ioe) {
+            raiseError(new JMBaseException(ioe), -1);
         }
 
         return null;
     }
 
     /**
-    * Reads and returns the list of contents from specified file.<br>
-    *
-    * @param  stream  a stream that contains path to specific file.
-    *
-    * @return a list containing the contents of specified file.
-    *
-    * @since  1.0.0
-    * @see    #readFile(String)
-    * @see    java.io.BufferedReader
-    * @see    java.io.InputStreamReader
-    */
+     * Reads and returns the list of contents from specified file.
+     *
+     * @param  stream       a stream that contains path to the specific file.
+     *
+     * @return              a {@code String} array containing the contents of specified file.
+     *
+     * @since               1.0.0b.1
+     * @see                 #readFile(String)
+     * @see                 java.io.BufferedReader
+     * @see                 java.io.InputStreamReader
+     */
     public static String[ ] readFile(InputStream stream) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             return br.lines().toArray(String[ ]::new);
-        } catch (final IOException e) {
-            try {
-                throw new JMBaseException(e);
-            } catch (final JMBaseException ex) {
-                raiseError(ex, -1);
-            }
+        } catch (final IOException ioe) {
+            raiseError(new JMBaseException(ioe), -1);
         }
 
         return null;
     }
 
     /**
-    * Returns an {@link InputStream} object for a file located in
-    * the classpath specified by its file path.<br>
-    * This method is similar to {@link ClassLoader#getResourceAsStream(String)},
-    * but this method is a simple way.<br>
-    *
-    * @param  filePath  a path to specific resource file.
-    *
-    * @return an {@link InputStream} of the file located at the specified file path.
-    *
-    * @throws Exception
-    *         if there is an error while attempting to load the file.
-    *
-    * @since  1.0.0
-    * @see    java.lang.ClassLoader
-    * @see    java.lang.InputStream
-    */
+     * Returns an {@link InputStream} object for a file located in
+     * the classpath specified by its file path.
+     *
+     * <p>This method is similar to {@link ClassLoader#getResourceAsStream(String)},
+     * but this method provides a simple way.
+     *
+     * @param  filePath                a path to specific resource file.
+     *
+     * @return                         an {@link InputStream} of the file located at the specified file path.
+     *
+     * @since                          1.0.0b.1
+     * @see                            java.lang.ClassLoader
+     * @see                            java.io.InputStream
+     */
     public static InputStream getFileAsStream(String filePath) {
-        InputStream stream = null;
-        try {
-            ClassLoader cl = Options.class.getClassLoader();
-            stream = cl.getResourceAsStream(filePath);
-        } catch (final Exception e) {
-            try {
-                throw new JMBaseException(e);
-            } catch (final JMBaseException jme) {
-                raiseError(jme, -1);
-            }
-        }
-
-        return stream;
+        return Options.class.getClassLoader().getResourceAsStream(filePath);
     }
 
     /**
-    * Writes the contents to specified file path.<br>
-    *
-    * @param  filePath  the {@code String} that contains path to specified file.
-    * @param  contents  the list of contents to be written into specified file.
-    *
-    * @return {@code true} if succeed, otherwise return {@code false}
-    *
-    * @throws IOException
-    *         if there is an error while writing to file.
-    *
-    * @since  1.0.0
-    * @see    java.io.FileWriter
-    */
+     * Writes the list of contents to the specified file.
+     *
+     * @param  filePath     the path to specific file.
+     * @param  contents     the {@code String} array containing the contents.
+     *
+     * @return              {@code true} if succeed, otherwise return {@code false}
+     *
+     * @since               1.0.0b.1
+     * @see                 java.io.FileWriter
+     */
     public static boolean writeToFile(String filePath, String[ ] contents) {
         try (FileWriter fw = new FileWriter(filePath)) {
             for (String line : contents) {
                 fw.write(line + System.lineSeparator());
             }
+
             return true;
-        } catch (final IOException e) {
-            try {
-                throw new JMBaseException(e);
-            } catch (final JMBaseException ex) {
-                // the exit code should be zero, so that
-                // would print the exception and return false.
-                raiseError(ex, 0);
-            }
+        } catch (final IOException ioe) {
+            Options.raiseError(new JMBaseException(ioe), 0);
         }
 
         return false;
@@ -359,29 +336,29 @@ public class Options
     ///// ------------------ /////
 
     /**
-    * Returns a list containing the help message contents.<br>
-    *
-    * @return the contents of help message.
-    *
-    * @since  1.0.0
-    * @see    #readFile
-    * @see    #getFileAsStream(String)
-    * @see    #removeComment(String[])
-    */
+     * Returns a list containing the help message contents.
+     *
+     * @return the contents of help message.
+     *
+     * @since  1.0.0b.1
+     * @see    #readFile(InputStream)
+     * @see    #getFileAsStream(String)
+     * @see    #removeComment(String[])
+     */
     public static String[ ] getHelpMsg() {
         return removeComment(readFile(getFileAsStream(contentsPath + "help.content")));
     }
 
     /**
-    * Returns a list containing the copyright contents.<br>
-    *
-    * @return the contents of copyright.
-    *
-    * @since  1.0.0
-    * @see    #readFile
-    * @see    #getFileAsStream(String)
-    * @see    java.lang.StringBuilder
-    */
+     * Returns a list containing the copyright contents.
+     *
+     * @return the contents of copyright.
+     *
+     * @since  1.0.0b.1
+     * @see    #readFile(InputStream)
+     * @see    #getFileAsStream(String)
+     * @see    java.lang.StringBuilder
+     */
     public static String[ ] getCopyright() {
         final String[ ] contents = readFile(getFileAsStream(contentsPath + "additional.content"));
         String[ ] copyright = new String[contents.length];
@@ -415,34 +392,37 @@ public class Options
 
 
     /**
-    * Removes comment lines from an array of strings.<br>
-    * Default set the delimiter to <b>#</b>.<br>
-    *
-    * @param  contents  the array of strings containing the content.
-    *
-    * @return a new array of strings with all comment lines removed.
-    *
-    * @since  1.0.0
-    * @see    #removeComment(String[], String)
-    */
+     * Removes comment lines from an array of strings.
+     *
+     * <p>Default set the delimiter to <b>#</b>. If want to change the
+     * delimiter, consider using {@link #removeComment(String[], String)}.
+     *
+     * @param  contents  the array of strings containing the content.
+     *
+     * @return           a new array of strings with all comment lines removed.
+     *
+     * @since            1.0.0b.1
+     * @see              #removeComment(String[], String)
+     */
     public static String[ ] removeComment(String[ ] contents) {
         return removeComment(contents, "#");
     }
 
     /**
-    * Removes comment lines that start with a specified delimiter
-    * from an array of strings.<br>
-    * Most used delimiter is (<b>#</b>, <b>//</b>).<br>
-    *
-    * @param  contents  the array of strings containing the content.
-    * @param  del       the string that specifies the delimiter.
-    *
-    * @return a new array of strings with all comment lines
-    *         that start with the specified delimiter removed.
-    *
-    * @since  1.0.0
-    * @see    #removeComment(String[])
-    */
+     * Removes comment lines that start with a specified delimiter
+     * from an array of strings.
+     *
+     * <p>Most used delimiter is <b>#</b>, <b>//</b>.
+     *
+     * @param  contents  the array of strings containing the content.
+     * @param  del       the string that specifies the delimiter.
+     *
+     * @return           a new array of strings with all comment lines
+     *                   that start with the specified delimiter removed.
+     *
+     * @since            1.0.0b.1
+     * @see              #removeComment(String[])
+     */
     public static String[ ] removeComment(String[ ] contents, String del) {
         String[ ] tmp = contents; // copy the contents
         int ct = 0;
@@ -475,11 +455,11 @@ public class Options
      *
      * @param cause  the {@link Throwable} object.
      *
-     * @since        1.0.0
-     * @see          #raiseError(Exception, int)
-     * @see          #raiseErrorMsg(Exception)
+     * @since        1.0.0b.1
+     * @see          #raiseError(Throwable, int)
+     * @see          #raiseErrorMsg(Throwable)
      * @see          java.lang.Throwable
-     * @see          java.lang.Throwable#printStackTrace
+     * @see          java.lang.Throwable#printStackTrace()
      */
     final public static void raiseError(final Throwable cause) {
         cause.printStackTrace();
@@ -499,11 +479,11 @@ public class Options
      * @param errno  the value that specifies the exit code,
      *               zero for continue running after prints the exception.
      *
-     * @since        1.0.0
+     * @since        1.0.0b.1
      * @see          #raiseError(Throwable)
      * @see          #raiseErrorMsg(Throwable, int)
      * @see          java.lang.Throwable
-     * @see          java.lang.Throwable#printStackTrace
+     * @see          java.lang.Throwable#printStackTrace()
      */
     final public static void raiseError(final Throwable cause, final int errno) {
         cause.printStackTrace();
@@ -524,11 +504,11 @@ public class Options
      *
      * @param cause  the {@link Throwable} object.
      *
-     * @since        1.0.0
+     * @since        1.0.0b.1
      * @see          #raiseErrorMsg(Throwable, int)
      * @see          #raiseError(Throwable)
      * @see          java.lang.Throwable
-     * @see          java.lang.Throwable#printStackTrace
+     * @see          java.lang.Throwable#printStackTrace()
      */
     final public static void raiseErrorMsg(final Throwable cause) {
         System.err.printf("[%s] Error: %s%s", PROGNAME, cause.getMessage(), System.lineSeparator());
@@ -551,11 +531,11 @@ public class Options
      * @param errno  the value that specifies the exit code,
      *               zero for continue running after prints the exception.
      *
-     * @since        1.0.0
+     * @since        1.0.0b.1
      * @see          #raiseErrorMsg(Throwable)
      * @see          #raiseError(Throwable, int)
      * @see          java.lang.Throwable
-     * @see          java.lang.Throwable#printStackTrace
+     * @see          java.lang.Throwable#printStackTrace()
      */
     final public static void raiseErrorMsg(final Throwable cause, final int errno) {
         System.err.printf("[%s] Error: %s%s", PROGNAME, cause.getMessage(), System.lineSeparator());
