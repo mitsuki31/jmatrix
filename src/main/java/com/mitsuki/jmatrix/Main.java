@@ -22,17 +22,17 @@ import com.mitsuki.jmatrix.util.XMLParser;
  * Main class for <b>JMatrix</b> library that provides some information such as <b>JMatrix</b> version.
  *
  * <p>This class does not provides APIs for build the matrix,
- * it's just <i>useless<i> class if get imported.
+ * it's just <i>useless</i> class if get imported.
  *
  * <p><b>Usage:</b></p>
  *
  * <pre>&nbsp;
- *   java -jar path/to/jmatrix-<version>.jar [-h|-V|-cr]
+ *   java -jar path/to/jmatrix-&lt;version&gt;.jar [-h|-V|-cr]
  * </pre>
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.3, 26 June 2023
+ * @version  1.31, 27 June 2023
  * @since    1.0.0b.1
  * @see      com.mitsuki.jmatrix.Matrix
  */
