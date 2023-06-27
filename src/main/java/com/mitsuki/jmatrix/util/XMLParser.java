@@ -2,27 +2,41 @@
 /*      XMLParser      */
 // ------------------- //
 
-// -**- Package -**- //
+/* Copyright (c) 2023 Ryuu Mitsuki
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mitsuki.jmatrix.util;
 
-// -**- Built-in Package -**- //
-import java.io.InputStream;
+import com.mitsuki.jmatrix.core.JMBaseException;
 
+import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-// -**- Local Package -**- //
-import com.mitsuki.jmatrix.core.JMBaseException;
-
-
 /**
-* This class will contains data from parsing a config file.<br>
-*
-* @since  1.0.0
-* @author Ryuu Mitsuki
-*/
+ * This class contains data from parsing a config file.
+ *
+ * @author   <a href="https://github.com/mitsuki31" target="_blank">
+ *           Ryuu Mitsuki</a>
+ * @version  1.2, 26 June 2023
+ * @since    1.0.0b.1
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ *           Apache License 2.0</a>
+ */
 class XMLConfig
 {
     static String programName = null;
@@ -34,11 +48,15 @@ class XMLConfig
 }
 
 /**
-* This interface for now it just gets the saved config data.
-*
-* @since  1.0.0
-* @author Ryuu Mitsuki
-*/
+ * This interface could retrieves the stored configs data inside {@link XMLConfig} class.
+ *
+ * @author   <a href="https://github.com/mitsuki31" target="_blank">
+ *           Ryuu Mitsuki</a>
+ * @version  1.2, 26 June 2023
+ * @since    1.0.0b.1
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ *           Apache License 2.0</a>
+ */
 interface XMLData
 {
     static String getData(final String choice) {
@@ -67,15 +85,13 @@ interface XMLData
                 break;
 
             default:
-                try {
-                    throw new IllegalArgumentException("Cannot retrieve data for input \"" + choice + "\"");
-                } catch (final IllegalArgumentException iae) {
-                    try {
-                        throw new JMBaseException(iae);
-                    } catch (final JMBaseException jme) {
-                        Options.raiseError(jme, -1);
-                    }
-                }
+                Options.raiseError(
+                    new JMBaseException(
+                        new IllegalArgumentException(
+                            "Cannot retrieve data for input \"" + choice + "\""
+                        )
+                    ), -1
+                );
         }
 
         return data;
@@ -84,23 +100,26 @@ interface XMLData
 
 
 /**
-* This class provides requirements to parse XML document.<br>
-*
-* @since   1.0.0
-* @version 1.1
-* @author  Ryuu Mitsuki
-*
-* @see     com.mitsuki.jmatrix.util.Options
-*/
+ * This class provides requirements to parse XML document.
+ *
+ * @author   <a href="https://github.com/mitsuki31" target="_blank">
+ *           Ryuu Mitsuki</a>
+ * @version  1.2, 26 June 2023
+ * @since    1.0.0b.1
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ *           Apache License 2.0</a>
+ * @see      com.mitsuki.jmatrix.util.Options
+ */
 public class XMLParser implements XMLData
 {
+
     /**
-    * {@code Enum} that contains types of XML document.<br>
-    * Currently there is only one option (CONFIG).<br>
-    *
-    * @since 1.0.0
-    * @see   #getCurrentType()
-    */
+     * {@code Enum} that contains types of XML document.
+     * Currently there is only one option (CONFIG).
+     *
+     * @since 1.0.0b.1
+     * @see   #getCurrentType()
+     */
     public static enum XMLType {
         CONFIG
     };
@@ -110,12 +129,12 @@ public class XMLParser implements XMLData
     private final static String configPath = "configuration/config.xml";
 
     /**
-    * Creates new XMLParser object.<br>
-    *
-    * @param type  a chosen XML type.
-    *
-    * @since 1.0.0
-    */
+     * Creates new XMLParser object.
+     *
+     * @param type  the chosen XML type.
+     *
+     * @since       1.0.0b.1
+     */
     public XMLParser(XMLType type) {
         switch (type) {
             case CONFIG:
@@ -123,15 +142,13 @@ public class XMLParser implements XMLData
                 break;
 
             default:
-                try {
-                    throw new IllegalArgumentException("Invalid XML type for input \"" + type + "\"");
-                } catch (final IllegalArgumentException iae) {
-                    try {
-                        throw new JMBaseException(iae);
-                    } catch (final JMBaseException jme) {
-                        Options.raiseError(jme, -1);
-                    }
-                }
+                Options.raiseError(
+                    new JMBaseException(
+                        new IllegalArgumentException(
+                            "Invalid XML type: \"" + type + "\""
+                        )
+                    ), -1
+                );
         }
 
         try {
@@ -149,40 +166,37 @@ public class XMLParser implements XMLData
                 .getAttributes().getNamedItem("type").getNodeValue().strip();
             XMLConfig.packageName = xml.getElementsByTagName("package").item(0).getTextContent().strip();
 
-            if (!XMLConfig.version.equals("release")) {
+            if ( !(XMLConfig.version.equals("release") ||
+                   XMLConfig.version.equals("stable")) ) {
                 XMLConfig.betaNum = xml.getElementsByTagName("beta_num").item(0).getTextContent().strip();
             }
         } catch (final Exception e) {
-            try {
-                throw new JMBaseException(e);
-            } catch (final JMBaseException jme) {
-                Options.raiseError(jme, -1);
-            }
+            Options.raiseError(new JMBaseException(e), -1);
         }
     }
 
 
     /**
-    * This method retrieves the XML data.<br>
-    *
-    * @param  choice  the {@code String} to chooses XML property.
-    *
-    * @return returns XML data if {@code choice} not {@code null}.
-    *
-    * @since  1.0.0
-    */
+     * Retrieves and returns the XML data.
+     *
+     * @param  choice  the name of XML property.
+     *
+     * @return         the value of XML data, if {@code choice} does not available
+     *                 in property name or the {@code choice} is {@code null}, it returns {@code null} instead.
+     *
+     * @since          1.0.0b.1
+     */
     public String getProperty(final String choice) {
         return (choice != null) ? XMLData.getData(choice) : null;
     }
 
     /**
-    * Gets current XML type.<br>
-    *
-    * @return the current XML type.
-    *
-    * @since  1.0.0
-    * @see    XMLParser#XMLType
-    */
+     * Returns current XML type.
+     *
+     * @return the current XML type.
+     *
+     * @since  1.0.0b.1
+     */
     public XMLType getCurrentType() {
         return this.xmlType;
     }
