@@ -171,7 +171,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since 0.2.0
      * @see   #Matrix(int, int)
-     * @see   #Matrix(int, int, int)
+     * @see   #Matrix(int, int, double)
      * @see   #Matrix(double[][])
      */
     public Matrix() {}
@@ -206,7 +206,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since                              0.1.0
      * @see                                #Matrix()
-     * @see                                #Matrix(int, int, int)
+     * @see                                #Matrix(int, int, double)
      * @see                                #Matrix(double[][])
      * @see                                #identity(int)
      */
@@ -343,7 +343,7 @@ public class Matrix implements MatrixUtils {
      * @since                       1.0.0b.1
      * @see                         #Matrix()
      * @see                         #Matrix(int, int)
-     * @see                         #Matrix(int, int, int)
+     * @see                         #Matrix(int, int, double)
      * @see                         #identity(int)
      */
     public Matrix(double[ ][ ] arr) {
@@ -694,7 +694,7 @@ public class Matrix implements MatrixUtils {
      * @throws     NullMatrixException       if this matrix is a {@code null} object.
      *
      * @since                                0.1.0
-     * @see                                  #add(int)
+     * @see                                  #add(double)
      *
      * @deprecated                           Highly inefficient method to create a matrix array.
      *                                       It is very recommended to use {@link #Matrix(double[][])}
@@ -2017,7 +2017,7 @@ public class Matrix implements MatrixUtils {
      * @throws NullMatrixException  if the entries of this matrix is {@code null}.
      *
      * @since                       1.0.0b.7
-     * @see                         #mult(Matrix, x)
+     * @see                         #mult(Matrix, double)
      * @see                         #mult(Matrix)
      */
     public void mult(double x) {
@@ -2067,7 +2067,7 @@ public class Matrix implements MatrixUtils {
      * @throws NullMatrixException  if the entries of given matrix is {@code null}.
      *
      * @since                       1.0.0b.7
-     * @see                         #mult(x)
+     * @see                         #mult(double)
      * @see                         #mult(Matrix, Matrix)
      */
     public static Matrix mult(Matrix m, double x) {
