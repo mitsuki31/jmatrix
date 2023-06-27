@@ -44,7 +44,9 @@ public class Main
     /**
      * Main program for <b>JMatrix</b> library.
      *
-     * @since 1.0.0b.1
+     * @param args  a {@code String} array containing arguments from command line.
+     *
+     * @since       1.0.0b.1
      */
     public static void main(String[ ] args) {
         String arg1 = null;
