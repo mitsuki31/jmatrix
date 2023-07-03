@@ -17,7 +17,6 @@ FLAGS ?=
 LINT ?=
 
 ifeq "$(LINT)" "true"
-	$(info $(PREFIX) Linter activated.)
 	FLAGS := -Xlint -Xdoclint
 endif
 
@@ -147,6 +146,9 @@ compile: $(SOURCES_LIST) $(SRCFILES)
 	@echo ""
 	@echo ">> [ COMPILE PROGRAM ] <<"
 
+	$(if $(shell [ $(LINT) = "true" ] && echo 1),\
+		@echo "$(PREFIX) Linter is ACTIVATED."\
+	)
 	@echo "$(PREFIX) Compiling all source files..."
 	@$(CC) -d $(CLASSES_PATH) @$< $(FLAGS)
 	@echo "$(PREFIX) Successfully compiled all source files."
