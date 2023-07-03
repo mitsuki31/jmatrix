@@ -9,6 +9,18 @@ PREFIX  := [jmatrix]
 
 CC := javac
 
+# Define null variable, let user to initialize with any Java options or flags
+FLAGS ?=
+
+# Assign "true" into this variable would trigger the Java linter
+# and the `FLAGS` variable automatically added linter flags "-Xlint"
+LINT ?=
+
+ifeq "$(LINT)" "true"
+	FLAGS := -Xlint -Xdoclint
+endif
+
+
 # Path variables
 PYTHON_PATH    := ./src/main/python/
 SOURCES_PATH   := ./src/main/java/
@@ -99,9 +111,20 @@ all:
 	@echo ""
 	@echo "       \`make [options] INCLUDE-SRC=true\`"
 	@echo ""
+	@echo ""
+	@echo "   * Invoke the linter"
+	@echo ""
+	@echo "       \`make [options] LINT=true\`"
+	@echo ""
+	@echo ""
+	@echo "   * Add some options or flags to compiler"
+	@echo ""
+	@echo "       \`make [options] FLAGS[=<flags>]\`"
+	@echo ""
 	@echo "Usage:"
 	@echo "     $$ make [options] [...] [arguments]"
 	@echo "     $$ make [options] VERBOSE[=<bool>] INCLUDE-SRC[=<bool>]"
+	@echo "     $$ make [options] (LINT[=<bool>] | FLAGS[=<flags>])"
 	@echo ""
 	@echo "Tips:"
 	@echo "   - Combine the options, Makefile can understand multiple rules."
@@ -123,8 +146,11 @@ compile: $(SOURCES_LIST) $(SRCFILES)
 	@echo ""
 	@echo ">> [ COMPILE PROGRAM ] <<"
 
+	$(if $(shell [ $(LINT) = "true" ] && echo 1),\
+		@echo "$(PREFIX) Linter is ACTIVATED."\
+	)
 	@echo "$(PREFIX) Compiling all source files..."
-	@$(CC) -d $(CLASSES_PATH) @$<
+	@$(CC) -d $(CLASSES_PATH) @$< $(FLAGS)
 	@echo "$(PREFIX) Successfully compiled all source files."
 
 	$(eval HAS_COMPILED := $(wildcard $(CLASSES_PATH)))
