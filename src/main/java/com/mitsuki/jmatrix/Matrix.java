@@ -2896,7 +2896,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // If the given object is null, returns false
-        if (obj == null) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
 
@@ -2920,6 +2920,11 @@ public class Matrix implements MatrixUtils {
             * which is would returns false if both are not same.
             */
             else if ( MatrixUtils.isEquals(this, otherMatrix) ) {
+                return true;
+            }
+
+            // Check and compare the hash code for both objects
+            else if (this.hashCode() == obj.hashCode()) {
                 return true;
             }
         }
