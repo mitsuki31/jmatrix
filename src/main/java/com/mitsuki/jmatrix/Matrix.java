@@ -2926,4 +2926,9 @@ public class Matrix implements MatrixUtils {
 
         return false;
     }
+
+    @Override
+    public int hashCode() {
+        return (int) Math.abs(10e+6 * Math.sin(this.ROWS * this.COLS)) * 43 + super.hashCode();
+    }
 }
