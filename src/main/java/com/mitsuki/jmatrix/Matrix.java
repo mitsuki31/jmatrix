@@ -2896,7 +2896,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // If the given object is null, returns false
-        if (obj == null) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
 
@@ -2922,8 +2922,34 @@ public class Matrix implements MatrixUtils {
             else if ( MatrixUtils.isEquals(this, otherMatrix) ) {
                 return true;
             }
+
+            // Check and compare the hash code for both objects
+            else if (this.hashCode() == obj.hashCode()) {
+                return true;
+            }
         }
 
         return false;
+    }
+
+    /**
+     * Returns the hash code value for this matrix.
+     *
+     * <p>It combines the hash code of the matrix's dimensions by multiplying the
+     * number of rows and columns, then computing the sine of the result, and finally
+     * multiplying it by a large constant factor (10e+6), taking the absolute value,
+     * and adding 43 times the hash code of the superclass.
+     *
+     * <p>It is recommended to use this method in conjunction with the {@link #equals(Object)} method
+     * to ensure consistent behavior when working with hash-based data structures.
+     *
+     * @return the hash code value for this matrix.
+     *
+     * @since  1.1.0
+     * @see    #equals(Object)
+     */
+    @Override
+    public int hashCode() {
+        return (int) Math.abs(10e+6 * Math.sin(this.ROWS * this.COLS)) * 43 + super.hashCode();
     }
 }
