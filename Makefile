@@ -29,6 +29,7 @@ OUTPUT_PATH    := ./target/
 CLASSES_PATH   := ./target/classes/
 PACKAGE_PATH   := com/mitsuki/jmatrix/
 MANIFEST       := META-INF/MANIFEST.MF
+DOCS_PATH      := docs/
 
 SOURCES_LIST   := target/generated-list/sourceFiles.lst
 CLASSES_LIST   := target/generated-list/outputFiles.lst
@@ -209,6 +210,22 @@ endif
 	@echo ""
 	@echo "SAVED IN: \"$(jar)\""
 
+
+build-docs: $(SOURCES_LIST)
+	@echo
+	@echo ">> [ BUILD DOCS ] <<"
+	@echo "$(PREFIX) Build the JMatrix docs..."
+	@javadoc -author -version -quiet -d $(DOCS_PATH)jmatrix -Xdoclint \
+		@$^ --release 11 -windowtitle "JMatrix" -doctitle "<b>JMatrix</b><br>v$(VERSION)" \
+		-tag param -tag return -tag throws -tag warning:a:"Warning:" -tag author -tag license:a:"License:" -tag see \
+		-Xdoclint/package:-com.mitsuki.jmatrix.core \
+		-bottom "<font size="-1">Copyright (c) 2023 <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>.</font>" \
+		-group "Core Packages" "com.mitsuki.jmatrix*:com.mitsuki.jmatrix.core" \
+		-group "Utilities Packages" "com.mitsuki.jmatrix.util"
+
+	@echo "$(PREFIX) Successfully build the JMatrix docs."
+	@echo
+	@echo "SAVED IN: \"$(DOCS_PATH)jmatrix/\""
 
 clean:
 	@echo ""
