@@ -89,49 +89,10 @@ endif
 
 all:
 	$(info [Makefile-jmatrix])
-	@echo "Options:"
-	@echo "   * compile       - Compile the program."
-	@echo "   * package       - Create archived package (jar) of compiled program."
-	@echo "                        WARNING: Program need to be compiled first!"
-	@echo "   * clean         - Clean all of compiled program and created jar."
-	@echo "   * cleanbin      - Clean all generated class files only."
-	@echo "   * check-verbose - Check the verbose status."
-	@echo "   * usage         - Print the example usages for build the project."
-	@echo ""
-	@echo "Additional Options:"
-	@echo "   * Activating verbose output"
-	@echo ""
-	@echo "       \`export VERBOSE=true\`"
-	@echo ""
-	@echo "     Or:"
-	@echo ""
-	@echo "       \`make [options] VERBOSE=true\`"
-	@echo ""
-	@echo ""
-	@echo "   * Include source files while packaging"
-	@echo ""
-	@echo "       \`make [options] INCLUDE-SRC=true\`"
-	@echo ""
-	@echo ""
-	@echo "   * Invoke the linter"
-	@echo ""
-	@echo "       \`make [options] LINT=true\`"
-	@echo ""
-	@echo ""
-	@echo "   * Add some options or flags to compiler"
-	@echo ""
-	@echo "       \`make [options] FLAGS[=<flags>]\`"
-	@echo ""
-	@echo "Usage:"
-	@echo "     $$ make [options] [...] [arguments]"
-	@echo "     $$ make [options] VERBOSE[=<bool>] INCLUDE-SRC[=<bool>]"
-	@echo "     $$ make [options] (LINT[=<bool>] | FLAGS[=<flags>])"
-	@echo ""
-	@echo "Tips:"
-	@echo "   - Combine the options, Makefile can understand multiple rules."
-	@echo ""
-	@echo "Author:"
-	@echo "   Ryuu Mitsuki"
+	$(if $(shell [ ! -f $(DOCS_PATH)makefile-usage.txt ] && echo 1),\
+		$(error $(PREFIX) File "$(DOCS_PATH)makefile-usage.txt" is missing)\
+	)
+	@cat $(DOCS_PATH)makefile-usage.txt
 
 
 check-verbose:
