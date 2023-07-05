@@ -1,0 +1,44 @@
+Rules:
+   * compile       - Compile the program.
+   * package       - Create archived package (jar) of compiled program.
+                        WARNING: Program need to be compiled first!
+   * clean         - Clean all of compiled program and created jar.
+   * cleanbin      - Clean all generated class files only.
+   * check-verbose - Check the verbose status.
+   * usage         - Print the example usages for build the project.
+   * build-docs    - Build the JMatrix's HTML pages of javadocs.
+
+Additional Options:
+  - Activating verbose output
+
+      `export VERBOSE=true` && make [rules]
+
+    Or:
+
+      `make [rules] VERBOSE=true`
+
+
+  - Include source files while packaging
+
+      `make [rules] INCLUDE-SRC=true`
+
+
+  - Invoke the linter
+
+      `make [rules] LINT=true`
+
+
+  - Add some options or flags to compiler
+
+      `make [rules] FLAGS[=<flags>]`
+
+Usage:
+    $ make [rules] [...] [arguments]
+    $ make [rules] VERBOSE[=<bool>] INCLUDE-SRC[=<bool>]
+    $ make [rules] (LINT[=<bool>] | FLAGS[=<flags>])
+
+Tips:
+  - Combine the rules, `Make` can understand multiple rules.
+
+Author:
+  Ryuu Mitsuki
