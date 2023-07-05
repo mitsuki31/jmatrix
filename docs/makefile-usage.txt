@@ -1,44 +1,44 @@
 Rules:
-   * compile       - Compile the program.
-   * package       - Create archived package (jar) of compiled program.
-                        WARNING: Program need to be compiled first!
-   * clean         - Clean all of compiled program and created jar.
-   * cleanbin      - Clean all generated class files only.
-   * check-verbose - Check the verbose status.
-   * usage         - Print the example usages for build the project.
-   * build-docs    - Build the JMatrix's HTML pages of javadocs.
+   * compile       - Compiles the project.
+   * package       - Creates archived package of compiled classes.
+                        WARNING: Project need to be compiled first!
+   * clean         - Cleans all of compiled classes and created jar.
+   * cleanbin      - Cleans all compiled classes files only.
+   * check-verbose - Checks the verbose status.
+   * usage         - Prints the example usages for build the project.
+   * build-docs    - Builds the JMatrix's HTML pages of javadocs.
 
 Additional Options:
   - Activating verbose output
 
-      `export VERBOSE=true` && make [rules]
+      $ export VERBOSE=true && make [rules]
 
     Or:
 
-      `make [rules] VERBOSE=true`
+      $ make [rules] VERBOSE=true
 
 
   - Include source files while packaging
 
-      `make [rules] INCLUDE-SRC=true`
+      $ make [rules] INCLUDE-SRC=true
 
 
   - Invoke the linter
 
-      `make [rules] LINT=true`
+      $ make [rules] LINT=true
 
 
   - Add some options or flags to compiler
 
-      `make [rules] FLAGS[=<flags>]`
+      $ make compile FLAGS[=<flags>]
 
 Usage:
     $ make [rules] [...] [arguments]
-    $ make [rules] VERBOSE[=<bool>] INCLUDE-SRC[=<bool>]
+    $ make [rules] [VERBOSE[=<bool>] | INCLUDE-SRC[=<bool>]]
     $ make [rules] (LINT[=<bool>] | FLAGS[=<flags>])
 
 Tips:
-  - Combine the rules, `Make` can understand multiple rules.
+    - Combine the rules, `Make` can understands multiple rules.
 
 Author:
-  Ryuu Mitsuki
+    Ryuu Mitsuki
