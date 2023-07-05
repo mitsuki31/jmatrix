@@ -11,7 +11,7 @@ Rules:
 Additional Options:
   - Activating verbose output
 
-      `export VERBOSE=true && make [rules]`
+      `export VERBOSE=true` && make [rules]
 
     Or:
 
@@ -30,11 +30,11 @@ Additional Options:
 
   - Add some options or flags to compiler
 
-      `make compile FLAGS[=<flags>]`
+      `make [rules] FLAGS[=<flags>]`
 
 Usage:
     $ make [rules] [...] [arguments]
-    $ make [rules] [VERBOSE[=<bool>] | INCLUDE-SRC[=<bool>]]
+    $ make [rules] VERBOSE[=<bool>] INCLUDE-SRC[=<bool>]
     $ make [rules] (LINT[=<bool>] | FLAGS[=<flags>])
 
 Tips:
