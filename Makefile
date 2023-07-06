@@ -86,7 +86,7 @@ endif
 
 # Get the index of "build-docs" rule on command line args
 ifeq "$(filter build-docs,$(MAKECMDGOALS))" "build-docs"
-ifeq "$(MAKE_VERBOSE)" "true"
+ifdef VERBOSE
 	CMD = bash bin/get_argument.sh -v $(MAKECMDGOALS) -s build-docs
 else
 	CMD = bash bin/get_argument.sh $(MAKECMDGOALS) -s build-docs
@@ -206,7 +206,8 @@ endif
 ifeq "$(VERBOSE)" "all"
 	@echo "$(PREFIX) Verbose mode: ALL"
 	$(eval FLAGS := -verbose)
-else
+endif
+ifneq "$(shell [ $(VERBOSE) = 'all' ] || [ $(VERBOSE) = 'true' ] && echo false)" "false"
 	@echo "$(PREFIX) Verbose mode: NORMAL"
 endif
 endif
@@ -215,7 +216,7 @@ endif
 	@echo ">> [ BUILD DOCS ] <<"
 	@echo "$(PREFIX) Build the JMatrix docs..."
 	@javadoc -author -version -d $(DOCS_PATH)jmatrix -Xdoclint \
-		@$^ --release 11 -windowtitle "JMatrix" -doctitle "<b>JMatrix</b><br>v$(VERSION)" \
+		@$^ --release 11 -windowtitle "JMatrix" -doctitle "<b>JMatrix</b> v$(VERSION)" \
 		-tag param -tag return -tag throws -tag warning:a:"Warning:" -tag author -tag license:a:"License:" -tag see \
 		-Xdoclint/package:-com.mitsuki.jmatrix.core \
 		-bottom "<font size="-1">Copyright (c) 2023 <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>.</font>" \
