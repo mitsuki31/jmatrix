@@ -20,6 +20,7 @@ ifeq "$(LINT)" "true"
 	FLAGS := -Xlint -Xdoclint
 endif
 
+ALL_RULES := all compile package clean
 
 # Path variables
 PYTHON_PATH    := ./src/main/python/
@@ -83,8 +84,34 @@ endif
 endif
 
 
-# This to avoid 'Make' options treated as file
-.PHONY: all compile package clean
+# Get the index of "build-docs" rule on command line args
+ifeq "$(filter build-docs,$(MAKECMDGOALS))" "build-docs"
+ifeq "$(MAKE_VERBOSE)" "true"
+	CMD = bash bin/get_argument.sh -v $(MAKECMDGOALS) -s build-docs
+else
+	CMD = bash bin/get_argument.sh $(MAKECMDGOALS) -s build-docs
+endif
+
+BUILD_DOCS_ARG := $(shell $(CMD))
+
+
+# Check if the "build-docs"'s index is not at first argument,
+# then it will returns error
+ifneq "$(BUILD_DOCS_ARG)" "-1"
+ifneq "$(words $(MAKECMDGOALS))" "1"
+#ifeq ($(shell \
+#	if [ $(BUILD_DOCS_ARG) -ne -1 ] && [ $(words $(MAKECMDGOALS)) -ne 1 ]; then \
+#		echo 1; \
+#	fi \
+#),1)
+$(error $(PREFIX) 'build-docs' rule should be a standalone rule))
+endif
+endif
+
+endif
+
+# This to prevent all `Make`'s rules treated as file by default
+.PHONY: $(ALL_RULES)
 
 
 all:
