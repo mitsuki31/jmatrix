@@ -99,7 +99,7 @@ BUILD_DOCS_ARG := $(shell $(CMD))
 # then it will returns error
 ifneq "$(BUILD_DOCS_ARG)" "-1"
 ifneq "$(words $(MAKECMDGOALS))" "1"
-$(error $(PREFIX) 'build-docs' rule should be a standalone rule))
+$(error $(PREFIX) 'build-docs' rule must be a standalone rule)
 endif
 endif
 
@@ -195,6 +195,22 @@ endif
 
 
 build-docs: $(SOURCES_LIST)
+	@echo
+ifndef VERBOSE
+	@echo "$(PREFIX) Verbose mode: QUIET"
+	$(eval FLAGS := -quiet)
+else
+ifeq "$(VERBOSE)" "true"
+	@echo "$(PREFIX) Verbose mode: NORMAL"
+endif
+ifeq "$(VERBOSE)" "all"
+	@echo "$(PREFIX) Verbose mode: ALL"
+	$(eval FLAGS := -verbose)
+else
+	@echo "$(PREFIX) Verbose mode: NORMAL"
+endif
+endif
+
 	@echo
 	@echo ">> [ BUILD DOCS ] <<"
 	@echo "$(PREFIX) Build the JMatrix docs..."
