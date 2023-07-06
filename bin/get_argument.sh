@@ -39,7 +39,6 @@ curdir=`pwd`
 tmpfile=$curdir/tmp/index.tmp
 log=$curdir/tmp/get_argument.log
 
-mkdir -p `dirname $tmpfile`
 [ -f $log ] && > $log   # Clear the log file if exist
 
 info() {
@@ -70,8 +69,19 @@ for (( i=0; i < $length; i++ )); do
             fi
             ;;
 
-        -v | --verbose) verbose=1 && continue ;;
-        -h | --help)    usage && return 0 ;;
+        -v | --verbose)
+            verbose=1
+
+            # Only create temporary directory if the
+            # verbose activated
+            mkdir -p `dirname $tmpfile`
+            continue
+            ;;
+
+        -h | --help)
+            usage
+            return 0
+            ;;
     esac
 
     new_args+=("$arg")
