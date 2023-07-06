@@ -1,12 +1,12 @@
 Rules:
    * compile       - Compiles the project.
    * package       - Creates archived package of compiled classes.
-                        WARNING: Project need to be compiled first!
+                         WARNING: The project needs to be compiled first!
    * clean         - Cleans all of compiled classes and created jar.
-   * cleanbin      - Cleans all compiled classes files only.
+   * cleanbin      - Cleans all compiled class files only.
    * check-verbose - Checks the verbose status.
-   * usage         - Prints the example usages for build the project.
-   * build-docs    - Builds the JMatrix's HTML pages of javadocs.
+   * usage         - Prints the example usages for building the project.
+   * build-docs    - Builds the HTML pages of JMatrix's javadocs.
 
 Additional Options:
   - Activating verbose output
@@ -38,8 +38,8 @@ Usage:
     $ make [rules] (LINT[=<bool>] | FLAGS[=<flags>])
 
 Tips:
-    - Combine the rules, `Make` can understands multiple rules.
-      Except for `build-docs` rule, built as standalone rule.
+    - Combine the rules; `Make` can understand multiple rules.
+      Except for `build-docs` rule, it should be built as a standalone rule.
 
 Issues:
     Report any issues or suggestions, and help improve JMatrix.
