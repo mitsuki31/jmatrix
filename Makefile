@@ -99,11 +99,6 @@ BUILD_DOCS_ARG := $(shell $(CMD))
 # then it will returns error
 ifneq "$(BUILD_DOCS_ARG)" "-1"
 ifneq "$(words $(MAKECMDGOALS))" "1"
-#ifeq ($(shell \
-#	if [ $(BUILD_DOCS_ARG) -ne -1 ] && [ $(words $(MAKECMDGOALS)) -ne 1 ]; then \
-#		echo 1; \
-#	fi \
-#),1)
 $(error $(PREFIX) 'build-docs' rule should be a standalone rule))
 endif
 endif
