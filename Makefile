@@ -230,7 +230,7 @@ clean:
 	@echo ""
 	@echo ">> [ CLEAN WORKING DIRECTORY ] <<"
 	@echo "$(PREFIX) Cleaning the \"$(OUTPUT_PATH)\" directory recursively..."
-	@-rm -r $(OUTPUT_PATH)
+	@-rm -r $(OUTPUT_PATH) tmp/
 	@echo ""
 	@echo "$(PREFIX) All cleaned up."
 
