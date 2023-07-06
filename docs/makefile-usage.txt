@@ -39,6 +39,11 @@ Usage:
 
 Tips:
     - Combine the rules, `Make` can understands multiple rules.
+      Except for `build-docs` rule, built as standalone rule.
+
+Issues:
+    Report any issues or suggestions, and help improve JMatrix.
+    <https://github.com/mitsuki31/jmatrix/issues/new>
 
 Author:
     Ryuu Mitsuki
