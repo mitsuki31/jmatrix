@@ -230,8 +230,23 @@ endif
 clean:
 	@echo ""
 	@echo ">> [ CLEAN WORKING DIRECTORY ] <<"
-	@echo "$(PREFIX) Cleaning the \"$(OUTPUT_PATH)\" directory recursively..."
-	@-rm -r $(OUTPUT_PATH) tmp/
+	@echo "$(PREFIX) Cleaning the \"$(subst ./,,$(OUTPUT_PATH))\" directory recursively..."
+	@-rm -r $(OUTPUT_PATH)
+	@echo "$(PREFIX) Classes directory cleaned up."
+
+# Clean the temporary directory "tmp/", only if exist
+	$(if $(shell [ -d tmp/ ] && echo 1),\
+		@echo && echo "$(PREFIX) Cleaning the \"tmp/\" directory recursively..." &&\
+		rm -r tmp &&\
+		echo "$(PREFIX) Temporary directory cleaned up."\
+	)
+
+# Clean the generated HTML pages directory "docs/jmatrix/", only if exist
+	$(if $(shell [ -d $(DOCS_PATH)jmatrix ] && echo 1),\
+		@echo && echo "$(PREFIX) Cleaning the \"$(DOCS_PATH)jmatrix/\" directory recursively..." &&\
+		rm -r $(DOCS_PATH)jmatrix &&\
+		echo "$(PREFIX) Generated HTML pages cleaned up."\
+	)
 	@echo ""
 	@echo "$(PREFIX) All cleaned up."
 
