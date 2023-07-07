@@ -138,8 +138,15 @@ else
 	$(eval LINT_FLAGS :=)
 endif
 
+ifeq "$(MAKE_VERBOSE)" "true"
+	@echo "$(PREFIX) Verbose output is ACTIVATED."
+	$(eval VERBOSE_FLAGS := -verbose)
+else
+	$(eval VERBOSE_FLAGS :=)
+endif
+
 	@echo "$(PREFIX) Compiling all source files..."
-	@$(CC) -d $(CLASSES_PATH) @$< $(LINT_FLAGS) $(FLAGS)
+	@$(CC) -d $(CLASSES_PATH) @$< $(LINT_FLAGS) $(VERBOSE_FLAGS) $(FLAGS)
 	@echo "$(PREFIX) Successfully compiled all source files."
 
 	$(eval HAS_COMPILED := $(wildcard $(CLASSES_PATH)))
