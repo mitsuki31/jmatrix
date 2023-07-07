@@ -1,14 +1,20 @@
-Rules:
-   * compile       - Compiles the project.
-   * package       - Creates archived package of compiled classes.
-                         WARNING: The project needs to be compiled first!
-   * clean         - Cleans all of compiled classes and created jar.
-   * cleanbin      - Cleans all compiled class files only.
-   * check-verbose - Checks the verbose status.
-   * usage         - Prints the example usages for building the project.
-   * build-docs    - Builds the HTML pages of JMatrix's javadocs.
+[1mUsage:[0m
+    $ make [rules] [...] [options] [...]
+    $ make [rules] [VERBOSE[=<bool>] | INCLUDE-SRC[=<bool>]]
+    $ make [rules] [LINT[=<bool>] | FLAGS[=<flags>]]
 
-Additional Options:
+[1mRules:[0m
+   * [1mcompile[0m       - Compiles the project.
+   * [1mpackage[0m       - Creates archived package of compiled classes.
+                         WARNING: The project needs to be compiled first!
+   * [1mclean[0m         - Cleans all of compiled classes and created jar.
+   * [1mcleanbin[0m      - Cleans all compiled class files only.
+   * [1mcleandocs[0m     - Cleans all generated HTML documentations only.
+   * [1mcheck-verbose[0m - Checks the verbose status.
+   * [1musage[0m         - Prints the example usages for building the project.
+   * [1mbuild-docs[0m    - Builds the HTML pages of JMatrix's javadocs.
+
+[1mAdditional Options:[0m
   - Activating verbose output
 
       $ export VERBOSE=true && make [rules]
@@ -32,18 +38,13 @@ Additional Options:
 
       $ make compile FLAGS[=<flags>]
 
-Usage:
-    $ make [rules] [...] [arguments]
-    $ make [rules] [VERBOSE[=<bool>] | INCLUDE-SRC[=<bool>]]
-    $ make [rules] (LINT[=<bool>] | FLAGS[=<flags>])
-
-Tips:
+[1mTips:[0m
     - Combine the rules; `Make` can understand multiple rules.
       Except for `build-docs` rule, it should be built as a standalone rule.
 
-Issues:
+[1mIssues:[0m
     Report any issues or suggestions, and help improve JMatrix.
     <https://github.com/mitsuki31/jmatrix/issues/new>
 
-Author:
+[1mAuthor:[0m
     Ryuu Mitsuki
