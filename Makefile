@@ -16,9 +16,6 @@ FLAGS ?=
 # and the `FLAGS` variable automatically added linter flags "-Xlint"
 LINT ?=
 
-ifeq "$(LINT)" "true"
-	FLAGS := -Xlint -Xdoclint
-endif
 
 ALL_RULES := all compile package clean cleanbin cleandocs
 
@@ -40,6 +37,8 @@ CLASSES_LIST   := target/generated-list/outputFiles.lst
 SRCFILES       := $(shell find $(SOURCES_PATH) -type f -name '*.java')
 ifneq "$(wildcard $(CLASSES_PATH))" ""
 	CLSFILES   := $(shell find $(CLASSES_PATH) -type f -name '*.class')
+else
+	CLSFILES   :=
 endif
 
 jar      := $(OUTPUT_PATH)jmatrix-$(VERSION).jar
@@ -132,11 +131,15 @@ compile: $(SOURCES_LIST) $(SRCFILES)
 	@echo ""
 	@echo ">> [ COMPILE PROGRAM ] <<"
 
-	$(if $(shell [ $(LINT) = "true" ] && echo 1),\
-		@echo "$(PREFIX) Linter is ACTIVATED."\
-	)
+ifeq "$(LINT)" "true"
+	@echo "$(PREFIX) Linter is ACTIVATED."
+	$(eval LINT_FLAGS := -Xlint -Xdoclint)
+else
+	$(eval LINT_FLAGS :=)
+endif
+
 	@echo "$(PREFIX) Compiling all source files..."
-	@$(CC) -d $(CLASSES_PATH) @$< $(FLAGS)
+	@$(CC) -d $(CLASSES_PATH) @$< $(LINT_FLAGS) $(FLAGS)
 	@echo "$(PREFIX) Successfully compiled all source files."
 
 	$(eval HAS_COMPILED := $(wildcard $(CLASSES_PATH)))
@@ -204,6 +207,7 @@ ifndef VERBOSE
 else
 ifeq "$(VERBOSE)" "true"
 	@echo "$(PREFIX) Verbose mode: NORMAL"
+	$(eval VERBOSE_FLAGS :=)
 endif
 ifeq "$(VERBOSE)" "all"
 	@echo "$(PREFIX) Verbose mode: ALL"
@@ -211,6 +215,7 @@ ifeq "$(VERBOSE)" "all"
 endif
 ifneq "$(shell [ $(VERBOSE) = 'all' ] || [ $(VERBOSE) = 'true' ] && echo false)" "false"
 	@echo "$(PREFIX) Verbose mode: NORMAL"
+	$(eval VERBOSE_FLAGS :=)
 endif
 endif
 
