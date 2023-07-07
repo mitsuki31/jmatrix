@@ -20,7 +20,7 @@ ifeq "$(LINT)" "true"
 	FLAGS := -Xlint -Xdoclint
 endif
 
-ALL_RULES := all compile package clean
+ALL_RULES := all compile package clean cleanbin cleandocs
 
 # Path variables
 PYTHON_PATH    := ./src/main/python/
@@ -253,8 +253,8 @@ clean:
 
 cleanbin:
 	@echo ""
-	@echo ">> [ CLEAN ONLY CLASS OBJECTS ] <<"
-	@echo "$(PREFIX) Cleaning the class files only..."
+	@echo ">> [ CLEAN ONLY THE CLASS OBJECTS ] <<"
+	@echo "$(PREFIX) Cleaning the class files..."
 	@-rm -r $(CLASSES_PATH)
 	@echo ""
 	@echo "$(PREFIX) All cleaned up."
@@ -264,6 +264,13 @@ cleanbin:
 		@echo 'File "$(subst ./,,$(jar))" is missing or has been deleted.'\
 	)
 
+cleandocs:
+	@echo
+	@echo ">> [ CLEAN ONLY THE GENERATED DOCS ] <<"
+	@echo "$(PREFIX) Cleaning the generated HTML pages..."
+	@-rm -r $(DOCS_PATH)jmatrix
+	@echo
+	@echo "$(PREFIX) All cleaned up."
 
 $(SOURCES_LIST): $(wildcard $(PYTHON_PATH)*.py)
 	@echo ""
