@@ -30,7 +30,9 @@ OUTPUT_PATH    := ./target/
 CLASSES_PATH   := ./target/classes/
 PACKAGE_PATH   := com/mitsuki/jmatrix/
 MANIFEST       := META-INF/MANIFEST.MF
-DOCS_PATH      := docs/
+
+MAKE_USAGE_TXT := docs/makefile-usage.txt
+DOCS_PATH      := docs/jmatrix
 
 SOURCES_LIST   := target/generated-list/sourceFiles.lst
 CLASSES_LIST   := target/generated-list/outputFiles.lst
@@ -58,7 +60,7 @@ endif
 ifndef VERBOSE
 	MAKE_VERBOSE :=
 else
-ifeq ($(VERBOSE),true)
+ifeq "$(VERBOSE)" "true"
 	MAKE_VERBOSE := true
 else
 	MAKE_VERBOSE :=
@@ -111,10 +113,10 @@ endif
 
 all:
 	$(info [Makefile-jmatrix])
-	$(if $(shell [ ! -f $(DOCS_PATH)makefile-usage.txt ] && echo 1),\
-		$(error $(PREFIX) File "$(DOCS_PATH)makefile-usage.txt" is missing)\
+	$(if $(shell [ ! -f $(MAKE_USAGE_TXT) ] && echo 1),\
+		$(error $(PREFIX) File "$(MAKE_USAGE_TXT)" is missing)\
 	)
-	@cat $(DOCS_PATH)makefile-usage.txt
+	@cat $(MAKE_USAGE_TXT)
 
 
 check-verbose:
@@ -215,7 +217,7 @@ endif
 	@echo
 	@echo ">> [ BUILD DOCS ] <<"
 	@echo "$(PREFIX) Build the JMatrix docs..."
-	@javadoc -author -version -d $(DOCS_PATH)jmatrix -Xdoclint \
+	@javadoc -author -version -d $(DOCS_PATH) -Xdoclint \
 		@$^ --release 11 -windowtitle "JMatrix" -doctitle "<b>JMatrix</b> v$(VERSION)" \
 		-tag param -tag return -tag throws -tag warning:a:"Warning:" -tag author -tag license:a:"License:" -tag see \
 		-Xdoclint/package:-com.mitsuki.jmatrix.core \
@@ -225,7 +227,7 @@ endif
 
 	@echo "$(PREFIX) Successfully build the JMatrix docs."
 	@echo
-	@echo "SAVED IN: \"$(DOCS_PATH)jmatrix/\""
+	@echo "SAVED IN: \"$(DOCS_PATH)/\""
 
 clean:
 	@echo ""
@@ -242,9 +244,9 @@ clean:
 	)
 
 # Clean the generated HTML pages directory "docs/jmatrix/", only if exist
-	$(if $(shell [ -d $(DOCS_PATH)jmatrix ] && echo 1),\
-		@echo && echo "$(PREFIX) Cleaning the \"$(DOCS_PATH)jmatrix/\" directory recursively..." &&\
-		rm -r $(DOCS_PATH)jmatrix &&\
+	$(if $(shell [ -d $(DOCS_PATH) ] && echo 1),\
+		@echo && echo "$(PREFIX) Cleaning the \"$(DOCS_PATH)/\" directory recursively..." &&\
+		rm -r $(DOCS_PATH) &&\
 		echo "$(PREFIX) Generated HTML pages cleaned up."\
 	)
 	@echo ""
@@ -265,12 +267,21 @@ cleanbin:
 	)
 
 cleandocs:
-	@echo
-	@echo ">> [ CLEAN ONLY THE GENERATED DOCS ] <<"
+	$(info )
+	$(info >> [ CLEAN ONLY THE GENERATED DOCS ] <<)
+
+# Check whether the `docs/jmatrix` directory is exist
+ifeq "$(shell [ -d $(DOCS_PATH) ] && echo 1)" "1"
 	@echo "$(PREFIX) Cleaning the generated HTML pages..."
-	@-rm -r $(DOCS_PATH)jmatrix
+	@-rm -r $(DOCS_PATH)
+else
+# Send warning message if the directory does not exist
+	$(warning $(PREFIX) Directory does not exist: "$(DOCS_PATH)")
+endif
+
 	@echo
 	@echo "$(PREFIX) All cleaned up."
+
 
 $(SOURCES_LIST): $(wildcard $(PYTHON_PATH)*.py)
 	@echo ""
@@ -287,7 +298,7 @@ endif
 
 
 usage:
-	@echo "[Makefile Usage]"
+	@echo "[Makefile Basic Usage]"
 
 	@echo ""
 	@echo "Parameters:"
