@@ -200,14 +200,14 @@ build-docs: $(SOURCES_LIST)
 	@echo
 ifndef VERBOSE
 	@echo "$(PREFIX) Verbose mode: QUIET"
-	$(eval FLAGS := -quiet)
+	$(eval VERBOSE_FLAGS := -quiet)
 else
 ifeq "$(VERBOSE)" "true"
 	@echo "$(PREFIX) Verbose mode: NORMAL"
 endif
 ifeq "$(VERBOSE)" "all"
 	@echo "$(PREFIX) Verbose mode: ALL"
-	$(eval FLAGS := -verbose)
+	$(eval VERBOSE_FLAGS := -verbose)
 endif
 ifneq "$(shell [ $(VERBOSE) = 'all' ] || [ $(VERBOSE) = 'true' ] && echo false)" "false"
 	@echo "$(PREFIX) Verbose mode: NORMAL"
@@ -223,7 +223,7 @@ endif
 		-Xdoclint/package:-com.mitsuki.jmatrix.core \
 		-bottom "<font size="-1">Copyright (c) 2023 <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>.</font>" \
 		-group "Core Packages" "com.mitsuki.jmatrix*:com.mitsuki.jmatrix.core" \
-		-group "Utilities Packages" "com.mitsuki.jmatrix.util" $(FLAGS)
+		-group "Utilities Packages" "com.mitsuki.jmatrix.util" $(VERBOSE_FLAGS) $(FLAGS)
 
 	@echo "$(PREFIX) Successfully build the JMatrix docs."
 	@echo
