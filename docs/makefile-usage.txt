@@ -1,0 +1,54 @@
+Usage:
+   $ make [rules] [...] [options] [...]
+
+Rules:
+   build-docs     - Builds the HTML pages of JMatrix's javadocs.
+   check-verbose  - Checks the verbose status.
+   clean          - Cleans the working directory thoroughly.
+   cleanbin       - Cleans all compiled class files only.
+   cleandocs      - Cleans all generated HTML documentations only.
+   compile        - Compiles all project's source files (.java).
+   package        - Creates archived package of compiled classes.
+   usage          - Prints the basic usages for building the project.
+
+Options:
+   FLAGS - Append flags to specific command or rule.
+
+       Example:
+           $ make [rules] FLAGS[=<flags>]
+
+
+   INCLUDE-SRC - Whether to include the source files while packaging.
+
+       Example:
+           $ make package INCLUDE-SRC[=<bool>]
+
+
+   LINT - Whether to invoke the linter during the compilation.
+
+       Example:
+           $ make compile LINT[=<bool>]
+
+
+   VERBOSE - Whether to activate the verbose output.
+
+       Example:
+           $ export VERBOSE[=(<bool>|all)] && make [rules] [options]
+           $ make [rules] VERBOSE[=<bool>]
+           $ make build-docs VERBOSE[=(<bool>|all)]
+
+       Only the build-docs rule that has 3 verbose modes:
+           - Quiet Mode:   *no argument
+           - Normal Mode:  VERBOSE=true
+           - All Mode:     VERBOSE=all
+
+Tips:
+    Combine the rules; Make can understand multiple rules.
+    Except for build-docs rule, it was built as a standalone rule.
+
+Issues:
+    Report any issues or suggestions, and help improve JMatrix.
+    <https://github.com/mitsuki31/jmatrix/issues/new>
+
+Author:
+    Ryuu Mitsuki
