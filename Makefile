@@ -309,13 +309,20 @@ endif
 	)
 
 cleandocs:
+# Check whether the verbose is activated
+ifeq "$(MAKE_VERBOSE)" "true"
+	$(eval VERBOSE_FLAGS := -v)
+else
+	$(eval VERBOSE_FLAGS :=)
+endif
+
 	$(info )
 	$(info >> [ CLEAN ONLY THE GENERATED DOCS ] <<)
 
 # Check whether the `docs/jmatrix` directory is exist
 ifeq "$(shell [ -d $(DOCS_PATH) ] && echo 1)" "1"
 	@echo "$(PREFIX) Cleaning the generated HTML pages..."
-	@-rm -r $(DOCS_PATH)
+	@-rm -r $(DOCS_PATH) $(VERBOSE_FLAGS)
 else
 # Send warning message if the directory does not exist
 	$(warning $(PREFIX) Directory does not exist: "$(DOCS_PATH)")
