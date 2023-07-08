@@ -289,14 +289,21 @@ endif
 
 
 cleanbin:
+# Check whether the verbose is activated
+ifeq "$(MAKE_VERBOSE)" "true"
+	$(eval VERBOSE_FLAGS := -v)
+else
+	$(eval VERBOSE_FLAGS :=)
+endif
+
 	@echo ""
 	@echo ">> [ CLEAN ONLY THE CLASS OBJECTS ] <<"
 	@echo "$(PREFIX) Cleaning the class files..."
-	@-rm -r $(CLASSES_PATH)
+	@-rm -r $(CLASSES_PATH) $(VERBOSE_FLAGS)
 	@echo ""
 	@echo "$(PREFIX) All cleaned up."
 
-	$(if $(shell test -e $(jar) && echo "1"),\
+	$(if $(shell test -f $(jar) && echo "1"),\
 		@echo 'File "$(subst ./,,$(jar))" is still exists.',\
 		@echo 'File "$(subst ./,,$(jar))" is missing or has been deleted.'\
 	)
