@@ -257,23 +257,31 @@ endif
 	@echo "SAVED IN: \"$(DOCS_PATH)/\""
 
 clean:
+# Check whether the verbose is activated
+ifeq "$(MAKE_VERBOSE)" "true"
+	$(eval VERBOSE_FLAGS := -v)
+else
+	$(eval VERBOSE_FLAGS :=)
+endif
+
 	@echo ""
 	@echo ">> [ CLEAN WORKING DIRECTORY ] <<"
 	@echo "$(PREFIX) Cleaning the \"$(subst ./,,$(OUTPUT_PATH))\" directory recursively..."
-	@-rm -r $(OUTPUT_PATH)
+
+	@-rm -r $(OUTPUT_PATH) $(VERBOSE_FLAGS)
 	@echo "$(PREFIX) Classes directory cleaned up."
 
 # Clean the temporary directory "tmp/", only if exist
 	$(if $(shell [ -d tmp/ ] && echo 1),\
 		@echo && echo "$(PREFIX) Cleaning the \"tmp/\" directory recursively..." &&\
-		rm -r tmp &&\
+		rm -r tmp $(VERBOSE_FLAGS) &&\
 		echo "$(PREFIX) Temporary directory cleaned up."\
 	)
 
 # Clean the generated HTML pages directory "docs/jmatrix/", only if exist
 	$(if $(shell [ -d $(DOCS_PATH) ] && echo 1),\
 		@echo && echo "$(PREFIX) Cleaning the \"$(DOCS_PATH)/\" directory recursively..." &&\
-		rm -r $(DOCS_PATH) &&\
+		rm -r $(DOCS_PATH) $(VERBOSE_FLAGS) &&\
 		echo "$(PREFIX) Generated HTML pages cleaned up."\
 	)
 	@echo ""
