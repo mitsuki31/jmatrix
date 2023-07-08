@@ -233,7 +233,7 @@ endif
 
 # If VERBOSE's value does not match with (all, true, false)
 # then the verbose mode would be override to NORMAL mode.
-ifeq "$(shell \
+ifneq "$(shell \
     [ $(VERBOSE) = 'all' ] || [ $(VERBOSE) = 'true' ] || [ $(VERBOSE) != 'false' ] && echo 'false'\
 )" "false"
 	@echo "$(PREFIX) Verbose mode: NORMAL"
