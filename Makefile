@@ -212,15 +212,30 @@ ifndef VERBOSE
 	@echo "$(PREFIX) Verbose mode: QUIET"
 	$(eval VERBOSE_FLAGS := -quiet)
 else
+
+# Check whether the VERBOSE's value is "true"
 ifeq "$(VERBOSE)" "true"
 	@echo "$(PREFIX) Verbose mode: NORMAL"
 	$(eval VERBOSE_FLAGS :=)
 endif
+
+# Check whether the VERBOSE's value is "all"
 ifeq "$(VERBOSE)" "all"
 	@echo "$(PREFIX) Verbose mode: ALL"
 	$(eval VERBOSE_FLAGS := -verbose)
 endif
-ifneq "$(shell [ $(VERBOSE) = 'all' ] || [ $(VERBOSE) = 'true' ] && echo false)" "false"
+
+# Check whether the VERBOSE's value is "false"
+ifeq "$(VERBOSE)" "false"
+	@echo "$(PREFIX) Verbose mode: QUIET"
+	$(eval VERBOSE_FLAGS := -quiet)
+endif
+
+# If VERBOSE's value does not match with (all, true, false)
+# then the verbose mode would be override to NORMAL mode.
+ifeq "$(shell \
+    [ $(VERBOSE) = 'all' ] || [ $(VERBOSE) = 'true' ] || [ $(VERBOSE) != 'false' ] && echo 'false'\
+)" "false"
 	@echo "$(PREFIX) Verbose mode: NORMAL"
 	$(eval VERBOSE_FLAGS :=)
 endif
