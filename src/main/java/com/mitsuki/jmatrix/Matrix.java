@@ -19,11 +19,11 @@
 
 package com.mitsuki.jmatrix;
 
-import com.mitsuki.jmatrix.core.IllegalMatrixSizeException;
-import com.mitsuki.jmatrix.core.InvalidIndexException;
-import com.mitsuki.jmatrix.core.JMBaseException;
-import com.mitsuki.jmatrix.core.MatrixArrayFullException;
-import com.mitsuki.jmatrix.core.NullMatrixException;
+import com.mitsuki.jmatrix.exception.IllegalMatrixSizeException;
+import com.mitsuki.jmatrix.exception.InvalidIndexException;
+import com.mitsuki.jmatrix.exception.JMBaseException;
+import com.mitsuki.jmatrix.exception.MatrixArrayFullException;
+import com.mitsuki.jmatrix.exception.NullMatrixException;
 import com.mitsuki.jmatrix.util.Options;
 import com.mitsuki.jmatrix.util.MatrixUtils;
 
