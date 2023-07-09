@@ -25,7 +25,7 @@ import com.mitsuki.jmatrix.exception.JMBaseException;
 import com.mitsuki.jmatrix.exception.MatrixArrayFullException;
 import com.mitsuki.jmatrix.exception.NullMatrixException;
 import com.mitsuki.jmatrix.util.Options;
-import com.mitsuki.jmatrix.util.MatrixUtils;
+import com.mitsuki.jmatrix.core.MatrixUtils;
 
 import java.util.Arrays;
 
