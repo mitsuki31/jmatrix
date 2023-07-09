@@ -2,7 +2,7 @@
 /* --    JMBaseException    -- */
 // :: --------------------- :: //
 
-package com.mitsuki.jmatrix.core;
+package com.mitsuki.jmatrix.exception;
 
 import java.lang.RuntimeException;
 

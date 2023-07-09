@@ -2,7 +2,7 @@
 /* --  NullMatrixException  -- */
 // :: --------------------- :: //
 
-package com.mitsuki.jmatrix.core;
+package com.mitsuki.jmatrix.exception;
 
 public class NullMatrixException extends JMBaseException
 {

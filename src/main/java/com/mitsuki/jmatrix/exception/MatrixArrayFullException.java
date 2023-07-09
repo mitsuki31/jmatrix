@@ -2,7 +2,7 @@
 /* --  MatrixArrayFullException  -- */
 // :: -------------------------- :: //
 
-package com.mitsuki.jmatrix.core;
+package com.mitsuki.jmatrix.exception;
 
 public class MatrixArrayFullException extends JMBaseException
 {
