@@ -22,7 +22,8 @@ package com.mitsuki.jmatrix.core;
 import com.mitsuki.jmatrix.Matrix;
 
 /**
- * Utility interface for matrix operations and other utilities.
+ * Utility interface for matrix operations and other utilities. All methods in this interface
+ * has their own default implementation.
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
