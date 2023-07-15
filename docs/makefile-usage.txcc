@@ -1,0 +1,54 @@
+[1mUsage:[0m
+   $ make [rules] [...] [options] [...]
+
+[1mRules:[0m
+   [1mbuild-docs[0m     - Builds the HTML pages of [1mJMatrix[0m's javadocs.
+   [1mcheck-verbose[0m  - Checks the verbose status.
+   [1mclean[0m          - Cleans the working directory thoroughly.
+   [1mcleanbin[0m       - Cleans all compiled class files only.
+   [1mcleandocs[0m      - Cleans all generated HTML documentations only.
+   [1mcompile[0m        - Compiles all project's source files (.java).
+   [1mpackage[0m        - Creates archived package of compiled classes.
+   [1musage[0m          - Prints the basic usages for building the project.
+
+[1mOptions:[0m
+   [1mFLAGS[0m - Append [1mflags[0m to specific command or rule.
+
+       [4mExample:[0m
+           $ make [rules] FLAGS[=<flags>]
+
+
+   [1mINCLUDE-SRC[0m - Whether to include the source files while packaging.
+
+       [4mExample:[0m
+           $ make package INCLUDE-SRC[=<bool>]
+
+
+   [1mLINT[0m - Whether to invoke the linter during the compilation.
+
+       [4mExample:[0m
+           $ make compile LINT[=<bool>]
+
+
+   [1mVERBOSE[0m - Whether to activate the verbose output.
+
+       [4mExample:[0m
+           $ export VERBOSE[=(<bool>|all)] && make [rules] [options]
+           $ make [rules] VERBOSE[=<bool>]
+           $ make build-docs VERBOSE[=(<bool>|all)]
+
+       Only the [1mbuild-docs[0m rule that has 3 verbose modes:
+           - Quiet Mode:   [3m*no argument[0m
+           - Normal Mode:  VERBOSE=true
+           - All Mode:     VERBOSE=all
+
+[1mTips:[0m
+    Combine the rules; [1mMake[0m can understand multiple rules.
+    Except for [1mbuild-docs[0m rule, it was built as a standalone rule.
+
+[1mIssues:[0m
+    Report any issues or suggestions, and help improve [1mJMatrix[0m.
+    <https://github.com/mitsuki31/jmatrix/issues/new>
+
+[1mAuthor:[0m
+    Ryuu Mitsuki
