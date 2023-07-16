@@ -1,23 +1,23 @@
-// :: -------------------------- :: //
-/* --  MatrixArrayFullException  -- */
-// :: -------------------------- :: //
+// :: ----------------------- :: //
+/* --  InvalidIndexException  -- */
+// :: ----------------------- :: //
 
-package com.mitsuki.jmatrix.core;
+package com.mitsuki.jmatrix.exception;
 
-public class MatrixArrayFullException extends JMBaseException
+public class InvalidIndexException extends JMBaseException
 {
     private String message = null;
 
-    public MatrixArrayFullException() {
+    public InvalidIndexException() {
         super();
     }
 
-    public MatrixArrayFullException(String message) {
+    public InvalidIndexException(String message) {
         super(message);
         this.message = message;
     }
 
-    public MatrixArrayFullException(Throwable cause) {
+    public InvalidIndexException(Throwable cause) {
         super(cause);
         this.message = cause.getMessage();
     }

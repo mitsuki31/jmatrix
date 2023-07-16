@@ -19,7 +19,7 @@
 
 package com.mitsuki.jmatrix.util;
 
-import com.mitsuki.jmatrix.core.JMBaseException;
+import com.mitsuki.jmatrix.exception.JMBaseException;
 
 import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
