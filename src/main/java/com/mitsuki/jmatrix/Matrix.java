@@ -21,7 +21,7 @@ package com.mitsuki.jmatrix;
 
 import com.mitsuki.jmatrix.exception.IllegalMatrixSizeException;
 import com.mitsuki.jmatrix.exception.InvalidIndexException;
-import com.mitsuki.jmatrix.exception.JMBaseException;
+import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 import com.mitsuki.jmatrix.exception.MatrixArrayFullException;
 import com.mitsuki.jmatrix.exception.NullMatrixException;
 import com.mitsuki.jmatrix.util.Options;
@@ -66,8 +66,8 @@ import java.util.Arrays;
  *       [10.0, 12.0]   ]
  * </pre>
  *
- * <p>For creating the "null matrix" also known as "zero matrix",
- * it just simply by using the {@link #Matrix(int, int)} constructor.
+ * <p>For creating the "zero matrix" (the matrix with all elements is zero),
+ * it just simply by using the {@link #Matrix(int, int)} constructor and specify the number of rows and columns, respectively.
  *
  * <pre><code class="language-java">&nbsp;
  *   Matrix m = new Matrix(5, 5);
@@ -79,12 +79,12 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.13, 25 June 2023
+ * @version  2.15, 18 July 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
  *
- * @see      com.mitsuki.jmatrix.util.MatrixUtils
+ * @see      com.mitsuki.jmatrix.core.MatrixUtils
  * @see      <a href="https://en.m.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">
  *           "Matrix - Wikipedia"</a>
  */
@@ -601,7 +601,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since  1.0.0b.7
      * @see    MatrixUtils#deepCopyOf(Matrix)
-     * @see    com.mitsuki.jmatrix.util.MatrixUtils
+     * @see    com.mitsuki.jmatrix.core.MatrixUtils
      */
     public Matrix deepCopy() {
         return MatrixUtils.deepCopyOf(this);
@@ -724,8 +724,8 @@ public class Matrix implements MatrixUtils {
             }
         } catch (final IllegalArgumentException iae) {
             try {
-                throw new JMBaseException(iae);
-            } catch (final JMBaseException jme) {
+                throw new JMatrixBaseException(iae);
+            } catch (final JMatrixBaseException jme) {
                 Options.raiseError(jme);
             }
         } catch (final RuntimeException re) {
@@ -853,12 +853,12 @@ public class Matrix implements MatrixUtils {
     public void change(double ... values) {
         // Check whether the values size is greater than number of columns of this matrix
         if (values.length > this.COLS) {
-            cause = new JMBaseException(new IllegalArgumentException(
+            cause = new JMatrixBaseException(new IllegalArgumentException(
                 "Too many values for matrix with columns: " + this.COLS));
         }
         // Check whether the values size is lower than number of columns of this matrix
         else if (values.length < this.COLS) {
-            cause = new JMBaseException(new IllegalArgumentException(
+            cause = new JMatrixBaseException(new IllegalArgumentException(
                 "Not enough values for matrix with columns: " + this.COLS));
         }
         // Check if the user have not select any index row
@@ -2886,7 +2886,7 @@ public class Matrix implements MatrixUtils {
      * @since       1.0.0
      * @see         MatrixUtils#isEquals(Matrix, Matrix)
      * @see         MatrixUtils#isEqualsSize(Matrix, Matrix)
-     * @see         com.mitsuki.jmatrix.util.MatrixUtils
+     * @see         com.mitsuki.jmatrix.core.MatrixUtils
      */
     @Override
     public boolean equals(Object obj) {

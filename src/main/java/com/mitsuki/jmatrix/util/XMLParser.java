@@ -19,7 +19,7 @@
 
 package com.mitsuki.jmatrix.util;
 
-import com.mitsuki.jmatrix.exception.JMBaseException;
+import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 
 import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.2, 26 June 2023
+ * @version  1.21, 18 July 2023
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -86,7 +86,7 @@ interface XMLData
 
             default:
                 Options.raiseError(
-                    new JMBaseException(
+                    new JMatrixBaseException(
                         new IllegalArgumentException(
                             "Cannot retrieve data for input \"" + choice + "\""
                         )
@@ -143,7 +143,7 @@ public class XMLParser implements XMLData
 
             default:
                 Options.raiseError(
-                    new JMBaseException(
+                    new JMatrixBaseException(
                         new IllegalArgumentException(
                             "Invalid XML type: \"" + type + "\""
                         )
@@ -171,7 +171,7 @@ public class XMLParser implements XMLData
                 XMLConfig.betaNum = xml.getElementsByTagName("beta_num").item(0).getTextContent().strip();
             }
         } catch (final Exception e) {
-            Options.raiseError(new JMBaseException(e), -1);
+            Options.raiseError(new JMatrixBaseException(e), -1);
         }
     }
 

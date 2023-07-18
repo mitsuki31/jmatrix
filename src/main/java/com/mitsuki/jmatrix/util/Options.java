@@ -19,8 +19,7 @@
 
 package com.mitsuki.jmatrix.util;
 
-import com.mitsuki.jmatrix.exception.JMBaseException;
-import com.mitsuki.jmatrix.util.XMLParser;
+import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -36,7 +35,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.3, 27 June 2023
+ * @version  1.31, 18 July 2023
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -91,7 +90,7 @@ public class Options
             }
         }
 
-        raiseError(new JMBaseException(
+        raiseError(new JMatrixBaseException(
             new IllegalArgumentException(
                 String.format("Unknown argument option for input \"%s\"", inputOpt)
             )
@@ -214,7 +213,7 @@ public class Options
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             while (br.readLine() != null) lines++;
         } catch (final IOException ioe) {
-            raiseError(new JMBaseException(ioe), -1);
+            raiseError(new JMatrixBaseException(ioe), -1);
         }
 
         return lines;
@@ -238,7 +237,7 @@ public class Options
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             while (br.readLine() != null) lines++;
         } catch (final IOException ioe) {
-            raiseError(new JMBaseException(ioe), -1);
+            raiseError(new JMatrixBaseException(ioe), -1);
         }
 
         return lines;
@@ -261,7 +260,7 @@ public class Options
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             return br.lines().toArray(String[ ]::new);
         } catch (final IOException ioe) {
-            raiseError(new JMBaseException(ioe), -1);
+            raiseError(new JMatrixBaseException(ioe), -1);
         }
 
         return null;
@@ -283,7 +282,7 @@ public class Options
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             return br.lines().toArray(String[ ]::new);
         } catch (final IOException ioe) {
-            raiseError(new JMBaseException(ioe), -1);
+            raiseError(new JMatrixBaseException(ioe), -1);
         }
 
         return null;
@@ -327,7 +326,7 @@ public class Options
 
             return true;
         } catch (final IOException ioe) {
-            Options.raiseError(new JMBaseException(ioe), 0);
+            Options.raiseError(new JMatrixBaseException(ioe), 0);
         }
 
         return false;
