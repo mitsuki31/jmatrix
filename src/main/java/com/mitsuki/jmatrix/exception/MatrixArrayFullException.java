@@ -44,6 +44,15 @@ public class MatrixArrayFullException extends JMatrixBaseException
 {
 
     /**
+     * Stores the serial version number of this class for deserialization to
+     * verify that the sender and receiver of a serialized object have loaded classes
+     * for that object that are compatible with respect to serialization.
+     *
+     * @see java.io.Serializable
+     */
+    private static final long serialVersionUID = 20_639_121_408L;
+
+    /**
      * Stores a string represents the detail message of this exception.
      *
      * @see #getMessage()

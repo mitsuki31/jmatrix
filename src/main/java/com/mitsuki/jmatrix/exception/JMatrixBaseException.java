@@ -38,6 +38,15 @@ public class JMatrixBaseException extends RuntimeException
 {
 
     /**
+     * Stores the serial version number of this class for deserialization to
+     * verify that the sender and receiver of a serialized object have loaded classes
+     * for that object that are compatible with respect to serialization.
+     *
+     * @see java.io.Serializable
+     */
+    private static final long serialVersionUID = 8_294_400_000L;
+
+    /**
      * Stores the stack trace elements for this exception.
      *
      * @see   StackTraceElement
