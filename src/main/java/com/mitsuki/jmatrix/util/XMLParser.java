@@ -19,7 +19,7 @@
 
 package com.mitsuki.jmatrix.util;
 
-import com.mitsuki.jmatrix.exception.JMBaseException;
+import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 
 import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -86,7 +86,7 @@ interface XMLData
 
             default:
                 Options.raiseError(
-                    new JMBaseException(
+                    new JMatrixBaseException(
                         new IllegalArgumentException(
                             "Cannot retrieve data for input \"" + choice + "\""
                         )
@@ -143,7 +143,7 @@ public class XMLParser implements XMLData
 
             default:
                 Options.raiseError(
-                    new JMBaseException(
+                    new JMatrixBaseException(
                         new IllegalArgumentException(
                             "Invalid XML type: \"" + type + "\""
                         )
@@ -171,7 +171,7 @@ public class XMLParser implements XMLData
                 XMLConfig.betaNum = xml.getElementsByTagName("beta_num").item(0).getTextContent().strip();
             }
         } catch (final Exception e) {
-            Options.raiseError(new JMBaseException(e), -1);
+            Options.raiseError(new JMatrixBaseException(e), -1);
         }
     }
 
