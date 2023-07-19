@@ -35,6 +35,7 @@ import java.io.File;
  */
 public class OSUtils
 {
+
     /**
      * List names of operating system.
      *
@@ -44,9 +45,35 @@ public class OSUtils
      * @see   #getOSName()
      */
     public enum OS {
-        WINDOWS, LINUX, MAC, SOLARIS, OTHER
+        /**
+         * Indicates the Windows OS.
+         */
+        WINDOWS,
+
+        /**
+         * Indicates the Linux OS.
+         */
+        LINUX,
+
+        /**
+         * Indicates the Mac OS.
+         */
+        MAC,
+
+        /**
+         * Indicates the Solaris OS.
+         */
+        SOLARIS,
+
+        /**
+         * Indicates unknown OS.
+         */
+        OTHER
     };
 
+    /**
+     * Stores the static variable of {@link OSUtils.OS}.
+     */
     private static OS os = null;
 
     /**
