@@ -32,13 +32,26 @@ import com.mitsuki.jmatrix.util.XMLParser;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.31, 27 June 2023
+ * @version  1.32, 19 July 2023
  * @since    1.0.0b.1
  * @see      com.mitsuki.jmatrix.Matrix
  */
 public class Main
 {
+    /**
+     * Stores the static object class of {@link XMLParser} class.
+     */
     private static XMLParser XML = new XMLParser(XMLParser.XMLType.CONFIG);
+
+    /**
+     * Stores a string that represents the concatenation of:
+     *
+     * <ul>
+     *  <li>The program name
+     *  <li>(a space)
+     *  <li>The version number
+     * </ul>
+     */
     private static String programVersion = XML.getProperty("programName") + " " + getVersion();
 
     /**
@@ -100,6 +113,15 @@ public class Main
         }
     }
 
+
+    /**
+     * Gets the version number and concanate it with the release type.
+     * And concanate again with the beta number if and only if the release type is "beta".
+     *
+     * @return a string represents the version number.
+     *
+     * @since  1.0.0
+     */
     private static String getVersion() {
         String ver = XML.getProperty("version");
 
