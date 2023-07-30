@@ -2618,6 +2618,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since                              1.2.0
      * @see                                #isLowerTriangular(Matrix)
+     * @see                                #isLowerTriangular(double[][])
      * @see                                #THRESHOLD
      */
     public boolean isLowerTriangular() {
@@ -2641,6 +2642,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since                              1.2.0
      * @see                                #isLowerTriangular()
+     * @see                                #isLowerTriangular(double[][])
      * @see                                #THRESHOLD
      */
     public static boolean isLowerTriangular(Matrix m) {
@@ -2670,6 +2672,26 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /**
+     * Checks if the given square two-dimensional array is lower triangular.
+     *
+     * <p>A square matrix is considered lower triangular if all the elements above
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * @param  m                           the square array to be checked.
+     *
+     * @return                             {@code true} if the matrix is lower triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the given array is {@code null} or empty.
+     * @throws IllegalMatrixSizeException  if the given array is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isLowerTriangular()
+     * @see                                #isLowerTriangular(Matrix)
+     * @see                                #THRESHOLD
+     */
     public static boolean isLowerTriangular(double[ ][ ] arr) {
         if (arr == null || arr.length == 0) {
             Options.raiseError(new NullMatrixException(
