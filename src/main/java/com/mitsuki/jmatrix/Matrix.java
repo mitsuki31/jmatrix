@@ -2653,7 +2653,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // The matrix must be square
-        if (!m.isSquare()) {
+        else if (!m.isSquare()) {
             Options.raiseError(new IllegalMatrixSizeException(
                 "Matrix is non-square type. " +
                 "Please ensure the matrix has the same number of rows and columns."
@@ -2700,7 +2700,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // The two-dimensional array must be square
-        if (!Matrix.isSquare(arr)) {
+        else if (!Matrix.isSquare(arr)) {
             Options.raiseError(new IllegalMatrixSizeException(
                 "Array is non-square type. " +
                 "Please ensure the array has the same number of rows and columns."
@@ -2717,6 +2717,64 @@ public class Matrix implements MatrixUtils {
 
         return true;
     }
+
+
+    public boolean isUpperTriangular() {
+        return Matrix.isUpperTriangular(this);
+    }
+
+    public static boolean isUpperTriangular(Matrix m) {
+        if (MatrixUtils.isNullEntries(m)) {
+            Options.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix have been initialized.")
+            );
+        }
+
+        // The matrix must be square
+        else if (!m.isSquare()) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Matrix is non-square type. " +
+                "Please ensure the matrix has the same number of rows and columns."
+            ));
+        }
+
+        for (int r = 0; r < m.getSize()[0]; r++) {
+            for (int c = r + 1; c < m.getSize()[1]; c++) {
+                if (Math.abs(m.get(r, c)) > Matrix.THRESHOLD) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean isUpperTriangular(double[ ][ ] arr) {
+        if (arr == null || arr.length == 0) {
+            Options.raiseError(new NullMatrixException(
+                "Array is null. Please ensure the array has valid elements.")
+            );
+        }
+
+        // The matrix must be square
+        else if (!Matrix.isSquare(arr)) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Array is non-square type. " +
+                "Please ensure the array has the same number of rows and columns."
+            ));
+        }
+
+        for (int r = 0; r < arr.length; r++) {
+            for (int c = r + 1; c < arr[0].length; c++) {
+                if (Math.abs(arr[r][c]) > Matrix.THRESHOLD) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 
 
     /**
