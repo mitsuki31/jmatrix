@@ -2522,6 +2522,7 @@ public class Matrix implements MatrixUtils {
      * @since                              1.0.0b.7
      * @see                                #isDiagonal(Matrix)
      * @see                                #isDiagonal(double[][])
+     * @see                                #THRESHOLD
      */
     public boolean isDiagonal() {
         return Matrix.isDiagonal(this);
@@ -2543,6 +2544,7 @@ public class Matrix implements MatrixUtils {
      * @since                              1.0.0b.7
      * @see                                #isDiagonal()
      * @see                                #isDiagonal(double[][])
+     * @see                                #THRESHOLD
      */
     public static boolean isDiagonal(Matrix m) {
         if (!m.isSquare()) {
@@ -2579,6 +2581,7 @@ public class Matrix implements MatrixUtils {
      * @since                              1.0.0b.7
      * @see                                #isDiagonal()
      * @see                                #isDiagonal(Matrix)
+     * @see                                #THRESHOLD
      */
     public static boolean isDiagonal(double[ ][ ] arr) {
         if (!Matrix.isSquare(arr)) {
@@ -2591,6 +2594,73 @@ public class Matrix implements MatrixUtils {
         for (int row = 0; row < arr.length; row++) {
             for (int col = 0; col < arr[0].length; col++) {
                 if (row != col && Math.abs(arr[row][col]) > Matrix.THRESHOLD) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Checks if this matrix is lower triangular.
+     *
+     * <p>A square matrix is considered lower triangular if all the elements above
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * @return                             {@code true} if the matrix is lower triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the entries of this matrix is {@code null}.
+     * @throws IllegalMatrixSizeException  if this matrix is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isLowerTriangular(Matrix)
+     * @see                                #THRESHOLD
+     */
+    public boolean isLowerTriangular() {
+        return Matrix.isLowerTriangular(this);
+    }
+
+    /**
+     * Checks if the given square matrix is lower triangular.
+     *
+     * <p>A square matrix is considered lower triangular if all the elements above
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * @param  m                           the square matrix to be checked.
+     *
+     * @return                             {@code true} if the matrix is lower triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the given matrix or its entries is {@code null}.
+     * @throws IllegalMatrixSizeException  if the given matrix is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isLowerTriangular()
+     * @see                                #THRESHOLD
+     */
+    public static boolean isLowerTriangular(Matrix m) {
+        if (MatrixUtils.isNullEntries(m)) {
+            Options.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix have been initialized.")
+            );
+        }
+
+        // The matrix must be square
+        if (!m.isSquare()) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Matrix is non-square type. " +
+                "Please ensure the matrix has the same number of rows and columns."
+            ));
+        }
+
+        for (int r = 1; r < m.getSize()[0]; r++) {
+            for (int c = 0; c < r; c++) {
+                if (Math.abs(m.get(r, c)) > Matrix.THRESHOLD) {
                     return false;
                 }
             }
