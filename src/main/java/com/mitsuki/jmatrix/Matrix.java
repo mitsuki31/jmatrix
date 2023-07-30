@@ -2670,6 +2670,32 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    public static boolean isLowerTriangular(double[ ][ ] arr) {
+        if (arr == null || arr.length == 0) {
+            Options.raiseError(new NullMatrixException(
+                "Array is null. Please ensure the array has valid elements.")
+            );
+        }
+
+        // The two-dimensional array must be square
+        if (!Matrix.isSquare(arr)) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Array is non-square type. " +
+                "Please ensure the array has the same number of rows and columns."
+            ));
+        }
+
+        for (int r = 1; r < arr.length; r++) {
+            for (int c = 0; c < r; c++) {
+                if (Math.abs(arr[r][c]) > Matrix.THRESHOLD) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
 
     /**
      * Clears and changes all elements of this matrix to zero.
