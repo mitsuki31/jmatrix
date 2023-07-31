@@ -79,7 +79,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.15, 18 July 2023
+ * @version  2.16, 31 July 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -2719,10 +2719,73 @@ public class Matrix implements MatrixUtils {
     }
 
 
+
+    /**
+     * Checks if this matrix is upper triangular.
+     *
+     * <p>A square matrix is considered upper triangular if all the elements below
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an upper triangular matrix
+     * is a lower triangular matrix and vice versa.
+     *
+     * <p>Upper triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two upper triangular matrices is upper triangular.
+     *  <li>The product of two upper triangular matrices is upper triangular.
+     *  <li>The inverse of an upper triangular matrix, is upper triangular (if exists).
+     *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
+     * </ul>
+     *
+     * @return                             {@code true} if the matrix is upper triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the entries of this matrix is {@code null}.
+     * @throws IllegalMatrixSizeException  if this matrix is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isUpperTriangular(Matrix)
+     * @see                                #isUpperTriangular(double[][])
+     * @see                                #THRESHOLD
+     */
     public boolean isUpperTriangular() {
         return Matrix.isUpperTriangular(this);
     }
 
+    /**
+     * Checks if the given square matrix is upper triangular.
+     *
+     * <p>A square matrix is considered upper triangular if all the elements below
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an upper triangular matrix
+     * is a lower triangular matrix and vice versa.
+     *
+     * <p>Upper triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two upper triangular matrices is upper triangular.
+     *  <li>The product of two upper triangular matrices is upper triangular.
+     *  <li>The inverse of an upper triangular matrix, is upper triangular (if exists).
+     *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
+     * </ul>
+     *
+     * @param  m                           the square matrix to be checked.
+     *
+     * @return                             {@code true} if the matrix is upper triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the given matrix or its entries is {@code null}.
+     * @throws IllegalMatrixSizeException  if the given matrix is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isUpperTriangular()
+     * @see                                #isUpperTriangular(double[][])
+     * @see                                #THRESHOLD
+     */
     public static boolean isUpperTriangular(Matrix m) {
         if (MatrixUtils.isNullEntries(m)) {
             Options.raiseError(new NullMatrixException(
@@ -2749,6 +2812,38 @@ public class Matrix implements MatrixUtils {
         return true;
     }
 
+    /**
+     * Checks if the given square two-dimensional array is upper triangular.
+     *
+     * <p>A square matrix is considered upper triangular if all the elements below
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an upper triangular matrix
+     * is a lower triangular matrix and vice versa.
+     *
+     * <p>Upper triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two upper triangular matrices is upper triangular.
+     *  <li>The product of two upper triangular matrices is upper triangular.
+     *  <li>The inverse of an upper triangular matrix, is upper triangular (if exists).
+     *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
+     * </ul>
+     *
+     * @param  m                           the square array to be checked.
+     *
+     * @return                             {@code true} if the matrix is upper triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the given array is {@code null} or empty.
+     * @throws IllegalMatrixSizeException  if the given array is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isUpperTriangular()
+     * @see                                #isUpperTriangular(Matrix)
+     * @see                                #THRESHOLD
+     */
     public static boolean isUpperTriangular(double[ ][ ] arr) {
         if (arr == null || arr.length == 0) {
             Options.raiseError(new NullMatrixException(
