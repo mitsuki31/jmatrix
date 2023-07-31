@@ -2610,6 +2610,28 @@ public class Matrix implements MatrixUtils {
      * the main diagonal (elements with row index greater than column index) are zero
      * or within the threshold defined by the constant {@code THRESHOLD}.
      *
+     * <p>The {@linkplain #transpose() transpose} of an lower triangular matrix
+     * is a upper triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #diagonal()} to check whether the matrix is diagonal.
+     *
+     * <p>Lower triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two lower triangular matrices is lower triangular.
+     *  <li>The product of two lower triangular matrices is lower triangular.
+     *  <li>The inverse of an lower triangular matrix, is lower triangular (if exists).
+     *  <li>The product of an lower triangular matrix and a scalar is lower triangular.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [3, 5, -2],
+     *       [0, 4, 12],
+     *       [0, 0, -5]   ]
+     * </pre>
+     *
      * @return                             {@code true} if the matrix is lower triangular,
      *                                     {@code false} otherwise.
      *
@@ -2631,6 +2653,28 @@ public class Matrix implements MatrixUtils {
      * <p>A square matrix is considered lower triangular if all the elements above
      * the main diagonal (elements with row index greater than column index) are zero
      * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an lower triangular matrix
+     * is a upper triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #diagonal()} to check whether the matrix is diagonal.
+     *
+     * <p>Lower triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two lower triangular matrices is lower triangular.
+     *  <li>The product of two lower triangular matrices is lower triangular.
+     *  <li>The inverse of an lower triangular matrix, is lower triangular (if exists).
+     *  <li>The product of an lower triangular matrix and a scalar is lower triangular.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [3, 5, -2],
+     *       [0, 4, 12],
+     *       [0, 0, -5]   ]
+     * </pre>
      *
      * @param  m                           the square matrix to be checked.
      *
@@ -2679,7 +2723,29 @@ public class Matrix implements MatrixUtils {
      * the main diagonal (elements with row index greater than column index) are zero
      * or within the threshold defined by the constant {@code THRESHOLD}.
      *
-     * @param  m                           the square array to be checked.
+     * <p>The {@linkplain #transpose() transpose} of an lower triangular matrix
+     * is a upper triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #diagonal()} to check whether the matrix is diagonal.
+     *
+     * <p>Lower triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two lower triangular matrices is lower triangular.
+     *  <li>The product of two lower triangular matrices is lower triangular.
+     *  <li>The inverse of an lower triangular matrix, is lower triangular (if exists).
+     *  <li>The product of an lower triangular matrix and a scalar is lower triangular.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [3, 5, -2],
+     *       [0, 4, 12],
+     *       [0, 0, -5]   ]
+     * </pre>
+     *
+     * @param  arr                          the square array to be checked.
      *
      * @return                             {@code true} if the matrix is lower triangular,
      *                                     {@code false} otherwise.
@@ -2739,6 +2805,14 @@ public class Matrix implements MatrixUtils {
      *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
      * </ul>
      *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [-2, 0, 0],
+     *       [15, 5, 0],
+     *       [2, -8, 7]   ]
+     * </pre>
+     *
      * @return                             {@code true} if the matrix is upper triangular,
      *                                     {@code false} otherwise.
      *
@@ -2772,6 +2846,14 @@ public class Matrix implements MatrixUtils {
      *  <li>The inverse of an upper triangular matrix, is upper triangular (if exists).
      *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
      * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [-2, 0, 0],
+     *       [15, 5, 0],
+     *       [2, -8, 7]   ]
+     * </pre>
      *
      * @param  m                           the square matrix to be checked.
      *
@@ -2831,7 +2913,15 @@ public class Matrix implements MatrixUtils {
      *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
      * </ul>
      *
-     * @param  m                           the square array to be checked.
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [-2, 0, 0],
+     *       [15, 5, 0],
+     *       [2, -8, 7]   ]
+     * </pre>
+     *
+     * @param  arr                         the square array to be checked.
      *
      * @return                             {@code true} if the matrix is upper triangular,
      *                                     {@code false} otherwise.
