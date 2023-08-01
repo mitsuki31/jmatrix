@@ -33,8 +33,7 @@
 **Developed by one person ([Ryuu Mitsuki][mitsuki31])** :fire:  
 
 **JMatrix** is an educational [Java][java-wiki] library and designed to facilitate and simplify [matrix operations][matrix-ops].  
-It offers a range of intuitive methods to perform common matrix operations with ease,
-making it an ideal learning tool for high school students exploring [linear algebra][linear-algebra-wiki] concepts.
+It offers a range of intuitive methods to perform common matrix operations with ease, making it an ideal learning tool for high school students exploring [linear algebra][linear-algebra-wiki] concepts.
 > **Note** This project is currently in development and is intended for educational purposes only.  
 > It is not recommended for use in large-scale projects or production environments.
 
@@ -46,7 +45,7 @@ making it an ideal learning tool for high school students exploring [linear alge
 - [Transposition][transpose-matrix]
 - *(additional matrix operations will be added in the future)*
 
-In addition to the fundamental matrix operations, **JMatrix** also includes matrix type checkers, allowing students to identify certain characteristics of matrices:
+In addition to the fundamental matrix operations, **JMatrix** also includes matrix type checkers, allowing students or users to identify certain characteristics of matrices:
 
 - `isDiagonal`        - Check whether the matrix is diagonal.
 - `isSquare`          - Check whether the matrix is square.
