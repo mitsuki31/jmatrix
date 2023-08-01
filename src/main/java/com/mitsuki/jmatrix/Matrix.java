@@ -79,7 +79,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.16, 31 July 2023
+ * @version  2.2, 1 August 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -2613,7 +2613,7 @@ public class Matrix implements MatrixUtils {
      * <p>The {@linkplain #transpose() transpose} of an lower triangular matrix
      * is a upper triangular matrix and vice versa. A diagonal matrix is one
      * that consists of upper and lower a triangular elements. You can refer
-     * to {@link #diagonal()} to check whether the matrix is diagonal.
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
      *
      * <p>Lower triangularity is preserved by many operations:
      *
@@ -2657,7 +2657,7 @@ public class Matrix implements MatrixUtils {
      * <p>The {@linkplain #transpose() transpose} of an lower triangular matrix
      * is a upper triangular matrix and vice versa. A diagonal matrix is one
      * that consists of upper and lower a triangular elements. You can refer
-     * to {@link #diagonal()} to check whether the matrix is diagonal.
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
      *
      * <p>Lower triangularity is preserved by many operations:
      *
@@ -2726,7 +2726,7 @@ public class Matrix implements MatrixUtils {
      * <p>The {@linkplain #transpose() transpose} of an lower triangular matrix
      * is a upper triangular matrix and vice versa. A diagonal matrix is one
      * that consists of upper and lower a triangular elements. You can refer
-     * to {@link #diagonal()} to check whether the matrix is diagonal.
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
      *
      * <p>Lower triangularity is preserved by many operations:
      *
@@ -2794,7 +2794,9 @@ public class Matrix implements MatrixUtils {
      * or within the threshold defined by the constant {@code THRESHOLD}.
      *
      * <p>The {@linkplain #transpose() transpose} of an upper triangular matrix
-     * is a lower triangular matrix and vice versa.
+     * is a lower triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
      *
      * <p>Upper triangularity is preserved by many operations:
      *
@@ -2836,7 +2838,9 @@ public class Matrix implements MatrixUtils {
      * or within the threshold defined by the constant {@code THRESHOLD}.
      *
      * <p>The {@linkplain #transpose() transpose} of an upper triangular matrix
-     * is a lower triangular matrix and vice versa.
+     * is a lower triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
      *
      * <p>Upper triangularity is preserved by many operations:
      *
@@ -2902,7 +2906,9 @@ public class Matrix implements MatrixUtils {
      * or within the threshold defined by the constant {@code THRESHOLD}.
      *
      * <p>The {@linkplain #transpose() transpose} of an upper triangular matrix
-     * is a lower triangular matrix and vice versa.
+     * is a lower triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
      *
      * <p>Upper triangularity is preserved by many operations:
      *
