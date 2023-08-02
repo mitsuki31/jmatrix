@@ -33,7 +33,8 @@
 **Developed by one person ([Ryuu Mitsuki][mitsuki31])** :fire:  
 
 **JMatrix** is an educational [Java][java-wiki] library and designed to facilitate and simplify [matrix operations][matrix-ops].  
-It offers a range of intuitive methods to perform common matrix operations with ease, making it an ideal learning tool for high school students exploring [linear algebra][linear-algebra-wiki] concepts.  
+It offers a range of intuitive methods to perform common matrix operations with ease, making it an ideal learning tool for high school students exploring [linear algebra][linear-algebra-wiki] concepts.
+
 > **Note** This project is currently in development and is intended for educational purposes only.  
 > It is not recommended for use in large-scale projects or production environments.
 
@@ -116,7 +117,7 @@ Once you have the necessary prerequisites, you can start exploring and using **J
 
 ## <a name="constructor-summary"></a> Constructor Summary
 There are 5 constructors that can be used for constructing the matrix.  
-> :man::question: Still don't understand about matrix? Check the [:bookmark:About Matrix][what-is-matrix] section
+> :man::question: Still don't understand about matrix? Check the [:bookmark:Introduction to Matrix][what-is-matrix] page
 > to get little knowledge about matrix before dive into matrix constructor.
 
 ### <a name="cr_matrix-1"></a> Matrix()
@@ -255,7 +256,8 @@ That should output like this:
 
 ## <a name="matrix-ops"></a> Matrix Operations
 
-There are some basic matrix operations you can do with **JMatrix**, here's the list:
+There are some basic matrix operations you can do with **JMatrix**:
+
 - [Addition](#matrix-add)
 - [Subtraction](#matrix-sub)
 - [Scalar Multiplication](#scalar-mult)
@@ -421,7 +423,7 @@ Matrix.transpose(m).display();
 
 <!-- JMATRIX WIKI LINKS -->
 [get-started]: https://github.com/mitsuki31/jmatrix/wiki/Getting-Started
-[what-is-matrix]: https://github.com/mitsuki31/jmatrix/wiki/Introduction-to-Matrix#what-matrix
+[what-is-matrix]: https://github.com/mitsuki31/jmatrix/wiki/Introduction-to-Matrix
 [matrix-row]: https://github.com/mitsuki31/jmatrix/wiki/Introduction-to-Matrix#matrix-row
 [matrix-col]: https://github.com/mitsuki31/jmatrix/wiki/Introduction-to-Matrix#matrix-column
 
