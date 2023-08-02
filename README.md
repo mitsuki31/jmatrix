@@ -72,13 +72,13 @@ If you are looking for the latest stable version of the project, please check th
 For improved stability and better usability, we highly recommend downloading the archived package that also includes the source files.
 This package contains all the necessary documentation about classes, methods, and other aspects related to **JMatrix**, making it easier to explore and understand the project.
 
-**Prerequisites (For Normal Use):**
+**Prerequisites (For Normal Use):**  
 To use **JMatrix** in your project, you will need the following prerequisites:
 
 - [**Java**][java] *(minimum version 11, recommended is 17)*
 - [**Git Bash**][git-bash] *(optional, but recommended)*
 
-**Prerequisites (For Build the Project):**
+**Prerequisites (For Build the Project):**  
 If you plan to build the **JMatrix** project, please ensure you have the following prerequisites:
 
 - [**Java**][java] *(minimum version 11, recommended is 17)*.
@@ -408,11 +408,23 @@ Matrix.transpose(m).display();
 
 
 ## <a name="author"></a> Author
-[Ryuu Mitsuki][mitsuki31]
+
+**JMatrix** is developed and maintained by [Ryuu Mitsuki][mitsuki31].
+
+As the sole developer of the project, [Ryuu Mitsuki][mitsuki31] responsible for the continuous improvement and updates of the library. He is committed to providing a valuable and user-friendly educational resource for high school students and anyone interested in exploring [linear algebra][linear-algebra-wiki] concepts through the **JMatrix** library and by using [Java](https://www.oracle.com/java).
+
 
 ## <a name="license"></a> License
-**JMatrix** is under licensed [Apache License 2.0][apache-2.0], for more details you can check it on [LICENSE][license] file.
 
+**JMatrix** is licensed under the [Apache License 2.0][apache-2.0]. This license permits you to use, modify, distribute, and sublicense the software, subject to certain conditions.
+
+You are free to use **JMatrix** for both commercial and non-commercial purposes. If you modify the software, you must clearly indicate the changes you made. Any contributions you make to the project are also subject to the same license terms.
+
+The [Apache License 2.0][apache-2.0] allows you to distribute derivative works, but you must include the full text of the license in your distribution. Additionally, you are responsible for ensuring that any downstream recipients of the software are aware of its licensing terms.
+
+For more details about the permissions, limitations, and conditions under which **JMatrix** is licensed, please refer to the [LICENSE][license] file provided with the project. The [LICENSE][license] file contains the complete text of "The License", ensuring full transparency and clarity regarding the terms of use for the software.
+
+By using **JMatrix**, you agree to comply with the terms of the [Apache License 2.0][apache-2.0] and understand your rights and responsibilities as a user of this open-source software.
 
 
 [mitsuki31]: https://github.com/mitsuki31
