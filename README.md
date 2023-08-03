@@ -64,47 +64,26 @@ In addition to the fundamental matrix operations, **JMatrix** also includes matr
 >
 > Refer to [:books: JMatrix Wikis][what-is-matrix], if want to know about matrix with simplified informations.
 </details>
+<br>
 
----
 
-If you are looking for the latest stable version of the project, please check the [latest version][latest-ver]. You can download the archived package containing compiled classes from there.
-
-For improved stability and better usability, we highly recommend downloading the archived package that also includes the source files.
-This package contains all the necessary documentation about classes, methods, and other aspects related to **JMatrix**, making it easier to explore and understand the project.
-
-**Prerequisites (For Normal Use):**  
-To use **JMatrix** in your project, you will need the following prerequisites:
-
-- [**Java**][java] *(minimum version 11, recommended is 17)*
-- [**Git Bash**][git-bash] *(optional, but recommended)*
-
-**Prerequisites (For Build the Project):**  
-If you plan to build the **JMatrix** project, please ensure you have the following prerequisites:
-
-- [**Java**][java] *(minimum version 11, recommended is 17)*.
-- [**Python**][python] *(minimum version 3.7, recommended is 3.11)*.
-- Latest version of [**Make/MinGW**][mingw] or [**Maven**][maven].
-- [**Git Bash**][git-bash] *(highly recommended for Windows users)*.  
-> **Note** If you choose to build the project using [Maven][maven], you don't need to install [Python][python].  
->
-> For a smoother building experience using [Make][mingw], we highly recommend using [Git Bash][git-bash] as the shell environment.
-> The `Makefile` utilizes [Bash][bash-wiki], making it more compatible with [Git Bash][git-bash].  
-> For more information about build the project, you can refer to [:bookmark:Getting Started][get-started] page.
-
-Once you have the necessary prerequisites, you can start exploring and using **JMatrix** in your projects. The documentation included in the archived package will guide you through the classes, methods, and functionalities offered by the library.
-
----
+<!-- TABLE OF CONTENTS::START -->
 
 <details>
-<summary><b><a name="table-of-contents"></a>Table of Contents</b>
+<summary>
+  <h4><a name="table-of-contents" />Table of Contents</h4>
 </summary>
 
+- [🔌 Installation](#installation)
+    * [🎯 Prerequisites](#prerequisites)
+      + [For Normal Use](#normal-use)
+      + [For Building the Project](#build-use)
 - [Constructor Summary](#constructor-summary)
-    * [Matrix\()](#cr_matrix-1)
-    * [Matrix\(int, int)](#cr_matrix-2)
-    * [Matrix\(int, int, int)](#cr_matrix-3)
-    * [Matrix\(double[][])](#cr_matrix-4)
-    * [Matrix.identity\(int)](#cr_matrix-5)
+    * [Matrix()](#cr_matrix-1)
+    * [Matrix(int, int)](#cr_matrix-2)
+    * [Matrix(int, int, int)](#cr_matrix-3)
+    * [Matrix(double[][])](#cr_matrix-4)
+    * [Matrix.identity(int)](#cr_matrix-5)
 - [Matrix Operations](#matrix-ops)
     * [Addition](#matrix-add)
     * [Subtraction](#matrix-sub)
@@ -114,6 +93,44 @@ Once you have the necessary prerequisites, you can start exploring and using **J
 - [Author](#author)
 - [License](#license)
 </details>
+
+<!-- TABLE OF CONTENTS::END -->
+
+---
+
+## <a name="installation" /> 🔌 Installation
+
+If you are interested in obtaining the latest stable version of the project, please check the [latest version][latest-ver]. You can download the archived package containing compiled classes from there.
+
+For improved stability and better usability, we highly recommend downloading the archived package that also includes the source files (e.g `jmatrix-<VERSION>_with_sources.jar`).
+This package contains all the necessary documentation about classes, methods, and other aspects related to **JMatrix**, making it easier to explore and understand the project.
+
+### <a name="prerequisites" /> 🎯 Prerequisites
+
+#### <a name="normal-use" /> For Normal Use
+
+To use **JMatrix** in your project, you will need the following prerequisites:
+
+- [**Java**][java] *(minimum version 11, recommended is 17 and later)*
+- [**Git Bash**][git-bash] *(optional, but recommended)*
+
+#### <a name="build-use" /> For Building the Project
+
+If you plan to build the **JMatrix** project, please ensure you have the following prerequisites:
+
+- [**Java**][java] *(minimum version 11, recommended is 17 and later)*.
+- [**Python**][python] *(minimum version 3.7, recommended is 3.11 and later)*.
+- Latest version of [**Make/MinGW**][mingw] or [**Maven**][maven].
+- [**Git Bash**][git-bash] *(highly recommended for Windows users)*.  
+> **Note** If you choose to build the project using [Maven][maven], you don't need to install [Python][python].  
+> However, if you are Windows user and prefer using [Make][mingw] for building, we highly recommend using [Git Bash][git-bash] as the shell environment. The `Makefile` utilizes [Bash][bash-wiki], making it more compatible with [Git Bash][git-bash].
+
+For more detailed instructions on building the project, you can refer to the [:bookmark:Getting Started][get-started] page.
+
+Once you have the necessary prerequisites, you can start exploring and using **JMatrix** in your projects. The documentation included in the archived package will guide you through the classes, methods, and functionalities offered by the library.
+
+---
+
 
 ## <a name="constructor-summary"></a> Constructor Summary
 There are 5 constructors that can be used for constructing the matrix.  
@@ -239,18 +256,18 @@ For example:
 ```java
 // Create new identity matrix with size 5x5
 Matrix mI = Matrix.identity(5);
-
-mI.display();
 ```
 
-That should output like this:
+The matrix will looks like this:
 
-```
-[   [1.0, 0.0, 0.0, 0.0, 0.0],
-    [0.0, 1.0, 0.0, 0.0, 0.0],
-    [0.0, 0.0, 1.0, 0.0, 0.0],
-    [0.0, 0.0, 0.0, 1.0, 0.0],
-    [0.0, 0.0, 0.0, 0.0, 1.0]   ]
+```math
+\begin{bmatrix}
+  1.0 & 0.0 & 0.0 & 0.0 & 0.0 \\
+  0.0 & 1.0 & 0.0 & 0.0 & 0.0 \\
+  0.0 & 0.0 & 1.0 & 0.0 & 0.0 \\
+  0.0 & 0.0 & 0.0 & 1.0 & 0.0 \\
+  0.0 & 0.0 & 0.0 & 0.0 & 1.0
+\end{bmatrix}
 ```
 
 
@@ -285,14 +302,18 @@ Matrix n = new Matrix(new double[][] {
     { 7, 1, -1, 5 }
 });
 
-// Operate addition and display immediately
-Matrix.sum(m, n).display();
+// Operate addition for both matrices and
+// create a new matrix as the resultant matrix
+Matrix k = Matrix.sum(m, n);
 ```
 
-**Output:**
-```
-[   [7.0, 16.0, 3.0, -3.0],
-    [9.0, 7.0, 0.0, 13.0]   ]
+**Result:**
+```math
+\mathbf{k} =
+\begin{bmatrix}
+  7.0 & 16.0 & 3.0 & -3.0 \\
+  9.0 & 7.0 & 0.0 & 13.0
+\end{bmatrix}
 ```
 
 ### <a name="matrix-sub"></a> Subtraction
@@ -316,15 +337,19 @@ Matrix n = new Matrix(new double[][] {
     { 6, -7, 2, 3, 5 }
 });
 
-// Operate subtraction and display immediately
-Matrix.sub(m, n).display();
+// Operate subtraction for both matrices and
+// create a new matrix as the resultant matrix
+Matrix k = Matrix.sub(m, n);
 ```
 
-**Output:**
-```
-[   [-3.0, -11.0, 0.0, 1.0, -6.0],
-    [12.0, 6.0, -10.0, 6.0, -1.0],
-    [0.0, 14.0, 7.0, -2.0, -10.0]   ]
+**Result:**
+```math
+\mathbf{k} =
+\begin{bmatrix}
+  -3.0 & -11.0 & 0.0 & 1.0 & -6.0 \\
+  12.0 & 6.0 & -10.0 & 6.0 & -1.0 \\
+  0.0 & 14.0 & 7.0 & -2.0 & -10.0
+\end{bmatrix}
 ```
 
 ### <a name="scalar-mult"></a> Scalar Multiplication
@@ -333,21 +358,24 @@ Matrix.sub(m, n).display();
 
 **Example code:**
 ```java
-// Create new matrix
+// Construct new matrix
 Matrix m = new Matrix(new double[][] {
     { 9, 6, 4 },
     { 2, 1, 5 }
 });
 
-// Operate scalar multiplication and
-// display immediately
-Matrix.mult(m, 5).display();
+// Operate scalar multiplication with the scalar equal to 5
+// and create a new matrix as the resultant matrix
+Matrix s = Matrix.mult(m, 5);
 ```
 
-**Output:**
-```
-[   [45.0, 30.0, 20.0],
-    [10.0, 5.0, 25.0]   ]
+**Result:**
+```math
+\mathbf{s} =
+\begin{bmatrix}
+  45.0 & 30.0 & 20.0 \\
+  10.0 & 5.0 & 25.0
+\end{bmatrix}
 ```
 
 ### <a name="matrix-mult"></a> Matrix Multiplication
@@ -371,15 +399,18 @@ Matrix n = new Matrix(new double[][] {
     { 4, 4 }
 });
 
-// Operate matrix multiplication and
-// display immediately
-Matrix.mult(m, n).display();
+// Operate matrix multiplication for both matrices
+// and create a new matrix as the resultant matrix
+Matrix mn = Matrix.mult(m, n);
 ```
 
-**Output:**
-```
-[   [32.0, 32.0],
-    [32.0, 32.0]   ]
+**Result:**
+```math
+\mathbf{mn} =
+\begin{bmatrix}
+  32.0 & 32.0 \\
+  32.0 & 32.0
+\end{bmatrix}
 ```
 
 ### <a name="matrix-transpose"></a> Transposition
@@ -395,15 +426,18 @@ Matrix m = new Matrix (new double[][] {
 });
 
 // Transpose the matrix and display immediately
-Matrix.transpose(m).display();
+Matrix mT = Matrix.transpose(m);
 ```
 
-**Output:**
-```
-[   [1.0, 5.0],
-    [2.0, 6.0],
-    [3.0, 7.0],
-    [4.0, 8.0]   ]
+**Result:**
+```math
+\mathbf{mT} =
+\begin{bmatrix}
+  1.0 & 5.0 \\
+  2.0 & 6.0 \\
+  3.0 & 7.0 \\
+  4.0 & 8.0
+\end{bmatrix}
 ```
 
 
