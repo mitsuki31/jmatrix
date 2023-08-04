@@ -39,16 +39,17 @@
   <h4><a name="table-of-contents" />Table of Contents</h4>
 </summary>
 
+- [🪐 About JMatrix](#about-jmatrix)
 - [🔌 Installation](#installation)
     * [🎯 Prerequisites](#prerequisites)
       + [For Normal Use](#normal-use)
       + [For Building the Project](#build-use)
 - [Constructor Summary](#constructor-summary)
-    * [Matrix()](#cr_matrix-1)
-    * [Matrix(int, int)](#cr_matrix-2)
-    * [Matrix(int, int, int)](#cr_matrix-3)
-    * [Matrix(double[][])](#cr_matrix-4)
-    * [Matrix.identity(int)](#cr_matrix-5)
+    * [`Matrix()`](#cr_matrix-1)
+    * [`Matrix(int, int)`](#cr_matrix-2)
+    * [`Matrix(int, int, int)`](#cr_matrix-3)
+    * [`Matrix(double[][])`](#cr_matrix-4)
+    * [`Matrix.identity(int)`](#cr_matrix-5)
 - [Matrix Operations](#matrix-ops)
     * [Addition](#matrix-add)
     * [Subtraction](#matrix-sub)
@@ -60,6 +61,8 @@
 </details>
 
 <!-- TABLE OF CONTENTS::END -->
+
+## <a name="about-jmatrix" /> 🪐 About JMatrix
 
 **JMatrix** is an educational [Java][java-wiki] library and designed to facilitate and simplify [matrix operations][matrix-ops].  
 It offers a range of intuitive methods to perform common matrix operations with ease, making it an ideal learning tool for high school students exploring [linear algebra][linear-algebra-wiki] concepts.  
@@ -101,7 +104,7 @@ In addition to the fundamental matrix operations, **JMatrix** also includes matr
 
 If you are interested in obtaining the latest stable version of the project, please check the [latest version][latest-ver]. You can download the archived package containing compiled classes from there.
 
-For improved stability and better usability, we highly recommend downloading the archived package that also includes the source files (e.g `jmatrix-<VERSION>_with_sources.jar`).
+For improved stability and better usability, we highly recommend downloading the archived package that also includes the source files (`jmatrix-<VERSION>_with_sources.jar`).
 This package contains all the necessary documentation about classes, methods, and other aspects related to **JMatrix**, making it easier to explore and understand the project.
 
 ### <a name="prerequisites" /> 🎯 Prerequisites
@@ -122,8 +125,8 @@ If you plan to build the **JMatrix** project, please ensure you have the followi
 - Latest version of [**Make/MinGW**][mingw] or [**Maven**][maven].
 - [**Git Bash**][git-bash] *(highly recommended for Windows users)*.
 
-> **Note** If you choose to build the project using [Maven][maven], you don't need to install [Python][python].
-> 
+> **Important**  
+> If you choose to build the project using [Maven][maven], you don't need to install [Python][python].  
 > However, if you are Windows user and prefer using [Make][mingw] for building, we highly recommend using [Git Bash][git-bash] as the shell environment. The `Makefile` utilizes [Bash][bash-wiki], making it more compatible with [Git Bash][git-bash].
 
 For more detailed instructions on building the project, you can refer to the [:bookmark:Getting Started][get-started] page.
@@ -133,12 +136,12 @@ Once you have the necessary prerequisites, you can start exploring and using **J
 ---
 
 
-## <a name="constructor-summary"></a> Constructor Summary
+## <a name="constructor-summary" /> Constructor Summary
 There are 5 constructors that can be used for constructing the matrix.  
 > :man::question: Still don't understand about matrix? Check the [:bookmark:Introduction to Matrix][what-is-matrix] page
 > to get little knowledge about matrix before dive into matrix constructor.
 
-### <a name="cr_matrix-1"></a> Matrix()
+### <a name="cr_matrix-1" /> `Matrix()`
 This constructor doesn't need any arguments, but it would constructs the **Matrix**
 with `null` entries or can be called **null matrix**. In this case, the matrix itself can't do any operations until
 get initialized and have valid elements. For example:
@@ -148,7 +151,8 @@ get initialized and have valid elements. For example:
 Matrix m = new Matrix();
 ```
 
-> **Note** Don't be confused with **null matrix** and **zero matrix**.  
+> **Note**  
+> Don't be confused with **null matrix** and **zero matrix**.  
 > **Null matrix** is a matrix that has `null` entries, whereas the **zero matrix** is a matrix with all elements are zero.
 >
 > <details><summary><b>Examples</b></summary>
@@ -179,7 +183,7 @@ Matrix m = new Matrix();
 </details> 
 
 
-### <a name="cr_matrix-2"></a> Matrix(int, int)
+### <a name="cr_matrix-2"></a> `Matrix(int, int)`
 How to create **zero matrix**? Don't worry, with this constructor you can construct **zero matrix** with ease.
 With just two arguments, each for size of [row][matrix-row] and [column][matrix-col].  
 The matrix can be called **zero matrix** if all elements inside the matrix is zero.
@@ -190,7 +194,7 @@ For example:
 Matrix m = new Matrix(3, 4);
 ```
 
-The code above would constructs a new **zero matrix** with size $3 \times 4$. The matrix should looks like this:
+The code above will construct a new **zero matrix** with size $3 \times 4$. The matrix will looks like this:
 
 ```math
 \begin{bmatrix}
@@ -200,7 +204,7 @@ The code above would constructs a new **zero matrix** with size $3 \times 4$. Th
 \end{bmatrix}
 ```
 
-### <a name="cr_matrix-3"></a> Matrix(int, int, int)
+### <a name="cr_matrix-3" /> `Matrix(int, int, int)`
 This constructor is similar with [`Matrix(int, int)`](#cr_matrix-2) but with an additional
 argument which is the value to filled out the entire elements of constructed matrix. For example:
 
@@ -209,7 +213,7 @@ argument which is the value to filled out the entire elements of constructed mat
 Matrix m = new Matrix(4, 4, 5);
 ```
 
-The matrix constructed above should output the same like this:
+The constructed matrix above will looks like this:
 
 ```math
 \begin{bmatrix}
@@ -220,7 +224,7 @@ The matrix constructed above should output the same like this:
 \end{bmatrix}
 ```
 
-### <a name="cr_matrix-4"></a> Matrix(double\[]\[])
+### <a name="cr_matrix-4" /> `Matrix(double[][])`
 This constructor is very **RECOMMENDED** for constructing a new [matrix][what-is-matrix].  
 It because you can declare the entries first, and then you can convert it to **Matrix** object whenever you want.
 For example:
@@ -246,11 +250,12 @@ Matrix m = new Matrix(new double[][] {
 });
 ```
 
-### <a name="cr_matrix-5"></a> Matrix.identity\(int)
+### <a name="cr_matrix-5" /> `Matrix.identity(int)`
 This constructor would creates new **identity matrix** with size $n \times n$ (the $n$ is from input).  
 **Identity matrix** itself is a square matrix with ones on the main diagonal and zeros elsewhere. And the **identity matrix** is often denoted by $I$.  
-> **Note** In code you should avoid using neither $I$ or $i$ for the **Matrix**'s variable name, it because $i$ is often used by `for-loop` statement.  
-> Instead you can use $mI$ or similar with it.  
+> **Note**  
+> In code you should avoid using neither $I$ nor $i$ for the **Matrix**'s variable name, it because $i$ is often used by `for-loop` statement.  
+> Instead you can use $mI$ or similar with that.  
 
 For example:
 
@@ -272,9 +277,9 @@ The matrix will looks like this:
 ```
 
 
-## <a name="matrix-ops"></a> Matrix Operations
+## <a name="matrix-ops" /> Matrix Operations
 
-There are some basic matrix operations you can do with **JMatrix**:
+There are some basic matrix operations provided by **JMatrix**:
 
 - [Addition](#matrix-add)
 - [Subtraction](#matrix-sub)
@@ -284,11 +289,12 @@ There are some basic matrix operations you can do with **JMatrix**:
 
 Please refer to [:books: JMatrix Wikis][matrix-ops], for more detailed about matrix operations.
 
-### <a name="matrix-add"></a> Addition
+### <a name="matrix-add" /> Addition
 
 :book: **Wiki:** [Matrix Addition][matrix-add]
 
-> **Note** Ensure the two matrices are same dimensions before operating **addition**.
+> **Note**  
+> Ensure the two matrices are same dimensions before operating **addition**.
 
 **Example code:**
 ```java
@@ -317,11 +323,12 @@ Matrix k = Matrix.sum(m, n);
 \end{bmatrix}
 ```
 
-### <a name="matrix-sub"></a> Subtraction
+### <a name="matrix-sub" /> Subtraction
 
 :book: **Wiki:** [Matrix Subtraction][matrix-sub]
 
-> **Note** Ensure the two matrices are same dimensions before operating subtraction.
+> **Note**  
+> Ensure the two matrices are same dimensions before operating subtraction.
 
 **Example code:**
 ```java
@@ -353,7 +360,7 @@ Matrix k = Matrix.sub(m, n);
 \end{bmatrix}
 ```
 
-### <a name="scalar-mult"></a> Scalar Multiplication
+### <a name="scalar-mult" /> Scalar Multiplication
 
 :book: **Wiki:** [Scalar Multiplication][scalar-mult]
 
@@ -379,11 +386,12 @@ Matrix s = Matrix.mult(m, 5);
 \end{bmatrix}
 ```
 
-### <a name="matrix-mult"></a> Matrix Multiplication
+### <a name="matrix-mult" /> Matrix Multiplication
 
 :book: **Wiki:** [Matrix Multiplication][matrix-mult]
 
-> **Note** Ensure the number of [columns][matrix-col] in the first matrix and the number of [rows][matrix-row] in the second matrix are equal before operating matrix multiplication.
+> **Note**  
+> Ensure the number of [columns][matrix-col] in the first matrix and the number of [rows][matrix-row] in the second matrix are equal before operating matrix multiplication.
 
 **Example code:**
 ```java
@@ -414,7 +422,7 @@ Matrix mn = Matrix.mult(m, n);
 \end{bmatrix}
 ```
 
-### <a name="matrix-transpose"></a> Transposition
+### <a name="matrix-transpose" /> Transposition
 
 :book: **Wiki:** [Matrix Transposition][matrix-tranpose]
 
@@ -442,14 +450,14 @@ Matrix mT = Matrix.transpose(m);
 ```
 
 
-## <a name="author"></a> Author
+## <a name="author" /> Author
 
 **JMatrix** is developed and maintained by [Ryuu Mitsuki][mitsuki31].
 
 As the sole developer of the project, [Ryuu Mitsuki][mitsuki31] responsible for the continuous improvement and updates of the library. He is committed to providing a valuable and user-friendly educational resource for high school students and anyone interested in exploring [linear algebra][linear-algebra-wiki] concepts through the **JMatrix** library and by using [Java](https://www.oracle.com/java).
 
 
-## <a name="license"></a> License
+## <a name="license" /> License
 
 **JMatrix** is licensed under the [Apache License 2.0][apache-2.0]. This license permits you to use, modify, distribute, and sublicense the software, subject to certain conditions.
 
