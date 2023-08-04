@@ -32,41 +32,6 @@
 
 **Developed by one person ([Ryuu Mitsuki][mitsuki31])** :fire:  
 
-**JMatrix** is an educational [Java][java-wiki] library and designed to facilitate and simplify [matrix operations][matrix-ops].  
-It offers a range of intuitive methods to perform common matrix operations with ease, making it an ideal learning tool for high school students exploring [linear algebra][linear-algebra-wiki] concepts.
-
-> **Note** This project is currently in development and is intended for educational purposes only.  
-> It is not recommended for use in large-scale projects or production environments.
-
-**JMatrix** provides following basic matrix operations:
-
-- [Addition][matrix-add]
-- [Subtraction][matrix-sub]
-- [Multiplication][matrix-mult]
-- [Transposition][matrix-transpose]
-- *(additional matrix operations will be added in the future)*
-
-In addition to the fundamental matrix operations, **JMatrix** also includes matrix type checkers, allowing students or users to identify certain characteristics of matrices:
-
-- `isDiagonal`        - Check whether the matrix is diagonal.
-- `isSquare`          - Check whether the matrix is square.
-- `isLowerTriangular` - Check whether the matrix is lower triangular.
-- `isUpperTriangular` - Check whether the matrix is upper triangular.
-- *(more matrix type checkers will be added in the future)*.
-
-
-<details>
-<summary><b>What is Matrix?</b></summary>
-
-> Matrices are rectangular arrays of numbers or symbols, arranged in [rows][matrix-row] and [columns][matrix-col].  
-> They are widely used in various fields, including mathematics, physics, computer science, and engineering.  
-> Matrices provide a concise and organized way to represent and manipulate data.  
->
-> Refer to [:books: JMatrix Wikis][what-is-matrix], if want to know about matrix with simplified informations.
-</details>
-<br>
-
-
 <!-- TABLE OF CONTENTS::START -->
 
 <details>
@@ -96,6 +61,40 @@ In addition to the fundamental matrix operations, **JMatrix** also includes matr
 
 <!-- TABLE OF CONTENTS::END -->
 
+**JMatrix** is an educational [Java][java-wiki] library and designed to facilitate and simplify [matrix operations][matrix-ops].  
+It offers a range of intuitive methods to perform common matrix operations with ease, making it an ideal learning tool for high school students exploring [linear algebra][linear-algebra-wiki] concepts.  
+
+> **Important**  
+> This project is currently in development and is intended for educational purposes only.  
+> It is not recommended for use in large-scale projects or production environments.
+
+**JMatrix** provides following basic matrix operations:
+
+- [Addition][matrix-add]
+- [Subtraction][matrix-sub]
+- [Multiplication][matrix-mult]
+- [Transposition][matrix-transpose]
+- *(additional matrix operations will be added in the future)*
+
+In addition to the fundamental matrix operations, **JMatrix** also includes matrix type checkers, allowing students or users to identify certain characteristics of matrices:
+
+- `isDiagonal`        - Check whether the matrix is diagonal.
+- `isSquare`          - Check whether the matrix is square.
+- `isLowerTriangular` - Check whether the matrix is lower triangular.
+- `isUpperTriangular` - Check whether the matrix is upper triangular.
+- *(more matrix type checkers will be added in the future)*.
+
+
+<details>
+<summary><b>What is Matrix?</b></summary>
+
+> Matrices are rectangular arrays of numbers or symbols, arranged in [rows][matrix-row] and [columns][matrix-col].  
+> They are widely used in various fields, including mathematics, physics, computer science, and engineering.  
+> Matrices provide a concise and organized way to represent and manipulate data.  
+>
+> Refer to [:books: JMatrix Wikis][what-is-matrix], if want to know about matrix with simplified informations.
+</details>
+
 ---
 
 ## <a name="installation" /> 🔌 Installation
@@ -121,8 +120,10 @@ If you plan to build the **JMatrix** project, please ensure you have the followi
 - [**Java**][java] *(minimum version 11, recommended is 17 and later)*.
 - [**Python**][python] *(minimum version 3.7, recommended is 3.11 and later)*.
 - Latest version of [**Make/MinGW**][mingw] or [**Maven**][maven].
-- [**Git Bash**][git-bash] *(highly recommended for Windows users)*.  
-> **Note** If you choose to build the project using [Maven][maven], you don't need to install [Python][python].  
+- [**Git Bash**][git-bash] *(highly recommended for Windows users)*.
+
+> **Note** If you choose to build the project using [Maven][maven], you don't need to install [Python][python].
+> 
 > However, if you are Windows user and prefer using [Make][mingw] for building, we highly recommend using [Git Bash][git-bash] as the shell environment. The `Makefile` utilizes [Bash][bash-wiki], making it more compatible with [Git Bash][git-bash].
 
 For more detailed instructions on building the project, you can refer to the [:bookmark:Getting Started][get-started] page.
