@@ -137,28 +137,29 @@ Once you have the necessary prerequisites, you can start exploring and using **J
 
 
 ## <a name="constructor-summary" /> Constructor Summary
-There are 5 constructors that can be used for constructing the matrix.  
-> :man::question: Still don't understand about matrix? Check the [:bookmark:Introduction to Matrix][what-is-matrix] page
-> to get little knowledge about matrix before dive into matrix constructor.
+
+There are five constructors available for constructing matrices in the **JMatrix** library. Each constructor serves a specific purpose, providing users with flexibility and ease of use.  
+
+> **Note**  
+> If you are unfamiliar with matrices or need a refresher, you can check the [:bookmark:Introduction to Matrix][what-is-matrix] page to gain a basic understanding before delving into matrix constructors.
+
 
 ### <a name="cr_matrix-1" /> `Matrix()`
-This constructor doesn't need any arguments, but it would constructs the **Matrix**
-with `null` entries or can be called **null matrix**. In this case, the matrix itself can't do any operations until
-get initialized and have valid elements. For example:
+
+This constructor does not require any arguments and constructs a Matrix with null entries, resulting in a null matrix. A null matrix cannot perform any operations until it is initialized with valid elements. For example:
 
 ```java
-// Create null entries matrix
+// Create a null entries matrix
 Matrix m = new Matrix();
 ```
 
 > **Note**  
-> Don't be confused with **null matrix** and **zero matrix**.  
-> **Null matrix** is a matrix that has `null` entries, whereas the **zero matrix** is a matrix with all elements are zero.
-
+> Do not confuse the **null matrix** with the **zero matrix**.
+> A **null matrix** has null entries, whereas the **zero matrix** contains all elements as zeros.
 
 > <details><summary><b>Examples</b></summary>
 >
-> ### Zero Matrix
+> #### Zero Matrix
 >
 > ```math
 > \begin{bmatrix}
@@ -167,13 +168,13 @@ Matrix m = new Matrix();
 > \end{bmatrix}_{2 \times 3}
 > ```
 >
-> ### Null Matrix
+> #### Null Matrix
 >
 > ```java
 > null
 > ```
 >
-> Yes, that is a **null matrix**. It has none or `null` entries inside the matrix. The output above is the result of this code below:
+> Yes, that is a **null matrix**. It has none or null entries inside the matrix. The output above is the result of this code below:
 >
 > ```java
 > Matrix nullM = new Matrix();
@@ -184,18 +185,16 @@ Matrix m = new Matrix();
 > </details> 
 
 
-### <a name="cr_matrix-2"></a> `Matrix(int, int)`
-How to create **zero matrix**? Don't worry, with this constructor you can construct **zero matrix** with ease.
-With just two arguments, each for size of [row][matrix-row] and [column][matrix-col].  
-The matrix can be called **zero matrix** if all elements inside the matrix is zero.
-For example:
+### <a name="cr_matrix-2"></a> `Matrix(int rows, int cols)`
+
+With this constructor, you can create a **zero matrix** with ease by providing two arguments: the number of [rows][matrix-row] and [columns][matrix-col]. A **zero matrix** contains all elements as zeros. For example:
 
 ```java
 // Create null matrix with size 3x4
 Matrix m = new Matrix(3, 4);
 ```
 
-The code above will construct a new **zero matrix** with size $3 \times 4$. The matrix will looks like this:
+The code above constructs a new **zero matrix** with size $3 \times 4$. The matrix will look like this:
 
 ```math
 \begin{bmatrix}
@@ -205,16 +204,16 @@ The code above will construct a new **zero matrix** with size $3 \times 4$. The 
 \end{bmatrix}
 ```
 
-### <a name="cr_matrix-3" /> `Matrix(int, int, int)`
-This constructor is similar with [`Matrix(int, int)`](#cr_matrix-2) but with an additional
-argument which is the value to filled out the entire elements of constructed matrix. For example:
+### <a name="cr_matrix-3" /> `Matrix(int rows, int cols, int val)`
+
+This constructor is similar to [`Matrix(int rows, int cols)`](#cr_matrix-2) but with an additional argument that sets the value for all elements of the constructed matrix. For example:
 
 ```java
-// Create new matrix with size 4x4 and 5 as default elements
+// Create a new matrix with size 4x4 and set all elements to 5
 Matrix m = new Matrix(4, 4, 5);
 ```
 
-The constructed matrix above will looks like this:
+The constructed matrix will look like this:
 
 ```math
 \begin{bmatrix}
@@ -225,9 +224,13 @@ The constructed matrix above will looks like this:
 \end{bmatrix}
 ```
 
-### <a name="cr_matrix-4" /> `Matrix(double[][])`
-This constructor is very **RECOMMENDED** for constructing a new [matrix][what-is-matrix].  
-It because you can declare the entries first, and then you can convert it to **Matrix** object whenever you want.
+### <a name="cr_matrix-4" /> `Matrix(double[][] array)`
+
+This constructor is highly recommended for constructing a new [matrix][what-is-matrix]. You can declare the entries first and then convert them into a **Matrix** object whenever needed.
+
+> **Note**
+> Please note, this constructor only accepts two-dimensional array with type of `double`.
+
 For example:
 
 ```java
@@ -241,7 +244,7 @@ double[][] a = {
 Matrix m = new Matrix(a);
 ```
 
-Or you can do the same thing with this code:
+Alternatively, you can directly create a new matrix using this code:
 
 ```java
 // Create new matrix
@@ -252,20 +255,17 @@ Matrix m = new Matrix(new double[][] {
 ```
 
 ### <a name="cr_matrix-5" /> `Matrix.identity(int)`
-This constructor would creates new **identity matrix** with size $n \times n$ (the $n$ is from input).  
-**Identity matrix** itself is a square matrix with ones on the main diagonal and zeros elsewhere. And the **identity matrix** is often denoted by $I$.  
-> **Note**  
-> In code you should avoid using neither $I$ nor $i$ for the **Matrix**'s variable name, it because $i$ is often used by `for-loop` statement.  
-> Instead you can use $mI$ or similar with that.  
 
-For example:
+This constructor creates a new **identity matrix** with a size of $n \times n$ (where $n$ is from input). An **identity matrix** is a square matrix with ones on the main diagonal and zeros elsewhere, often denoted as $I$.
+
+Please avoid using $I$ or $i$ as variable names for matrices in code, as $i$ is commonly used in `for-loop` statements. Instead, consider using $mI$ or a similar alternative. For example:
 
 ```java
 // Create new identity matrix with size 5x5
 Matrix mI = Matrix.identity(5);
 ```
 
-The matrix will looks like this:
+The matrix will look like this:
 
 ```math
 \begin{bmatrix}
