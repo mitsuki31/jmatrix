@@ -154,14 +154,15 @@ Matrix m = new Matrix();
 > **Note**  
 > Don't be confused with **null matrix** and **zero matrix**.  
 > **Null matrix** is a matrix that has `null` entries, whereas the **zero matrix** is a matrix with all elements are zero.
->
+
+
 > <details><summary><b>Examples</b></summary>
 >
 > ### Zero Matrix
 >
 > ```math
 > \begin{bmatrix}
->   0.0 & 0.0 & 0.0
+>   0.0 & 0.0 & 0.0 \\
 >   0.0 & 0.0 & 0.0
 > \end{bmatrix}_{2 \times 3}
 > ```
@@ -172,15 +173,15 @@ Matrix m = new Matrix();
 > null
 > ```
 >
-> Yes, that is **null matrix**. It has none or `null` entries inside it. The output above is the result of this code below:
+> Yes, that is a **null matrix**. It has none or `null` entries inside the matrix. The output above is the result of this code below:
 >
 > ```java
 > Matrix nullM = new Matrix();
 > System.out.println(
 >     (nullM.getEntries() == null) ? nullM.getEntries() : nullM.toString());
 > ```
-
-</details> 
+>
+> </details> 
 
 
 ### <a name="cr_matrix-2"></a> `Matrix(int, int)`
