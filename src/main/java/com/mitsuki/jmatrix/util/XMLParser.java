@@ -19,7 +19,7 @@
 
 package com.mitsuki.jmatrix.util;
 
-import com.mitsuki.jmatrix.core.JMBaseException;
+import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 
 import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,18 +32,42 @@ import org.w3c.dom.Element;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.2, 26 June 2023
+ * @version  1.22, 19 July 2023
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
  */
 class XMLConfig
 {
+    /**
+     * Stores a string that represents the program name.
+     */
     static String programName = null;
+
+    /**
+     * Stores a string that represents the version number of <b>JMatrix</b> library.
+     */
     static String version = null;
+
+    /**
+     * Stores a string that represents the beta number. For example, X.Y.Z-beta.<b>1</b>, where 1 is the beta number.
+     */
     static String betaNum = null;
+
+    /**
+     * Stores a string that represents the author name.
+     */
     static String author = null;
+
+    /**
+     * Stores a string that represents the package name of <b>JMatrix</b> library.
+     */
     static String packageName = null;
+
+    /**
+     * Stores a string represents the release type of <b>JMatrix</b> library.
+     * The value can be "release", "beta" or "stable".
+     */
     static String releaseType = null;
 }
 
@@ -52,13 +76,23 @@ class XMLConfig
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.2, 26 June 2023
+ * @version  1.22, 19 July 2023
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
  */
 interface XMLData
 {
+
+    /**
+     * Gets the property data from the specified input string.
+     *
+     * @param  choice  a string to search the property data.
+     *
+     * @return         the property data.
+     *
+     * @since          1.0.0b.1
+     */
     static String getData(final String choice) {
         String data = null;
 
@@ -86,7 +120,7 @@ interface XMLData
 
             default:
                 Options.raiseError(
-                    new JMBaseException(
+                    new JMatrixBaseException(
                         new IllegalArgumentException(
                             "Cannot retrieve data for input \"" + choice + "\""
                         )
@@ -100,11 +134,12 @@ interface XMLData
 
 
 /**
- * This class provides requirements to parse XML document.
+ * This class provides requirements to parse the XML document, which is used to retrieves the
+ * required properties for <b>JMatrix</b> library.
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.2, 26 June 2023
+ * @version  1.22, 19 July 2023
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -121,11 +156,21 @@ public class XMLParser implements XMLData
      * @see   #getCurrentType()
      */
     public static enum XMLType {
+        /**
+         * Represents the "config" option.
+         */
         CONFIG
     };
 
-    // -- Private Attributes
+
+    /**
+     * Stores the object class of {@link XMLType} class.
+     */
     private XMLType xmlType = null;
+
+    /**
+     * Stores a static string represents the path of configuration file.
+     */
     private final static String configPath = "configuration/config.xml";
 
     /**
@@ -143,7 +188,7 @@ public class XMLParser implements XMLData
 
             default:
                 Options.raiseError(
-                    new JMBaseException(
+                    new JMatrixBaseException(
                         new IllegalArgumentException(
                             "Invalid XML type: \"" + type + "\""
                         )
@@ -171,7 +216,7 @@ public class XMLParser implements XMLData
                 XMLConfig.betaNum = xml.getElementsByTagName("beta_num").item(0).getTextContent().strip();
             }
         } catch (final Exception e) {
-            Options.raiseError(new JMBaseException(e), -1);
+            Options.raiseError(new JMatrixBaseException(e), -1);
         }
     }
 

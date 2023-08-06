@@ -1,7 +1,7 @@
 package com.mitsuki.jmatrix.test;
 
 import com.mitsuki.jmatrix.Matrix;
-import com.mitsuki.jmatrix.util.MatrixUtils;
+import com.mitsuki.jmatrix.core.MatrixUtils;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;

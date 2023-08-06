@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-package com.mitsuki.jmatrix.util;
+package com.mitsuki.jmatrix.core;
 
 import com.mitsuki.jmatrix.Matrix;
 
 /**
- * Utility interface for matrix operations and other utilities.
+ * Utility interface for matrix operations and other utilities. All methods in this interface
+ * has their own default implementation.
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
@@ -49,7 +50,7 @@ public interface MatrixUtils {
      * @see       #deepCopyOf(double[][])
      * @see       Matrix#deepCopy()
      */
-    public static Matrix deepCopyOf(Matrix m) {
+    static Matrix deepCopyOf(Matrix m) {
         if (m.getEntries() == null) {
             return new Matrix();  // return matrix with null entries
         }
@@ -75,7 +76,7 @@ public interface MatrixUtils {
      *
      * <p>If the given array {@code null} or empty, then it would returns {@code null} instead.
      *
-     * @param  a   the array to be copied.
+     * @param  a   the two-dimensional array to be copied.
      *
      * @return     a new two-dimensional array that is a deep copy of
      *             the input array.
@@ -83,7 +84,7 @@ public interface MatrixUtils {
      * @since      1.0.0b.7
      * @see        #deepCopyOf(Matrix)
      */
-    public static double[ ][ ] deepCopyOf(double[ ][ ] a) {
+    static double[ ][ ] deepCopyOf(double[ ][ ] a) {
         if (a == null || a.length == 0) {
             return null;
         }
@@ -124,7 +125,7 @@ public interface MatrixUtils {
      * @see       #isEqualsSize(double[][], double[][])
      * @see       #isEquals(Matrix, Matrix)
      */
-    public static boolean isEqualsSize(Matrix a, Matrix b) {
+    static boolean isEqualsSize(Matrix a, Matrix b) {
         if ( (a == null || a.getEntries() == null) ||
                 (b == null || b.getEntries() == null) ) {
             return false;
@@ -154,7 +155,7 @@ public interface MatrixUtils {
      * @see       #isEqualsSize(Matrix, Matrix)
      * @see       #isEquals(double[][], double[][])
      */
-    public static boolean isEqualsSize(double[ ][ ] a, double[ ][ ] b) {
+    static boolean isEqualsSize(double[ ][ ] a, double[ ][ ] b) {
         if ( (a == null || a.length == 0) ||
                 (b == null || b.length == 0) ) {
             return false;
@@ -187,7 +188,7 @@ public interface MatrixUtils {
      * @see       #isEqualsSize(Matrix, Matrix)
      * @see       Matrix#equals(Object)
      */
-    public static boolean isEquals(Matrix a, Matrix b) {
+    static boolean isEquals(Matrix a, Matrix b) {
         if ( (a == null || a.getEntries() == null) ||
                 (b == null || b.getEntries() == null) ||
                 !(isEqualsSize(a, b)) ) {
@@ -228,7 +229,7 @@ public interface MatrixUtils {
      * @see       #isEquals(Matrix, Matrix)
      * @see       #isEqualsSize(double[][], double[][])
      */
-    public static boolean isEquals(double[ ][ ] a, double[ ][ ] b) {
+    static boolean isEquals(double[ ][ ] a, double[ ][ ] b) {
         if ( (a == null || a.length == 0) ||
                 (b == null || b.length == 0) ||
                 !(isEqualsSize(a, b)) ) {
@@ -257,7 +258,7 @@ public interface MatrixUtils {
      * @since     1.0.0b.7
      * @see       Matrix#getEntries()
      */
-    public static boolean isNullEntries(Matrix m) {
+    static boolean isNullEntries(Matrix m) {
         if (m == null || m.getEntries() == null) {
             return true;
         }

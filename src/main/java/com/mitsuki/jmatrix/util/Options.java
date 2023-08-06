@@ -19,8 +19,7 @@
 
 package com.mitsuki.jmatrix.util;
 
-import com.mitsuki.jmatrix.core.JMBaseException;
-import com.mitsuki.jmatrix.util.XMLParser;
+import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -36,7 +35,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.3, 27 June 2023
+ * @version  1.32, 19 July 2023
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -47,28 +46,81 @@ public class Options
 {
 
     /**
-     * {@code Enum} that contains all available options.
+     * An {@code Enum} that contains all available options.
      *
      * @since 1.0.0b.1
      * @see   #getOptions(String)
      */
     public enum OPT {
+
+        /**
+         * Represents the "version" option. Users can retrieve this option by using one of the following inputs:
+         *
+         * <ul>
+         *  <li>{@code -V}
+         *  <li>{@code ver}
+         *  <li>{@code version}
+         * </ul>
+         *
+         * @see #OPT(String...)
+         */
         VERSION("-V", "version", "ver"),
+
+        /**
+         * Represents the "help" option. Users can retrieve this option by using the following input:
+         *
+         * <ul>
+         *  <li>{@code -h}
+         *  <li>{@code help}
+         * </ul>
+         *
+         * @see #OPT(String...)
+         */
         HELP("-h", "help"),
+
+        /**
+         * Represents the "copyright" option. Users can retrieve this option by using the following input:
+         *
+         * <ul>
+         *  <li>{@code -cr}
+         *  <li>{@code copyright}
+         * </ul>
+         *
+         * @see #OPT(String...)
+         */
         COPYRIGHT("-cr", "copyright");
 
+        /**
+         * A {@link List} of string to stores all options aliases.
+         */
         private final List<String> aliases;
 
+        /**
+         * Constructs an option with the given aliases.
+         *
+         * @param aliases  the aliases that represent this option.
+         *
+         * @since          1.0.0b.1
+         * @see            java.util.Arrays#asList
+         */
         OPT(String ... aliases) {
             this.aliases = Arrays.asList(aliases);
         }
     }
 
-    // -- Private Attributes
+    /**
+     * Stores the static object of {@link XMLParser} class.
+     */
     private static XMLParser XML = new XMLParser(XMLParser.XMLType.CONFIG);
+
+    /**
+     * Stores a string that represents the program name.
+     */
     private static String PROGNAME = XML.getProperty("programName").toLowerCase();
-    private static String PACKAGE = getPackageName(Options.class);
-    private static String THISCLASS = getClassName(Options.class);
+
+    /**
+     * Stores a string that represents the path to "contents" directory.
+     */
     private static String contentsPath = "contents/";
 
     /**
@@ -91,7 +143,7 @@ public class Options
             }
         }
 
-        raiseError(new JMBaseException(
+        raiseError(new JMatrixBaseException(
             new IllegalArgumentException(
                 String.format("Unknown argument option for input \"%s\"", inputOpt)
             )
@@ -214,7 +266,7 @@ public class Options
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             while (br.readLine() != null) lines++;
         } catch (final IOException ioe) {
-            raiseError(new JMBaseException(ioe), -1);
+            raiseError(new JMatrixBaseException(ioe), -1);
         }
 
         return lines;
@@ -238,7 +290,7 @@ public class Options
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             while (br.readLine() != null) lines++;
         } catch (final IOException ioe) {
-            raiseError(new JMBaseException(ioe), -1);
+            raiseError(new JMatrixBaseException(ioe), -1);
         }
 
         return lines;
@@ -261,7 +313,7 @@ public class Options
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             return br.lines().toArray(String[ ]::new);
         } catch (final IOException ioe) {
-            raiseError(new JMBaseException(ioe), -1);
+            raiseError(new JMatrixBaseException(ioe), -1);
         }
 
         return null;
@@ -283,7 +335,7 @@ public class Options
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             return br.lines().toArray(String[ ]::new);
         } catch (final IOException ioe) {
-            raiseError(new JMBaseException(ioe), -1);
+            raiseError(new JMatrixBaseException(ioe), -1);
         }
 
         return null;
@@ -327,7 +379,7 @@ public class Options
 
             return true;
         } catch (final IOException ioe) {
-            Options.raiseError(new JMBaseException(ioe), 0);
+            Options.raiseError(new JMatrixBaseException(ioe), 0);
         }
 
         return false;

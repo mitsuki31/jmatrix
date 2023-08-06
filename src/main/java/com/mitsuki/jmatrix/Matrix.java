@@ -19,13 +19,13 @@
 
 package com.mitsuki.jmatrix;
 
-import com.mitsuki.jmatrix.core.IllegalMatrixSizeException;
-import com.mitsuki.jmatrix.core.InvalidIndexException;
-import com.mitsuki.jmatrix.core.JMBaseException;
-import com.mitsuki.jmatrix.core.MatrixArrayFullException;
-import com.mitsuki.jmatrix.core.NullMatrixException;
+import com.mitsuki.jmatrix.exception.IllegalMatrixSizeException;
+import com.mitsuki.jmatrix.exception.InvalidIndexException;
+import com.mitsuki.jmatrix.exception.JMatrixBaseException;
+import com.mitsuki.jmatrix.exception.MatrixArrayFullException;
+import com.mitsuki.jmatrix.exception.NullMatrixException;
 import com.mitsuki.jmatrix.util.Options;
-import com.mitsuki.jmatrix.util.MatrixUtils;
+import com.mitsuki.jmatrix.core.MatrixUtils;
 
 import java.util.Arrays;
 
@@ -66,8 +66,8 @@ import java.util.Arrays;
  *       [10.0, 12.0]   ]
  * </pre>
  *
- * <p>For creating the "null matrix" also known as "zero matrix",
- * it just simply by using the {@link #Matrix(int, int)} constructor.
+ * <p>For creating the "zero matrix" (the matrix with all elements is zero),
+ * it just simply by using the {@link #Matrix(int, int)} constructor and specify the number of rows and columns, respectively.
  *
  * <pre><code class="language-java">&nbsp;
  *   Matrix m = new Matrix(5, 5);
@@ -79,12 +79,12 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.13, 25 June 2023
+ * @version  2.2, 1 August 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
  *
- * @see      com.mitsuki.jmatrix.util.MatrixUtils
+ * @see      com.mitsuki.jmatrix.core.MatrixUtils
  * @see      <a href="https://en.m.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">
  *           "Matrix - Wikipedia"</a>
  */
@@ -601,7 +601,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since  1.0.0b.7
      * @see    MatrixUtils#deepCopyOf(Matrix)
-     * @see    com.mitsuki.jmatrix.util.MatrixUtils
+     * @see    com.mitsuki.jmatrix.core.MatrixUtils
      */
     public Matrix deepCopy() {
         return MatrixUtils.deepCopyOf(this);
@@ -724,8 +724,8 @@ public class Matrix implements MatrixUtils {
             }
         } catch (final IllegalArgumentException iae) {
             try {
-                throw new JMBaseException(iae);
-            } catch (final JMBaseException jme) {
+                throw new JMatrixBaseException(iae);
+            } catch (final JMatrixBaseException jme) {
                 Options.raiseError(jme);
             }
         } catch (final RuntimeException re) {
@@ -853,12 +853,12 @@ public class Matrix implements MatrixUtils {
     public void change(double ... values) {
         // Check whether the values size is greater than number of columns of this matrix
         if (values.length > this.COLS) {
-            cause = new JMBaseException(new IllegalArgumentException(
+            cause = new JMatrixBaseException(new IllegalArgumentException(
                 "Too many values for matrix with columns: " + this.COLS));
         }
         // Check whether the values size is lower than number of columns of this matrix
         else if (values.length < this.COLS) {
-            cause = new JMBaseException(new IllegalArgumentException(
+            cause = new JMatrixBaseException(new IllegalArgumentException(
                 "Not enough values for matrix with columns: " + this.COLS));
         }
         // Check if the user have not select any index row
@@ -2600,6 +2600,370 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /**
+     * Checks if this matrix is lower triangular.
+     *
+     * <p>A square matrix is considered lower triangular if all the elements above
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an lower triangular matrix
+     * is a upper triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
+     *
+     * <p>Lower triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two lower triangular matrices is lower triangular.
+     *  <li>The product of two lower triangular matrices is lower triangular.
+     *  <li>The inverse of an lower triangular matrix, is lower triangular (if exists).
+     *  <li>The product of an lower triangular matrix and a scalar is lower triangular.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [3, 5, -2],
+     *       [0, 4, 12],
+     *       [0, 0, -5]   ]
+     * </pre>
+     *
+     * @return                             {@code true} if the matrix is lower triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the entries of this matrix is {@code null}.
+     * @throws IllegalMatrixSizeException  if this matrix is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isLowerTriangular(Matrix)
+     * @see                                #isLowerTriangular(double[][])
+     * @see                                #THRESHOLD
+     */
+    public boolean isLowerTriangular() {
+        return Matrix.isLowerTriangular(this);
+    }
+
+    /**
+     * Checks if the given square matrix is lower triangular.
+     *
+     * <p>A square matrix is considered lower triangular if all the elements above
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an lower triangular matrix
+     * is a upper triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
+     *
+     * <p>Lower triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two lower triangular matrices is lower triangular.
+     *  <li>The product of two lower triangular matrices is lower triangular.
+     *  <li>The inverse of an lower triangular matrix, is lower triangular (if exists).
+     *  <li>The product of an lower triangular matrix and a scalar is lower triangular.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [3, 5, -2],
+     *       [0, 4, 12],
+     *       [0, 0, -5]   ]
+     * </pre>
+     *
+     * @param  m                           the square matrix to be checked.
+     *
+     * @return                             {@code true} if the matrix is lower triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the given matrix or its entries is {@code null}.
+     * @throws IllegalMatrixSizeException  if the given matrix is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isLowerTriangular()
+     * @see                                #isLowerTriangular(double[][])
+     * @see                                #THRESHOLD
+     */
+    public static boolean isLowerTriangular(Matrix m) {
+        if (MatrixUtils.isNullEntries(m)) {
+            Options.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix have been initialized.")
+            );
+        }
+
+        // The matrix must be square
+        else if (!m.isSquare()) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Matrix is non-square type. " +
+                "Please ensure the matrix has the same number of rows and columns."
+            ));
+        }
+
+        for (int r = 1; r < m.getSize()[0]; r++) {
+            for (int c = 0; c < r; c++) {
+                if (Math.abs(m.get(r, c)) > Matrix.THRESHOLD) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Checks if the given square two-dimensional array is lower triangular.
+     *
+     * <p>A square matrix is considered lower triangular if all the elements above
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an lower triangular matrix
+     * is a upper triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
+     *
+     * <p>Lower triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two lower triangular matrices is lower triangular.
+     *  <li>The product of two lower triangular matrices is lower triangular.
+     *  <li>The inverse of an lower triangular matrix, is lower triangular (if exists).
+     *  <li>The product of an lower triangular matrix and a scalar is lower triangular.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [3, 5, -2],
+     *       [0, 4, 12],
+     *       [0, 0, -5]   ]
+     * </pre>
+     *
+     * @param  arr                          the square array to be checked.
+     *
+     * @return                             {@code true} if the matrix is lower triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the given array is {@code null} or empty.
+     * @throws IllegalMatrixSizeException  if the given array is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isLowerTriangular()
+     * @see                                #isLowerTriangular(Matrix)
+     * @see                                #THRESHOLD
+     */
+    public static boolean isLowerTriangular(double[ ][ ] arr) {
+        if (arr == null || arr.length == 0) {
+            Options.raiseError(new NullMatrixException(
+                "Array is null. Please ensure the array has valid elements.")
+            );
+        }
+
+        // The two-dimensional array must be square
+        else if (!Matrix.isSquare(arr)) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Array is non-square type. " +
+                "Please ensure the array has the same number of rows and columns."
+            ));
+        }
+
+        for (int r = 1; r < arr.length; r++) {
+            for (int c = 0; c < r; c++) {
+                if (Math.abs(arr[r][c]) > Matrix.THRESHOLD) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+
+    /**
+     * Checks if this matrix is upper triangular.
+     *
+     * <p>A square matrix is considered upper triangular if all the elements below
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an upper triangular matrix
+     * is a lower triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
+     *
+     * <p>Upper triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two upper triangular matrices is upper triangular.
+     *  <li>The product of two upper triangular matrices is upper triangular.
+     *  <li>The inverse of an upper triangular matrix, is upper triangular (if exists).
+     *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [-2, 0, 0],
+     *       [15, 5, 0],
+     *       [2, -8, 7]   ]
+     * </pre>
+     *
+     * @return                             {@code true} if the matrix is upper triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the entries of this matrix is {@code null}.
+     * @throws IllegalMatrixSizeException  if this matrix is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isUpperTriangular(Matrix)
+     * @see                                #isUpperTriangular(double[][])
+     * @see                                #THRESHOLD
+     */
+    public boolean isUpperTriangular() {
+        return Matrix.isUpperTriangular(this);
+    }
+
+    /**
+     * Checks if the given square matrix is upper triangular.
+     *
+     * <p>A square matrix is considered upper triangular if all the elements below
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an upper triangular matrix
+     * is a lower triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
+     *
+     * <p>Upper triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two upper triangular matrices is upper triangular.
+     *  <li>The product of two upper triangular matrices is upper triangular.
+     *  <li>The inverse of an upper triangular matrix, is upper triangular (if exists).
+     *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [-2, 0, 0],
+     *       [15, 5, 0],
+     *       [2, -8, 7]   ]
+     * </pre>
+     *
+     * @param  m                           the square matrix to be checked.
+     *
+     * @return                             {@code true} if the matrix is upper triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the given matrix or its entries is {@code null}.
+     * @throws IllegalMatrixSizeException  if the given matrix is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isUpperTriangular()
+     * @see                                #isUpperTriangular(double[][])
+     * @see                                #THRESHOLD
+     */
+    public static boolean isUpperTriangular(Matrix m) {
+        if (MatrixUtils.isNullEntries(m)) {
+            Options.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix have been initialized.")
+            );
+        }
+
+        // The matrix must be square
+        else if (!m.isSquare()) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Matrix is non-square type. " +
+                "Please ensure the matrix has the same number of rows and columns."
+            ));
+        }
+
+        for (int r = 0; r < m.getSize()[0]; r++) {
+            for (int c = r + 1; c < m.getSize()[1]; c++) {
+                if (Math.abs(m.get(r, c)) > Matrix.THRESHOLD) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the given square two-dimensional array is upper triangular.
+     *
+     * <p>A square matrix is considered upper triangular if all the elements below
+     * the main diagonal (elements with row index greater than column index) are zero
+     * or within the threshold defined by the constant {@code THRESHOLD}.
+     *
+     * <p>The {@linkplain #transpose() transpose} of an upper triangular matrix
+     * is a lower triangular matrix and vice versa. A diagonal matrix is one
+     * that consists of upper and lower a triangular elements. You can refer
+     * to {@link #isDiagonal()} to check whether the matrix is diagonal.
+     *
+     * <p>Upper triangularity is preserved by many operations:
+     *
+     * <ul>
+     *  <li>The sum of two upper triangular matrices is upper triangular.
+     *  <li>The product of two upper triangular matrices is upper triangular.
+     *  <li>The inverse of an upper triangular matrix, is upper triangular (if exists).
+     *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [-2, 0, 0],
+     *       [15, 5, 0],
+     *       [2, -8, 7]   ]
+     * </pre>
+     *
+     * @param  arr                         the square array to be checked.
+     *
+     * @return                             {@code true} if the matrix is upper triangular,
+     *                                     {@code false} otherwise.
+     *
+     * @throws NullMatrixException         if the given array is {@code null} or empty.
+     * @throws IllegalMatrixSizeException  if the given array is non-square type.
+     *
+     * @since                              1.2.0
+     * @see                                #isUpperTriangular()
+     * @see                                #isUpperTriangular(Matrix)
+     * @see                                #THRESHOLD
+     */
+    public static boolean isUpperTriangular(double[ ][ ] arr) {
+        if (arr == null || arr.length == 0) {
+            Options.raiseError(new NullMatrixException(
+                "Array is null. Please ensure the array has valid elements.")
+            );
+        }
+
+        // The matrix must be square
+        else if (!Matrix.isSquare(arr)) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Array is non-square type. " +
+                "Please ensure the array has the same number of rows and columns."
+            ));
+        }
+
+        for (int r = 0; r < arr.length; r++) {
+            for (int c = r + 1; c < arr[0].length; c++) {
+                if (Math.abs(arr[r][c]) > Matrix.THRESHOLD) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
 
     /**
      * Clears and changes all elements of this matrix to zero.
@@ -2886,7 +3250,7 @@ public class Matrix implements MatrixUtils {
      * @since       1.0.0
      * @see         MatrixUtils#isEquals(Matrix, Matrix)
      * @see         MatrixUtils#isEqualsSize(Matrix, Matrix)
-     * @see         com.mitsuki.jmatrix.util.MatrixUtils
+     * @see         com.mitsuki.jmatrix.core.MatrixUtils
      */
     @Override
     public boolean equals(Object obj) {
