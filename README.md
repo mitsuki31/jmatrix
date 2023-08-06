@@ -280,7 +280,7 @@ The matrix will look like this:
 
 ## <a name="matrix-ops" /> Matrix Operations
 
-There are some basic matrix operations provided by **JMatrix**:
+The **JMatrix** library provides several basic matrix operations that allow users to perform common matrix calculations with ease. These operations include:
 
 - [Addition](#matrix-add)
 - [Subtraction](#matrix-sub)
@@ -288,16 +288,19 @@ There are some basic matrix operations provided by **JMatrix**:
 - [Matrix Multiplication](#matrix-mult)
 - [Transposition](#matrix-transpose)
 
-Please refer to [:books: JMatrix Wikis][matrix-ops], for more detailed about matrix operations.
+For more detailed information about each matrix operation, you can refer to the [:books: JMatrix Wikis][matrix-ops].
 
 ### <a name="matrix-add" /> Addition
 
 :book: **Wiki:** [Matrix Addition][matrix-add]
 
-> **Note**  
-> Ensure the two matrices are same dimensions before operating **addition**.
+In **matrix addition**, two matrices with the same dimensions are added together element-wise. Each element of the resulting matrix is the sum of the corresponding elements from the two input matrices.
+
+> **Important**  
+> Before performing **matrix addition**, ensure that the two matrices have the same dimensions.
 
 **Example code:**
+
 ```java
 // Construct new matrices
 Matrix m = new Matrix(new double[][] {
@@ -310,12 +313,13 @@ Matrix n = new Matrix(new double[][] {
     { 7, 1, -1, 5 }
 });
 
-// Operate addition for both matrices and
+// Perform addition for both matrices and
 // create a new matrix as the resultant matrix
 Matrix k = Matrix.sum(m, n);
 ```
 
 **Result:**
+
 ```math
 \mathbf{k} =
 \begin{bmatrix}
@@ -324,14 +328,20 @@ Matrix k = Matrix.sum(m, n);
 \end{bmatrix}
 ```
 
+In the example above, two matrices $m$ and $n$ are created. The `Matrix.sum(m, n)` method is used to add both matrices element-wise, and the resulting matrix $k$ is computed and stored. The output matrix $k$ is the sum of matrices $m$ and $n$.
+
+
 ### <a name="matrix-sub" /> Subtraction
 
 :book: **Wiki:** [Matrix Subtraction][matrix-sub]
 
-> **Note**  
-> Ensure the two matrices are same dimensions before operating subtraction.
+**Matrix subtraction** involves subtracting corresponding elements of one matrix from another.
+
+> **Important**  
+> Before performing **matrix subtraction**, ensure that the two matrices have the same dimensions.
 
 **Example code:**
+
 ```java
 // Construct new matrices
 Matrix m = new Matrix(new double[][] {
@@ -346,12 +356,13 @@ Matrix n = new Matrix(new double[][] {
     { 6, -7, 2, 3, 5 }
 });
 
-// Operate subtraction for both matrices and
+// Perform subtraction for both matrices and
 // create a new matrix as the resultant matrix
 Matrix k = Matrix.sub(m, n);
 ```
 
 **Result:**
+
 ```math
 \mathbf{k} =
 \begin{bmatrix}
@@ -361,11 +372,20 @@ Matrix k = Matrix.sub(m, n);
 \end{bmatrix}
 ```
 
+In the example above, two matrices $m$ and $n$ are created. The `Matrix.sub(m, n)` method is used to subtract $n$ from $m$ element-wise, and the resulting matrix $k$ is computed and stored. The output matrix $k$ is the difference between matrices $m$ and $n$.
+
+
 ### <a name="scalar-mult" /> Scalar Multiplication
 
 :book: **Wiki:** [Scalar Multiplication][scalar-mult]
 
+**Scalar multiplication** involves multiplying all elements of a matrix by a scalar value. The resulting matrix will have each of its elements multiplied by the given scalar value.
+
+> **Note**  
+> The resulting matrix's sizes of **scalar multiplication** will be always the same with the sizes of the operand matrix.
+
 **Example code:**
+
 ```java
 // Construct new matrix
 Matrix m = new Matrix(new double[][] {
@@ -373,12 +393,13 @@ Matrix m = new Matrix(new double[][] {
     { 2, 1, 5 }
 });
 
-// Operate scalar multiplication with the scalar equal to 5
+// Perform scalar multiplication with the scalar equal to 5
 // and create a new matrix as the resultant matrix
 Matrix s = Matrix.mult(m, 5);
 ```
 
 **Result:**
+
 ```math
 \mathbf{s} =
 \begin{bmatrix}
@@ -387,14 +408,20 @@ Matrix s = Matrix.mult(m, 5);
 \end{bmatrix}
 ```
 
+In the example above, a matrix $m$ is created. The `Matrix.mult(m, 5)` method is used to multiply each element of matrix $m$ by the scalar value 5, resulting in a new matrix $s$.
+
+
 ### <a name="matrix-mult" /> Matrix Multiplication
 
 :book: **Wiki:** [Matrix Multiplication][matrix-mult]
 
-> **Note**  
-> Ensure the number of [columns][matrix-col] in the first matrix and the number of [rows][matrix-row] in the second matrix are equal before operating matrix multiplication.
+**Matrix multiplication** involves multiplying two matrices together following a specific rule.
+
+> **Important**  
+> Before performing **matrix multiplication**, ensure the number of [columns][matrix-col] in the first matrix must be equal to the number of [rows][matrix-row] in the second matrix.
 
 **Example code:**
+
 ```java
 // Create and construct new matrices
 Matrix m = new Matrix(new double[][] {
@@ -423,11 +450,20 @@ Matrix mn = Matrix.mult(m, n);
 \end{bmatrix}
 ```
 
+In the example above, two matrices $m$ and $n$ are created. The `Matrix.mult(m, n)` method is used to perform **matrix multiplication** between matrices $m$ and $n$, resulting in a new matrix $mn$.
+
+
 ### <a name="matrix-transpose" /> Transposition
 
-:book: **Wiki:** [Matrix Transposition][matrix-tranpose]
+:book: **Wiki:** [Matrix Transposition][matrix-transpose]
+
+**Matrix transposition** involves swapping the [rows][matrix-row] and [columns][matrix-col] of a matrix. The resulting matrix will have its rows and columns interchanged.
+
+> **Note**  
+> Repeating this operation to the transposed matrix will reset their indices position to the original position.
 
 **Example code:**
+
 ```java
 // Create and construct new matrix
 Matrix m = new Matrix (new double[][] {
@@ -435,11 +471,13 @@ Matrix m = new Matrix (new double[][] {
     { 5, 6, 7, 8 }
 });
 
-// Transpose the matrix and display immediately
+// Transpose the matrix and create a new matrix
+// to store the transposed matrix
 Matrix mT = Matrix.transpose(m);
 ```
 
 **Result:**
+
 ```math
 \mathbf{mT} =
 \begin{bmatrix}
@@ -450,12 +488,14 @@ Matrix mT = Matrix.transpose(m);
 \end{bmatrix}
 ```
 
+In the example above, a matrix $m$ is created. The `Matrix.transpose(m)` method is used to transpose matrix $m$, resulting in a new matrix $mT$ with the [rows][matrix-row] and [columns][matrix-col] interchanged.
+
 
 ## <a name="author" /> Author
 
 **JMatrix** is developed and maintained by [Ryuu Mitsuki][mitsuki31].
 
-As the sole developer of the project, [Ryuu Mitsuki][mitsuki31] responsible for the continuous improvement and updates of the library. He is committed to providing a valuable and user-friendly educational resource for high school students and anyone interested in exploring [linear algebra][linear-algebra-wiki] concepts through the **JMatrix** library and by using [Java](https://www.oracle.com/java).
+As the sole developer of the project, [Ryuu Mitsuki][mitsuki31] responsible for the continuous improvement and updates of the library. He is committed to providing a valuable and user-friendly educational resource for high school students and anyone interested in exploring [linear algebra][linear-algebra-wiki] concepts through the **JMatrix** library and [Java](https://www.oracle.com/java).
 
 
 ## <a name="license" /> License
