@@ -2522,7 +2522,6 @@ public class Matrix implements MatrixUtils {
      * @since                              1.0.0b.7
      * @see                                #isDiagonal(Matrix)
      * @see                                #isDiagonal(double[][])
-     * @see                                #THRESHOLD
      */
     public boolean isDiagonal() {
         return Matrix.isDiagonal(this);
@@ -2544,7 +2543,6 @@ public class Matrix implements MatrixUtils {
      * @since                              1.0.0b.7
      * @see                                #isDiagonal()
      * @see                                #isDiagonal(double[][])
-     * @see                                #THRESHOLD
      */
     public static boolean isDiagonal(Matrix m) {
         if (!m.isSquare()) {
@@ -2581,7 +2579,6 @@ public class Matrix implements MatrixUtils {
      * @since                              1.0.0b.7
      * @see                                #isDiagonal()
      * @see                                #isDiagonal(Matrix)
-     * @see                                #THRESHOLD
      */
     public static boolean isDiagonal(double[ ][ ] arr) {
         if (!Matrix.isSquare(arr)) {
