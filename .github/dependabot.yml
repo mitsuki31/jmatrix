@@ -5,11 +5,11 @@ version: 2
 updates:
   # Configuration for pip
   - package-ecosystem: "pip"
-    directory: "/"
+    directory: "/"   # Search for "requirements.txt" on root directory
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "pip updated"
+      prefix: "pip"
       include: "scope"
     labels:
       - "dependencies"
@@ -18,11 +18,24 @@ updates:
 
   # Configuration for GitHub Actions
   - package-ecosystem: "github-actions"
-    directory: "/"
+    directory: "/"   # Search for ".github/workflows" on root directory
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "GitHub Actions updated"
+      prefix: "GH Actions"
+      include: "scope"
+    labels:
+      - "dependencies"
+    assignees:
+      - "mitsuki31"
+
+  # Configuration for Maven
+  - package-ecosystem: "maven"
+    directory: "/"   # Search for "pom.xml" on root directory
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "Maven"
       include: "scope"
     labels:
       - "dependencies"
