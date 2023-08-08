@@ -57,6 +57,15 @@ autolabeler:
       - '/feature\/.+/'
       - '/features\/.+/'
 
+  # Changes on Java code
+  - label: 'lang:java'
+    files:
+      - '*.java'
+  # Changes on Python code
+  - label: 'lang:python'
+    files:
+      - '*.py'
+
 change-template: '- $TITLE (#$NUMBER) - @$AUTHOR'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 version-resolver:
