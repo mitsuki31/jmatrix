@@ -1,9 +1,10 @@
 name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
+
 # Categories filter
 categories:
   # New Features
-  - title: '🚀 New Features'
+  - title: '🚀 Features & Enhancements'
     labels:
       - 'feature'
       - 'enhancement'
@@ -27,7 +28,7 @@ categories:
   - title: '⛔ Removed'
     labels:
       - 'remove'
-      - 'deprecated'
+      - 'deprecate'
   # Dependencies Updates
   - title: '🧩 Dependencies'
     labels:
