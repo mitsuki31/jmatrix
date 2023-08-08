@@ -1,4 +1,4 @@
-name-template: 'Release v$RESOLVED_VERSION'
+name-template: 'v$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
 # Categories filter
 categories:
@@ -27,12 +27,34 @@ categories:
   - title: '⛔ Removed'
     labels:
       - 'remove'
+      - 'deprecated'
   # Dependencies Updates
   - title: '🧩 Dependencies'
     labels:
       - 'dependencies'
+      - 'deps'
 exclude-labels:
   - 'skip-changelog'
+
+# Auto Labeler
+autolabeler:
+  # Documentation
+  - label: 'documentation'
+    files:
+      - '*.md'
+    branch:
+      - '/docs\/.+/'
+      - '/updatedocs\/.+/'
+  # Bug Fixes
+  - label: 'bugfix'
+    branch:
+      - '/fix\/.+/'
+      - '/fixes\/.+/'
+  # Enhancements / New Features
+  - label: 'enhancement'
+    branch:
+      - '/feature\/.+/'
+      - '/features\/.+/'
 
 change-template: '- $TITLE (#$NUMBER) - @$AUTHOR'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
@@ -52,5 +74,21 @@ template: |
   
   $CHANGES
   
-  For more details, see [full changelogs](https://github.com/mitsuki31/jmatrix/compare/$PREVIOUS_TAG...$NEXT_MINOR_VERSION)
+  For more details, see the [full changelogs][changelogs].
   
+  ## 🚧 Issues
+  
+  Report any issues or have any suggestions? [Create new issue][new-issue] and help us improve **JMatrix**.
+  
+  ---
+  
+  🛡️ [VirusTotal][virustotal] Scan Detections:
+  
+  - jmatrix-$RESOLVED_VERSION.jar
+  - jmatrix-$RESOLVED_VERSION_with_sources.jar
+  
+  
+  <!-- LINKS -->
+  [changelogs]: https://github.com/mitsuki31/jmatrix/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
+  [new-issue]: https://github.com/mitsuki31/jmatrix/issues/new
+  [virustotal]: https://www.virustotal.com
