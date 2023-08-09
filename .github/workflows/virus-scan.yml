@@ -1,4 +1,10 @@
-name: Scan Virus on Releases
+# This workflow is triggered upon the publication of a release.
+# It performs a virus scan on the released files using the VirusTotal API.
+# Designed to enhance the security of the release process by performing
+# virus scans on the released ".jar" files using the VirusTotal service.
+
+
+name: VirusTotal Scan
 
 on:
   release:
