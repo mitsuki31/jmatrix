@@ -1,3 +1,6 @@
+# This workflow is designed to automate the update process for various package ecosystems,
+# ensuring that dependencies are kept up-to-date with regular checks.
+#
 # For more details about configuring Dependabot, see full documentations here:
 # https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 

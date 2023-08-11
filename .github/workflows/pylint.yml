@@ -1,3 +1,16 @@
+# This workflow focuses on ensuring the quality and consistency of Python code
+# in the repository. It is triggered by both push and pull request events.
+# The workflow runs on both Ubuntu and Windows platforms, covering Python
+# versions 3.7 and 3.x (latest version).
+#
+# This workflow helps maintain code quality and adherence to coding standards
+# by regularly analyzing the Python codebase and providing insights into
+# potential issues or areas for improvement.
+#
+# NOTE:
+# The Python code is analyzed using a custom configuration file (`.pylintrc`).
+# The configuration file can be found on the root of this repository.
+
 name: PyLint
 
 on: [push, pull_request]
