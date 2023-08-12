@@ -1,0 +1,118 @@
+name: Project Tester
+
+on:
+  # Run on push, pull request, and manual trigger
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Debug Mode'
+        required: false
+        type: boolean
+
+jobs:
+  # ::---:: Maven Test ::---:: #
+  maven-test:
+    name: Maven Test / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
+
+    env:
+      java-ver: 11
+      java-dist: temurin
+      DEBUG: ${{ inputs.debug }}
+
+    strategy:
+      matrix:
+        os: [Ubuntu, Windows]
+
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Caching Maven deps
+      - name: Cache Maven dependencies
+        id: cache-maven
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+            ${{ runner.os }}-maven-
+
+      # Setup Java
+      - name: Setup Java / ${{ matrix.os }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.java-ver }}
+          distribution: ${{ env.java-dist }}
+
+      # Install deps
+      - name: Install dependencies
+        if: ${{ steps.cache-maven.outputs.cache-hit != true && env.DEBUG != true }}
+        run: mvn install -DskipTests
+
+      - name: Install dependencies (Debug)
+        if: ${{ steps.cache-maven.outputs.cache-hit != true && env.DEBUG == true }}
+        run: mvn install -DskipTests -X
+
+      # Test
+      - name: Test project
+        if: ${{ env.DEBUG != true }}
+        run: mvn test
+
+      - name: Test project (Debug)
+        if: ${{ env.DEBUG == true }}
+        run: mvn test -X
+
+
+  # ::---:: Make Test ::---:: #
+  make-test:
+    name: Make Test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    strategy:
+      matrix:
+        py-ver: ['3.7', '3.x']
+
+    env:
+      arch: x64
+      DEPS_FILE: 'requirements.txt'
+      DEBUG: ${{ inputs.debug }}
+
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Setup Python
+      - name: Setup Python ${{ matrix.py-ver }}
+        id: setup-py
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.py-ver }}
+          architecture: ${{ env.arch }}
+          cache: 'pip'
+          cache-dependency-path: '**/${{ env.DEPS_FILE }}'
+
+      # Install deps
+      - name: Install dependencies
+        if: ${{ steps.setup-py.outputs.cache-hit != true }}
+        run: |
+          if [ $DEBUG = 'true' ]; then
+            python -m pip install -r $DEPS_FILE --debug
+          else
+            python -m pip install -r $DEPS_FILE
+          fi
+
+      # Test
+      - name: Test project
+        run: |
+          if [ $DEBUG = 'true' ]; then
+            make compile package VERBOSE=true
+          else
+            make compile package
+          fi
