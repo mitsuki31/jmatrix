@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report any bugs or issues that related to JMatrix
+description: Report any bugs or issues that related to **JMatrix**
 title: "[Bug]: "
 labels: [bug]
 assignees:
@@ -38,10 +38,10 @@ body:
   - type: dropdown
     id: download
     attributes:
-      label: How did you download the software?
+      label: How did you use the software?
       options:
         - Built from source
-        - Download from release package
+        - Download and use from release package
     validations:
       required: true
 
@@ -67,12 +67,14 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: "By contributing to this project, you are agree with the [Code of Conduct](./CODE_OF_CONDUCT.md) of this project."
+      description: "By contributing to this project, you are agree with the [Code of Conduct](../../CODE_OF_CONDUCT.md) of this project."
       options:
-        - label: "Yes, I agree to follow this project's [Code of Conduct](./CODE_OF_CONDUCT.md)"
+        - label: "Yes, I agree."
           required: true
 
   - type: markdown
     attributes:
       value: |
+        ---
+
         Thank you for taking the time to fill out this bug report.
