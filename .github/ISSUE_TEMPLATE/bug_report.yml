@@ -1,0 +1,78 @@
+name: Bug Report
+description: Report any bugs or issues that related to JMatrix
+title: "[Bug]: "
+labels: [bug]
+assignees:
+  - mitsuki31
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thank you for contributing to our project!
+
+        ---
+
+        We need certain information and specific data to address this bug as soon as feasible.
+        Provide the detailed information will help us resolving this bug more quickly.
+
+  - type: textarea
+    id: bug-desc
+    attributes:
+      label: Bug description
+      description: Describe the bug with detailed information. Also you can tell us, what did you expect to happen?
+      placeholder: Describe the bug here
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      multiple: false
+      description: Which operating system have you used?
+      options:
+        - Unix
+        - Windows
+
+  - type: dropdown
+    id: download
+    attributes:
+      label: How did you download the software?
+      options:
+        - Built from source
+        - Download from release package
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-repro
+    attributes:
+      label: Steps to reproduce
+      description: How do you trigger this bug? Please walk us through it step by step.
+      value: |
+        1.
+        2.
+        ...
+      render: bash
+
+  - type: textarea
+    id: bug-logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. No need for backticks.
+      render: shell
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: "By contributing to this project, you are agree with the [Code of Conduct](./CODE_OF_CONDUCT.md) of this project."
+      options:
+        - label: "Yes, I agree to follow this project's [Code of Conduct](./CODE_OF_CONDUCT.md)"
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to fill out this bug report.
