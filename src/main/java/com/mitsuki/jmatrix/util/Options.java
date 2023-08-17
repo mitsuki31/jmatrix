@@ -35,7 +35,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.32, 19 July 2023
+ * @version  1.33, 17 August 2023
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -432,7 +432,7 @@ public class Options
             }
         }
 
-        for (int i = 0, j = 0; i != contents.length; i++) {
+        for (int i = 0; i != contents.length; i++) {
             if (copyright[i].contains("${PACKAGE_NAME}")) {
                 copyright[i] = copyright[i].replace("${PACKAGE_NAME}", XML.getProperty("programName"));
             }
