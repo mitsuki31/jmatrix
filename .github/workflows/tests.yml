@@ -3,7 +3,16 @@ name: Project Tester
 on:
   # Run on push, pull request, and manual trigger
   push:
+    # Only run when the specific files are changed
+    paths:
+      - 'src/**/*.java'  # Java files
+      - 'src/**/*.py'    # Python files
+
+  # Unlike push, the workflow always runs on pull requests
   pull_request:
+
+  # The workflow also can be triggered manually, and choose whether
+  # to run with or without debug mode
   workflow_dispatch:
     inputs:
       debug:
@@ -58,6 +67,15 @@ jobs:
         if: ${{ steps.cache-maven.outputs.cache-hit != true && env.DEBUG == true }}
         run: mvn install -DskipTests -X
 
+      # Packaging with source files
+      - name: Package source
+        if: ${{ env.DEBUG != true }}
+        run: mvn package -P include-src
+
+      - name: Package source (Debug)
+        if: ${{ env.DEBUG == true }}
+        run: mvn package -P include-src -X
+
       # Test
       - name: Test project
         if: ${{ env.DEBUG != true }}
@@ -108,11 +126,45 @@ jobs:
             python -m pip install -r $DEPS_FILE
           fi
 
-      # Test
-      - name: Test project
+      # Sadly, Make cannot tests the project thoroughly due to unavailability
+      # of necessary packages (e.g "org.junit"), so here it just tests
+      # the project on compiling, packaging, and generating docs.
+
+      # Compile
+      - name: Compile the project
         run: |
+          [ -d target/classes ] && make clean
+          make compile VERBOSE=$DEBUG LINT=true
+
+      # Package
+      - name: Packaging the project
+        run: |
+          make package VERBOSE=$DEBUG
+
+      - name: Packaging the project (with source)
+        run: |
+          make package INCLUDE-SRC=true VERBOSE=$DEBUG
+
+      # Build docs
+      - name: Build the docs
+        run: |
+          # Build docs
+          # For more information on debugging, we prefer to change it
+          # to "all" mode.
           if [ $DEBUG = 'true' ]; then
-            make compile package VERBOSE=true
+            make build-docs VERBOSE=all
           else
-            make compile package
+            make build-docs
           fi
+
+      # Clean up
+      - name: Clean up the project
+        run: |
+          echo "Clean the compiled classes"
+          [ -d target ] && make clean
+
+          echo "Clean the generated docs"
+          [ -d docs/jmatrix ] && make cleandocs
+
+          echo "Clean the generated packages"
+          rm -f *.jar
