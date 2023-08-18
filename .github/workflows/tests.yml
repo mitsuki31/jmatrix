@@ -85,6 +85,10 @@ jobs:
         if: ${{ env.DEBUG == true }}
         run: mvn test -X
 
+      # Clean up
+      - name: Clean up the project
+        run: mvn clean
+
 
   # ::---:: Make Test ::---:: #
   make-test:
@@ -160,11 +164,4 @@ jobs:
       # Clean up
       - name: Clean up the project
         run: |
-          echo "Clean the compiled classes"
-          [ -d target ] && make clean
-
-          echo "Clean the generated docs"
-          [ -d docs/jmatrix ] && make cleandocs
-
-          echo "Clean the generated packages"
-          rm -f *.jar
+          [ -d target ] && echo "Clean the project" && make clean
