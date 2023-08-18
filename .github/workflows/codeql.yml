@@ -85,7 +85,7 @@ jobs:
     - name: Build Project / ${{ matrix.os }}
       run: |
         echo "Building the project..."
-        mvn clean install
+        mvn clean install -Dskiptests  # Installing necessary packages without testing
         mvn test
 
     - name: Perform CodeQL Analysis / ${{ matrix.os }}
