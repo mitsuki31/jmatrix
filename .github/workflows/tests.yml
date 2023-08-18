@@ -1,0 +1,167 @@
+name: Project Tester
+
+on:
+  # Run on push, pull request, and manual trigger
+  push:
+    # Only run when the specific files are changed
+    paths:
+      - 'src/**/*.java'  # Java files
+      - 'src/**/*.py'    # Python files
+
+  # Unlike push, the workflow always runs on pull requests
+  pull_request:
+
+  # The workflow also can be triggered manually, and choose whether
+  # to run with or without debug mode
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Debug Mode'
+        required: false
+        type: boolean
+
+jobs:
+  # ::---:: Maven Test ::---:: #
+  maven-test:
+    name: Maven Test / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
+
+    env:
+      java-ver: 11
+      java-dist: temurin
+      DEBUG: ${{ inputs.debug }}
+
+    strategy:
+      matrix:
+        os: [Ubuntu, Windows]
+
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Caching Maven deps
+      - name: Cache Maven dependencies
+        id: cache-maven
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+            ${{ runner.os }}-maven-
+
+      # Setup Java
+      - name: Setup Java / ${{ matrix.os }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.java-ver }}
+          distribution: ${{ env.java-dist }}
+
+      # Install deps
+      - name: Install dependencies
+        if: ${{ steps.cache-maven.outputs.cache-hit != true && env.DEBUG != true }}
+        run: mvn install -DskipTests
+
+      - name: Install dependencies (Debug)
+        if: ${{ steps.cache-maven.outputs.cache-hit != true && env.DEBUG == true }}
+        run: mvn install -DskipTests -X
+
+      # Packaging with source files
+      - name: Package source
+        if: ${{ env.DEBUG != true }}
+        run: mvn package -P include-src
+
+      - name: Package source (Debug)
+        if: ${{ env.DEBUG == true }}
+        run: mvn package -P include-src -X
+
+      # Test
+      - name: Test project
+        if: ${{ env.DEBUG != true }}
+        run: mvn test
+
+      - name: Test project (Debug)
+        if: ${{ env.DEBUG == true }}
+        run: mvn test -X
+
+      # Clean up
+      - name: Clean up the project
+        run: mvn clean
+
+
+  # ::---:: Make Test ::---:: #
+  make-test:
+    name: Make Test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    strategy:
+      matrix:
+        py-ver: ['3.7', '3.x']
+
+    env:
+      arch: x64
+      DEPS_FILE: 'requirements.txt'
+      DEBUG: ${{ inputs.debug }}
+
+    steps:
+      # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Setup Python
+      - name: Setup Python ${{ matrix.py-ver }}
+        id: setup-py
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.py-ver }}
+          architecture: ${{ env.arch }}
+          cache: 'pip'
+          cache-dependency-path: '**/${{ env.DEPS_FILE }}'
+
+      # Install deps
+      - name: Install dependencies
+        if: ${{ steps.setup-py.outputs.cache-hit != true }}
+        run: |
+          if [ $DEBUG = 'true' ]; then
+            python -m pip install -r $DEPS_FILE --debug
+          else
+            python -m pip install -r $DEPS_FILE
+          fi
+
+      # Sadly, Make cannot tests the project thoroughly due to unavailability
+      # of necessary packages (e.g "org.junit"), so here it just tests
+      # the project on compiling, packaging, and generating docs.
+
+      # Compile
+      - name: Compile the project
+        run: |
+          [ -d target/classes ] && make clean
+          make compile VERBOSE=$DEBUG LINT=true
+
+      # Package
+      - name: Packaging the project
+        run: |
+          make package VERBOSE=$DEBUG
+
+      - name: Packaging the project (with source)
+        run: |
+          make package INCLUDE-SRC=true VERBOSE=$DEBUG
+
+      # Build docs
+      - name: Build the docs
+        run: |
+          # Build docs
+          # For more information on debugging, we prefer to change it
+          # to "all" mode.
+          if [ $DEBUG = 'true' ]; then
+            make build-docs VERBOSE=all
+          else
+            make build-docs
+          fi
+
+      # Clean up
+      - name: Clean up the project
+        run: |
+          [ -d target ] && echo "Clean the project" && make clean

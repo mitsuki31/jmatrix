@@ -1,32 +1,54 @@
+# This workflow focuses on ensuring the quality and consistency of Python code
+# in the repository. It is triggered by both push and pull request events.
+# The workflow runs on both Ubuntu and Windows platforms, covering Python
+# versions 3.7 and 3.x (latest version).
+#
+# This workflow helps maintain code quality and adherence to coding standards
+# by regularly analyzing the Python codebase and providing insights into
+# potential issues or areas for improvement.
+#
+# NOTE:
+# The Python code is analyzed using a custom configuration file (`.pylintrc`).
+# The configuration file can be found on the root of this repository.
+
 name: PyLint
 
 on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} / ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}-latest
+
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        os: [Ubuntu, Windows]           # Run on Ubuntu and Windows
+        python-version: ["3.7", "3.x"]  # Run on Py3.7 and the latest version
+
     steps:
       # Checkout the repo
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+
       # Setup Python
       - name: Set up Python ${{ matrix.python-version }}
+        id: setup-py
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-      
-      # Install the dependencies
+          architecture: x64
+          cache: 'pip'
+          cache-dependency-path: '**/requirements.txt'
+
+      # Update pip and install the PyLint
       - name: Install dependencies
+        if: ${{ steps.setup-py.outputs.cache-hit != true }}
         run: |
           echo "Updating 'pip'..."
           python -m pip install --upgrade pip
           echo "Installing 'pylint'..."
           pip install pylint
-      
+
       # Analyze the Python code
       - name: Analyzing the code with pylint
         run: |
