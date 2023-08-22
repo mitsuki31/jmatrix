@@ -79,14 +79,14 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.2, 1 August 2023
+ * @version  2.4, 22 August 2023
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
  *
  * @see      com.mitsuki.jmatrix.core.MatrixUtils
  * @see      <a href="https://en.m.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">
- *           "Matrix - Wikipedia"</a>
+ *           "Matrix (Wikipedia)"</a>
  */
 public class Matrix implements MatrixUtils {
 
@@ -159,9 +159,13 @@ public class Matrix implements MatrixUtils {
     public static final double THRESHOLD = 1e-6;
 
 
-    //// ----------------- ////
-    // -**- CONSTRUCTOR -**- //
-    //// ----------------- ////
+
+    /*=========================================
+    ::
+    ::  MATRIX CONSTRUCTORS
+    ::
+    =========================================*/
+
 
     /**
      * Constructs new <b>Matrix</b> object without any parameter.
@@ -369,102 +373,12 @@ public class Matrix implements MatrixUtils {
     }
 
 
-    // ----------------- //
-    //  Identity Matrix  //
-    // ----------------- //
 
-    /**
-     * Constructs an identity matrix with dimensions {@code n x n}.
-     *
-     * <p>This method generates and constructs an identity matrix of size {@code n x n}.<br>
-     * To check the matrix is diagonal matrix, please refer to {@link #isDiagonal()} method.
-     *
-     * <p><b>For example:</b></p>
-     *
-     * <pre><code class="language-java">&nbsp;
-     *   Matrix m = Matrix.identity(3);
-     *   m.display();
-     * </code></pre>
-     *
-     * <p><b>Output:</b></p>
-     *
-     * <pre>&nbsp;
-     *   [   [1.0, 0.0, 0.0],
-     *       [0.0, 1.0, 0.0],
-     *       [0.0, 0.0, 1.0]   ]
-     * </pre>
-     *
-     * @param  n                           the size of the identity matrix
-     *                                     to be generated (min 1).
-     *
-     * @return                             a new identity matrix with
-     *                                     dimensions {@code n x n}.
-     *
-     * @throws IllegalMatrixSizeException  if the given size matrix is
-     *                                     less than 1.
-     *
-     * @since                              1.0.0b.7
-     * @see                                #Matrix(int, int)
-     * @see                                #Matrix(double[][])
-     * @see                                #isDiagonal()
-     */
-    public static Matrix identity(int n) {
-        // Check for negative value on input argument
-        if (n < 1) {
-            Options.raiseError(new IllegalMatrixSizeException(
-                "Sizes of identity matrix cannot be lower than 1."));
-        }
-
-        // Create the identity matrix with size "n x n"
-        double[ ][ ] entries = new double[n][n];
-
-        for (int i = 0; i < n; i++) {
-            entries[i][i] = 1.0;
-        }
-
-        return new Matrix(entries);
-    }
-
-    //// ----------------------- ////
-    // -**- [END] CONSTRUCTOR -**- //
-    //// ----------------------- ////
-
-
-
-
-    //// --------------------- ////
-    // -**- PRIVATE METHODS -**- //
-    //// --------------------- ////
-
-    /**
-     * Calculates the dot product of a specified cell in two arrays.
-     *
-     * <p>This method is used for matrix multiplication operation.
-     *
-     * @param  a    the first array.
-     * @param  b    the second array.
-     * @param  row  the row index of the cell to be calculated.
-     * @param  col  the column index of the cell to be calculated.
-     *
-     * @return      the dot product of the specified cell of two arrays.
-     *
-     * @since       0.2.0
-     * @see         #mult(Matrix)
-     * @see         #mult(double[][])
-     */
-    private static double multCell(double[ ][ ] a, double[ ][ ] b, int row, int col) {
-        double result = 0;
-        for (int i = 0; i < b.length; i++) {
-            result += (a[row][i] * b[i][col]);
-        }
-
-        return result;
-    }
-
-
-    //// --------------------------- ////
-    // -**- [END] PRIVATE METHODS -**- //
-    //// --------------------------- ////
+    /*=========================================
+    ::
+    ::  MATRIX SPECIAL CONSTRUCTORS
+    ::
+    =========================================*/
 
 
     /**
@@ -560,126 +474,57 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Duplicates this matrix to another matrix object.
+     * Constructs an identity matrix with dimensions {@code n x n}.
      *
-     * <p><b>Deprecated:</b> This method is deprecated due to its usage of shallow copy,
-     * which may lead to unexpected behavior. It is recommended to use {@link #deepCopy()} method instead,
-     * which performs a deep copy of the matrix.</p>
-     *
-     * @return                          the copied of this matrix with all of its attributes.
-     *
-     * @throws     NullMatrixException  if the entries of this matrix is {@code null}.
-     *
-     * @since                           0.2.0
-     * @see                             #deepCopy()
-     *
-     * @deprecated                      This method is deprecated and may
-     *                                  result in unexpected behavior.
-     *                                  Use {@link #deepCopy()} for performing a
-     *                                  deep copy of the matrix instead.
-     */
-    @Deprecated
-    public Matrix copy() {
-        try {
-            if (this.ENTRIES == null) {
-                throw new NullMatrixException(
-                    "Matrix is null. Please ensure the matrix are initialized.");
-            }
-        } catch (final NullMatrixException nme) {
-            Options.raiseError(nme);
-        }
-
-        // Create new and copy the matrix
-        return new Matrix(this.getEntries());
-    }
-
-
-    /**
-     * Creates and returns a deep copy of this matrix.
-     *
-     * @return a new <b>Matrix</b> object which is a deep copy of this matrix.
-     *
-     * @since  1.0.0b.7
-     * @see    MatrixUtils#deepCopyOf(Matrix)
-     * @see    com.mitsuki.jmatrix.core.MatrixUtils
-     */
-    public Matrix deepCopy() {
-        return MatrixUtils.deepCopyOf(this);
-    }
-
-
-    /**
-     * Selects the matrix row with the specified index.
-     *
-     * <p>This method should be combined with {@link #change(double ...) change} method.<br>
-     * The indexing is similar to array which zero is the first index.
-     * And the index cannot be a negative value.
+     * <p>This method generates and constructs an identity matrix of size {@code n x n}.<br>
+     * To check the matrix is diagonal matrix, please refer to {@link #isDiagonal()} method.
      *
      * <p><b>For example:</b></p>
      *
      * <pre><code class="language-java">&nbsp;
-     *   double[][] a = {
-     *       { 5, 6, 7 },
-     *       { 4, 5, 6 }
-     *   };
-     *
-     *   Matrix m = new Matrix(a);
-     *
-     *   // Change the values of first row
-     *   double[] newRow = { 1, 2, 3 };
-     *   m.select(0).change(newRow);
-     *
+     *   Matrix m = Matrix.identity(3);
      *   m.display();
      * </code></pre>
      *
      * <p><b>Output:</b></p>
      *
      * <pre>&nbsp;
-     *   [   [1.0, 2.0, 3.0],
-     *       [4.0, 5.0, 6.0]   ]
+     *   [   [1.0, 0.0, 0.0],
+     *       [0.0, 1.0, 0.0],
+     *       [0.0, 0.0, 1.0]   ]
      * </pre>
      *
-     * @param  index                  the index row to be selected.
+     * @param  n                           the size of the identity matrix
+     *                                     to be generated (min 1).
      *
-     * @return                        self.
+     * @return                             a new identity matrix with
+     *                                     dimensions {@code n x n}.
      *
-     * @throws InvalidIndexException  if the input index is negative value
-     *                                or larger than number of matrix rows.
-     * @throws NullMatrixException    if entries of this matrix is {@code null}.
+     * @throws IllegalMatrixSizeException  if the given size matrix is
+     *                                     less than 1.
      *
-     * @since                         0.2.0
-     * @see                           #change(double ...)
-     * @see                           #change(double)
+     * @since                              1.0.0b.7
+     * @see                                #Matrix(int, int)
+     * @see                                #Matrix(double[][])
+     * @see                                #isDiagonal()
      */
-    public Matrix select(final int index) {
-        // Check for matrix with null entries
-        if (this.ENTRIES == null) {
-            cause = new NullMatrixException(
-                "Matrix is null. Please ensure the matrix are initialized.");
-        }
-        // Check for negative index
-        else if (index < 0) {
-            cause = new InvalidIndexException(
-                "Given index is negative value. Please ensure the index is positive value.");
-        }
-        // Check for given index is greater than total rows
-        else if (index > this.ROWS - 1) {
-            cause = new InvalidIndexException(
-                "Given index is too larger than number of rows.");
+    public static Matrix identity(int n) {
+        // Check for negative value on input argument
+        if (n < 1) {
+            Options.raiseError(new IllegalMatrixSizeException(
+                "Sizes of identity matrix cannot be lower than 1."));
         }
 
-        if (cause != null) Options.raiseError(cause);
+        // Create the identity matrix with size "n x n"
+        double[ ][ ] entries = new double[n][n];
 
-        this.selectedIndex = index;
-        this.hasSelect = true;
+        for (int i = 0; i < n; i++) {
+            entries[i][i] = 1.0;
+        }
 
-        return this; // return self
+        return new Matrix(entries);
     }
 
-
-    //// ---------------- ////
-    // -**- ADD VALUES -**- //
-    //// ---------------- ////
 
     /**
      * Fills the column with specified array.
@@ -800,167 +645,53 @@ public class Matrix implements MatrixUtils {
         this.index++; // increment index row
     }
 
-    //// ---------------------- ////
-    // -**- [END] ADD VALUES -**- //
-    //// ---------------------- ////
 
 
-    //// ------------------- ////
-    // -**- CHANGE VALUES -**- //
-    //// ------------------- ////
-
-    /**
-     * Changes all values at specified row with the given values.
-     *
-     * <p>Only use this method when already called {@link #select(int) select} method.
-     *
-     * <p><b>For example:</b></p>
-     *
-     * <pre><code class="language-java">&nbsp;
-     *   double[][] a = {
-     *       { 5, 6, 7 },
-     *       { 4, 5, 6 }
-     *   };
-     *
-     *   Matrix m = new Matrix(a);
-     *
-     *   // Change the values of first row
-     *   double[] newRow = { 1, 2, 3 };
-     *   m.select(0).change(newRow);
-     *
-     *   m.display();
-     * </code></pre>
-     *
-     * <p><b>Output:</b></p>
-     *
-     * <pre>&nbsp;
-     *   [   [1.0, 2.0, 3.0],
-     *       [4.0, 5.0, 6.0]   ]
-     * </pre>
-     *
-     * @param  values                    the values to changes all column entries at specified row.
-     *
-     * @throws IllegalArgumentException  if the given argument is overcapacity to matrix column
-     *                                   or not enough argument to fill the column.
-     * @throws InvalidIndexException     if attempts to call this method
-     *                                   but have not called {@link #select(int) select} method
-     *                                   or the selected index is a negative value.
-     *
-     * @since                            0.2.0
-     * @see                              #select(int)
-     * @see                              #change(double)
-     */
-    public void change(double ... values) {
-        // Check whether the values size is greater than number of columns of this matrix
-        if (values.length > this.COLS) {
-            cause = new JMatrixBaseException(new IllegalArgumentException(
-                "Too many values for matrix with columns: " + this.COLS));
-        }
-        // Check whether the values size is lower than number of columns of this matrix
-        else if (values.length < this.COLS) {
-            cause = new JMatrixBaseException(new IllegalArgumentException(
-                "Not enough values for matrix with columns: " + this.COLS));
-        }
-        // Check if the user have not select any index row
-        else if (!this.hasSelect) {
-            cause = new InvalidIndexException(
-                "Selected index is null. " +
-                "Please ensure you have already called \"select(int)\" method."
-            );
-        }
-
-        // Throw the exception if got one
-        if (cause != null) Options.raiseError(cause);
-
-        // Change values of matrix column with values from argument parameter
-        for (int i = 0; i < this.COLS; i++) {
-            this.ENTRIES[this.selectedIndex][i] = values[i];
-        }
-
-        // reset to default
-        this.selectedIndex = 0;
-        this.hasSelect = false;
-    }
+    /*=========================================
+    ::
+    ::  PRIVATE METHODS
+    ::
+    =========================================*/
 
 
     /**
-     * Changes all values at specified column with the repeated of given value.
+     * Calculates the dot product of a specified cell in two arrays.
      *
-     * <p>Only use this method when already called {@link #select(int) select} method.
+     * <p>This method is used for matrix multiplication operation.
      *
-     * <p><b>For example:</b></p>
+     * @param  a    the first array.
+     * @param  b    the second array.
+     * @param  row  the row index of the cell to be calculated.
+     * @param  col  the column index of the cell to be calculated.
      *
-     * <pre><code class="language-java">&nbsp;
-     *   double[][] a = {
-     *       { 5, 6, 7 },
-     *       { 4, 5, 6 }
-     *   };
+     * @return      the dot product of the specified cell of two arrays.
      *
-     *   Matrix m = new Matrix(a);
-     *
-     *   // Change the values of first row
-     *   m.select(0).change(5);
-     *
-     *   m.display();
-     * </code></pre>
-     *
-     * <p><b>Output:</b></p>
-     *
-     * <pre>&nbsp;
-     *   [   [5.0, 5.0, 5.0],
-     *       [4.0, 5.0, 6.0]   ]
-     * </pre>
-     *
-     * @param  value                  the value to changes all values at specified column.
-     *
-     * @throws InvalidIndexException  if attempts to call this method
-     *                                but have not called {@link #select(int) select} method
-     *                                or the selected index is a negative value.
-     *
-     * @since                         0.2.0
-     * @see                           #select(int)
-     * @see                           #change(double ...)
+     * @since       0.2.0
+     * @see         #mult(Matrix)
+     * @see         #mult(double[][])
      */
-    public void change(double value) {
-        // Check if the user have not select any index row
-        // If user have not then it will immediately raise the exception
-        if (!this.hasSelect) {
-            Options.raiseError(new InvalidIndexException(
-                "Selected index is null. " +
-                "Please ensure you have already called \"select(int)\" method."
-            ));
+    private static double multCell(double[ ][ ] a, double[ ][ ] b, int row, int col) {
+        double result = 0;
+        for (int i = 0; i < b.length; i++) {
+            result += (a[row][i] * b[i][col]);
         }
 
-        // Create new array with same value
-        double[ ] values = new double[this.COLS];
-        for (int i = 0; i < this.COLS; i++) {
-            values[i] = value;
-        }
-
-        for (int i = 0; i < this.COLS; i++) {
-            this.ENTRIES[this.selectedIndex][i] = values[i];
-        }
-
-        // reset to default
-        this.selectedIndex = 0;
-        this.hasSelect = false;
+        return result;
     }
 
-    //// ------------------------- ////
-    // -**- [END] CHANGE VALUES -**- //
-    //// ------------------------- ////
 
 
+    /*=========================================
+    ::
+    ::  MATRIX OPERATIONS
+    ::
+    =========================================*/
 
 
-    //// ----------------------- ////
-    // -**- MATRIX OPERATIONS -**- //
-    //// ----------------------- ////
+    /*--------------------------
+    ::     Matrix Addition
+    --------------------------*/
 
-
-    /////////////////////////
-    ///     SUMMATION     ///
-    /////////////////////////
 
     /**
      * Operates addition for this matrix and the given matrix.
@@ -1306,9 +1037,10 @@ public class Matrix implements MatrixUtils {
 
 
 
-    ///////////////////////////
-    ///     SUBTRACTION     ///
-    ///////////////////////////
+    /*--------------------------
+    ::    Matrix Subtraction
+    --------------------------*/
+
 
     /**
      * Operates subtraction for this matrix and the given matrix.
@@ -1641,9 +1373,11 @@ public class Matrix implements MatrixUtils {
 
 
 
-    //////////////////////////////
-    ///     MULTIPLICATION     ///
-    //////////////////////////////
+
+    /*---------------------------
+    ::   Matrix Multiplication
+    ---------------------------*/
+
 
     /**
      * Operates multiplication for this matrix and the given matrix.
@@ -1989,6 +1723,11 @@ public class Matrix implements MatrixUtils {
 
 
 
+    /*---------------------------
+    ::   Scalar Multiplication
+    ---------------------------*/
+
+
     /**
      * Operates scalar multiplication for this matrix.
      *
@@ -2088,156 +1827,13 @@ public class Matrix implements MatrixUtils {
         }
 
         return new Matrix(result);
-   }
-
-    //// ----------------------------- ////
-    // -**- [END] MATRIX OPERATIONS -**- //
-    //// ----------------------------- ////
-
-
-
-    /**
-     * Displays and prints this matrix to standard output in Python-style.
-     *
-     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
-     * of this matrix is {@code null}.<br>
-     * To retrieve the elements of this matrix, please refer to {@link #getEntries()} method.
-     *
-     * <p><b>Output example:</b></p>
-     *
-     * <pre>&nbsp;
-     *   [   [n, n, n, ...],
-     *       [n, n, n, ...],
-     *       [n, n, n, ...]   ]
-     * </pre>
-     *
-     * @since 0.1.0
-     * @see   #display(int)
-     * @see   #getEntries()
-     */
-    final public void display() {
-        if (this.ENTRIES != null) {
-            System.out.println(this.toString());
-        } else {
-            System.out.println("<null_matrix>");
-        }
     }
 
 
-    /**
-     * Displays and prints the specified row of this matrix to standard output in Python-style.
-     *
-     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
-     * of this matrix is {@code null}.<br>
-     * To retrieve the elements of this matrix, please refer to {@link #getEntries()} method.
-     *
-     * <p><b>Output example:</b></p>
-     *
-     * <pre>&nbsp;
-     *   [n, n, n, ...]
-     * </pre>
-     *
-     * @param  index                  the index row of this matrix.
-     *
-     * @throws InvalidIndexException  if the given index is negative value or
-     *                                the index is larger than number of rows.
-     *
-     * @since                         0.2.0
-     * @see                           #display()
-     * @see                           #getEntries()
-     */
-    final public void display(int index) {
-        if (this.ENTRIES != null) {
-            // Check for negative index and throw the exception
-            if (index < 0) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be a negative value.");
-            }
-            // Check if the given index greater than number of rows this matrix
-            else if (index > this.ROWS - 1) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be larger than number of rows.");
-            }
 
-            // Throw the exception if got one
-            if (cause != null) Options.raiseError(cause);
-
-            System.out.println(Arrays.toString(this.ENTRIES[index]));
-        } else {
-            System.out.println("<null_matrix>");
-        }
-    }
-
-
-    /**
-     * Displays and prints the given two-dimensional array to standard output in Python-style.
-     *
-     * <p>Displays <code>{@literal <null_2darray>}</code> if the entries
-     * of given two-dimensional array is {@code null} or empty.
-     *
-     * <p><b>Output example:</b></p>
-     *
-     * <pre>&nbsp;
-     *   [   [n, n, n, ...],
-     *       [n, n, n, ...],
-     *       [n, n, n, ...]   ]
-     * </pre>
-     *
-     * @param arr  the two-dimensional array to be displayed.
-     *
-     * @since      0.1.0
-     * @see        #display(double[][], int)
-     */
-    final public static void display(double[ ][ ] arr) {
-        if (arr == null || arr.length == 0) {
-            System.out.println("<null_2darray>");
-        } else {
-            System.out.println((new Matrix(arr)).toString());
-        }
-    }
-
-
-    /**
-     * Displays and prints the specified row of given two-dimensional array to standard output
-     * in Python-style.
-     *
-     * <p>Displays <code>{@literal <null_2darray>}</code> if the entries
-     * of given two-dimensional array is {@code null} or empty.
-     *
-     * <p><b>Output example:</b></p>
-     *
-     * <pre>&nbsp;
-     *   [n, n, n, ...]
-     * </pre>
-     *
-     * @param  arr                    the two-dimensional array to be displayed.
-     * @param  index                  the index row of two-dimensional array.
-     *
-     * @throws InvalidIndexException  if the given index is negative value or
-     *                                the index is larger than number of rows.
-     *
-     * @since                         0.2.0
-     * @see                           #display(double[][])
-     */
-    final public static void display(double[ ][ ] arr, int index) {
-        if (arr == null || arr.length == 0) {
-            System.out.println("<null_2darray>");
-        } else {
-            // Checking index value
-            if (index < 0) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be a negative value.");
-            } else if (index > arr.length - 1) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be larger than number of rows.");
-            }
-
-            // Throw the exception if got one
-            if (cause != null) Options.raiseError(cause);
-
-            System.out.println(Arrays.toString(arr[index]));
-        }
-    }
+    /*---------------------------
+    ::   Matrix Transposition
+    ---------------------------*/
 
 
     /**
@@ -2436,6 +2032,19 @@ public class Matrix implements MatrixUtils {
     }
 
 
+
+    /*=========================================
+    ::
+    ::  MATRIX TYPE CHECKERS
+    ::
+    =========================================*/
+
+
+    /*---------------------------
+    ::      Square Matrix
+    ---------------------------*/
+
+
     /**
      * Checks whether this matrix is a square matrix.
      *
@@ -2454,6 +2063,7 @@ public class Matrix implements MatrixUtils {
     public boolean isSquare() {
         return Matrix.isSquare(this);
     }
+
 
     /**
      * Checks whether the given two-dimensional array represents a square matrix.
@@ -2480,6 +2090,7 @@ public class Matrix implements MatrixUtils {
 
         return (arr.length == arr[0].length);
     }
+
 
     /**
      * Checks whether the given matrix is a square matrix.
@@ -2508,6 +2119,12 @@ public class Matrix implements MatrixUtils {
     }
 
 
+
+    /*---------------------------
+    ::     Diagonal Matrix
+    ---------------------------*/
+
+
     /**
      * Checks whether this matrix is a diagonal matrix.
      *
@@ -2526,6 +2143,7 @@ public class Matrix implements MatrixUtils {
     public boolean isDiagonal() {
         return Matrix.isDiagonal(this);
     }
+
 
     /**
      * Checks whether the given matrix is a diagonal matrix.
@@ -2562,6 +2180,7 @@ public class Matrix implements MatrixUtils {
 
         return true;
     }
+
 
     /**
      * Checks whether the given two-dimensional array represents a diagonal matrix.
@@ -2600,6 +2219,12 @@ public class Matrix implements MatrixUtils {
     }
 
 
+
+    /*---------------------------
+    :: Lower Triangular Matrix
+    ---------------------------*/
+
+
     /**
      * Checks if this matrix is lower triangular.
      *
@@ -2621,7 +2246,7 @@ public class Matrix implements MatrixUtils {
      *  <li>The product of an lower triangular matrix and a scalar is lower triangular.
      * </ul>
      *
-     * <p><b>Example:</b></p>
+     * <p>Example of lower triangular matrix:
      *
      * <pre>&nbsp;
      *   [   [3, 5, -2],
@@ -2644,6 +2269,7 @@ public class Matrix implements MatrixUtils {
         return Matrix.isLowerTriangular(this);
     }
 
+
     /**
      * Checks if the given square matrix is lower triangular.
      *
@@ -2665,7 +2291,7 @@ public class Matrix implements MatrixUtils {
      *  <li>The product of an lower triangular matrix and a scalar is lower triangular.
      * </ul>
      *
-     * <p><b>Example:</b></p>
+     * <p>Example of lower triangular matrix:
      *
      * <pre>&nbsp;
      *   [   [3, 5, -2],
@@ -2734,7 +2360,7 @@ public class Matrix implements MatrixUtils {
      *  <li>The product of an lower triangular matrix and a scalar is lower triangular.
      * </ul>
      *
-     * <p><b>Example:</b></p>
+     * <p>Example of lower triangular matrix:
      *
      * <pre>&nbsp;
      *   [   [3, 5, -2],
@@ -2783,6 +2409,11 @@ public class Matrix implements MatrixUtils {
 
 
 
+    /*---------------------------
+    :: Upper Triangular Matrix
+    ---------------------------*/
+
+
     /**
      * Checks if this matrix is upper triangular.
      *
@@ -2804,7 +2435,7 @@ public class Matrix implements MatrixUtils {
      *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
      * </ul>
      *
-     * <p><b>Example:</b></p>
+     * <p>Example of upper triangular matrix:
      *
      * <pre>&nbsp;
      *   [   [-2, 0, 0],
@@ -2827,6 +2458,7 @@ public class Matrix implements MatrixUtils {
         return Matrix.isUpperTriangular(this);
     }
 
+
     /**
      * Checks if the given square matrix is upper triangular.
      *
@@ -2848,7 +2480,7 @@ public class Matrix implements MatrixUtils {
      *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
      * </ul>
      *
-     * <p><b>Example:</b></p>
+     * <p>Example of upper triangular matrix:
      *
      * <pre>&nbsp;
      *   [   [-2, 0, 0],
@@ -2895,6 +2527,7 @@ public class Matrix implements MatrixUtils {
         return true;
     }
 
+
     /**
      * Checks if the given square two-dimensional array is upper triangular.
      *
@@ -2916,7 +2549,7 @@ public class Matrix implements MatrixUtils {
      *  <li>The product of an upper triangular matrix and a scalar is upper triangular.
      * </ul>
      *
-     * <p><b>Example:</b></p>
+     * <p>Example of upper triangular matrix:
      *
      * <pre>&nbsp;
      *   [   [-2, 0, 0],
@@ -2965,10 +2598,294 @@ public class Matrix implements MatrixUtils {
 
 
 
+    /*=========================================
+    ::
+    ::  ADDITIONAL / UTILITIES METHODS
+    ::
+    =========================================*/
+
+
+    /*---------------------------
+    ::       Matrix Copy
+    ---------------------------*/
+
     /**
-     * Clears and changes all elements of this matrix to zero.
+     * Duplicates this matrix to another matrix object.
      *
-     * <p>Also this method would converts this matrix into {@code null} matrix or zero matrix.
+     * <p><b>Deprecated:</b> This method is deprecated due to its usage of shallow copy,
+     * which may lead to unexpected behavior. It is recommended to use {@link #deepCopy()} method instead,
+     * which performs a deep copy of the matrix.</p>
+     *
+     * @return                          the copied of this matrix with all of its attributes.
+     *
+     * @throws     NullMatrixException  if the entries of this matrix is {@code null}.
+     *
+     * @since                           0.2.0
+     * @see                             #deepCopy()
+     *
+     * @deprecated                      This method is deprecated and may
+     *                                  result in unexpected behavior.
+     *                                  Use {@link #deepCopy()} for performing a
+     *                                  deep copy of the matrix instead.
+     */
+    @Deprecated
+    public Matrix copy() {
+        try {
+            if (this.ENTRIES == null) {
+                throw new NullMatrixException(
+                    "Matrix is null. Please ensure the matrix are initialized.");
+            }
+        } catch (final NullMatrixException nme) {
+            Options.raiseError(nme);
+        }
+
+        // Create new and copy the matrix
+        return new Matrix(this.getEntries());
+    }
+
+
+    /**
+     * Creates and returns a deep copy of this matrix.
+     *
+     * @return a new <b>Matrix</b> object which is a deep copy of this matrix.
+     *
+     * @since  1.0.0b.7
+     * @see    MatrixUtils#deepCopyOf(Matrix)
+     * @see    com.mitsuki.jmatrix.core.MatrixUtils
+     */
+    public Matrix deepCopy() {
+        return MatrixUtils.deepCopyOf(this);
+    }
+
+
+
+    /*---------------------------
+    ::      Matrix Select
+    ---------------------------*/
+
+
+    /**
+     * Selects the matrix row with the specified index.
+     *
+     * <p>This method should be combined with {@link #change(double ...) change} method.<br>
+     * The indexing is similar to array which zero is the first index.
+     * And the index cannot be a negative value.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 5, 6, 7 },
+     *       { 4, 5, 6 }
+     *   };
+     *
+     *   Matrix m = new Matrix(a);
+     *
+     *   // Change the values of first row
+     *   double[] newRow = { 1, 2, 3 };
+     *   m.select(0).change(newRow);
+     *
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [1.0, 2.0, 3.0],
+     *       [4.0, 5.0, 6.0]   ]
+     * </pre>
+     *
+     * @param  index                  the index row to be selected.
+     *
+     * @return                        self.
+     *
+     * @throws InvalidIndexException  if the input index is negative value
+     *                                or larger than number of matrix rows.
+     * @throws NullMatrixException    if entries of this matrix is {@code null}.
+     *
+     * @since                         0.2.0
+     * @see                           #change(double ...)
+     * @see                           #change(double)
+     */
+    public Matrix select(final int index) {
+        // Check for matrix with null entries
+        if (this.ENTRIES == null) {
+            cause = new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized.");
+        }
+        // Check for negative index
+        else if (index < 0) {
+            cause = new InvalidIndexException(
+                "Given index is negative value. Please ensure the index is positive value.");
+        }
+        // Check for given index is greater than total rows
+        else if (index > this.ROWS - 1) {
+            cause = new InvalidIndexException(
+                "Given index is too larger than number of rows.");
+        }
+
+        if (cause != null) Options.raiseError(cause);
+
+        this.selectedIndex = index;
+        this.hasSelect = true;
+
+        return this; // return self
+    }
+
+
+
+    /*---------------------------
+    ::      Matrix Change
+    ---------------------------*/
+
+
+    /**
+     * Changes all values at specified row with the given values.
+     *
+     * <p>Only use this method when already called {@link #select(int) select} method.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 5, 6, 7 },
+     *       { 4, 5, 6 }
+     *   };
+     *
+     *   Matrix m = new Matrix(a);
+     *
+     *   // Change the values of first row
+     *   double[] newRow = { 1, 2, 3 };
+     *   m.select(0).change(newRow);
+     *
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [1.0, 2.0, 3.0],
+     *       [4.0, 5.0, 6.0]   ]
+     * </pre>
+     *
+     * @param  values                    the values to changes all column entries at specified row.
+     *
+     * @throws IllegalArgumentException  if the given argument is overcapacity to matrix column
+     *                                   or not enough argument to fill the column.
+     * @throws InvalidIndexException     if attempts to call this method
+     *                                   but have not called {@link #select(int) select} method
+     *                                   or the selected index is a negative value.
+     *
+     * @since                            0.2.0
+     * @see                              #select(int)
+     * @see                              #change(double)
+     */
+    public void change(double ... values) {
+        // Check whether the values size is greater than number of columns of this matrix
+        if (values.length > this.COLS) {
+            cause = new JMatrixBaseException(new IllegalArgumentException(
+                "Too many values for matrix with columns: " + this.COLS));
+        }
+        // Check whether the values size is lower than number of columns of this matrix
+        else if (values.length < this.COLS) {
+            cause = new JMatrixBaseException(new IllegalArgumentException(
+                "Not enough values for matrix with columns: " + this.COLS));
+        }
+        // Check if the user have not select any index row
+        else if (!this.hasSelect) {
+            cause = new InvalidIndexException(
+                "Selected index is null. " +
+                "Please ensure you have already called \"select(int)\" method."
+            );
+        }
+
+        // Throw the exception if got one
+        if (cause != null) Options.raiseError(cause);
+
+        // Change values of matrix column with values from argument parameter
+        for (int i = 0; i < this.COLS; i++) {
+            this.ENTRIES[this.selectedIndex][i] = values[i];
+        }
+
+        // reset to default
+        this.selectedIndex = 0;
+        this.hasSelect = false;
+    }
+
+
+    /**
+     * Changes all values at specified column with the repeated of given value.
+     *
+     * <p>Only use this method when already called {@link #select(int) select} method.
+     *
+     * <p><b>For example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   double[][] a = {
+     *       { 5, 6, 7 },
+     *       { 4, 5, 6 }
+     *   };
+     *
+     *   Matrix m = new Matrix(a);
+     *
+     *   // Change the values of first row
+     *   m.select(0).change(5);
+     *
+     *   m.display();
+     * </code></pre>
+     *
+     * <p><b>Output:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [5.0, 5.0, 5.0],
+     *       [4.0, 5.0, 6.0]   ]
+     * </pre>
+     *
+     * @param  value                  the value to changes all values at specified column.
+     *
+     * @throws InvalidIndexException  if attempts to call this method
+     *                                but have not called {@link #select(int) select} method
+     *                                or the selected index is a negative value.
+     *
+     * @since                         0.2.0
+     * @see                           #select(int)
+     * @see                           #change(double ...)
+     */
+    public void change(double value) {
+        // Check if the user have not select any index row
+        // If user have not then it will immediately raise the exception
+        if (!this.hasSelect) {
+            Options.raiseError(new InvalidIndexException(
+                "Selected index is null. " +
+                "Please ensure you have already called \"select(int)\" method."
+            ));
+        }
+
+        // Create new array with same value
+        double[ ] values = new double[this.COLS];
+        for (int i = 0; i < this.COLS; i++) {
+            values[i] = value;
+        }
+
+        for (int i = 0; i < this.COLS; i++) {
+            this.ENTRIES[this.selectedIndex][i] = values[i];
+        }
+
+        // reset to default
+        this.selectedIndex = 0;
+        this.hasSelect = false;
+    }
+
+
+
+    /*---------------------------
+    ::      Matrix Clear
+    ---------------------------*/
+
+
+    /**
+     * Clears and changes all elements of this matrix to zero,
+     * and converts this matrix into "zero matrix".
      *
      * @throws NullMatrixException  if the entries of this matrix is {@code null}.
      *
@@ -2987,6 +2904,12 @@ public class Matrix implements MatrixUtils {
             }
         }
     }
+
+
+
+    /*---------------------------
+    ::       Matrix Sort
+    ---------------------------*/
 
 
     /**
@@ -3071,6 +2994,12 @@ public class Matrix implements MatrixUtils {
 
         return new Matrix(sortedArr);
     }
+
+
+
+    /*---------------------------
+    ::       Matrix Get
+    ---------------------------*/
 
 
     /**
@@ -3184,6 +3113,7 @@ public class Matrix implements MatrixUtils {
         return this.ENTRIES[row][col];
     }
 
+
     /**
      * Returns the {@code double} two-dimensional array representation of this matrix elements.
      *
@@ -3203,10 +3133,169 @@ public class Matrix implements MatrixUtils {
         return this.ENTRIES;
     }
 
+
+
+    /*---------------------------
+    ::      Matrix Display
+    ---------------------------*/
+
+
+    /**
+     * Displays and prints this matrix to standard output in Python-style.
+     *
+     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
+     * of this matrix is {@code null}.<br>
+     * To retrieve the elements of this matrix, please refer to {@link #getEntries()} method.
+     *
+     * <p><b>Output example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [n, n, n, ...],
+     *       [n, n, n, ...],
+     *       [n, n, n, ...]   ]
+     * </pre>
+     *
+     * @since 0.1.0
+     * @see   #display(int)
+     * @see   #getEntries()
+     */
+    final public void display() {
+        if (this.ENTRIES != null) {
+            System.out.println(this.toString());
+        } else {
+            System.out.println("<null_matrix>");
+        }
+    }
+
+
+    /**
+     * Displays and prints the specified row of this matrix to standard output in Python-style.
+     *
+     * <p>Displays <code>{@literal <null_matrix>}</code> if the entries
+     * of this matrix is {@code null}.<br>
+     * To retrieve the elements of this matrix, please refer to {@link #getEntries()} method.
+     *
+     * <p><b>Output example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [n, n, n, ...]
+     * </pre>
+     *
+     * @param  index                  the index row of this matrix.
+     *
+     * @throws InvalidIndexException  if the given index is negative value or
+     *                                the index is larger than number of rows.
+     *
+     * @since                         0.2.0
+     * @see                           #display()
+     * @see                           #getEntries()
+     */
+    final public void display(int index) {
+        if (this.ENTRIES != null) {
+            // Check for negative index and throw the exception
+            if (index < 0) {
+                cause = new InvalidIndexException(
+                    "Invalid given index. Index cannot be a negative value.");
+            }
+            // Check if the given index greater than number of rows this matrix
+            else if (index > this.ROWS - 1) {
+                cause = new InvalidIndexException(
+                    "Invalid given index. Index cannot be larger than number of rows.");
+            }
+
+            // Throw the exception if got one
+            if (cause != null) Options.raiseError(cause);
+
+            System.out.println(Arrays.toString(this.ENTRIES[index]));
+        } else {
+            System.out.println("<null_matrix>");
+        }
+    }
+
+
+    /**
+     * Displays and prints the given two-dimensional array to standard output in Python-style.
+     *
+     * <p>Displays <code>{@literal <null_2darray>}</code> if the entries
+     * of given two-dimensional array is {@code null} or empty.
+     *
+     * <p><b>Output example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [   [n, n, n, ...],
+     *       [n, n, n, ...],
+     *       [n, n, n, ...]   ]
+     * </pre>
+     *
+     * @param arr  the two-dimensional array to be displayed.
+     *
+     * @since      0.1.0
+     * @see        #display(double[][], int)
+     */
+    final public static void display(double[ ][ ] arr) {
+        if (arr == null || arr.length == 0) {
+            System.out.println("<null_2darray>");
+        } else {
+            System.out.println((new Matrix(arr)).toString());
+        }
+    }
+
+
+    /**
+     * Displays and prints the specified row of given two-dimensional array to standard output
+     * in Python-style.
+     *
+     * <p>Displays <code>{@literal <null_2darray>}</code> if the entries
+     * of given two-dimensional array is {@code null} or empty.
+     *
+     * <p><b>Output example:</b></p>
+     *
+     * <pre>&nbsp;
+     *   [n, n, n, ...]
+     * </pre>
+     *
+     * @param  arr                    the two-dimensional array to be displayed.
+     * @param  index                  the index row of two-dimensional array.
+     *
+     * @throws InvalidIndexException  if the given index is negative value or
+     *                                the index is larger than number of rows.
+     *
+     * @since                         0.2.0
+     * @see                           #display(double[][])
+     */
+    final public static void display(double[ ][ ] arr, int index) {
+        if (arr == null || arr.length == 0) {
+            System.out.println("<null_2darray>");
+        } else {
+            // Checking index value
+            if (index < 0) {
+                cause = new InvalidIndexException(
+                    "Invalid given index. Index cannot be a negative value.");
+            } else if (index > arr.length - 1) {
+                cause = new InvalidIndexException(
+                    "Invalid given index. Index cannot be larger than number of rows.");
+            }
+
+            // Throw the exception if got one
+            if (cause != null) Options.raiseError(cause);
+
+            System.out.println(Arrays.toString(arr[index]));
+        }
+    }
+
+
+
+    /*=========================================
+    ::
+    ::  OVERRIDEN METHODS
+    ::
+    =========================================*/
+
+
     /**
      * Returns a {@code String} representation of this matrix.
      *
-     * <p>Please refer to {@link #display()} to display this matrix in simply way.
+     * <p>Use the {@link #display()} method to display this matrix in simply way.
      *
      * @return the {@code String} representation of this matrix in Python-style array notation.
      *
@@ -3295,6 +3384,7 @@ public class Matrix implements MatrixUtils {
 
         return false;
     }
+
 
     /**
      * Returns the hash code value for this matrix.

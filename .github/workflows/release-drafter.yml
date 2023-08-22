@@ -1,3 +1,17 @@
+# The "Release Drafter" workflow automates the process of drafting
+# new releases by generating release notes based on pull requests
+# and commits. This workflow is triggered when changes are pushed to
+# the `master` branch and when pull requests are opened, reopened,
+# or synchronized.
+#
+# This workflow streamlines the process of creating informative and organized
+# release notes for each new version of the project. It ensures that
+# the release notes accurately reflect the changes introduced by pull requests
+# and commits, enhancing transparency and communication with users and contributors.
+#
+# For more details about Release Drafter, consider refer to link below.
+#   https://github.com/release-drafter/release-drafter
+
 name: Release Drafter
 
 on:
@@ -5,7 +19,7 @@ on:
     # branches to consider in the event; optional, defaults to all
     branches:
       - master
-      # - develop
+
   # pull_request event is required only for autolabeler
   pull_request:
     # Only following types are handled by the action, but one can default to all as well
