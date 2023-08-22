@@ -8,7 +8,7 @@
     <properties>
         <author.name>Ryuu Mitsuki</author.name>
         <package.name>JMatrix</package.name>
-        <package.version.core>1.2.0</package.version.core>
+        <package.version.core>1.2.2</package.version.core>
         <package.mainClass>com.mitsuki.jmatrix.Main</package.mainClass>
         <package.releaseType>stable</package.releaseType>
         <package.betaNum>0</package.betaNum>
@@ -33,7 +33,7 @@
     <groupId>com.mitsuki</groupId>
     <artifactId>jmatrix</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
 
     <profiles>
         <!--
