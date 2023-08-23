@@ -4,6 +4,47 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.mitsuki</groupId>
+    <artifactId>jmatrix</artifactId>
+    <packaging>jar</packaging>
+    <version>1.2.2</version>
+
+
+    <name>JMatrix</name>
+    <url>https://github.com/mitsuki31/jmatrix.git</url>
+    <inceptionYear>2023</inceptionYear>
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+
+    <!-- Developers & Maintainers -->
+    <developers>
+        <developer>
+            <id>mitsuki31</id>
+            <name>Ryuu Mitsuki</name>
+            <url>https://github.com/mitsuki31</url>
+        </developer>
+    </developers>
+
+
+    <!-- Issues & CI -->
+    <issueManagement>
+         <system>github</system>
+         <url>https://github.com/mitsuki31/jmatrix/issues</url>
+     </issueManagement>
+     <ciManagement>
+         <system>github</system>
+         <url>https://github.com/mitsuki31/jmatrix/actions</url>
+     </ciManagement>
+
+
     <!-- Properties -->
     <properties>
         <author.name>Ryuu Mitsuki</author.name>
@@ -12,11 +53,14 @@
         <package.mainClass>com.mitsuki.jmatrix.Main</package.mainClass>
         <package.releaseType>stable</package.releaseType>
         <package.betaNum>0</package.betaNum>
+        <jdkVersion>11</jdkVersion>
+        <verbose>false</verbose>
 
         <!-- Encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
 
     <!-- Dependencies -->
     <dependencies>
@@ -28,50 +72,48 @@
         </dependency>
     </dependencies>
 
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.mitsuki</groupId>
-    <artifactId>jmatrix</artifactId>
-    <packaging>jar</packaging>
-    <version>1.2.2</version>
-
-    <profiles>
-        <!--
-            This profile will include all source files while packaging
-            Use it for packaging with command `mvn package -P include-src`
-        -->
-        <profile>
-            <id>include-src</id>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/java</directory>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-    </profiles>
 
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${project.basedir}</directory>
+                <includes>
+                    <include>LICENSE</include>
+                </includes>
             </resource>
         </resources>
 
+
         <!-- Plugins -->
         <plugins>
+
             <!-- Maven Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${jdkVersion}</source>
+                    <target>${jdkVersion}</target>
+                    <testSource>${jdkVersion}</testSource>
+                    <testTarget>${jdkVersion}</testTarget>
+                    <compilerVersion>${jdkVersion}</compilerVersion>
+                    <showDeprecation>true</showDeprecation>
+                    <debug>true</debug>
+                    <fork>true</fork>
+                    <compilerArgs>
+                        <arg>-Xlint:deprecation</arg>
+                        <arg>-Xlint:unchecked</arg>
+                        <arg>-Xlint:cast</arg>
+                    </compilerArgs>
+                    <maxmem>128m</maxmem>
                 </configuration>
             </plugin>
+
 
             <!-- Maven Javadoc -->
             <plugin>
@@ -79,11 +121,27 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <additionalparam>-encoding UTF-8</additionalparam>
+                    <show>protected</show>
+                    <author>true</author>
+                    <version>true</version>
+                    <detectLinks>true</detectLinks>
+                    <linksource>true</linksource>
+                    <keywords>true</keywords>
+                    <use>true</use>
+                    <windowtitle>JMatrix API</windowtitle>
+                    <encoding>UTF-8</encoding>
+                    <locale>en</locale>
+                    <javadocVersion>${jdkVersion}</javadocVersion>
+                    <verbose>${verbose}</verbose>
+                    <minmemory>32m</minmemory>
+                    <maxmemory>128m</maxmemory>
+                    <failOnError>true</failOnError>
                 </configuration>
             </plugin>
 
+
             <!-- Maven Resources -->
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -112,6 +170,15 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
+
+
+            <!-- Maven Source -->
+            <plugin>
+                 <artifactId>maven-source-plugin</artifactId>
+                 <version>2.4</version>
+             </plugin>
+
 
             <!-- Maven JAR -->
             <plugin>
@@ -120,20 +187,25 @@
                 <version>3.2.0</version>
                 <configuration>
                     <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>target/classes/</classpathPrefix>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                         <manifestEntries>
                             <Program-Name>${package.name}</Program-Name>
+                            <Version>${project.version}</Version>
                             <Main-Class>${package.mainClass}</Main-Class>
                             <Built-By>${author.name}</Built-By>
+                            <License>Apache License 2.0</License>
                             <License-File>LICENSE</License-File>
                             <Manifest-Version>1.2</Manifest-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
+
 
             <!-- Maven Surefire -->
             <plugin>
@@ -143,4 +215,31 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+            This profile will include all source files while packaging
+            Use it for packaging with command `mvn package -P include-src`
+        -->
+        <profile>
+            <id>include-src</id>
+            <!-- Build and include the source artifacts in "src/main/java" -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
