@@ -104,6 +104,7 @@
                     <compilerVersion>${jdkVersion}</compilerVersion>
                     <showDeprecation>true</showDeprecation>
                     <debug>true</debug>
+                    <verbose>${verbose}</verbose>
                     <fork>true</fork>
                     <compilerArgs>
                         <arg>-Xlint:deprecation</arg>
@@ -121,6 +122,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
+                    <destDir>docs/jmatrix</destDir>
                     <show>protected</show>
                     <author>true</author>
                     <version>true</version>
@@ -136,41 +138,12 @@
                     <minmemory>32m</minmemory>
                     <maxmemory>128m</maxmemory>
                     <failOnError>true</failOnError>
+                    <includeDependencySources>true</includeDependencySources>
+                    <dependencySourceIncludes>
+                        <dependencySourceInclude>junit:junit:*</dependencySourceInclude>
+                    </dependencySourceIncludes>
                 </configuration>
             </plugin>
-
-
-            <!-- Maven Resources -->
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.basedir}</directory>
-                                    <includes>
-                                        <include>LICENSE</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
 
 
             <!-- Maven Source -->
@@ -217,13 +190,14 @@
     </build>
 
     <profiles>
-        <!--
-            This profile will include all source files while packaging
-            Use it for packaging with command `mvn package -P include-src`
-        -->
         <profile>
             <id>include-src</id>
-            <!-- Build and include the source artifacts in "src/main/java" -->
+            <!--
+            Build and include the source artifacts in "src/main/java".
+            After that, in "target" directory it will have two JAR files:
+                * jmatrix-<VERSION>.jar
+                * jmatrix-<VERSION>-sources.jar
+            -->
             <build>
                 <plugins>
                     <plugin>
@@ -237,6 +211,30 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>lint</id>
+            <!-- Activate the linter during build the project -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <compilerArgs>
+                                <arg>-Xlint:all</arg>
+                                <arg>-Xdoclint:all</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalparam>-Xdoclint:all</additionalparam>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
