@@ -32,7 +32,7 @@ MANIFEST       := META-INF/MANIFEST.MF
 
 MAKE_USAGE_TXC := docs/makefile-usage.txcc
 MAKE_USAGE_TXT := docs/makefile-usage.txt
-DOCS_PATH      := docs/jmatrix-$(VERSION)
+DOCS_PATH      := $(OUTPUT_PATH)site/apidocs/jmatrix-$(VERSION)
 
 SOURCES_LIST   := target/generated-list/sourceFiles.lst
 CLASSES_LIST   := target/generated-list/outputFiles.lst
@@ -337,7 +337,7 @@ ifeq "$(shell [ -d $(DOCS_PATH) ] && echo 1)" "1"
 	@-rm -r $(DOCS_PATH) $(VERBOSE_FLAGS)
 else
 # Send warning message if the directory does not exist
-	$(warning $(PREFIX) Directory does not exist: "$(DOCS_PATH)")
+	$(warning $(PREFIX) No such file or directory: "$(subst ./,,$(DOCS_PATH))")
 endif
 
 	@echo
