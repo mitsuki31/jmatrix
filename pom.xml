@@ -59,6 +59,9 @@
         <!-- Encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Timestamp -->
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
     </properties>
 
 
@@ -122,27 +125,76 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
-                    <destDir>docs/jmatrix</destDir>
+                    <windowtitle>${project.name} API</windowtitle>
+                    <destDir>jmatrix-${project.version}</destDir>
                     <show>protected</show>
                     <author>true</author>
                     <version>true</version>
                     <detectLinks>true</detectLinks>
                     <linksource>true</linksource>
                     <keywords>true</keywords>
-                    <use>true</use>
-                    <windowtitle>JMatrix API</windowtitle>
+                    <use>false</use>
                     <encoding>UTF-8</encoding>
                     <locale>en</locale>
-                    <javadocVersion>${jdkVersion}</javadocVersion>
                     <verbose>${verbose}</verbose>
                     <minmemory>32m</minmemory>
                     <maxmemory>128m</maxmemory>
                     <failOnError>true</failOnError>
+                    <bottom>
+                        <![CDATA[
+                            Copyright (C) {inceptionYear} <a href="https://github.com/mitsuki31">${author.name}</a>. All rights reserved.
+                        ]]>
+                    </bottom>
+
+                    <!-- Dependencies -->
                     <includeDependencySources>true</includeDependencySources>
-                    <dependencySourceIncludes>
-                        <dependencySourceInclude>junit:junit:*</dependencySourceInclude>
-                    </dependencySourceIncludes>
+                    <excludePackageNames>
+                        <!-- Exclude *jmatrix.util and its child packages -->
+                        com.mitsuki.jmatrix.util:com.mitsuki.jmatrix.util.*
+                    </excludePackageNames>
+
+                    <!-- Custom Tags -->
+                    <tags>
+                        <tag>
+                            <name>param</name>
+                        </tag>
+                        <tag>
+                            <name>return</name>
+                        </tag>
+                        <tag>
+                            <name>throws</name>
+                        </tag>
+                        <tag>
+                            <name>warning</name>
+                            <!-- All places -->
+                            <placement>a</placement>
+                            <head>Warning:</head>
+                        </tag>
+                        <tag>
+                            <name>author</name>
+                        </tag>
+                        <tag>
+                            <name>license</name>
+                            <!-- Packages & Types (Classes or interfaces) -->
+                            <placement>pt</placement>
+                            <head>License:</head>
+                        </tag>
+                        <tag>
+                            <name>see</name>
+                        </tag>
+                    </tags>
                 </configuration>
+
+                <!-- Executions -->
+                <executions>
+                    <execution>
+                        <id>generate-javadoc</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>javadoc-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
 
@@ -163,17 +215,18 @@
                         <addMavenDescriptor>false</addMavenDescriptor>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <classpathPrefix>target/classes/</classpathPrefix>
+                            <classpathPrefix>${basedir}/target/classes/</classpathPrefix>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                         <manifestEntries>
-                            <Program-Name>${package.name}</Program-Name>
+                            <Manifest-Version>1.2</Manifest-Version>
+                            <Program-Name>${project.name}</Program-Name>
                             <Version>${project.version}</Version>
                             <Main-Class>${package.mainClass}</Main-Class>
                             <Built-By>${author.name}</Built-By>
+                            <Build-Time>${maven.build.timestamp}</Build-Time>
                             <License>Apache License 2.0</License>
                             <License-File>LICENSE</License-File>
-                            <Manifest-Version>1.2</Manifest-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -204,7 +257,7 @@
                         <artifactId>maven-source-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>attach-sources</id>
+                                <id>bundle-sources</id>
                                 <phase>prepare-package</phase>
                                 <goals>
                                     <goal>jar-no-fork</goal>
@@ -233,7 +286,7 @@
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
-                            <additionalparam>-Xdoclint:all</additionalparam>
+                            <doclint>all</doclint>
                         </configuration>
                     </plugin>
                 </plugins>
