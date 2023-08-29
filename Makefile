@@ -19,7 +19,7 @@ FLAGS ?=
 LINT ?=
 
 
-ALL_RULES := all compile package clean cleanbin cleandocs
+ALL_RULES := all compile package clean cleanbin cleandocs usage build-docs check-verbose
 
 # Path variables
 PYTHON_PATH    := ./src/main/python/
@@ -32,7 +32,7 @@ MANIFEST       := META-INF/MANIFEST.MF
 
 MAKE_USAGE_TXC := docs/makefile-usage.txcc
 MAKE_USAGE_TXT := docs/makefile-usage.txt
-DOCS_PATH      := docs/jmatrix
+DOCS_PATH      := docs/jmatrix-$(VERSION)
 
 SOURCES_LIST   := target/generated-list/sourceFiles.lst
 CLASSES_LIST   := target/generated-list/outputFiles.lst
@@ -258,13 +258,11 @@ endif
 	@echo
 	@echo ">> [ BUILD DOCS ] <<"
 	@echo "$(PREFIX) Build the JMatrix docs..."
-	@javadoc -author -version -d $(DOCS_PATH) -Xdoclint \
-		@$^ --release 11 -windowtitle "JMatrix" -doctitle "<b>JMatrix</b> v$(VERSION)" \
+	@javadoc -author -version -d $(DOCS_PATH) -locale en -docencoding "UTF-8" -keywords -Xdoclint:all \
+		@$^ -windowtitle "JMatrix API" -protected -exclude com.mitsuki.jmatrix.util:com.mitsuki.jmatrix.util.* \
 		-tag param -tag return -tag throws -tag warning:a:"Warning:" -tag author -tag license:a:"License:" -tag see \
-		-Xdoclint/package:-com.mitsuki.jmatrix.core \
-		-bottom "<font size="-1">Copyright (c) 2023 <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>.</font>" \
-		-group "Core Packages" "com.mitsuki.jmatrix*:com.mitsuki.jmatrix.core" \
-		-group "Utilities Packages" "com.mitsuki.jmatrix.util" $(VERBOSE_FLAGS) $(FLAGS)
+		-bottom "Copyright (C) 2023 <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>. All rights reserved." \
+		$(VERBOSE_FLAGS) $(FLAGS)
 
 	@echo "$(PREFIX) Successfully build the JMatrix docs."
 	@echo
