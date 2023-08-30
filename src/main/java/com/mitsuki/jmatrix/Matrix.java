@@ -2032,6 +2032,157 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*---------------------------
+    ::       Matrix Trace
+    ---------------------------*/
+
+    /**
+     * Calculates the trace of this matrix.
+     *
+     * <p>The trace of a square matrix is the sum of its diagonal elements.
+     * In other words, it is the sum of the elements located at the main diagonal of
+     * the matrix, from the top-left to the bottom-right.
+     *
+     * <p>Throws {@link IllegalMatrixSizeException} if this matrix is not a square matrix.
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5, 6, 2, 8 },
+     *       { 3, 2, 4, 19 },
+     *       { 1, 1, -2, 12 },
+     *       { 15, 11, -9, 7 }
+     *   });
+     *
+     *   System.out.println(m.trace());
+     * </code></pre>
+     *
+     * <p>Output:</p>
+     * <code>trace = 5 + 2 + (-2) + 7 = <b>12</b></code>.
+     *
+     * @return                             the sum of the diagonal elements of this matrix.
+     *
+     * @throws IllegalMatrixSizeException  If this matrix is not square.
+     *                                     In other words, it does not have the same
+     *                                     number of rows and columns.
+     *
+     * @since                              1.5.0
+     * @see                                #trace(Matrix)
+     * @see                                #trace(double[][])
+     */
+    public double trace() {
+        return Matrix.trace(this);
+    }
+
+
+    /**
+     * Calculates the trace of a square matrix.
+     *
+     * <p>The trace of a square matrix is the sum of its diagonal elements.
+     * In other words, it is the sum of the elements located at the main diagonal of
+     * the matrix, from the top-left to the bottom-right.
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5, 6, 2, 8 },
+     *       { 3, 2, 4, 19 },
+     *       { 1, 1, -2, 12 },
+     *       { 15, 11, -9, 7 }
+     *   });
+     *
+     *   System.out.println(m.trace());
+     * </code></pre>
+     *
+     * <p>Output:</p>
+     * <code>trace = 5 + 2 + (-2) + 7 = <b>12</b></code>.
+     *
+     * @param  m                           the square matrix for which to calculate the trace.
+     *
+     * @return                             the sum of the diagonal elements of the given matrix.
+     *
+     * @throws IllegalMatrixSizeException  If the given matrix is not square.
+     *                                     In other words, it does not have the same
+     *                                     number of rows and columns.
+     *
+     * @since                              1.5.0
+     * @see                                #trace()
+     * @see                                #trace(double[][])
+     */
+    public static double trace(Matrix m) {
+        // Raise an error if the matrix is not square
+        if (!m.isSquare()) {
+            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+                "Matrix is non-square type. " +
+                "Please ensure the matrix has the same number of rows and columns."
+            ));
+        }
+
+        double res = 0.0;  // Store the result
+
+        // Iterate through the matrix and calculate
+        // the sum of its diagonal elements
+        for (int i = 0; i < m.getSize()[0]; i++) {
+            res += m.get(i, i);
+        }
+
+        return res;
+    }
+
+
+    /**
+     * Calculates the trace of a two-dimensional array that represents a square matrix.
+     *
+     * <p>The trace of a square matrix is the sum of its diagonal elements.
+     * In other words, it is the sum of the elements located at the main diagonal of
+     * the matrix, from the top-left to the bottom-right.
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5, 6, 2, 8 },
+     *       { 3, 2, 4, 19 },
+     *       { 1, 1, -2, 12 },
+     *       { 15, 11, -9, 7 }
+     *   });
+     *
+     *   System.out.println(m.trace());
+     * </code></pre>
+     *
+     * <p>Output:</p>
+     * <code>trace = 5 + 2 + (-2) + 7 = <b>12.0</b></code>.
+     *
+     * @param  arr                         the two-dimensional array for which to calculate the trace.
+     *
+     * @return                             the sum of the diagonal elements of the given array.
+     *
+     * @throws IllegalMatrixSizeException  If the given two-dimensional array is not square.
+     *                                     In other words, it does not have the same
+     *                                     number of rows and columns.
+     *
+     * @since                              1.5.0
+     * @see                                #trace()
+     * @see                                #trace(double[][])
+     */
+    public static double trace(double[ ][ ] arr) {
+        if (!Matrix.isSquare(arr)) {
+            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+                "Array is non-square type. " +
+                "Please ensure the array has the same number of rows and columns."
+            ));
+        }
+
+        double res = 0.0;
+        for (int i = 0; i < arr.length; i++) {
+            res += arr[i][i];
+        }
+
+        return res;
+    }
+
 
     /*=========================================
     ::
