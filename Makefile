@@ -32,7 +32,7 @@ MANIFEST       := META-INF/MANIFEST.MF
 
 MAKE_USAGE_TXC := docs/makefile-usage.txcc
 MAKE_USAGE_TXT := docs/makefile-usage.txt
-DOCS_PATH      := $(OUTPUT_PATH)site/apidocs/jmatrix-$(VERSION)
+DOCS_PATH      := docs/jmatrix-$(VERSION)
 
 SOURCES_LIST   := target/generated-list/sourceFiles.lst
 CLASSES_LIST   := target/generated-list/outputFiles.lst

@@ -127,8 +127,8 @@
                 <version>3.3.0</version>
                 <configuration>
                     <windowtitle>${project.name} API</windowtitle>
-                    <destDir>jmatrix-${project.version}</destDir>
-                    <reportOutputDirectory>jmatrix-${project.version}</reportOutputDirectory>
+                    <destDir>docs/jmatrix-${project.version}</destDir>
+                    <reportOutputDirectory>docs/jmatrix-${project.version}</reportOutputDirectory>
                     <show>protected</show>
                     <author>true</author>
                     <version>true</version>
