@@ -1,3 +1,7 @@
+#### ---------------- ====================================== ####
+####  :: Setup.mk ::   Setup and utilities file for Main.mk  ####
+#### ---------------- ====================================== ####
+
 # Copyright (c) 2023 Ryuu Mitsuki
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +16,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-####  :: Setup.mk :: Setup and utilities file for Main.mk  ####
 
 
 ## :::::::::::::::: ##
@@ -45,10 +47,12 @@ JAVADOC_OUT    := $(DOCS_DIR)/jmatrix-$(VERSION)
 # Files paths
 MANIFEST       := META-INF/MANIFEST.MF
 JAR_FILE       := $(TARGET_DIR)/jmatrix-$(VERSION).jar
-MAKE_USAGE_TXC := $(DOCS_DIR)/makefile-usage.txcc
-MAKE_USAGE_TXT := $(DOCS_DIR)/makefile-usage.txt
+MAKE_USAGE     := $(DOCS_DIR)/makefile-usage.txcc $(DOCS_DIR)/makefile-usage.txt
 SOURCES_LIST   := $(TARGET_DIR)/generated-list/sourceFiles.lst
 CLASSES_LIST   := $(TARGET_DIR)/generated-list/outputFiles.lst
+
+# Others
+EXCLUDE_PKGS   := com.mitsuki.jmatrix.util
 
 
 
@@ -74,11 +78,11 @@ CLASSES_LIST   := $(TARGET_DIR)/generated-list/outputFiles.lst
 define __get_sources
   ifeq "$(1)" "true"
     SOURCES := $(shell                              \
-      find $(SOURCE_DIR) -type f -name '*.java' |   \
-      sed 's/$(subst /,\/,$(SOURCE_DIR)//'          \
+      find $(JAVA_DIR) -type f -name '*.java' |     \
+      sed 's/^$(subst /,\/,$(JAVA_DIR)/)//'         \
     )
   else
-    SOURCES := $(shell find $(SOURCE_DIR) -type -f name '*.java')
+    SOURCES := $(shell find $(JAVA_DIR) -type f -name '*.java')
   endif
 endef  # __get_sources
 
@@ -102,3 +106,22 @@ endef  # __get_sources
 define __is_exist
 $(if $(wildcard $(1)),1,0)
 endef  # __is_exist
+
+
+# __help Function
+#
+# This function prints a help message based on the provided argument, where
+# 0 < N < 3 (N is the given number). The help message is read from a list
+# called `MAKE_USAGE`. Users can optionally pipe the output of this function
+# into another command (e.g., `less`) for easier viewing.
+#
+# Usage:
+#   $(call __help,1) [ | <COMMAND>]
+#
+# Arguments:
+#   integer:
+#     An integer value specifying which help message to display.
+#
+define __help
+	@cat $(word $(1),$(MAKE_USAGE))
+endef  # __help
