@@ -19,6 +19,7 @@
 
 include $(shell pwd)/make/Setup.mk
 
+
 # Enable the linter if '.lint' is present in command line arguments or
 # LINT variable are defined and the value is 'true'.
 #
@@ -28,32 +29,60 @@ include $(shell pwd)/make/Setup.mk
 # It is equivalent with:
 #   $ make <TARGET> LINT=true
 #
-ifeq "$(filter $(MAKECMDGOALS),.lint)" ".lint"
-  JFLAGS        += -Xlint:all -Xdoclint:all
+ifeq ($(filter $(MAKECMDGOALS),.lint),.lint)
   MAKECMDGOALS  := $(strip $(subst .lint,,$(MAKECMDGOALS)))
+
+  JFLAGS        += -Xlint:all -Xdoclint:all
   __intern_LINT := 1
+  LINT          := true
 else
   # Enable the linter with all checks if LINT is true
-  ifeq "$(LINT)" "true"
+  ifeq ($(LINT),true)
     JFLAGS        += -Xlint:all -Xdoclint:all
     __intern_LINT := 1
   else
-    JFLAGS        += -Xlint:deprecation,unchecked,cast
+    JFLAGS        += -Xlint:deprecation,unchecked,cast -Xdoclint:html,syntax/protected
   endif
 endif
 
 
-# Call the `__get_sources` to initialize `SOURCES` variable
-# and retrieve the paths to all Java source files in "src/main/java" directory.
-$(eval $(call __get_sources,false))
+# Enable the verbose output if '.verbose' is present in command line arguments or
+# VERBOSE variable are defined and the value is 'true'.
+#
+# For example:
+#   $ make <TARGET> .verbose
+#
+# It is equivalent with:
+#   $ make <TARGET> VERBOSE=true
+#
+ifeq ($(filter $(MAKECMDGOALS),.verbose),.verbose)
+  MAKECMDGOALS     := $(strip $(subst .verbose,,$(MAKECMDGOALS)))
 
-# Replace the '.java' with '.class' and the directory with "target/classes"
-CLASSES_FILES := $(patsubst $(JAVA_DIR)/%.java,$(CLASSES_DIR)/%.class,$(SOURCES))
+  JFLAGS           += -verbose
+  VERBOSE          := true
+  __intern_VERBOSE := 1
+else
+  # Enable the verbose if VERBOSE is true
+  ifeq ($(VERBOSE),true)
+    JFLAGS           += -verbose
+    __intern_VERBOSE := 1
+  endif
+endif
 
-# Colorize the prefix
-CLR_PREFIX    := [$(call __clr_br,6,jmatrix)]
 
+# Enable option to include the source files get archived if '.include-src' is present
+# in command line arguments or INCLUDE_SRC variable are defined and
+# the value is 'true'.
+#
+ifeq ($(filter $(MAKECMDGOALS),.include-src),.include-src)
+  MAKECMDGOALS       := $(strip $(subst .include-src,,$(MAKECMDGOALS)))
 
+  __intern_INC_SRC   := 1
+else
+  ifeq ($(INCLUDE_SRC),true)
+    __intern_INC_SRC := 1
+  endif
+endif
 
 
 ## :::::::::::::::: ##
@@ -72,16 +101,17 @@ help:
 # or modified, then it will compile all source files again, even though it is only one of them.
 # If you want more efficient and more easier on compilation, consider to use Maven instead.
 $(CLASSES_FILES): $(SOURCES)
-	$(eval JFLAGS += $(FLAGS))
+	$(eval JFLAGS += $(FLAGS) $(addprefix -J,$(MEMFLAGS)))
 
-	$(if $(__intern_LINT),\
-		$(info $(CLR_PREFIX) $(call __clr,7,LINT) is $(call __clr_br,2,ENABLED)),\
-		$(info $(CLR_PREFIX) $(call __clr,7,LINT) is $(call __clr_br,1,DISABLED))\
-	)
+	$(info $(CLR_PREFIX) $(call __clr_br,5,LINT):$(if $(__intern_LINT),\
+		$(call __clr_br,2,ENABLED),\
+		$(call __clr_br,1,DISABLED)\
+	))
 
 	$(info $(CLR_PREFIX) Compiling all Java source files...)
 	$(foreach src,$^,\
-		$(info $(call __clr_br,3,  >) $(call __clr,7,$(notdir $(src))): $(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(src)))))\
+		$(info $(call __clr_br,3,   *) $(call __bold,$(notdir $(src))):\
+		$(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(call __clr,6,$(src))))))\
 	)
 
 	@$(JC) -d $(CLASSES_DIR) $^ $(JFLAGS)
@@ -91,7 +121,6 @@ $(CLASSES_FILES): $(SOURCES)
 ## :::::::::::::::: ##
 ##  Custom Flags    ##
 ## :::::::::::::::: ##
-
 
 # WARNING
 # -------
@@ -108,6 +137,7 @@ $(CLASSES_FILES): $(SOURCES)
 # no actions being taken, as the first argument is not actually a target rule.
 #
 
+
 # Enables the linter during compilation
 #
 # Usage:
@@ -117,4 +147,42 @@ $(CLASSES_FILES): $(SOURCES)
 #   make <TARGET> LINT=true
 #
 .lint:
+# The `@:` does nothing, but to prevent the message from Make get printed
+# Message: "Nothing to be done for '<TARGET>'"
+	@:
+
+
+# Enables the verbose output
+#
+# Usage:
+#   make <TARGET> .verbose
+#
+# Alternative usage:
+#   make <TARGET> VERBOSE=true
+#
+.verbose:
+# The `@:` does nothing, but to prevent the message from Make get printed
+# Message: "Nothing to be done for '<TARGET>'"
+	@:
+
+
+# Includes the source files to be archived
+#
+# It will generates two JAR files simultaneously, one containing the compiled classes
+# and the other containing only source files. The JAR file that contains
+# only source files will have the `-sources` suffix added to its name.
+#
+# Generated JAR files:
+#   - jmatrix-<VERSION>.jar
+#   - jmatrix-<VERSION>-sources.jar
+#
+# Usage:
+#   make <TARGET> .include-src
+#
+# Alternative usage:
+#   make <TARGET> INCLUDE_SRC=true
+#
+.include-src:
+# The `@:` does nothing, but to prevent the message from Make get printed
+# Message: "Nothing to be done for '<TARGET>'"
 	@:

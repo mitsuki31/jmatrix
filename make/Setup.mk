@@ -23,9 +23,9 @@
 ## :::::::::::::::: ##
 
 FLAGS       ?=
-INCLUDE_SRC ?=
-LINT        ?=
-VERBOSE     ?=
+INCLUDE_SRC ?= false
+LINT        ?= false
+VERBOSE     ?= false
 
 
 
@@ -58,6 +58,7 @@ CLASSES_LIST   := $(TARGET_DIR)/generated-list/outputFiles.lst
 
 # Others
 PREFIX         := [jmatrix]
+CLR_PREFIX     :=
 EXCLUDE_PKGS   := com.mitsuki.jmatrix.util
 COLORS         := \033[31m \033[32m \033[33m \033[34m \033[35m \
                   \033[36m \033[37m
@@ -67,6 +68,7 @@ COLORS_BR      := \033[1;91m \033[1;92m \033[1;93m \033[1;94m \033[1;95m \
 # Private and internal constants
 __intern_LINT    :=
 __intern_VERBOSE :=
+__intern_INC_SRC :=
 
 
 
@@ -201,3 +203,38 @@ endef  # __clr
 define __clr_br
 $(shell printf "$(word $(1),$(COLORS_BR))$(2)\033[0m")
 endef  # __clr_br
+
+
+# __bold Function
+#
+# This function prints the given message with a bold version of the current color.
+# It uses ANSI escape codes to apply it to the message.
+#
+# Usage:
+#   @echo $(call __bold,<message>)
+#
+# Arguments:
+#   message:
+#     The message to be printed.
+#
+define __bold
+$(shell printf "\033[1m$(1)\033[0m")
+endef
+
+
+
+# Call the `__get_sources` to initialize `SOURCES` variable
+# and retrieve the paths to all Java source files in "src/main/java" directory.
+$(eval $(call __get_sources,false))
+
+
+# Replace the '.java' with '.class' and the directory with "target/classes"
+CLASSES_FILES := $(patsubst $(JAVA_DIR)/%.java,$(CLASSES_DIR)/%.class,$(SOURCES))
+
+# Colorize the prefix
+CLR_PREFIX    := [$(call __clr_br,6,jmatrix)]
+
+# Get the packages list using string manipulation
+PACKAGES_LIST := $(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(SOURCES))))
+
+JFLAGS        := -encoding UTF-8
