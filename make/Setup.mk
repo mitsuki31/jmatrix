@@ -23,7 +23,7 @@
 ## :::::::::::::::: ##
 
 FLAGS       ?=
-INCLUDE-SRC ?=
+INCLUDE_SRC ?=
 LINT        ?=
 VERBOSE     ?=
 
@@ -32,6 +32,11 @@ VERBOSE     ?=
 ## :::::::::::::::: ##
 ##  Constants       ##
 ## :::::::::::::::: ##
+
+# Compiler and flags
+JC             := javac
+JFLAGS         :=
+MEMFLAGS       := -Xms32m -Xmx128m
 
 # Directories paths
 SOURCE_DIR     := src/main
@@ -52,7 +57,16 @@ SOURCES_LIST   := $(TARGET_DIR)/generated-list/sourceFiles.lst
 CLASSES_LIST   := $(TARGET_DIR)/generated-list/outputFiles.lst
 
 # Others
+PREFIX         := [jmatrix]
 EXCLUDE_PKGS   := com.mitsuki.jmatrix.util
+COLORS         := \033[31m \033[32m \033[33m \033[34m \033[35m \
+                  \033[36m \033[37m
+COLORS_BR      := \033[1;91m \033[1;92m \033[1;93m \033[1;94m \033[1;95m \
+                  \033[1;96m \033[1;97m
+
+# Private and internal constants
+__intern_LINT    :=
+__intern_VERBOSE :=
 
 
 
@@ -125,3 +139,65 @@ endef  # __is_exist
 define __help
 	@cat $(word $(1),$(MAKE_USAGE))
 endef  # __help
+
+
+# __clr Function
+#
+# This function prints the given message with the specified color. It uses ANSI escape
+# codes to apply the color to the message. The color is selected based on the argument
+# provided.
+#
+# Expected colors with their indices:
+#
+#   1: Red
+#   2: Green
+#   3: Yellow
+#   4: Blue
+#   5: Purple
+#   6: Cyan
+#   7: White
+#
+# Usage:
+#   @echo $(call __clr,<index>,<message>)
+#
+# Arguments:
+#   index:
+#     An integer value representing the color index (0 < index < 8).
+#
+#   message:
+#     The message to be printed with the specified color.
+#
+define __clr
+$(shell printf "$(word $(1),$(COLORS))$(2)\033[0m")
+endef  # __clr
+
+
+# __clr_br Function
+#
+# This function prints the given message with a brighter version of the specified color.
+# It uses ANSI escape codes to apply the color to the message. The color is selected based
+# on the argument provided.
+#
+# Expected colors with their indices:
+#
+#   1: Red
+#   2: Green
+#   3: Yellow
+#   4: Blue
+#   5: Purple
+#   6: Cyan
+#   7: White
+#
+# Usage:
+#   @echo $(call __clr_br,<index>,<message>)
+#
+# Arguments:
+#   index:
+#     An integer value representing the color index (0 < index < 8).
+#
+#   message:
+#     The message to be printed with the specified color.
+#
+define __clr_br
+$(shell printf "$(word $(1),$(COLORS_BR))$(2)\033[0m")
+endef  # __clr_br
