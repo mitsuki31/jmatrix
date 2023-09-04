@@ -232,6 +232,5 @@ endef  # __warn
 #     The detailed info message.
 #
 define __info
-$(info $(or $(CLR_PREFIX),[$(call __clr_br,6,jmatrix)])      \
-  $(call __clr,6,$(1)))
+	@echo "$(or $(CLR_PREFIX),[$(call __clr_br,6,jmatrix)]) $(call __clr,6,$(1))"
 endef  # __info
