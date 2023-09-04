@@ -1,5 +1,5 @@
 #### ---------------- ====================================== ####
-####  :: Setup.mk ::   Setup and utilities file for Main.mk  ####
+####  :: Setup.mk ::   Setup and utilities file for globals  ####
 #### ---------------- ====================================== ####
 
 # Copyright (c) 2023 Ryuu Mitsuki
@@ -18,10 +18,33 @@
 #
 
 
+# Import: Func.mk
+include $(or $(MAKE_DIR),$(shell pwd)/make)/Func.mk
+
+# Import: Prop.mk
+include $(or $(MAKE_DIR),$(shell pwd)/make)/Prop.mk
+
+
+# Prevent null or empty values for both version and program name
+# If these constants undefined, warn user and then use their default values instead
+#
+ifndef PROGNAME
+  $(call __warn,PROGNAME constant are not defined correctly. Overriden by the default value)
+  PROGNAME := jmatrix
+endif  # PROGNAME
+
+ifndef VERSION
+  $(call __warn,VERSION constant are not defined correctly. Overriden by the default value)
+  VERSION  := x.x.x-SNAPSHOT
+endif  # VERSION
+
+
+
 ## :::::::::::::::: ##
 ##  User Options    ##
 ## :::::::::::::::: ##
 
+# Set the default values to "false" except for FLAGS option
 FLAGS       ?=
 INCLUDE_SRC ?= false
 LINT        ?= false
@@ -33,12 +56,33 @@ VERBOSE     ?= false
 ##  Constants       ##
 ## :::::::::::::::: ##
 
-# Compiler and flags
+### Java commands
 JC             := javac
-JFLAGS         :=
-MEMFLAGS       := -Xms32m -Xmx128m
+JAR            := jar
+JDOC           := javadoc
 
-# Directories paths
+### Flags
+# Check if these constants has been defined to avoid redefine
+# and avoid accidentally overriding by the default value
+ifndef JCFLAGS
+  JCFLAGS      :=
+endif  # JCFLAGS
+
+ifndef JARFLAGS
+  JARFLAGS     :=
+endif  # JARFLAGS
+
+ifndef JDOCFLAGS
+  JDOCFLAGS    :=
+endif  ## JDOCFLAGS
+
+ifndef MEMFLAGS
+  # Minimum: 32M  |  Maximum: 64M
+  MEMFLAGS     := -Xms32m -Xmx64m
+endif  # MEMFLAGS
+
+
+### ::: Directories paths
 SOURCE_DIR     := src/main
 TEST_DIR       := src/test
 TARGET_DIR     := target
@@ -49,29 +93,41 @@ RESOURCE_DIR   := $(SOURCE_DIR)/resources
 CLASSES_DIR    := $(TARGET_DIR)/classes
 JAVADOC_OUT    := $(DOCS_DIR)/jmatrix-$(VERSION)
 
-# Files paths
+### ::: Files paths
 MANIFEST       := META-INF/MANIFEST.MF
-JAR_FILE       := $(TARGET_DIR)/jmatrix-$(VERSION).jar
-MAKE_USAGE     := $(DOCS_DIR)/makefile-usage.txcc $(DOCS_DIR)/makefile-usage.txt
+MAKE_USAGE     := $(addprefix $(DOCS_DIR)/,makefile-usage.txcc makefile-usage.txt)
 SOURCES_LIST   := $(TARGET_DIR)/generated-list/sourceFiles.lst
 CLASSES_LIST   := $(TARGET_DIR)/generated-list/outputFiles.lst
 
-# Others
-PREFIX         := [jmatrix]
-CLR_PREFIX     :=
+### ::: Others
+PREFIX         := [$(PROGNAME)]
+CLR_PREFIX     := [$(call __clr_br,6,jmatrix)]
+
+# Check whether the current version is release version, zero if false, otherwise non-zero
+IS_RELEASE     := $(if $(findstring 1,$(words $(subst -, ,$(VERSION)))),1,0)
 EXCLUDE_PKGS   := com.mitsuki.jmatrix.util
+JAR_NAMES      := $(addprefix $(TARGET_DIR)/,\
+                      $(PROGNAME)-$(VERSION).jar
+                      $(PROGNAME)-$(VERSION)-sources.jar
+                  )
+# Retrieve all resources directories in "src/main/resources"
+RESOURCES      := $(wildcard $(RESOURCE_DIR)/*)
 
-# Private and internal constants
-__intern_LINT    :=
-__intern_VERBOSE :=
-__intern_INC_SRC :=
+
+### Private and internal constants
+ifndef __intern_LINT
+  __intern_LINT    :=
+endif # __intern_LINT
+
+ifndef __intern_VERBOSE
+  __intern_VERBOSE :=
+endif # __intern_VERBOSE
+
+ifndef __intern_INC_SRC
+  __intern_INC_SRC :=
+endif # __intern_INC_SRC
 
 
-ifdef MAKE_DIR
-include $(MAKE_DIR)/Func.mk
-else
-include $(shell pwd)/Func.mk
-endif
 
 
 # Call the `__get_sources` to initialize `SOURCES` variable
@@ -80,12 +136,11 @@ $(eval $(call __get_sources,false))
 
 
 # Replace the '.java' with '.class' and the directory with "target/classes"
-CLASSES_FILES := $(patsubst $(JAVA_DIR)/%.java,$(CLASSES_DIR)/%.class,$(SOURCES))
-
-# Colorize the prefix
-CLR_PREFIX    := [$(call __clr_br,6,jmatrix)]
+#
+# This also can be done using:
+#  $(subst $(JAVA_DIR),$(CLASSES_DIR),$(SOURCES:.java=.class))
+#
+CLASSES_FILES  := $(patsubst $(JAVA_DIR)/%.java,$(CLASSES_DIR)/%.class,$(SOURCES))
 
 # Get the packages list using string manipulation
-PACKAGES_LIST := $(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(SOURCES))))
-
-JFLAGS        := -encoding UTF-8
+PACKAGES_LIST  := $(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(SOURCES))))
