@@ -38,7 +38,7 @@ jobs:
     steps:
       # Checkout repository
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Caching Maven deps
       - name: Cache Maven dependencies
@@ -108,7 +108,7 @@ jobs:
     steps:
       # Checkout
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Setup Python
       - name: Setup Python ${{ matrix.py-ver }}
