@@ -43,12 +43,18 @@ COLORS_BR      := \033[1;91m \033[1;92m \033[1;93m \033[1;94m \033[1;95m \
 #
 define __get_sources
   ifeq "$(1)" "true"
-    SOURCES := $(shell                              \
-      find $(JAVA_DIR) -type f -name '*.java' |     \
-      sed 's/^$(subst /,\/,$(JAVA_DIR)/)//'         \
+    SOURCES := $(or $(shell                                   \
+      find $(JAVA_DIR) -type f -name '*.java' 2>/dev/null |   \
+      sed 's/^$(subst /,\/,$(JAVA_DIR)/)//'                   \
+    ), $(call __raise_err,Fatal,Cannot find the source files  \
+      in "$(JAVA_DIR)". No such file or directory)            \
     )
   else
-    SOURCES := $(shell find $(JAVA_DIR) -type f -name '*.java')
+    SOURCES := $(or $(shell                                   \
+      find $(JAVA_DIR) -type f -name '*.java' 2>/dev/null     \
+    ), $(call __raise_err,Fatal,Cannot find the source files  \
+      in "$(JAVA_DIR)". No such file or directory)            \
+    )
   endif
 endef  # __get_sources
 
@@ -169,4 +175,63 @@ endef  # __clr_br
 #
 define __bold
 $(shell printf "$(BOLD)$(1)$(NORMAL)")
-endef
+endef  # __bold
+
+
+# __raise_err Function
+#
+# This function raises a customized Make error and prints the error message to the console.
+# It allows you to specify a title and a detailed error message.
+# With custom colors and prefixes applied to the error message.
+#
+# Usage:
+#   $(call __raise_err,<title>,<message>)
+#
+# Arguments:
+#   title:
+#     The title for the error message.
+#
+#   message:
+#     The detailed error message.
+#
+define __raise_err
+$(error $(or $(CLR_PREFIX),[$(call __clr_br,6,jmatrix)])     \
+  $(call __clr_br,1,$(1)): $(2))
+endef  # __raise_err
+
+
+# __warn Function
+#
+# This function raises a customized Make warning and prints the warning message to the console.
+# It allows you to specify a detailed warning message.
+# With custom colors and prefixes applied to the warning message.
+#
+# Usage:
+#   $(call __warn,<message>)
+#
+# Arguments:
+#   message:
+#     The detailed warning message.
+#
+define __warn
+$(warning $(or $(CLR_PREFIX),[$(call __clr_br,6,jmatrix)])   \
+  $(call __clr_br,3,Warning): $(1))
+endef  # __warn
+
+
+# __info Function
+#
+# This function prints the given info message to the console.
+# With custom colors and prefixes applied to the info message.
+#
+# Usage:
+#   $(call __info,<message>)
+#
+# Arguments:
+#   message:
+#     The detailed info message.
+#
+define __info
+$(info $(or $(CLR_PREFIX),[$(call __clr_br,6,jmatrix)])      \
+  $(call __clr,6,$(1)))
+endef  # __info
