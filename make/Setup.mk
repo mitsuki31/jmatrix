@@ -69,7 +69,8 @@ ifndef JCFLAGS
 endif  # JCFLAGS
 
 ifndef JARFLAGS
-  JARFLAGS     :=
+  # Simple flags: `cfm`
+  JARFLAGS     := --create --file={JAR} --manifest={MANIFEST}
 endif  # JARFLAGS
 
 ifndef JDOCFLAGS
@@ -106,9 +107,9 @@ CLR_PREFIX     := [$(call __clr_br,6,jmatrix)]
 # Check whether the current version is release version, zero if false, otherwise non-zero
 IS_RELEASE     := $(if $(findstring 1,$(words $(subst -, ,$(VERSION)))),1,0)
 EXCLUDE_PKGS   := com.mitsuki.jmatrix.util
-JAR_NAMES      := $(addprefix $(TARGET_DIR)/,\
-                      $(PROGNAME)-$(VERSION).jar
-                      $(PROGNAME)-$(VERSION)-sources.jar
+JAR_NAMES      := $(addprefix $(TARGET_DIR)/,             \
+                      $(PROGNAME)-$(VERSION).jar          \
+                      $(PROGNAME)-$(VERSION)-sources.jar  \
                   )
 # Retrieve all resources directories in "src/main/resources"
 RESOURCES      := $(wildcard $(RESOURCE_DIR)/*)
