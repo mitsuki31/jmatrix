@@ -18,6 +18,11 @@
 #
 
 
+# Define a guard variable to prevent and protect from import recursion
+ifndef __MAKE_SETUP_MK
+__MAKE_SETUP_MK = 1
+
+
 # Import: Func.mk
 include $(or $(MAKE_DIR),$(shell pwd)/make)/Func.mk
 
@@ -53,6 +58,20 @@ VERBOSE     ?= false
 
 
 ## :::::::::::::::: ##
+##  Properties      ##
+## :::::::::::::::: ##
+
+# User could overrides these properties but with caution
+
+ENCODING    ?= UTF-8
+SOURCE_JDK  ?= 11
+TARGET_JDK  ?= 11
+MIN_MEMORY  ?= 32m
+MAX_MEMORY  ?= 64m
+
+
+
+## :::::::::::::::: ##
 ##  Constants       ##
 ## :::::::::::::::: ##
 
@@ -65,7 +84,7 @@ JDOC           := javadoc
 # Check if these constants has been defined to avoid redefine
 # and avoid accidentally overriding by the default value
 ifndef JCFLAGS
-  JCFLAGS      :=
+  JCFLAGS      := -encoding $(ENCODING) -source $(SOURCE_JDK) -target $(TARGET_JDK)
 endif  # JCFLAGS
 
 ifndef JARFLAGS
@@ -78,8 +97,8 @@ ifndef JDOCFLAGS
 endif  ## JDOCFLAGS
 
 ifndef MEMFLAGS
-  # Minimum: 32M  |  Maximum: 64M
-  MEMFLAGS     := -Xms32m -Xmx64m
+  # Minimum: 32M  |  Maximum: 64M. See MIN_MEMORY and MAX_MEMORY
+  MEMFLAGS     := -Xms$(MIN_MEMORY) -Xmx$(MAX_MEMORY)
 endif  # MEMFLAGS
 
 
@@ -145,3 +164,5 @@ CLASSES_FILES  := $(patsubst $(JAVA_DIR)/%.java,$(CLASSES_DIR)/%.class,$(SOURCES
 
 # Get the packages list using string manipulation
 PACKAGES_LIST  := $(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(SOURCES))))
+
+endif  # __MAKE_SETUP_MK
