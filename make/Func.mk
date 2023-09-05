@@ -18,6 +18,11 @@
 #
 
 
+# Define a guard variable to prevent and protect from import recursion
+ifndef __MAKE_FUNC_MK
+__MAKE_FUNC_MK = 1
+
+
 NORMAL         := \033[0m
 BOLD           := \033[1m
 ITALIC         := \033[3m
@@ -234,3 +239,5 @@ endef  # __warn
 define __info
 	@echo "$(or $(CLR_PREFIX),[$(call __clr_br,6,jmatrix)]) $(call __clr,6,$(1))"
 endef  # __info
+
+endif  # __MAKE_FUNC_MK
