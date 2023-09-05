@@ -1,5 +1,5 @@
 #### ---------------- ====================================== ####
-####  :: Setup.mk ::   Setup and utilities file for Main.mk  ####
+####  :: Setup.mk ::   Setup and utilities file for globals  ####
 #### ---------------- ====================================== ####
 
 # Copyright (c) 2023 Ryuu Mitsuki
@@ -18,10 +18,38 @@
 #
 
 
+# Define a guard variable to prevent and protect from import recursion
+ifndef __MAKE_SETUP_MK
+__MAKE_SETUP_MK = 1
+
+
+# Import: Func.mk
+include $(or $(MAKE_DIR),$(shell pwd)/make)/Func.mk
+
+# Import: Prop.mk
+include $(or $(MAKE_DIR),$(shell pwd)/make)/Prop.mk
+
+
+# Prevent null or empty values for both version and program name
+# If these constants undefined, warn user and then use their default values instead
+#
+ifndef PROGNAME
+  $(call __warn,PROGNAME constant are not defined correctly. Overriden by the default value)
+  PROGNAME := jmatrix
+endif  # PROGNAME
+
+ifndef VERSION
+  $(call __warn,VERSION constant are not defined correctly. Overriden by the default value)
+  VERSION  := x.x.x-SNAPSHOT
+endif  # VERSION
+
+
+
 ## :::::::::::::::: ##
 ##  User Options    ##
 ## :::::::::::::::: ##
 
+# Set the default values to "false" except for FLAGS option
 FLAGS       ?=
 INCLUDE_SRC ?= false
 LINT        ?= false
@@ -30,15 +58,51 @@ VERBOSE     ?= false
 
 
 ## :::::::::::::::: ##
+##  Properties      ##
+## :::::::::::::::: ##
+
+# User could overrides these properties but with caution
+
+ENCODING    ?= UTF-8
+SOURCE_JDK  ?= 11
+TARGET_JDK  ?= 11
+MIN_MEMORY  ?= 32m
+MAX_MEMORY  ?= 64m
+
+
+
+## :::::::::::::::: ##
 ##  Constants       ##
 ## :::::::::::::::: ##
 
-# Compiler and flags
+### Java commands
 JC             := javac
-JFLAGS         :=
-MEMFLAGS       := -Xms32m -Xmx128m
+JAR            := jar
+JDOC           := javadoc
 
-# Directories paths
+### Flags
+# Check if these constants has been defined to avoid redefine
+# and avoid accidentally overriding by the default value
+ifndef JCFLAGS
+  JCFLAGS      := -encoding $(ENCODING) -source $(SOURCE_JDK) -target $(TARGET_JDK)
+endif  # JCFLAGS
+
+ifndef JARFLAGS
+  # Simple flags: `cfm`
+  JARFLAGS     := --create --file={JAR} --manifest={MANIFEST}
+endif  # JARFLAGS
+
+ifndef JDOCFLAGS
+  JDOCFLAGS    :=
+endif  ## JDOCFLAGS
+
+ifndef MEMFLAGS
+  # Minimum: 32M  |  Maximum: 64M. See MIN_MEMORY and MAX_MEMORY
+  MEMFLAGS     := -Xms$(MIN_MEMORY) -Xmx$(MAX_MEMORY)
+endif  # MEMFLAGS
+
+
+### ::: Directories paths
 SOURCE_DIR     := src/main
 TEST_DIR       := src/test
 TARGET_DIR     := target
@@ -49,177 +113,40 @@ RESOURCE_DIR   := $(SOURCE_DIR)/resources
 CLASSES_DIR    := $(TARGET_DIR)/classes
 JAVADOC_OUT    := $(DOCS_DIR)/jmatrix-$(VERSION)
 
-# Files paths
+### ::: Files paths
 MANIFEST       := META-INF/MANIFEST.MF
-JAR_FILE       := $(TARGET_DIR)/jmatrix-$(VERSION).jar
-MAKE_USAGE     := $(DOCS_DIR)/makefile-usage.txcc $(DOCS_DIR)/makefile-usage.txt
+MAKE_USAGE     := $(addprefix $(DOCS_DIR)/,makefile-usage.txcc makefile-usage.txt)
 SOURCES_LIST   := $(TARGET_DIR)/generated-list/sourceFiles.lst
 CLASSES_LIST   := $(TARGET_DIR)/generated-list/outputFiles.lst
 
-# Others
-PREFIX         := [jmatrix]
-CLR_PREFIX     :=
+### ::: Others
+PREFIX         := [$(PROGNAME)]
+CLR_PREFIX     := [$(call __clr_br,6,jmatrix)]
+
+# Check whether the current version is release version, zero if false, otherwise non-zero
+IS_RELEASE     := $(if $(findstring 1,$(words $(subst -, ,$(VERSION)))),1,0)
 EXCLUDE_PKGS   := com.mitsuki.jmatrix.util
-COLORS         := \033[31m \033[32m \033[33m \033[34m \033[35m \
-                  \033[36m \033[37m
-COLORS_BR      := \033[1;91m \033[1;92m \033[1;93m \033[1;94m \033[1;95m \
-                  \033[1;96m \033[1;97m
-
-# Private and internal constants
-__intern_LINT    :=
-__intern_VERBOSE :=
-__intern_INC_SRC :=
+JAR_NAMES      := $(addprefix $(TARGET_DIR)/,             \
+                      $(PROGNAME)-$(VERSION).jar          \
+                      $(PROGNAME)-$(VERSION)-sources.jar  \
+                  )
+# Retrieve all resources directories in "src/main/resources"
+RESOURCES      := $(wildcard $(RESOURCE_DIR)/*)
 
 
+### Private and internal constants
+ifndef __intern_LINT
+  __intern_LINT    :=
+endif # __intern_LINT
 
-## :::::::::::::::: ##
-##  Functions       ##
-## :::::::::::::::: ##
+ifndef __intern_VERBOSE
+  __intern_VERBOSE :=
+endif # __intern_VERBOSE
 
+ifndef __intern_INC_SRC
+  __intern_INC_SRC :=
+endif # __intern_INC_SRC
 
-# __get_sources Function
-#
-# This function retrieves the Java source files located in the "src/main/java" directory
-# and stores them in the `SOURCES` variable. The behavior of this function can be controlled
-# using the first argument.
-#
-# Usage:
-#   $(eval $(call get_sources[,<boolean>]))
-#
-# Arguments:
-#   boolean (optional):
-#     If set to "true", the function will trim the path prefix "src/main/java"
-#     from each source file and retain only the full package paths.
-#
-define __get_sources
-  ifeq "$(1)" "true"
-    SOURCES := $(shell                              \
-      find $(JAVA_DIR) -type f -name '*.java' |     \
-      sed 's/^$(subst /,\/,$(JAVA_DIR)/)//'         \
-    )
-  else
-    SOURCES := $(shell find $(JAVA_DIR) -type f -name '*.java')
-  endif
-endef  # __get_sources
-
-
-# __is_exist Function
-#
-# This function checks the existence of the specified directory or file path
-# and returns a binary number representing whether the path exists (1) or not (0).
-#
-# Usage:
-#   <COMMAND> $(call __is_exist,<path>)
-#
-# Arguments:
-#   path:
-#     The directory or file path to check for existence.
-#
-# Returns:
-#   1: Indicates that the specified path exists.
-#   0: Indicates that the specified path does not exist.
-#
-define __is_exist
-$(if $(wildcard $(1)),1,0)
-endef  # __is_exist
-
-
-# __help Function
-#
-# This function prints a help message based on the provided argument, where
-# 0 < N < 3 (N is the given number). The help message is read from a list
-# called `MAKE_USAGE`. Users can optionally pipe the output of this function
-# into another command (e.g., `less`) for easier viewing.
-#
-# Usage:
-#   $(call __help,1) [ | <COMMAND>]
-#
-# Arguments:
-#   integer:
-#     An integer value specifying which help message to display.
-#
-define __help
-	@cat $(word $(1),$(MAKE_USAGE))
-endef  # __help
-
-
-# __clr Function
-#
-# This function prints the given message with the specified color. It uses ANSI escape
-# codes to apply the color to the message. The color is selected based on the argument
-# provided.
-#
-# Expected colors with their indices:
-#
-#   1: Red
-#   2: Green
-#   3: Yellow
-#   4: Blue
-#   5: Purple
-#   6: Cyan
-#   7: White
-#
-# Usage:
-#   @echo $(call __clr,<index>,<message>)
-#
-# Arguments:
-#   index:
-#     An integer value representing the color index (0 < index < 8).
-#
-#   message:
-#     The message to be printed with the specified color.
-#
-define __clr
-$(shell printf "$(word $(1),$(COLORS))$(2)\033[0m")
-endef  # __clr
-
-
-# __clr_br Function
-#
-# This function prints the given message with a brighter version of the specified color.
-# It uses ANSI escape codes to apply the color to the message. The color is selected based
-# on the argument provided.
-#
-# Expected colors with their indices:
-#
-#   1: Red
-#   2: Green
-#   3: Yellow
-#   4: Blue
-#   5: Purple
-#   6: Cyan
-#   7: White
-#
-# Usage:
-#   @echo $(call __clr_br,<index>,<message>)
-#
-# Arguments:
-#   index:
-#     An integer value representing the color index (0 < index < 8).
-#
-#   message:
-#     The message to be printed with the specified color.
-#
-define __clr_br
-$(shell printf "$(word $(1),$(COLORS_BR))$(2)\033[0m")
-endef  # __clr_br
-
-
-# __bold Function
-#
-# This function prints the given message with a bold version of the current color.
-# It uses ANSI escape codes to apply it to the message.
-#
-# Usage:
-#   @echo $(call __bold,<message>)
-#
-# Arguments:
-#   message:
-#     The message to be printed.
-#
-define __bold
-$(shell printf "\033[1m$(1)\033[0m")
-endef
 
 
 
@@ -229,12 +156,13 @@ $(eval $(call __get_sources,false))
 
 
 # Replace the '.java' with '.class' and the directory with "target/classes"
-CLASSES_FILES := $(patsubst $(JAVA_DIR)/%.java,$(CLASSES_DIR)/%.class,$(SOURCES))
-
-# Colorize the prefix
-CLR_PREFIX    := [$(call __clr_br,6,jmatrix)]
+#
+# This also can be done using:
+#  $(subst $(JAVA_DIR),$(CLASSES_DIR),$(SOURCES:.java=.class))
+#
+CLASSES_FILES  := $(patsubst $(JAVA_DIR)/%.java,$(CLASSES_DIR)/%.class,$(SOURCES))
 
 # Get the packages list using string manipulation
-PACKAGES_LIST := $(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(SOURCES))))
+PACKAGES_LIST  := $(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(SOURCES))))
 
-JFLAGS        := -encoding UTF-8
+endif  # __MAKE_SETUP_MK
