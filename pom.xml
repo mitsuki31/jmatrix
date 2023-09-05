@@ -107,7 +107,6 @@
                     <testTarget>${jdkVersion}</testTarget>
                     <compilerVersion>${jdkVersion}</compilerVersion>
                     <showDeprecation>true</showDeprecation>
-                    <debug>true</debug>
                     <verbose>${verbose}</verbose>
                     <fork>true</fork>
                     <compilerArgs>
@@ -115,7 +114,7 @@
                         <arg>-Xlint:unchecked</arg>
                         <arg>-Xlint:cast</arg>
                     </compilerArgs>
-                    <maxmem>128m</maxmem>
+                    <maxmem>64m</maxmem>
                 </configuration>
             </plugin>
 
@@ -141,7 +140,7 @@
                     <quiet>${quiet}</quiet>
                     <verbose>${verbose}</verbose>
                     <minmemory>32m</minmemory>
-                    <maxmemory>128m</maxmemory>
+                    <maxmemory>64m</maxmemory>
                     <failOnError>true</failOnError>
                     <bottom>
                         <![CDATA[
