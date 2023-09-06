@@ -53,13 +53,38 @@
         <package.mainClass>com.mitsuki.jmatrix.Main</package.mainClass>
         <package.releaseType>stable</package.releaseType>
         <package.betaNum>0</package.betaNum>
+        <package.licenseFile>LICENSE</package.licenseFile>
+
+
+        <!-- Users could changes these properties if neccessary, but with caution -->
         <jdkVersion>11</jdkVersion>
+        <sourceJdk>${jdkVersion}</sourceJdk>
+        <targetJdk>${jdkVersion}</targetJdk>
+
         <verbose>false</verbose>
         <quiet>false</quiet>
+        <debug>false</debug>
+
+        <encoding>UTF-8</encoding>
+        <minmemory>32m</minmemory>
+        <maxmemory>64m</maxmemory>
+
+
+        <!-- Paths -->
+        <paths.manifestFile>${basedir}/META-INF/MANIFEST.MF</paths.manifestFile>
+
+        <paths.resourcesDir>${basedir}/src/main/resources</paths.resourcesDir>
+        <paths.docsDir>${basedir}/docs</paths.docsDir>
+
+        <paths.outputDir>${project.build.directory}</paths.outputDir>
+        <paths.classesDir>${project.build.outputDirectory}</paths.classesDir>
+        <paths.testClassesDir>${project.build.testOutputDirectory}</paths.testClassesDir>
+        <paths.docsOutputDir>${paths.docsDir}/jmatrix-${project.version}</paths.docsOutputDir>
+
 
         <!-- Encoding -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 
         <!-- Timestamp -->
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
@@ -80,14 +105,18 @@
     <build>
         <resources>
             <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
+                <directory>${paths.resourcesDir}</directory>
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <directory>${project.basedir}</directory>
+                <directory>${basedir}</directory>
                 <includes>
                     <include>LICENSE</include>
                 </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/META-INF</directory>
+                <filtering>true</filtering>
             </resource>
         </resources>
 
@@ -101,20 +130,26 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>${jdkVersion}</source>
-                    <target>${jdkVersion}</target>
-                    <testSource>${jdkVersion}</testSource>
-                    <testTarget>${jdkVersion}</testTarget>
+                    <source>${sourceJdk}</source>
+                    <target>${targetJdk}</target>
+                    <testSource>${sourceJdk}</testSource>
+                    <testTarget>${targetJdk}</testTarget>
                     <compilerVersion>${jdkVersion}</compilerVersion>
                     <showDeprecation>true</showDeprecation>
-                    <verbose>${verbose}</verbose>
                     <fork>true</fork>
+
+                    <debug>${debug}</debug>
+                    <verbose>${verbose}</verbose>
+
+                    <!-- Compiler Arguments -->
                     <compilerArgs>
-                        <arg>-Xlint:deprecation</arg>
-                        <arg>-Xlint:unchecked</arg>
-                        <arg>-Xlint:cast</arg>
+                        <arg>-Xlint:deprecation,unchecked,cast</arg>
+                        <arg>-Xdoclint:html,syntax/protected</arg>
                     </compilerArgs>
-                    <maxmem>64m</maxmem>
+
+                    <!-- Memory Allocation -->
+                    <meminitial>${minmemory}</meminitial>
+                    <maxmem>${maxmemory}</maxmem>
                 </configuration>
             </plugin>
 
@@ -126,22 +161,25 @@
                 <version>3.3.0</version>
                 <configuration>
                     <windowtitle>${project.name} API</windowtitle>
-                    <destDir>docs/jmatrix-${project.version}</destDir>
-                    <reportOutputDirectory>docs/jmatrix-${project.version}</reportOutputDirectory>
+                    <destDir>${paths.docsOutputDir}</destDir>
+                    <reportOutputDirectory>${paths.docsOutputDir}</reportOutputDirectory>
                     <show>protected</show>
                     <author>true</author>
                     <version>true</version>
                     <detectLinks>true</detectLinks>
-                    <linksource>true</linksource>
                     <keywords>true</keywords>
                     <use>false</use>
-                    <encoding>UTF-8</encoding>
+                    <encoding>${encoding}</encoding>
                     <locale>en</locale>
-                    <quiet>${quiet}</quiet>
-                    <verbose>${verbose}</verbose>
-                    <minmemory>32m</minmemory>
-                    <maxmemory>64m</maxmemory>
+
+                    <!-- Memory Allocation -->
+                    <minmemory>${minmemory}</minmemory>
+                    <maxmemory>${maxmemory}</maxmemory>
+
                     <failOnError>true</failOnError>
+                    <verbose>${verbose}</verbose>
+                    <quiet>${quiet}</quiet>
+
                     <bottom>
                         <![CDATA[
                             Copyright (C) {inceptionYear} <a href="https://github.com/mitsuki31">${author.name}</a>. All rights reserved.
@@ -215,21 +253,11 @@
                 <configuration>
                     <archive>
                         <addMavenDescriptor>false</addMavenDescriptor>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>${basedir}/target/classes/</classpathPrefix>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Manifest-Version>1.2</Manifest-Version>
-                            <Program-Name>${project.name}</Program-Name>
-                            <Version>${project.version}</Version>
-                            <Main-Class>${package.mainClass}</Main-Class>
-                            <Built-By>${author.name}</Built-By>
-                            <Build-Time>${maven.build.timestamp}</Build-Time>
-                            <License>Apache License 2.0</License>
-                            <License-File>LICENSE</License-File>
-                        </manifestEntries>
+                        <!--
+                        Since the original MANIFEST.MF are not filtered already,
+                        so here will use the filtered one that will be in "target/classes".
+                        -->
+                        <manifestFile>${paths.classesDir}/MANIFEST.MF</manifestFile>
                     </archive>
                 </configuration>
             </plugin>
