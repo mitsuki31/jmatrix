@@ -252,7 +252,9 @@
                 <version>3.2.0</version>
                 <configuration>
                     <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <!-- Include the auto-generated "pom.properties" and "pom.xml" to JAR file -->
+                        <addMavenDescriptor>true</addMavenDescriptor>
+
                         <!--
                         Since the original MANIFEST.MF are not filtered already,
                         so here will use the filtered one that will be in "target/classes".
