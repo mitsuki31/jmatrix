@@ -3,9 +3,10 @@ Name: ${project.name}
 ID: ${project.groupId}:${project.artifactId}
 Version: ${project.version}
 URL: ${project.url}
-Main-Class: ${package.mainClass}
 Inception-Year: ${project.inceptionYear}
-Built-By: ${author.name}
+Main-Class: ${package.mainClass}
+Author: ${project.developers[0].name}
+Author-URL: ${project.developers[0].url}
 Build-Time: ${maven.build.timestamp}
 License: ${project.licenses[0].name}
 License-URL: ${project.licenses[0].url}
