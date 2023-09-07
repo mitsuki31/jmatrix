@@ -93,7 +93,9 @@ ifndef JARFLAGS
 endif  # JARFLAGS
 
 ifndef JDOCFLAGS
-  JDOCFLAGS    :=
+  JDOCFLAGS    := -author -version -protected -keywords -d {OUTPATH} -locale en {PKG_LIST} \
+                  -exclude {EXCLUDE} -docencoding $(ENCODING) -windowtitle {WIN_TITLE}     \
+                  {TAGS} -bottom {BOTTOM}
 endif  ## JDOCFLAGS
 
 ifndef MEMFLAGS
@@ -135,17 +137,33 @@ RESOURCES      := $(wildcard $(RESOURCE_DIR)/*)
 
 
 ### Private and internal constants
+
+# Lint option
 ifndef __intern_LINT
   __intern_LINT    :=
 endif # __intern_LINT
 
+# Verbose option
 ifndef __intern_VERBOSE
   __intern_VERBOSE :=
 endif # __intern_VERBOSE
 
+# Include sources option
 ifndef __intern_INC_SRC
   __intern_INC_SRC :=
 endif # __intern_INC_SRC
+
+
+# Window title for HTML docs "JMatrix API"
+__jdoc_WIN_TITLE   := $(subst jm,JM,$(PROGNAME)) API
+
+# Custom Javadoc tags
+__jdoc_CUSTOM_TAGS := -tag param -tag return -tag throws     \
+                      -tag warning:a:"Warning:" -tag author  \
+                      -tag license:pt:"License:" -tag see
+
+# Custom bottom page; Must be closed with single quotes!
+__jdoc_BOTTOM      := 'Copyright (C) $(INCEPTION_YEAR) <a href="https://github.com/mitsuki31">$(AUTHOR)</a>. All rights reserved.'
 
 
 
@@ -164,5 +182,15 @@ CLASSES_FILES  := $(patsubst $(JAVA_DIR)/%.java,$(CLASSES_DIR)/%.class,$(SOURCES
 
 # Get the packages list using string manipulation
 PACKAGES_LIST  := $(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(SOURCES))))
+
+
+# Change neccessary values on JDOCFLAGS
+JDOCFLAGS := $(subst {OUT_PATH},$(JAVADOC_OUT),$(JDOCFLAGS))
+JDOCFLAGS := $(subst {PKG_LIST},$(PACKAGES_LIST),$(JDOCFLAGS))
+JDOCFLAGS := $(subst {EXCLUDE},$(EXCLUDE_PKGS),$(JDOCFLAGS))
+JDOCFLAGS := $(subst {WIN_TITLE},$(__jdoc_WIN_TITLE),$(JDOCFLAGS))
+JDOCFLAGS := $(subst {TAGS},$(__jdoc_CUSTOM_TAGS),$(JDOCFLAGS))
+JDOCFLAGS := $(subst {BOTTOM},$(__jdoc_BOTTOM),$(JDOCFLAGS))
+
 
 endif  # __MAKE_SETUP_MK
