@@ -241,3 +241,20 @@ define __info
 endef  # __info
 
 endif  # __MAKE_FUNC_MK
+
+
+# __lines Function
+#
+# This function prints a line with title in the center (if specified) to the console.
+# With custom colors and prefixes applied.
+#
+# Usage:
+#   $(call __lines,<title>)
+#
+# Arguments:
+#   title (optional):
+#     The title to be printed.
+#
+define __lines
+	$(call __info,------------------------------------------------------------------------)
+endef  # __lines
