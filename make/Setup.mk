@@ -93,9 +93,9 @@ ifndef JARFLAGS
 endif  # JARFLAGS
 
 ifndef JDOCFLAGS
-  JDOCFLAGS    := -author -version -protected -keywords -d {OUTPATH} -locale en {PKG_LIST} \
-                  -exclude {EXCLUDE} -docencoding $(ENCODING) -windowtitle {WIN_TITLE}     \
-                  {TAGS} -bottom {BOTTOM}
+  JDOCFLAGS    := -author -version -protected -keywords -sourcepath {SRCPATH} -subpackages com.mitsuki.jmatrix \
+                  -d {OUTPATH} -locale en_US -exclude {EXCLUDE} -docencoding $(ENCODING) \
+                  -windowtitle {WIN_TITLE} {TAGS} -bottom {BOTTOM}
 endif  ## JDOCFLAGS
 
 ifndef MEMFLAGS
@@ -155,7 +155,8 @@ endif # __intern_INC_SRC
 
 
 # Window title for HTML docs "JMatrix API"
-__jdoc_WIN_TITLE   := $(subst jm,JM,$(PROGNAME)) API
+__jdoc_WIN_TITLE   := "$(subst jm,JM,$(PROGNAME)) API"
+
 
 # Custom Javadoc tags
 __jdoc_CUSTOM_TAGS := -tag param -tag return -tag throws     \
@@ -185,8 +186,8 @@ PACKAGES_LIST  := $(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(SOURCES))))
 
 
 # Change neccessary values on JDOCFLAGS
-JDOCFLAGS := $(subst {OUT_PATH},$(JAVADOC_OUT),$(JDOCFLAGS))
-JDOCFLAGS := $(subst {PKG_LIST},$(PACKAGES_LIST),$(JDOCFLAGS))
+JDOCFLAGS := $(subst {SRCPATH},$(JAVA_DIR),$(JDOCFLAGS))
+JDOCFLAGS := $(subst {OUTPATH},$(JAVADOC_OUT),$(JDOCFLAGS))
 JDOCFLAGS := $(subst {EXCLUDE},$(EXCLUDE_PKGS),$(JDOCFLAGS))
 JDOCFLAGS := $(subst {WIN_TITLE},$(__jdoc_WIN_TITLE),$(JDOCFLAGS))
 JDOCFLAGS := $(subst {TAGS},$(__jdoc_CUSTOM_TAGS),$(JDOCFLAGS))
