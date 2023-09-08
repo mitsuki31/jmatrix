@@ -75,10 +75,30 @@ MAX_MEMORY  ?= 64m
 ##  Constants       ##
 ## :::::::::::::::: ##
 
-### Java commands
-JC             := javac
-JAR            := jar
-JDOC           := javadoc
+# Check whether JAVA_HOME exists then get neccessary Java commands
+# from its "bin" directory.
+ifdef JAVA_HOME
+  JC           := $(JAVA_HOME)/bin/javac
+  JDOC         := $(JAVA_HOME)/bin/javadoc
+  JAR          := $(JAVA_HOME)/bin/jar
+
+else
+# Otherwise, use `type` command to search the Java commands,
+# raise an error if the command not found.
+  JC           := $(or $(shell command -v javac 2> /dev/null),\
+                       $(call __raise_err,Fatal,Cannot find the `javac' command.\
+                       Please ensure that JDK is installed correctly)\
+                  )
+  JDOC         := $(or $(shell command -v javadoc 2> /dev/null),\
+                       $(call __raise_err,Fatal,Cannot find the `javadoc' command.\
+                       Please ensure that JDK is installed correctly)\
+                  )
+  JAR          := $(or $(shell command -v jar 2> /dev/null),\
+                       $(call __raise_err,Fatal,Cannot find the `jar' command.\
+                       Please ensure that JDK is installed correctly)\
+                  )
+endif  # JAVA_HOME
+
 
 ### Flags
 # Check if these constants has been defined to avoid redefine

@@ -102,7 +102,7 @@ compile: $(CLASSES_FILES)
 	@:
 
 
-package: compile
+package: compile | $(SOURCES) $(MANIFEST) $(RESOURCES)
 	$(call __job_msg,$@)
 
 	$(call __pr_include_src)
