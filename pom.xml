@@ -9,10 +9,11 @@
     <groupId>com.mitsuki</groupId>
     <artifactId>jmatrix</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.2</version>
+    <version>1.5.0-SNAPSHOT</version>
 
 
     <name>JMatrix</name>
+    <description>JMatrix is a Java library to build matrix with ease. Created by Ryuu Mitsuki.</description>
     <url>https://github.com/mitsuki31/jmatrix.git</url>
     <inceptionYear>2023</inceptionYear>
     <licenses>
@@ -65,7 +66,7 @@
         <quiet>false</quiet>
         <debug>false</debug>
 
-        <encoding>UTF-8</encoding>
+        <_encoding>UTF-8</_encoding>
         <minmemory>32m</minmemory>
         <maxmemory>64m</maxmemory>
 
@@ -83,8 +84,8 @@
 
 
         <!-- Encoding -->
-        <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>${_encoding}</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>${_encoding}</project.reporting.outputEncoding>
 
         <!-- Timestamp -->
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
@@ -169,7 +170,7 @@
                     <detectLinks>true</detectLinks>
                     <keywords>true</keywords>
                     <use>false</use>
-                    <encoding>${encoding}</encoding>
+                    <encoding>${_encoding}</encoding>
                     <locale>en</locale>
 
                     <!-- Memory Allocation -->
@@ -189,8 +190,8 @@
                     <!-- Dependencies -->
                     <includeDependencySources>true</includeDependencySources>
                     <excludePackageNames>
-                        <!-- Exclude *jmatrix.util and its child packages -->
-                        com.mitsuki.jmatrix.util:com.mitsuki.jmatrix.util.*
+                        <!-- Exclude com.mitsuki.jmatrix.util and its subpackages -->
+                        com.mitsuki.jmatrix.util
                     </excludePackageNames>
 
                     <!-- Custom Tags -->
