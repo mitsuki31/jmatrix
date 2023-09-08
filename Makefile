@@ -19,19 +19,17 @@
 
 
 MAKE_DIR     := $(shell pwd)/make
+SETUP_MAKE   := $(MAKE_DIR)/Setup.mk
 MAIN_MAKE    := $(MAKE_DIR)/Main.mk
 MKFLAGS      := --no-print-directory --silent --file {FILE}
 CUSTOMGOALS  := $(MAKECMDGOALS)
 
 
 # Imports
-ifneq ($(wildcard $(MAKE_DIR)),)
-include $(MAKE_DIR)/Setup.mk
-__HAS_IMPORTED = 1
-export __HAS_IMPORTED
+ifneq ($(wildcard $(MAKE_DIR)),)  # Check the "make" directory
+include $(SETUP_MAKE)
 else
-$(error $(shell printf "\033[1;91mFatal\033[0m"):\
-	Cannot import neccessary files from "$(MAKE_DIR)". No such file or directory)
+$(__raise_err,Fatal,Cannot import neccessary files from "$(MAKE_DIR)". No such a directory)
 endif
 
 
@@ -45,7 +43,7 @@ endif
 #   $ make <TARGET> LINT=true
 #
 ifeq ($(filter $(CUSTOMGOALS),.lint),.lint)
-  CUSTOMGOALS   := $(strip $(subst .lint,,$(CUSTOMGOALS)))
+  CUSTOMGOALS   := $(filter-out .lint,$(CUSTOMGOALS))
 
   JCFLAGS       += -Xlint:all -Xdoclint:all
   JDOCFLAGS     += -Xdoclint:all
@@ -61,7 +59,7 @@ else
     __intern_LINT := 1
   else
     JCFLAGS       += -Xlint:deprecation,unchecked,cast -Xdoclint:html,syntax/protected
-    JDOCFLAGS     += -Xdoclint:html,syntax/protected
+    JDOCFLAGS     += -Xdoclint:html,syntax
   endif
 endif
 
@@ -76,7 +74,7 @@ endif
 #   $ make <TARGET> VERBOSE=true
 #
 ifeq ($(filter $(CUSTOMGOALS),.verbose),.verbose)
-  CUSTOMGOALS      := $(strip $(subst .verbose,,$(CUSTOMGOALS)))
+  CUSTOMGOALS      := $(filter-out .verbose,$(CUSTOMGOALS))
 
   JCFLAGS          += -verbose
   JARFLAGS         += --verbose
@@ -92,6 +90,8 @@ else
     JDOCFLAGS         += -verbose
 
     __intern_VERBOSE  := 1
+  else
+    JDOCFLAGS         += -quiet
   endif
 endif
 
@@ -107,7 +107,7 @@ endif
 #   $ make <TARGET> INCLUDE_SRC=true
 #
 ifeq ($(filter $(CUSTOMGOALS),.include-src),.include-src)
-  CUSTOMGOALS        := $(strip $(subst .include-src,,$(CUSTOMGOALS)))
+  CUSTOMGOALS        := $(filter-out .include-src,$(CUSTOMGOALS)))
 
   INCLUDE_SRC        := true
   __intern_INC_SRC   := 1
@@ -121,6 +121,10 @@ endif
 
 # Default target rule; If no target rule specified then display the help message
 help:
+    # User could pipe this (`cat`) command to `less` command with:
+    #   $ make [help] | less -r
+    #
+    # And must specify `-r` or `--raw` flag to output the raw control-characters.
 	@cat $(word 1,$(MAKE_USAGE))
 
 .PHONY: help
@@ -128,35 +132,31 @@ help:
 
 # Exports
 export LINT VERBOSE INCLUDE_SRC FLAGS
-export JC JAR JDOC JCFLAGS JARFLAGS JDOCFLAGS
+export JCFLAGS JARFLAGS JDOCFLAGS
 export __intern_LINT __intern_VERBOSE __intern_INC_SRC
-export TARGET_DIR CLASSES_DIR JAVADOC_OUT DOCS_DIR MAKE_DIR JAVA_DIR
-export SOURCES CLASSES_FILES RESOURCES JAR_NAMES MANIFEST
-export PREFIX CLR_PREFIX
-export __is_exist
+export MAKE_DIR  # Suppress the warning
 
 
-
-
-$(info $(CLR_PREFIX) $(call __clr,6,-------------------------------------------------------------------------))
-$(info $(CLR_PREFIX) $(call __bold,Project): $(call __clr,4,$(PROGNAME)-$(VERSION)))
-$(info $(CLR_PREFIX) $(call __bold,Author): $(call __clr,4,$(AUTHOR)))
-$(info $(CLR_PREFIX) $(call __clr,6,-------------------------------------------------------------------------))
-
+# A variable used to signal whether the Make has been initialized and
+# currently on running stat. This variable also prevent some messages being printed
+# when user not specified any target rules or targetting only the `help` target.
+__init__ =
 
 # Accept any target rules (including undefined ones)
 # Then send all target rules to another Make file
+#
 %:
-	@$(if $(findstring $@,$(CUSTOMGOALS)),\
-		echo "$(CLR_PREFIX) $(call __bold,JOB START): $(call __clr_br,3,$@)",\
+    # These messages will be printed when __init__ still an empty variable
+    # i.e., does not have any value yet.
+	$(if $(__init__),,                                                                                                  \
+		$(eval __init__ = 1)                                                                                            \
+		$(info $(CLR_PREFIX) $(call __clr,6,------------------------------------------------------------------------))  \
+		$(info $(CLR_PREFIX) $(call __bold,Project): $(call __clr,4,$(PROGNAME)-$(VERSION)))                            \
+		$(info $(CLR_PREFIX) $(call __bold,Author): $(call __clr,4,$(AUTHOR)))                                          \
+		$(info $(CLR_PREFIX) $(call __clr,6,------------------------------------------------------------------------))  \
 	)
 
-# Leave this code unchecked by if statement and let the custom flags
-# flow to MAIN_MAKE ("Main.mk") file. If not, it will prints a little
-# annoying message, for example: "make: '.lint' is up to date."
+    # Skip this code below from the conditional check and allow the custom flags
+    # to pass through to the "Main.mk" file. Otherwise, it will display a potentially
+    # distracting message like: "make: '.lint' is up to date."
 	@+$(MAKE) $(subst {FILE},$(MAIN_MAKE),$(MKFLAGS)) $@
-
-	@$(if $(findstring $@,$(CUSTOMGOALS)),\
-		echo "$(CLR_PREFIX) $(call __bold,JOB DONE): $(call __clr_br,3,$@)"; \
-		echo "$(CLR_PREFIX) $(call __clr,6,-------------------------------------------------------------------------)",\
-	)
