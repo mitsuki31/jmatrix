@@ -19,7 +19,7 @@ __MAKE_PROP_MK = 1
 
 
 PROGNAME        := jmatrix
-VERSION         := 1.2.2
+VERSION         := 1.5.0-SNAPSHOT
 AUTHOR          := Ryuu Mitsuki
 INCEPTION_YEAR  := 2023
 
