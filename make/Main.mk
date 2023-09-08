@@ -42,7 +42,7 @@ define __pr_lint
 		$(call __clr_br,2,ENABLED),\
 		$(call __clr_br,1,DISABLED)\
 	))
-endef
+endef  # __pr_lint
 
 
 # __pr_verbose Function
@@ -57,7 +57,7 @@ define __pr_verbose
 		$(call __clr_br,2,ENABLED),\
 		$(call __clr_br,1,DISABLED)\
 	))
-endef
+endef  # __pr_verbose
 
 
 # __pr_include_src Function
@@ -72,7 +72,24 @@ define __pr_include_src
 		$(call __clr_br,2,ENABLED),\
 		$(call __clr_br,1,DISABLED)\
 	))
-endef
+endef  # __pr_include_src
+
+
+# __job_msg
+#
+# This function prints the currently running job.
+#
+# Usage:
+#   $(call __job_msg,<job>)
+#
+# Arguments:
+#   job:
+#     The job name.
+#
+define __job_msg
+	$(info $(CLR_PREFIX) $(call __bold,-----[) $(call __clr,2,$(1)) $(call __bold,::) $(call __clr_br,4,$(PROGNAME)) $(call __bold,]-----))
+	$(info $(CLR_PREFIX))
+endef  # __job_msg
 
 
 
@@ -86,14 +103,15 @@ compile: $(CLASSES_FILES)
 
 
 package: compile
+	$(call __job_msg,$@)
+
 	$(call __pr_include_src)
 	$(call __pr_verbose)
 	$(call __info,)
 
 	$(eval JARFLAGS := $(subst {MANIFEST},$(MANIFEST),$(JARFLAGS)) $(FLAGS))
 
-	$(call __info,Copying the resources...)
-	$(call __info,Got $(words $(shell find $(RESOURCES) -type f)) resources)
+	$(call __info,Copying $(words $(shell find $(RESOURCES) -type f)) resources to '$(shell pwd)/$(CLASSES_DIR)'...)
 	@cp --recursive --preserve=all $(RESOURCES) $(CLASSES_DIR) \
 		$(if $(__intern_VERBOSE),--verbose,)
 
@@ -106,16 +124,30 @@ package: compile
 # if and only if the INCLUDE_SRC option is "true" (enabled)
 ifeq ($(__intern_INC_SRC),1)
 	$(call __info,)
+	@echo "$(CLR_PREFIX) $(call __bold,-----[) $(call __clr,2,$@:sources) $(call __bold,::) $(call __clr_br,4,$(PROGNAME)) $(call __bold,]-----)"
 	$(call __info,Creating the JAR file (sources)...)
 	@$(JAR) $(subst {JAR},$(word 2,$(JAR_NAMES)),$(JARFLAGS)) $(MANIFEST) \
-		$(wildcard LICENSE) -C $(JAVA_DIR) . $(addsuffix \ .,$(addprefix -C ,$(foreach f,$(RESOURCES),\
-		$(addsuffix $(notdir $(f)),$(CLASSES_DIR)/))))
+		$(wildcard LICENSE) -C $(JAVA_DIR) . \
+		-C $(addprefix $(CLASSES_DIR)/,$(notdir $(word 1,$(RESOURCES)))) . \
+		-C $(addprefix $(CLASSES_DIR)/,$(notdir $(word 2,$(RESOURCES)))) .
 endif  # __intern_INC_SRC
+	$(call __lines)
+
 
 
 build-docs:
-# TODO: Implement the code for build-docs target
-	@:
+	$(call __job_msg,$@)
+
+	$(call __pr_lint)
+	$(call __pr_verbose)
+	$(call __info,)
+
+	$(eval JDOCFLAGS += $(FLAGS))
+
+	$(call __info,Generating HTML documentations to '$(realpath $(JAVADOC_OUT))'...)
+	@$(JDOC) $(JDOCFLAGS) $(addprefix -J,$(MEMFLAGS))
+
+	$(call __lines)
 
 .PHONY: compile package build-docs
 
@@ -127,38 +159,50 @@ build-docs:
 
 
 clean:
-	$(call __pr_verbose)
-	$(call __info,)
+	$(call __job_msg,$@)
 
 # Clean the "target" (which is the output directory for compiled classes
 # and the JAR files) recursively.
 ifeq ($(call __is_exist,$(TARGET_DIR)),1)
-	$(call __info,Cleaning up \"$(TARGET_DIR)\" directory recursively...)
-	@-rm --recursive $(TARGET_DIR) $(if $(__intern_VERBOSE),--verbose,)
-else
-	$(call __info,Cleaned up \"$(TARGET_DIR)\" directory)
-endif
-
-	@echo "$(CLR_PREFIX) $(call __clr_br,2,All clean)"
-
-
-cleanbin:
 	$(call __pr_verbose)
 	$(call __info,)
 
-ifeq ($(call __is_exist,$(CLASSES_DIR)),1)
-	$(call __info,Cleaning up \"$(CLASSES_DIR)\" directory recursively...)
-	@-rm -r $(CLASSES_DIR) $(if $(__intern_VERBOSE),--verbose,)
-else
-	$(call __info,Cleaned up \"$(CLASSES_DIR)\" directory)
+	$(call __info,Deleting '$(realpath $(TARGET_DIR))'...)
+	@-rm --recursive $(TARGET_DIR) $(if $(__intern_VERBOSE),--verbose,)
 endif
 
-	@echo "$(CLR_PREFIX) $(call __clr_br,2,All clean)"
+	@echo "$(CLR_PREFIX) $(call __clr_br,2,ALL CLEAN)"
+	$(call __lines)
+
+
+cleanbin:
+	$(call __job_msg,$@)
+
+ifeq ($(call __is_exist,$(CLASSES_DIR)),1)
+	$(call __pr_verbose)
+	$(call __info,)
+
+	$(call __info,Deleting '$(realpath $(CLASSES_DIR))'...)
+	@-rm --recursive $(CLASSES_DIR) $(if $(__intern_VERBOSE),--verbose,)
+endif
+
+	@echo "$(CLR_PREFIX) $(call __clr_br,2,ALL CLEAN)"
+	$(call __lines)
 
 
 cleandocs:
-# TODO: ...
-	@:
+	$(call __job_msg,$@)
+
+ifeq ($(call __is_exist,$(JAVADOC_OUT)),1)
+	$(call __pr_verbose)
+	$(call __info,)
+
+	$(call __info,Deleting '$(realpath $(JAVADOC_OUT))'...)
+	@-rm --recursive $(JAVADOC_OUT) $(if $(__intern_VERBOSE),--verbose,)
+endif
+
+	@echo "$(CLR_PREFIX) $(call __clr_br,2,ALL CLEAN)"
+	$(call __lines)
 
 .PHONY: clean cleanbin cleandocs
 
@@ -168,17 +212,20 @@ cleandocs:
 # If you want more efficient and more easier on compilation, consider to use Maven instead.
 #
 $(CLASSES_FILES): $(SOURCES)
+	$(call __job_msg,compile)
+
 	$(call __pr_lint)
 	$(call __pr_verbose)
 	$(call __info,)
 
-	$(call __info,Compiling all Java source files...)
+	$(call __info,Compiling $(words $(SOURCES)) source files to '$(shell pwd)/$(CLASSES_DIR)'...)
 	@$(foreach src,$^,\
 		echo "$(CLR_PREFIX) $(call __bold,$(notdir $(src))) >>\
 		$(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(call __clr,4,$(src)))))$(NORMAL)";\
 	)
 
 	@$(JC) -d $(CLASSES_DIR) $^ $(JCFLAGS) $(addprefix -J,$(MEMFLAGS))
+	$(call __lines)
 
 
 
