@@ -137,7 +137,7 @@ JAVADOC_OUT    := $(DOCS_DIR)/jmatrix-$(VERSION)
 
 ### ::: Files paths
 MANIFEST       := META-INF/MANIFEST.MF
-MAKE_USAGE     := $(addprefix $(DOCS_DIR)/,makefile-usage.txcc makefile-usage.txt)
+MAKE_USAGE     := $(addprefix $(DOCS_DIR)/make/,makefile-usage.txcc makefile-usage.txt)
 SOURCES_LIST   := $(TARGET_DIR)/generated-list/sourceFiles.lst
 CLASSES_LIST   := $(TARGET_DIR)/generated-list/outputFiles.lst
 
