@@ -121,11 +121,23 @@ endif
 
 # Default target rule; If no target rule specified then display the help message
 help:
+ifneq ($(or $(RAW),$(NOCC)),true)
     # User could pipe this (`cat`) command to `less` command with:
     #   $ make [help] | less -r
     #
     # And must specify `-r` or `--raw` flag to output the raw control-characters.
+    #
 	@cat $(word 1,$(MAKE_USAGE))
+else
+    # There is an exception for this. If user defined a variable called `RAW`,
+    # from the command line then the raw or original version without raw control-characters
+    # will be displayed, and it does not needs the `-r` or `--raw` flag.
+    #
+    # The command will looks like this:
+    #   $ make [help] RAW=true | less
+    #
+	@cat $(word 2,$(MAKE_USAGE))
+endif
 
 .PHONY: help
 

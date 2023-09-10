@@ -1,54 +1,73 @@
-Usage:
-   $ make [rules] [...] [options] [...]
+USAGE:
+   $ make <TARGET>... [OPTION[=<value>] | [CUSTOM_FLAGS]]...
 
-Rules:
-   build-docs     - Builds the HTML pages of JMatrix's javadocs.
-   check-verbose  - Checks the verbose status.
-   clean          - Cleans the working directory thoroughly.
-   cleanbin       - Cleans all compiled class files only.
-   cleandocs      - Cleans all generated HTML documentations only.
-   compile        - Compiles all project's source files (.java).
-   package        - Creates archived package of compiled classes.
-   usage          - Prints the basic usages for building the project.
+TARGETS:
+   build-docs     Builds and generates HTML-based documentations.
+   clean          Cleans the working directory thoroughly.
+   cleanbin       Cleans all compiled class files only.
+   cleandocs      Cleans all generated HTML-based documentations.
+   compile        Compiles all the source files (.java).
+   package        Creates and generates the JAR file.
 
-Options:
-   FLAGS - Append flags to specific command or rule.
+   help           Displays this help message.
 
-       Example:
-           $ make [rules] FLAGS[=<flags>]
+OPTIONS:
+:: FLAGS - Append the given flags to specific target(s) flags.
 
+     Type: string
 
-   INCLUDE-SRC - Whether to include the source files while packaging.
+     Utilized by: *All targets
 
-       Example:
-           $ make package INCLUDE-SRC[=<bool>]
+     Usage:
+         $ make <TARGET>... FLAGS=<flags>
 
-
-   LINT - Whether to invoke the linter during the compilation.
-
-       Example:
-           $ make compile LINT[=<bool>]
+     WARNING:
+         This option will force all specified targets to use the flags,
+         which may lead to unexpected behaviors.
+         It is recommended to use only one target when using this option.
 
 
-   VERBOSE - Whether to activate the verbose output.
+:: INCLUDE_SRC - Whether to also generate other JAR file containing
+                 only the source files during packaging.
 
-       Example:
-           $ export VERBOSE[=(<bool>|all)] && make [rules] [options]
-           $ make [rules] VERBOSE[=<bool>]
-           $ make build-docs VERBOSE[=(<bool>|all)]
+     Type: boolean
 
-       Only the build-docs rule that has 3 verbose modes:
-           - Quiet Mode:   *no argument
-           - Normal Mode:  VERBOSE=true
-           - All Mode:     VERBOSE=all
+     Utilized by: package
 
-Tips:
-    Combine the rules; Make can understand multiple rules.
-    Except for build-docs rule, it was built as a standalone rule.
+     Usage:
+         $ make package INCLUDE_SRC=<boolean>
 
-Issues:
-    Report any issues or suggestions, and help improve JMatrix.
-    <https://github.com/mitsuki31/jmatrix/issues/new>
 
-Author:
-    Ryuu Mitsuki
+:: LINT - Whether to invoke the linter.
+
+     Type: boolean
+
+     Utilized by: compile, build-docs
+
+     Usage:
+         $ make <TARGET>... LINT=<boolean>
+
+
+:: VERBOSE - Whether to activate the verbose output.
+
+     Type: boolean
+
+     Utilized by: *All targets
+
+     Usage:
+         $ make <TARGET>... VERBOSE=<boolean>
+
+TIPS:
+    You can combine multiple targets and options in single command.
+    For example:
+        $ make compile package LINT=true VERBOSE=true
+
+ISSUES:
+    Have any suggestions or want to report some bugs?
+    Feel free to refer to link below.
+
+        https://github.com/mitsuki31/jmatrix/issues/new/choose
+
+AUTHOR:
+    All Make files in this project are written by Ryuu Mitsuki.
+    JMatrix is authored and developed by Ryuu Mitsuki.
