@@ -1,6 +1,6 @@
-// ------------------- //
-/*       Options       */
-// ------------------- //
+// ---------------------- //
+/*      JMatrixUtils      */
+// ---------------------- //
 
 /* Copyright (c) 2023 Ryuu Mitsuki
  *
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package com.mitsuki.jmatrix.util;
+package com.mitsuki.jmatrix.internal;
 
 import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 
@@ -31,133 +31,18 @@ import java.util.List;
 import java.util.Arrays;
 
 /**
- * This class provides all requirements for <b>JMatrix</b> library.
+ * This class provides all neccessary utilities for <b>JMatrix</b> library.
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  1.33, 17 August 2023
+ * @version  1.5, 16 September 2023
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
  *
  * @see      com.mitsuki.jmatrix.util.XMLParser
  */
-public class Options
-{
-
-    /**
-     * An {@code Enum} that contains all available options.
-     *
-     * @since 1.0.0b.1
-     * @see   #getOptions(String)
-     */
-    public enum OPT {
-
-        /**
-         * Represents the "version" option. Users can retrieve this option by using one of the following inputs:
-         *
-         * <ul>
-         *  <li>{@code -V}
-         *  <li>{@code ver}
-         *  <li>{@code version}
-         * </ul>
-         *
-         * @see #OPT(String...)
-         */
-        VERSION("-V", "version", "ver"),
-
-        /**
-         * Represents the "help" option. Users can retrieve this option by using the following input:
-         *
-         * <ul>
-         *  <li>{@code -h}
-         *  <li>{@code help}
-         * </ul>
-         *
-         * @see #OPT(String...)
-         */
-        HELP("-h", "help"),
-
-        /**
-         * Represents the "copyright" option. Users can retrieve this option by using the following input:
-         *
-         * <ul>
-         *  <li>{@code -cr}
-         *  <li>{@code copyright}
-         * </ul>
-         *
-         * @see #OPT(String...)
-         */
-        COPYRIGHT("-cr", "copyright");
-
-        /**
-         * A {@link List} of string to stores all options aliases.
-         */
-        private final List<String> aliases;
-
-        /**
-         * Constructs an option with the given aliases.
-         *
-         * @param aliases  the aliases that represent this option.
-         *
-         * @since          1.0.0b.1
-         * @see            java.util.Arrays#asList
-         */
-        OPT(String ... aliases) {
-            this.aliases = Arrays.asList(aliases);
-        }
-    }
-
-    /**
-     * Stores the static object of {@link XMLParser} class.
-     */
-    private static XMLParser XML = new XMLParser(XMLParser.XMLType.CONFIG);
-
-    /**
-     * Stores a string that represents the program name.
-     */
-    private static String PROGNAME = XML.getProperty("programName").toLowerCase();
-
-    /**
-     * Stores a string that represents the path to "contents" directory.
-     */
-    private static String contentsPath = "contents/";
-
-    /**
-     * Method that checks the input argument then returns specific option.
-     *
-     * @param  inputOpt                  the {@code String} that wants to be checked.
-     *
-     * @return                           the corresponding {@code OPT} value.
-     *
-     * @throws IllegalArgumentException  if the given option name does not
-     *                                   match with any known options.
-     *                                   This exception will be thrown as the causing exception.
-     *
-     * @since                            1.0.0b.1
-     */
-    public static OPT getOptions(String inputOpt) {
-        for (OPT opt : OPT.values()) {
-            if (opt.aliases.contains(inputOpt)) {
-                return opt;
-            }
-        }
-
-        raiseError(new JMatrixBaseException(
-            new IllegalArgumentException(
-                String.format("Unknown argument option for input \"%s\"", inputOpt)
-            )
-        ), 0);
-
-        System.err.println(System.lineSeparator() + getHelpMsg()[0]);
-        System.err.println("    " +
-            "java -jar <jar_file> [-h|-V|-cr]");
-        System.exit(-1);
-
-        // This never get executed, but to suppress missing return statement error
-        return null;
-    }
-
+public class JMatrixUtils {
 
     ///// ---------------------- /////
     ///      Class & Packages      ///

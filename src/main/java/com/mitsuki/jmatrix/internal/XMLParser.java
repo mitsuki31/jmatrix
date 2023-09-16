@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package com.mitsuki.jmatrix.util;
+package com.mitsuki.jmatrix.internal;
 
 import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 
