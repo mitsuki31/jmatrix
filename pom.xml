@@ -51,7 +51,7 @@
         <author.name>Ryuu Mitsuki</author.name>
         <package.name>JMatrix</package.name>
         <package.version.core>1.2.2</package.version.core>
-        <package.mainClass>com.mitsuki.jmatrix.Main</package.mainClass>
+        <package.mainClass>com.mitsuki.jmatrix.internal.MainClass</package.mainClass>
         <package.releaseType>stable</package.releaseType>
         <package.betaNum>0</package.betaNum>
         <package.licenseFile>LICENSE</package.licenseFile>
