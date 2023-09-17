@@ -39,7 +39,7 @@ import java.lang.Iterable;
  * {@code Main} to {@code MainClass}.
  *
  * @author   <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>
- * @version  1.4, 16 September 2023
+ * @version  1.45, 17 September 2023
  * @since    1.0.0b.1
  * @see      com.mitsuki.jmatrix.Matrix
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0">
@@ -47,12 +47,21 @@ import java.lang.Iterable;
  */
 public class MainClass {
 
+    /**
+     * A {@link Properties} object reference to synchronized setup properties.
+     */
     private static Properties setupProperties = SetupProperties.getSetupProperties();
 
+    /**
+     * A list of known version arguments.
+     */
     private static List<String> versionArgs = Arrays.asList(
         "-V", "--version", "ver", "version"
     );
 
+    /**
+     * A list of known copyright arguments.
+     */
     private static List<String> copyrightArgs = Arrays.asList(
         "-cr", "--copyright", "copyright"
     );
@@ -102,6 +111,22 @@ public class MainClass {
     }
 
 
+    /**
+     * Searches and returns the first known argument from a list of arguments.
+     * This method compares the provided list of arguments with a predefined
+     * list of known version and copyright arguments.
+     *
+     * <p>If a known argument is found, it is returned as the first
+     * known argument. If none of the provided arguments match the known ones,
+     * it returns {@code null}.
+     *
+     * @param  args  A list of arguments to search for known arguments.
+     *
+     * @return       The first known argument found, or {@code null}
+     *               if none are known.
+     *
+     * @since        1.5.0
+     */
     static String getFirstArgument(List<String> args) {
         List<String> allKnownArgs = new ArrayList<>();
         allKnownArgs.addAll(versionArgs);
@@ -123,7 +148,7 @@ public class MainClass {
  * @param   <E>  The type of object stored in this class.
  *
  * @author       <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>
- * @version      1.0, 16 September 2023
+ * @version      1.2, 17 September 2023
  * @since        1.5.0
  */
 final class ArgumentsParser<E> implements Iterable<E> {
