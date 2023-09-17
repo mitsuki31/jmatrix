@@ -19,11 +19,9 @@
 
 package com.mitsuki.jmatrix.internal;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.nio.file.AccessDeniedException;
 import java.util.Properties;
 
 
@@ -161,27 +159,6 @@ final class SetupProperties {
      * it will checks whether the properties file is exist and readable.
      */
     static {
-        File setupFile_FileObj = new File(setupFile);
-
-        // Store the exception and will be thrown later if not null
-        Throwable causeException = null;
-
-        if (!setupFile_FileObj.exists()) {
-            causeException = new FileNotFoundException(
-                String.format("Cannot found '%s' file", setupFile)
-            );
-        } else if (setupFile_FileObj.exists() &&
-                   !setupFile_FileObj.canRead()) {
-            causeException = new AccessDeniedException(setupFile,
-                null, "Read access is denied"
-            );
-        }
-
-        // It is a good practice to throw occurred exception immediately,
-        // especially after exiting a code block (e.g., if-else statement block)
-        if (causeException != null)
-            throw new ExceptionInInitializerError(causeException);
-
         // Although the Properties class has been designed to be synchronized,
         // the code below further ensures that it is implicitly synchronized
         if (setupProperties == null) {
@@ -190,6 +167,12 @@ final class SetupProperties {
                     .getResourceAsStream(setupFile)) {
                 setupProperties = new Properties();
                 setupProperties.load(inStream);
+
+                if (setupProperties == null) {
+                    throw new FileNotFoundException(String.format(
+                        "InputStream cannot found '%s' file", setupFile
+                    ));
+                }
             } catch (final IOException ioe) {
                 throw new ExceptionInInitializerError(ioe);
             }
