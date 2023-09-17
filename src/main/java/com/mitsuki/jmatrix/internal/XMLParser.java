@@ -119,7 +119,7 @@ interface XMLData
                 break;
 
             default:
-                Options.raiseError(
+                JMatrixUtils.raiseError(
                     new JMatrixBaseException(
                         new IllegalArgumentException(
                             "Cannot retrieve data for input \"" + choice + "\""
@@ -143,7 +143,7 @@ interface XMLData
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
- * @see      com.mitsuki.jmatrix.util.Options
+ * @see      com.mitsuki.jmatrix.internal.JMatrixUtils
  */
 public class XMLParser implements XMLData
 {
@@ -187,7 +187,7 @@ public class XMLParser implements XMLData
                 break;
 
             default:
-                Options.raiseError(
+                JMatrixUtils.raiseError(
                     new JMatrixBaseException(
                         new IllegalArgumentException(
                             "Invalid XML type: \"" + type + "\""
@@ -216,7 +216,7 @@ public class XMLParser implements XMLData
                 XMLConfig.betaNum = xml.getElementsByTagName("beta_num").item(0).getTextContent().strip();
             }
         } catch (final Exception e) {
-            Options.raiseError(new JMatrixBaseException(e), -1);
+            JMatrixUtils.raiseError(new JMatrixBaseException(e), -1);
         }
     }
 

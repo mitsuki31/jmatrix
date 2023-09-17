@@ -33,16 +33,15 @@ import java.util.Arrays;
 /**
  * This class provides all neccessary utilities for <b>JMatrix</b> library.
  *
- * @author   <a href="https://github.com/mitsuki31" target="_blank">
- *           Ryuu Mitsuki</a>
+ * @author   <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>
  * @version  1.5, 16 September 2023
  * @since    1.0.0b.1
- * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0">
  *           Apache License 2.0</a>
- *
- * @see      com.mitsuki.jmatrix.util.XMLParser
  */
 public class JMatrixUtils {
+
+    private static final String PROGNAME = "JMatrix";
 
     ///// ---------------------- /////
     ///      Class & Packages      ///
@@ -54,7 +53,7 @@ public class JMatrixUtils {
      * <p>For example:</p>
      *
      * <pre><code class="language-java">&nbsp;
-     *     Options.getPackageName(MyClass.class);
+     *     JMatrixUtils.getPackageName(MyClass.class);
      * </code></pre>
      *
      * @param  cls  the {@link Class} object.
@@ -74,7 +73,7 @@ public class JMatrixUtils {
      * <p>For example:</p>
      *
      * <pre><code class="language-java">&nbsp;
-     *     Options.getClassName(MyClass.class);
+     *     JMatrixUtils.getClassName(MyClass.class);
      * </code></pre>
      *
      * @param  cls  the {@link Class} object.
@@ -242,7 +241,7 @@ public class JMatrixUtils {
      * @see                            java.io.InputStream
      */
     public static InputStream getFileAsStream(String filePath) {
-        return Options.class.getClassLoader().getResourceAsStream(filePath);
+        return JMatrixUtils.class.getClassLoader().getResourceAsStream(filePath);
     }
 
     /**
@@ -264,70 +263,10 @@ public class JMatrixUtils {
 
             return true;
         } catch (final IOException ioe) {
-            Options.raiseError(new JMatrixBaseException(ioe), 0);
+            JMatrixUtils.raiseError(new JMatrixBaseException(ioe), 0);
         }
 
         return false;
-    }
-
-
-    ///// ------------------ /////
-    ///        Contents        ///
-    ///// ------------------ /////
-
-    /**
-     * Returns a list containing the help message contents.
-     *
-     * @return the contents of help message.
-     *
-     * @since  1.0.0b.1
-     * @see    #readFile(InputStream)
-     * @see    #getFileAsStream(String)
-     * @see    #removeComment(String[])
-     */
-    public static String[ ] getHelpMsg() {
-        return removeComment(readFile(getFileAsStream(contentsPath + "help.content")));
-    }
-
-    /**
-     * Returns a list containing the copyright contents.
-     *
-     * @return the contents of copyright.
-     *
-     * @since  1.0.0b.1
-     * @see    #readFile(InputStream)
-     * @see    #getFileAsStream(String)
-     * @see    java.lang.StringBuilder
-     */
-    public static String[ ] getCopyright() {
-        final String[ ] contents = readFile(getFileAsStream(contentsPath + "additional.content"));
-        String[ ] copyright = new String[contents.length];
-
-        for (int i = 0; i < contents.length; i++) {
-            // Ignore the comment
-            if (!contents[i].startsWith("#")) {
-                StringBuilder sb = new StringBuilder();
-                for (int j = 0; j < contents[i].length(); j += 2) {
-                    String bytes = contents[i].substring(j, j + 2);
-                    sb.append((char) Integer.parseInt(bytes, 16));
-                }
-                copyright[i] = sb.toString();
-            } else {
-                copyright[i] = contents[i];
-            }
-        }
-
-        for (int i = 0; i != contents.length; i++) {
-            if (copyright[i].contains("${PACKAGE_NAME}")) {
-                copyright[i] = copyright[i].replace("${PACKAGE_NAME}", XML.getProperty("programName"));
-            }
-
-            if (copyright[i].contains("${AUTHOR}")) {
-                copyright[i] = copyright[i].replace("${AUTHOR}", XML.getProperty("author"));
-            }
-        }
-
-        return removeComment(copyright);
     }
 
 
