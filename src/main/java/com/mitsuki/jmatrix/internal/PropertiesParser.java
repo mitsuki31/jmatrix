@@ -19,10 +19,12 @@
 
 package com.mitsuki.jmatrix.internal;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.net.URL;
 
 
 /**
@@ -155,24 +157,30 @@ final class SetupProperties {
     private static Properties setupProperties;
 
     /* Immediately search and check the setup properties file, then retrieve
-     * all properties data from it. Before retrieving the properties,
-     * it will checks whether the properties file is exist and readable.
+     * all properties data from it. Throw IOException if I/O errors occurred.
      */
     static {
         // Although the Properties class has been designed to be synchronized,
         // the code below further ensures that it is implicitly synchronized
         if (setupProperties == null) {
-            try (InputStream inStream = SetupProperties.class
+            try {
+                URL urlSetupFile = SetupProperties.class
                     .getClassLoader()
-                    .getResourceAsStream(setupFile)) {
-                setupProperties = new Properties();
-                setupProperties.load(inStream);
+                    .getResource(setupFile);
 
-                if (setupProperties == null) {
+                // Return an error if the resource file cannot be found
+                if (urlSetupFile == null) {
                     throw new FileNotFoundException(String.format(
-                        "InputStream cannot found '%s' file", setupFile
+                        "ClassLoader cannot found '%s' file", setupFile
                     ));
                 }
+
+                // Convert the URL to InputStream
+                InputStream inStream = urlSetupFile.openStream();
+
+                // Load the properties file
+                setupProperties = new Properties();
+                setupProperties.load(inStream);
             } catch (final IOException ioe) {
                 throw new ExceptionInInitializerError(ioe);
             }
