@@ -41,6 +41,8 @@ import java.lang.Iterable;
  * @version  1.4, 16 September 2023
  * @since    1.0.0b.1
  * @see      com.mitsuki.jmatrix.Matrix
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0">
+ *           Apache License 2.0</a>
  */
 public class MainClass {
 
@@ -52,13 +54,6 @@ public class MainClass {
      * @since       1.0.0b.1
      */
     public static void main(String[] args) {
-        ArgumentsParser<String> argsParser = new ArgumentsParser<>(args);
-        List<String> argsList = argsParser.getArguments();
-
-        argsList.forEach((arg) -> {
-            System.out.print(arg + argsList.indexOf(arg) ", ");
-        });
-        System.out.print(System.lineSeparator());
     }
 }
 
@@ -75,6 +70,10 @@ public class MainClass {
  * @since        1.5.0
  */
 final class ArgumentsParser<E> implements Iterable<E> {
+
+    /**
+     * Stores a list of arguments with duplicate elements removed.
+     */
     private List<E> arguments;
 
     /**
@@ -112,14 +111,14 @@ final class ArgumentsParser<E> implements Iterable<E> {
      * Returns the element at the specified position in this list of arguments.
      *
      * @param  index  The index of the element to retrieve
-     *                (index > 0 && index < size()).
+     *                (index &gt; 0 &amp;&amp; index &lt; size()).
      *
      * @return        The element at the specified index in this list.
      *
      * @since         1.5.0
      *
      * @throws IndexOutOfBoundsException
-     *         if the index is out of range (index < 0 || index > size()).
+     *         if the index is out of range (index &lt; 0 || index &gt; size()).
      */
     E get(int index) {
         return this.arguments.get(index);
