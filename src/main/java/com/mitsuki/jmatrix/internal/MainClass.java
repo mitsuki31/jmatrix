@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedHashSet;
+import java.util.Properties;
 import java.util.Set;
 import java.lang.Iterable;
 
@@ -46,6 +47,16 @@ import java.lang.Iterable;
  */
 public class MainClass {
 
+    private static Properties setupProperties = SetupProperties.getSetupProperties();
+
+    private static List<String> versionArgs = Arrays.asList(
+        "-V", "--version", "ver", "version"
+    );
+
+    private static List<String> copyrightArgs = Arrays.asList(
+        "-cr", "--copyright", "copyright"
+    );
+
     /**
      * Main method for <b>JMatrix</b> library.
      *
@@ -54,6 +65,52 @@ public class MainClass {
      * @since       1.0.0b.1
      */
     public static void main(String[] args) {
+        final String name = setupProperties.getProperty("JM-Name");
+        final String version = setupProperties.getProperty("JM-Version");
+        final String author = setupProperties.getProperty("JM-Author");
+        final String license = setupProperties.getProperty("JM-License");
+        final String groupId = setupProperties.getProperty("JM-GroupId");
+        final String artifactId = setupProperties.getProperty("JM-ArtifactId");
+
+        // Parse the command line arguments, removing all duplicate arguments
+        List<String> parsedArgs = new ArgumentsParser<String>(args)
+                                      .getArguments();
+
+        // Return immediately if the parsed args is empty
+        if (parsedArgs.isEmpty()) return;
+
+        StringBuilder sb = new StringBuilder();
+        final String firstArg = getFirstArgument(parsedArgs);
+        boolean hasOutput = false;
+
+        // Check for version arguments
+        if (versionArgs.contains(firstArg)) {
+            sb.append(String.format("%s v%s", name, version))
+              .append(String.format(" <%s:%s>", groupId, artifactId));
+            hasOutput = true;
+
+        // Check for copyright arguments
+        } else if (copyrightArgs.contains(firstArg)) {
+            sb.append(String.format("%s - Copyright (C) 2023 %s", name, author))
+              .append(System.lineSeparator())
+              .append(String.format("Licensed under the \"%s\"", license));
+            hasOutput = true;
+        }
+
+        if (hasOutput)
+            System.out.println(sb.toString());
+    }
+
+
+    static String getFirstArgument(List<String> args) {
+        List<String> allKnownArgs = new ArrayList<>();
+        allKnownArgs.addAll(versionArgs);
+        allKnownArgs.addAll(copyrightArgs);
+
+        return args.stream()
+                   .filter(arg -> allKnownArgs.contains(arg))
+                   .findFirst()    // Get the first index
+                   .orElse(null);  // Get and return the value, null if not present
     }
 }
 
