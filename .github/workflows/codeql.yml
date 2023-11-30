@@ -54,7 +54,7 @@ jobs:
 
     # Setup the Java Virtual Machine
     - name: Setup JVM / ${{ matrix.os }}
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: ${{ env.java-dist }}
         java-version: ${{ env.java-version }}
