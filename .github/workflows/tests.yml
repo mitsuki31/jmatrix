@@ -53,7 +53,7 @@ jobs:
 
       # Setup Java
       - name: Setup Java / ${{ matrix.os }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: ${{ env.java-ver }}
           distribution: ${{ env.java-dist }}
