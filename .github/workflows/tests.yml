@@ -113,7 +113,7 @@ jobs:
       # Setup Python
       - name: Setup Python ${{ matrix.py-ver }}
         id: setup-py
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.py-ver }}
           architecture: ${{ env.arch }}
