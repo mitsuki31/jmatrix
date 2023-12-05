@@ -10,7 +10,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"   # Search for "requirements.txt" on root directory
     schedule:
-      interval: "daily"
+      interval: "weekly"
     commit-message:
       prefix: "pip"
       include: "scope"
@@ -28,7 +28,7 @@ updates:
       prefix: "GH Actions"
       include: "scope"
     labels:
-      - "dependencies"
+      - "chore"
     assignees:
       - "mitsuki31"
 

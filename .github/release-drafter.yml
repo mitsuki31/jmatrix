@@ -56,6 +56,9 @@ autolabeler:
     branch:
       - '/feature\/.+/'
       - '/features\/.+/'
+  - label: 'chore'
+    files:
+      - '.github/**/*'
 
   # Changes on Java code
   - label: 'lang:java'
@@ -95,7 +98,7 @@ template: |
   🛡️ [VirusTotal][virustotal] Scan Detections:
   
   - jmatrix-$RESOLVED_VERSION.jar
-  - jmatrix-$RESOLVED_VERSION_with_sources.jar
+  - jmatrix-$RESOLVED_VERSION-sources.jar
   
   
   <!-- LINKS -->
