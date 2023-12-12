@@ -92,29 +92,34 @@ public class MainClass {
         List<String> parsedArgs = new ArgumentsParser<String>(args)
                                       .getArguments();
 
-        // Return immediately if the parsed args is empty
-        if (parsedArgs.isEmpty()) return;
+        // Print the help message if the parsed args is empty
+        if (parsedArgs.isEmpty()) {
+            printHelpMessage();
+            return;  // then return to stop further execution
+        }
 
         StringBuilder sb = new StringBuilder();
-        final String firstArg = getFirstArgument(parsedArgs);
-        boolean hasOutput = false;
+        final String firstArg = getFirstArgument(parsedArgs),
+                     newline = System.lineSeparator();
 
         // Check for version arguments
         if (versionArgs.contains(firstArg)) {
             sb.append(String.format("%s v%s", name, version))
               .append(String.format(" <%s:%s>", groupId, artifactId));
-            hasOutput = true;
-
         // Check for copyright arguments
         } else if (copyrightArgs.contains(firstArg)) {
-            sb.append(String.format("%s - Copyright (C) 2023 %s", name, author))
-              .append(System.lineSeparator())
-              .append(String.format("Licensed under the \"%s\"", license));
-            hasOutput = true;
+            sb.append(String.format("%s - Copyright (C) 2023 %s%s",
+                      name, author, newline))
+              .append(String.format("Licensed under the %s", license));
+        // Check for help arguments
+        } else if (helpArgs.contains(firstArg)) {
+            printHelpMessage();
+        } else if (firstArg.equals("--version-only")) {
+            sb.append(version);
         }
 
-        if (hasOutput)
-            System.out.println(sb.toString());
+        // Print to the console (standard output stream)
+        if (sb.toString().length() != 0) System.out.println(sb.toString());
     }
 
 
@@ -139,6 +144,7 @@ public class MainClass {
         allKnownArgs.addAll(versionArgs);
         allKnownArgs.addAll(copyrightArgs);
         allKnownArgs.addAll(helpArgs);
+        allKnownArgs.add("--version-only");
 
         return args.stream()
                    .filter(arg -> allKnownArgs.contains(arg))
