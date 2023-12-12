@@ -35,11 +35,11 @@ import java.lang.Iterable;
  * such as <b>JMatrix</b> version. If this class is imported, it will be
  * not valuable because it does not provides APIs to construct the matrices.
  *
- * As of JMatrix 1.5, the class name has changed from
+ * As of JMatrix 1.5.0, the class name has changed from
  * {@code Main} to {@code MainClass}.
  *
  * @author   <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>
- * @version  1.45, 17 September 2023
+ * @version  1.5, 12 December 2023
  * @since    1.0.0b.1
  * @see      com.mitsuki.jmatrix.Matrix
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0">
@@ -64,6 +64,13 @@ public class MainClass {
      */
     private static List<String> copyrightArgs = Arrays.asList(
         "-cr", "--copyright", "copyright"
+    );
+
+    /**
+     * A list of known help arguments.
+     */
+    private static List<String> helpArgs = Arrays.asList(
+        "-h", "--help", "help", "?" /* << Exclusive to help arguments */
     );
 
     /**
@@ -131,11 +138,47 @@ public class MainClass {
         List<String> allKnownArgs = new ArrayList<>();
         allKnownArgs.addAll(versionArgs);
         allKnownArgs.addAll(copyrightArgs);
+        allKnownArgs.addAll(helpArgs);
 
         return args.stream()
                    .filter(arg -> allKnownArgs.contains(arg))
                    .findFirst()    // Get the first index
                    .orElse(null);  // Get and return the value, null if not present
+    }
+
+    /**
+     * Prints the help message to the standard output stream.
+     *
+     * @since 1.5.0
+     */
+    private static void printHelpMessage() {
+        final String newline = System.lineSeparator(),  // A newline
+                     dblNewline = newline + newline;    // Double newlines
+ 
+        final String header = String.format("%s v%s",
+            setupProperties.getProperty("JM-Name"),
+            setupProperties.getProperty("JM-Version")
+        );
+
+        final StringBuilder sb = new StringBuilder(),
+                            lineSb = new StringBuilder();
+
+        // Create a line with length equals to header length
+        for (int i = 0; i < header.length(); i++) lineSb.append('-');
+
+        sb.append(header + newline)
+          .append(lineSb.toString() + dblNewline)
+          .append(String.format(
+                "Usage:%s   java -jar path/to/jmatrix.jar [options]", newline))
+          .append(String.format("%sOptions:%s", dblNewline, newline))
+          .append("   ver, version, -V, --version" + newline)
+          .append("       Print the current version of JMatrix." + dblNewline)
+          .append("   copyright, -cr, --copyright" + newline)
+          .append("       Print the copyright and license." + dblNewline)
+          .append("   ?, help, -h, --help" + newline)
+          .append("       Print this help message.");
+
+        System.out.println(sb.toString());
     }
 }
 
