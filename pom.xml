@@ -104,24 +104,6 @@
 
 
     <build>
-        <resources>
-            <resource>
-                <directory>${paths.resourcesDir}</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>${basedir}</directory>
-                <includes>
-                    <include>LICENSE</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/META-INF</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
-
         <!-- Plugins -->
         <plugins>
 
@@ -154,6 +136,43 @@
                 </configuration>
             </plugin>
 
+            <!-- Maven Resources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <propertiesEncoding>${_encoding}</propertiesEncoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${paths.classesDir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${paths.resourcesDir}</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}</directory>
+                                    <includes>
+                                        <include>LICENSE</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}/META-INF</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- Maven Javadoc -->
             <plugin>
