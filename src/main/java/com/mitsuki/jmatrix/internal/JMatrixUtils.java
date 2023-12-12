@@ -29,19 +29,28 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Properties;
 
 /**
  * This class provides all neccessary utilities for <b>JMatrix</b> library.
  *
  * @author   <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>
- * @version  1.5, 16 September 2023
+ * @version  1.6, 12 December 2023
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0">
  *           Apache License 2.0</a>
  */
 public class JMatrixUtils {
 
-    private static final String PROGNAME = "JMatrix";
+    /**
+     * A {@link Properties} object reference to synchronized setup properties.
+     */
+    private static final Properties setupProperties = SetupProperties.getSetupProperties();
+
+    /**
+     * A string variable holding the program name, retrieved from {@link SetupProperties}.
+     */
+    private static final String PROGNAME = setupProperties.getProperty("JM-Name");
 
     ///// ---------------------- /////
     ///      Class & Packages      ///
@@ -128,9 +137,9 @@ public class JMatrixUtils {
 
 
 
-    ///// -------------------- /////
-    ///       Files Options      ///
-    ///// -------------------- /////
+    ///// --------------------- /////
+    ///      Files Utilities      ///
+    ///// --------------------- /////
 
     /**
      * Returns the total lines of specified file.
