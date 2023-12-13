@@ -174,15 +174,21 @@ public class MainClass {
 
         sb.append(header + newline)
           .append(lineSb.toString() + dblNewline)
-          .append(String.format(
-                "Usage:%s   java -jar path/to/jmatrix.jar [options]", newline))
-          .append(String.format("%sOptions:%s", dblNewline, newline))
+          .append("USAGE:" + newline)
+          .append("   java -jar path/to/jmatrix.jar [options]" + dblNewline)
+          .append("OPTIONS:" + newline)
           .append("   ver, version, -V, --version" + newline)
           .append("       Print the current version of JMatrix." + dblNewline)
           .append("   copyright, -cr, --copyright" + newline)
           .append("       Print the copyright and license." + dblNewline)
           .append("   ?, help, -h, --help" + newline)
-          .append("       Print this help message.");
+          .append("       Print this help message." + dblNewline)
+          .append("ISSUE:" + newline)
+          .append(String.format(
+                "   Want to report some issues? Let's help us improve JMatrix.%s" +
+                "   <https://github.com/mitsuki31/jmatrix/issues/new/choose>",
+                newline
+          ));
 
         System.out.println(sb.toString());
     }
