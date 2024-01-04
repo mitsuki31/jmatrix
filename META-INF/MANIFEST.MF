@@ -11,4 +11,3 @@ Build-Time: ${maven.build.timestamp}
 License: ${project.licenses[0].name}
 License-URL: ${project.licenses[0].url}
 License-File: ${package.licenseFile}
-

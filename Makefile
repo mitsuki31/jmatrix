@@ -17,13 +17,11 @@
 # limitations under the License.
 #
 
-
 MAKE_DIR     := $(shell pwd)/make
 SETUP_MAKE   := $(MAKE_DIR)/Setup.mk
 MAIN_MAKE    := $(MAKE_DIR)/Main.mk
 MKFLAGS      := --no-print-directory --silent --file {FILE}
 CUSTOMGOALS  := $(MAKECMDGOALS)
-
 
 # Imports
 ifneq ($(wildcard $(MAKE_DIR)),)  # Check the "make" directory
@@ -31,7 +29,6 @@ include $(SETUP_MAKE)
 else
 $(__raise_err,Fatal,Cannot import neccessary files from "$(MAKE_DIR)". No such a directory)
 endif
-
 
 # Enable the linter if '.lint' in command line arguments or
 # LINT variable are defined and the value is 'true'.
