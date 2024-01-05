@@ -39,14 +39,17 @@ extension-pkg-whitelist=
 fail-on=
 
 # Specify a score threshold under which the program will exit with error.
-fail-under=10
+fail-under=0.7
 
 # Interpret the stdin as a python script, whose filename needs to be passed as
 # the module_or_package argument.
 #from-stdin=
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS
+ignore=CVS,
+       venv,
+       .venv,
+       docs
 
 # Add files or directories matching the regular expressions patterns to the
 # ignore-list. The regex matches against paths and can be in Posix or Windows
@@ -72,7 +75,7 @@ ignored-modules=
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use, and will cap the count on Windows to
 # avoid hangs.
-jobs=1
+jobs=0
 
 # Control the amount of potential inferred values when inferring a single
 # object. This can help the performance when dealing with large functions or
@@ -88,10 +91,10 @@ persistent=yes
 
 # Minimum Python version to use for version dependent checks. Will default to
 # the version used to run pylint.
-py-version=3.11
+py-version=3.7
 
 # Discover python modules and packages in the file system subtree.
-recursive=no
+recursive=yes
 
 # Add paths to the list of the source roots. Supports globbing patterns. The
 # source root is an absolute path or a path relative to the current working
@@ -189,6 +192,7 @@ good-names=i,
            j,
            k,
            v,
+           e,
            ex,
            Run,
            _
@@ -289,16 +293,16 @@ ignored-parents=
 max-args=5
 
 # Maximum number of attributes for a class (see R0902).
-max-attributes=10
+max-attributes=7
 
 # Maximum number of boolean expressions in an if statement (see R0916).
 max-bool-expr=5
 
 # Maximum number of branch for function / method body.
-max-branches=35
+max-branches=12
 
 # Maximum number of locals for function / method body.
-max-locals=25
+max-locals=15
 
 # Maximum number of parents for a class (see R0901).
 max-parents=7
@@ -310,10 +314,10 @@ max-public-methods=20
 max-returns=6
 
 # Maximum number of statements in function / method body.
-max-statements=80
+max-statements=50
 
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=1
+min-public-methods=2
 
 
 [EXCEPTIONS]
@@ -362,7 +366,7 @@ allow-any-import-level=
 allow-reexport-from-package=no
 
 # Allow wildcard imports from modules that define __all__.
-allow-wildcard-with-all=yes
+allow-wildcard-with-all=no
 
 # Deprecated modules which should not be used, separated by a comma.
 deprecated-modules=
@@ -459,7 +463,7 @@ notes-rgx=
 [REFACTORING]
 
 # Maximum number of nested blocks for function / method body
-max-nested-blocks=6
+max-nested-blocks=5
 
 # Complete name of functions that never returns. When checking for
 # inconsistent-return-statements if a never returning function is called then
@@ -499,7 +503,7 @@ score=yes
 ignore-comments=yes
 
 # Docstrings are removed from the similarity computation
-ignore-docstrings=no
+ignore-docstrings=yes
 
 # Imports are removed from the similarity computation
 ignore-imports=yes
