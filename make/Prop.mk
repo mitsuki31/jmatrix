@@ -1,3 +1,7 @@
+#### --------------- ======================================================= ####
+####  :: Prop.mk ::   Provides necessary project information and properties  ####
+#### --------------- ======================================================= ####
+
 # Copyright (c) 2023 Ryuu Mitsuki
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,10 +21,22 @@
 ifndef __MAKE_PROP_MK
 __MAKE_PROP_MK = 1
 
+RETRIEVER := scripts/retriever.py
 
-PROGNAME        := jmatrix
-VERSION         := 1.5.0-SNAPSHOT
-AUTHOR          := Ryuu Mitsuki
-INCEPTION_YEAR  := 2023
+### Retrieve required project information
+ifeq ($(call __is_exist,$(RETRIEVER)),1)
+  # Project information
+  PROGNAME        := $(shell $(PY) $(RETRIEVER) project.name)
+  VERSION         := $(shell $(PY) $(RETRIEVER) project.version)
+  GROUP_ID        := $(shell $(PY) $(RETRIEVER) project.groupId)
+  ARTIFACT_ID     := $(shell $(PY) $(RETRIEVER) project.artifactId)
+  AUTHOR          := $(shell $(PY) $(RETRIEVER) 'project.developers[0].name')
+  AUTHOR_URL      := $(shell $(PY) $(RETRIEVER) 'project.developers[0].url')
+  INCEPTION_YEAR  := $(shell $(PY) $(RETRIEVER) project.inceptionYear)
+  LICENSE         := $(shell $(PY) $(RETRIEVER) 'project.licenses[0].name')
+  LICENSE_URL     := $(shell $(PY) $(RETRIEVER) 'project.licenses[0].url')
+else
+  $(call __raise_err,Fatal,No such file or directory: $(RETRIEVER))
+endif  # __is_exist : $(RETRIEVER)
 
 endif  # __MAKE_PROP_MK
