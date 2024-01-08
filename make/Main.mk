@@ -110,7 +110,7 @@ package: compile | $(SOURCES) $(ORIG_MANIFEST) $(ORIG_SETUP_PROPERTIES) $(RESOUR
 
 	$(eval JARFLAGS := $(subst {MANIFEST},$(MANIFEST),$(JARFLAGS)) $(FLAGS))
 
-	$(call __info,Copying $(words $(RESOURCES)) resources to '$(CURDIR)/$(CLASSES_DIR)'...)
+	$(call __info,Copying $(words $(RESOURCES)) resources to '$(abspath $(CLASSES_DIR))'...)
 	@cp --recursive --preserve=all $(RESOURCES_ONLY_DIR) $(CLASSES_DIR) \
 		$(if $(__intern_VERBOSE),--verbose,)
 	$(call __info,)
@@ -120,7 +120,7 @@ package: compile | $(SOURCES) $(ORIG_MANIFEST) $(ORIG_SETUP_PROPERTIES) $(RESOUR
 	PYTHONPATH="$(BUILDER_DIR):$PYTHONPATH" $(PY) -m jmbuilder --fix-properties \
 		pom.xml $(ORIG_SETUP_PROPERTIES) $(SETUP_PROPERTIES)
     # Overwrite the existing 'setup.properties' file in 'target/classes' directory
-	@cp --preserve=all $(SETUP_PROPERTIES) $(CLASSES_DIR)/$(subst $(wildcard $(RESOURCE_DIR)),,$(dir $(ORIG_SETUP_PROPERTIES)))
+	@cp --preserve=all $(SETUP_PROPERTIES) $(CLASSES_DIR)/$(subst $(abspath $(RESOURCE_DIR)),,$(abspath $(dir $(ORIG_SETUP_PROPERTIES))))
 
     # Fix 'MANIFEST.MF'
 	$(call __info,Initiating '$(notdir $(MANIFEST))' file...)
@@ -132,8 +132,11 @@ package: compile | $(SOURCES) $(ORIG_MANIFEST) $(ORIG_SETUP_PROPERTIES) $(RESOUR
 
 	$(call __info,)
 	$(call __info,Generating the JAR file...)
-	@$(JAR) $(subst {JAR},$(word 1,$(JAR_NAMES)),$(JARFLAGS)) \
+	@$(JAR) $(subst {JAR},$(firstword $(JAR_NAMES)),$(JARFLAGS)) \
 		$(wildcard LICENSE) -C $(CLASSES_DIR) .
+    # Reusable variable for info message when generation JAR file(s) done successfully
+	$(eval ._done_msg = $(call __clr,2,Sucessfully generated.) Stored in '{JAR}')
+	$(call __info,$(subst {JAR},$(abspath $(firstword $(JAR_NAMES))),$(._done_msg)))
 
 # Create the second JAR file containing the source files only,
 # if and only if the INCLUDE_SRC option is "true" (enabled)
@@ -142,10 +145,12 @@ ifeq ($(__intern_INC_SRC),1)
 	@echo "$(CLR_PREFIX) $(call __bold,-----[) $(call __clr,2,$@:sources) $(call __bold,::) $(call __clr_br,4,$(ARTIFACT_ID)) $(call __bold,]-----)"
 	$(call __info,)
 	$(call __info,Generating the JAR file (sources)...)
-	@$(JAR) $(subst {JAR},$(word 2,$(JAR_NAMES)),$(JARFLAGS)) \
+	@$(JAR) $(subst {JAR},$(lastword $(JAR_NAMES)),$(JARFLAGS)) \
 		$(wildcard LICENSE) -C $(JAVA_DIR) . \
 		-C $(addprefix $(CLASSES_DIR)/,$(notdir $(RESOURCES_ONLY_DIR))) .
+	$(call __info,$(subst {JAR},$(abspath $(lastword $(JAR_NAMES))),$(._done_msg)))
 endif  # __intern_INC_SRC
+	$(eval undefine ._done_msg)
 	$(call __lines)
 
 
@@ -159,9 +164,10 @@ build-docs:
 
 	$(eval JDOCFLAGS += $(FLAGS))
 
-	$(call __info,Generating HTML documentations to '$(abspath $(JAVADOC_OUT))'...)
+	$(call __info,Generating HTML documentation to '$(abspath $(JAVADOC_OUT))'...)
 	@$(JDOC) $(JDOCFLAGS) $(addprefix -J,$(MEMFLAGS))
 
+	$(call __info,$(call __clr,2,Sucessfully generated.) Stored in '$(abspath $(JAVADOC_OUT))')
 	$(call __lines)
 
 .PHONY: compile package build-docs
@@ -172,7 +178,7 @@ build-docs:
 ## :::::::::::::::: ##
 
 
-clean:
+clean: cleanbin cleandocs
 	$(call __job_msg,$@)
 
 # Clean the "target" (which is the output directory for compiled classes
@@ -185,7 +191,7 @@ ifeq ($(call __is_exist,$(TARGET_DIR)),1)
 	@-rm --recursive $(TARGET_DIR) $(if $(__intern_VERBOSE),--verbose,)
 endif
 
-	@echo "$(CLR_PREFIX) $(call __clr_br,2,ALL CLEAN)"
+	$(call __info,$(call __clr_br,2,ALL CLEAN))
 	$(call __lines)
 
 
@@ -200,7 +206,7 @@ ifeq ($(call __is_exist,$(CLASSES_DIR)),1)
 	@-rm --recursive $(CLASSES_DIR) $(if $(__intern_VERBOSE),--verbose,)
 endif
 
-	@echo "$(CLR_PREFIX) $(call __clr_br,2,ALL CLEAN)"
+	$(call __info,$(call __clr_br,2,Compiled classes cleaned.))
 	$(call __lines)
 
 
@@ -215,7 +221,7 @@ ifeq ($(call __is_exist,$(JAVADOC_OUT)),1)
 	@-rm --recursive $(JAVADOC_OUT) $(if $(__intern_VERBOSE),--verbose,)
 endif
 
-	@echo "$(CLR_PREFIX) $(call __clr_br,2,ALL CLEAN)"
+	$(call __info,$(call __clr_br,2,HTML documentation cleaned.))
 	$(call __lines)
 
 .PHONY: clean cleanbin cleandocs
@@ -232,13 +238,14 @@ $(CLASSES_FILES): $(SOURCES)
 	$(call __pr_verbose)
 	$(call __info,)
 
-	$(call __info,Compiling $(words $(SOURCES)) source files to '$(CURDIR)/$(CLASSES_DIR)'...)
+	$(call __info,Compiling $(words $(SOURCES)) source files to '$(abspath $(CLASSES_DIR))'...)
 	@$(foreach src,$^,\
 		echo "$(CLR_PREFIX) $(call __bold,$(notdir $(src))) >>\
 		$(subst /,.,$(basename $(subst $(JAVA_DIR)/,,$(call __clr,4,$(src)))))$(NORMAL)";\
 	)
 
 	@$(JC) -d $(CLASSES_DIR) $^ $(JCFLAGS) $(addprefix -J,$(MEMFLAGS))
+	$(call __info,$(call __clr,2,All compiled.))
 	$(call __lines)
 
 
@@ -271,10 +278,7 @@ $(CLASSES_FILES): $(SOURCES)
 # Alternative usage:
 #   make <TARGET> LINT=true
 #
-.lint:
-# The `@:` does nothing, but to prevent the message from Make get printed
-# Message: "Nothing to be done for '<TARGET>'"
-	@:
+.lint: ;
 
 
 # Enables the verbose output
@@ -285,10 +289,7 @@ $(CLASSES_FILES): $(SOURCES)
 # Alternative usage:
 #   make <TARGET> VERBOSE=true
 #
-.verbose:
-# The `@:` does nothing, but to prevent the message from Make get printed
-# Message: "Nothing to be done for '<TARGET>'"
-	@:
+.verbose: ;
 
 
 # Includes the source files to be archived
@@ -307,7 +308,4 @@ $(CLASSES_FILES): $(SOURCES)
 # Alternative usage:
 #   make <TARGET> INCLUDE_SRC=true
 #
-.include-src:
-# The `@:` does nothing, but to prevent the message from Make get printed
-# Message: "Nothing to be done for '<TARGET>'"
-	@:
+.include-src: ;
