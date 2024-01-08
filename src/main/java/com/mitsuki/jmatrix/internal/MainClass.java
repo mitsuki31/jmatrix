@@ -184,15 +184,25 @@ public class MainClass {
           .append("   java -jar path/to/jmatrix.jar [options]" + dblNewline)
           .append("OPTIONS:" + newline)
           .append("   ver, version, -V, --version" + newline)
-          .append("       Print the current version of JMatrix." + dblNewline)
+          .append(
+                "       Print the current version information of JMatrix." + newline +
+                "       Use `--version-only` to print the number version only." +
+                dblNewline
+          )
           .append("   copyright, -cr, --copyright" + newline)
           .append("       Print the copyright and license information." + dblNewline)
           .append("   ?, help, -h, --help" + newline)
           .append("       Print this help message." + dblNewline)
-          .append("ISSUE:" + newline)
+          .append("ISSUES:" + newline)
           .append(String.format(
-                "   Want to report some issues? Let's help us improve JMatrix.%s" +
-                "   <https://github.com/mitsuki31/jmatrix/issues/new/choose>",
+                "   Having some bugs or having any issues with algorithm of matrix%s" +
+                "   operations? Please report to the following link.%s" +
+                "       https://github.com/mitsuki31/jmatrix/issues/new/choose%s",
+                newline, dblNewline, dblNewline
+          ))
+          .append(String.format(
+                "   Or if you want to contribute as well, you can create your own%s" +
+                "   pull request.",
                 newline
           ));
 
