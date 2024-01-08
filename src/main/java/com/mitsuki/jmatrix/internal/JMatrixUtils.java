@@ -30,12 +30,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Properties;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * This class provides all neccessary utilities for <b>JMatrix</b> library.
  *
  * @author   <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>
- * @version  1.6, 12 December 2023
+ * @version  1.7, 8 January 2024
  * @since    1.0.0b.1
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0">
  *           Apache License 2.0</a>
@@ -330,6 +332,45 @@ public class JMatrixUtils {
         }
 
         return contents;
+    }
+
+
+    ///// --------------------- /////
+    ///       Date Utilities      ///
+    ///// --------------------- /////
+
+    /**
+     * Converts the given date with format of ISO to local format with
+     * specific format pattern.
+     *
+     * @param date           a {@code String} representing the ISO date.
+     * @param formatPattern  the format pattern to be used.
+     * @return               the local formatted date.
+     *
+     * @since                1.5.0
+     * @see                  #dateISOToLocal(String)
+     */
+    public static String dateISOToLocal(String date, String formatPattern) {
+        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatPattern);
+        return dateTime.format(formatter);
+    }
+
+    /**
+     * Converts the given date with format of ISO to local format with
+     * default format pattern.
+     *
+     * For customizing the format pattern, use the
+     * {@link #dateISOToLocal(String, String)} method instead.
+     * The default value of format pattern is {@code "yyyy-MM-dd HH:mm:ss"}.
+     *
+     * @param date  a {@code String} representing the ISO date.
+     * @return      the local formatted date.
+     *
+     * @since       1.5.0
+     */
+    public static String dateISOToLocal(String date) {
+        return dateISOToLocal(date, "yyyy-MM-dd HH:mm:ss");
     }
 
 
