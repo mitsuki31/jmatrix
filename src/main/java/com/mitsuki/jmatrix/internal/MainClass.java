@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.lang.Iterable;
+import java.time.Year;
 
 
 /**
@@ -39,7 +40,7 @@ import java.lang.Iterable;
  * {@code Main} to {@code MainClass}.
  *
  * @author   <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>
- * @version  1.5, 12 December 2023
+ * @version  1.6, 8 January 2024
  * @since    1.0.0b.1
  * @see      com.mitsuki.jmatrix.Matrix
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0">
@@ -87,6 +88,9 @@ public class MainClass {
         final String license = setupProperties.getProperty("JM-License");
         final String groupId = setupProperties.getProperty("JM-GroupId");
         final String artifactId = setupProperties.getProperty("JM-ArtifactId");
+        final String inceptionYear = setupProperties.getProperty("JM-InceptionYear");
+        final String buildTime = JMatrixUtils.dateISOToLocal(
+            setupProperties.getProperty("JM-BuildTime"), "MMM dd, yyyy HH:mm:ss");
 
         // Parse the command line arguments, removing all duplicate arguments
         List<String> parsedArgs = new ArgumentsParser<String>(args)
@@ -105,16 +109,18 @@ public class MainClass {
         // Check for version arguments
         if (versionArgs.contains(firstArg)) {
             sb.append(String.format("%s v%s", name, version))
-              .append(String.format(" <%s:%s>", groupId, artifactId));
+              .append(String.format(" <%s:%s>", groupId, artifactId))
+              .append(String.format("%sBuilt on %s UTC", newline, buildTime));
         // Check for copyright arguments
         } else if (copyrightArgs.contains(firstArg)) {
-            sb.append(String.format("%s - Copyright (C) 2023 %s%s",
-                      name, author, newline))
+            int currentYear = Year.now().getValue();
+            sb.append(String.format("%s - Copyright (C) %s - %d %s%s",
+                      name, inceptionYear, currentYear, author, newline))
               .append(String.format("Licensed under the %s", license));
         // Check for help arguments
         } else if (helpArgs.contains(firstArg)) {
             printHelpMessage();
-        } else if (firstArg.equals("--version-only")) {
+        } else if (firstArg != null && firstArg.equals("--version-only")) {
             sb.append(version);
         }
 
@@ -180,7 +186,7 @@ public class MainClass {
           .append("   ver, version, -V, --version" + newline)
           .append("       Print the current version of JMatrix." + dblNewline)
           .append("   copyright, -cr, --copyright" + newline)
-          .append("       Print the copyright and license." + dblNewline)
+          .append("       Print the copyright and license information." + dblNewline)
           .append("   ?, help, -h, --help" + newline)
           .append("       Print this help message." + dblNewline)
           .append("ISSUE:" + newline)
