@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * This class provides all neccessary utilities for <b>JMatrix</b> library.
@@ -340,15 +341,29 @@ public class JMatrixUtils {
     ///// --------------------- /////
 
     /**
-     * Converts the given date with format of ISO to local format with
-     * specific format pattern.
+     * Converts a date and time string in ISO 8601 format to a localized string
+     * using the specified format pattern.
      *
-     * @param date           a {@code String} representing the ISO date.
-     * @param formatPattern  the format pattern to be used.
-     * @return               the local formatted date.
+     * <p><b>Note:</b></p>
+     * <p>This method is thread-safe, but does not handle null inputs gracefully.
+     * If {@code date} or {@code formatPattern} is {@code null}, a
+     * {@code NullPointerException} will be thrown.
      *
-     * @since                1.5.0
-     * @see                  #dateISOToLocal(String)
+     * @param  date                    The date and time string in ISO 8601
+     *                                 format (e.g., "2024-01-08T21:53:00Z").
+     * @param  formatPattern           The format pattern to use for the
+     *                                 localized date and time string
+     *                                 (e.g., "dd/MM/yyyy HH:mm:ss").
+     * @return                         The localized date and time string in
+     *                                 the specified format.
+     *
+     * @throws DateTimeParseException  If the input {@code date} string cannot be parsed
+     *                                 using the ISO 8601 formatter.
+     * @throws NullPointerException    If {@code null} are known on {@code date} or
+     *                                 {@code formatPattern} argument.
+     *
+     * @since 1.5.0
+     * @see   #dateISOToLocal(String)
      */
     public static String dateISOToLocal(String date, String formatPattern) {
         LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
@@ -357,17 +372,27 @@ public class JMatrixUtils {
     }
 
     /**
-     * Converts the given date with format of ISO to local format with
-     * default format pattern.
+     * Converts a date and time string in ISO 8601 format to a localized string
+     * using the {@code yyyy-MM-dd HH:mm:ss} format pattern.
      *
-     * For customizing the format pattern, use the
-     * {@link #dateISOToLocal(String, String)} method instead.
-     * The default value of format pattern is {@code "yyyy-MM-dd HH:mm:ss"}.
+     * <p>For customizing the format pattern, use the
+     * {@link #dateISOToLocal(String, String)} method instead. The format pattern
+     * will use format {@code yyyy-MM-dd HH:mm:ss}.
      *
-     * @param date  a {@code String} representing the ISO date.
-     * @return      the local formatted date.
+     * <p><b>Note:</b></p>
+     * <p>This method is thread-safe, but does not handle null inputs gracefully.
+     * If {@code date} is {@code null}, a {@code NullPointerException} will be thrown.
      *
-     * @since       1.5.0
+     * @param  date                    The date and time string in ISO 8601
+     *                                 format (e.g., "2024-01-08T21:53:00Z").
+     * @return                         The localized date and time string in
+     *                                 the {@code yyyy-MM-dd HH:mm:ss} format.
+     *
+     * @throws DateTimeParseException  If the input {@code date} string cannot be parsed
+     *                                 using the ISO 8601 formatter.
+     * @throws NullPointerException    If {@code null} are known on {@code date} argument.
+     *
+     * @since 1.5.0
      */
     public static String dateISOToLocal(String date) {
         return dateISOToLocal(date, "yyyy-MM-dd HH:mm:ss");
