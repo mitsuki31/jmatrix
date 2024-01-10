@@ -17,12 +17,19 @@
 # limitations under the License.
 #
 
-MAKE_DIR     := $(CURDIR)/make
+# It is NOT RECOMMENDED to use the absolute path, Make are ineffectively
+# handles directories and files with spaces, it will treats them as a list of values
+# rather than a single path of directory.
+MAKE_DIR     := make
 SETUP_MAKE   := $(MAKE_DIR)/Setup.mk
 MAIN_MAKE    := $(MAKE_DIR)/Main.mk
 MAKE_USAGE   := $(addprefix docs/make/,makefile-usage.txcc makefile-usage.txt)
 MKFLAGS      := --no-print-directory --silent --file {FILE}
 CUSTOMGOALS  := $(MAKECMDGOALS)
+
+ifeq ($(wildcard $(MAKE_DIR)),)
+  $(error Cannot import internal modules from '$(abspath $(MAKE_DIR))')
+endif  # wildcard : $(MAKE_DIR)
 
 # Import: Func.mk
 include $(MAKE_DIR)/Func.mk
@@ -35,12 +42,8 @@ include $(MAKE_DIR)/Func.mk
 # initialization via the builder, especially crucial when users only seek
 # to display the help message.
 ifneq ($(words $(CUSTOMGOALS)),0)
-  ifneq ($(filter $(word 1,$(CUSTOMGOALS)),help),help)
-    ifneq ($(wildcard $(MAKE_DIR)),)  # Check the "make" directory
-      include $(SETUP_MAKE)
-    else
-      $(__raise_err,Fatal,Cannot import neccessary files from "$(MAKE_DIR)". No such a directory)
-    endif  # wildcard
+  ifneq ($(firstword $(CUSTOMGOALS)),help)
+    include $(SETUP_MAKE)
   endif  # filter
 endif  # words
 

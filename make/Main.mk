@@ -21,7 +21,7 @@
 # Import: Setup.mk
 ### TODO: Remove this when all necessary variables has correctly
 ###       imported from the Makefile within the project's root directory.
-include $(or $(MAKE_DIR),$(CURDIR)/make)/Setup.mk
+include $(or $(MAKE_DIR),make)/Setup.mk
 
 
 ## :::::::::::::::: ##

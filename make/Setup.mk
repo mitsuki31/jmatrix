@@ -23,7 +23,7 @@ ifndef __MAKE_SETUP_MK
 __MAKE_SETUP_MK = 1
 
 # Import: Func.mk
-include $(or $(MAKE_DIR),$(CURDIR)/make)/Func.mk
+include $(or $(MAKE_DIR),make)/Func.mk
 
 ## :::::::::::::::: ##
 ##  User Options    ##
@@ -84,7 +84,7 @@ PY ?= $(or $(shell command -v python 2> /dev/null),\
 
 # Import: Prop.mk
 # Import this module only after the Python command checker
-include $(or $(MAKE_DIR),$(PWD)/make)/Prop.mk
+include $(or $(MAKE_DIR),make)/Prop.mk
 
 ### Flags
 # Check if these constants has been defined to avoid redefine
