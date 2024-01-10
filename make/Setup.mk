@@ -133,7 +133,7 @@ CLR_PREFIX     := [$(call __clr_br,6,$(ARTIFACT_ID))]
 
 # Check whether the current version is release version, zero if false, otherwise non-zero
 IS_RELEASE     := $(if $(findstring 1,$(words $(subst -, ,$(VERSION)))),1,0)
-EXCLUDE_PKGS   := com.mitsuki.jmatrix.util
+EXCLUDE_PKGS   := com.mitsuki.jmatrix.internal
 JAR_NAMES      := $(addprefix $(TARGET_DIR)/,                \
                       $(ARTIFACT_ID)-$(VERSION).jar          \
                       $(ARTIFACT_ID)-$(VERSION)-sources.jar  \
@@ -149,18 +149,18 @@ SETUP_PROPERTIES      := $(BUILDER_OUT)/$(notdir $(ORIG_SETUP_PROPERTIES))
 
 # Lint option
 ifndef __intern_LINT
-  __intern_LINT    :=
-endif # __intern_LINT
+  __intern_LINT    =
+endif  # __intern_LINT
 
 # Verbose option
 ifndef __intern_VERBOSE
-  __intern_VERBOSE :=
-endif # __intern_VERBOSE
+  __intern_VERBOSE =
+endif  # __intern_VERBOSE
 
 # Include sources option
 ifndef __intern_INC_SRC
-  __intern_INC_SRC :=
-endif # __intern_INC_SRC
+  __intern_INC_SRC =
+endif  # __intern_INC_SRC
 
 # Get current year using Python datetime module
 __current_year := $(shell $(PY) -c "import datetime as date; print(date.datetime.now().year)")

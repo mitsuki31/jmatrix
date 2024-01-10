@@ -56,21 +56,21 @@ endif  # words
 # It is equivalent with:
 #   $ make <TARGET> LINT=true
 #
-ifeq ($(filter $(CUSTOMGOALS),.lint),.lint)
+ifeq ($(findstring .lint,$(CUSTOMGOALS)),.lint)
   CUSTOMGOALS   := $(filter-out .lint,$(CUSTOMGOALS))
 
   JCFLAGS       += -Xlint:all -Xdoclint:all
   JDOCFLAGS     += -Xdoclint:all
 
   LINT          := true
-  __intern_LINT := 1
+  __intern_LINT = 1
 else
   # Enable the linter with all checks if LINT is true
   ifeq ($(LINT),true)
     JCFLAGS       += -Xlint:all -Xdoclint:all
     JDOCFLAGS     += -Xdoclint:all
 
-    __intern_LINT := 1
+    __intern_LINT = 1
   else
     JCFLAGS       += -Xlint:deprecation,unchecked,cast -Xdoclint:html,syntax/protected
     JDOCFLAGS     += -Xdoclint:html,syntax
@@ -87,7 +87,7 @@ endif
 # It is equivalent with:
 #   $ make <TARGET> VERBOSE=true
 #
-ifeq ($(filter $(CUSTOMGOALS),.verbose),.verbose)
+ifeq ($(findstring .verbose,$(CUSTOMGOALS)),.verbose)
   CUSTOMGOALS      := $(filter-out .verbose,$(CUSTOMGOALS))
 
   JCFLAGS          += -verbose
@@ -95,7 +95,7 @@ ifeq ($(filter $(CUSTOMGOALS),.verbose),.verbose)
   JDOCFLAGS        += -verbose
 
   VERBOSE          := true
-  __intern_VERBOSE := 1
+  __intern_VERBOSE = 1
 else
   # Enable the verbose if VERBOSE is true
   ifeq ($(VERBOSE),true)
@@ -103,7 +103,7 @@ else
     JARFLAGS          += --verbose
     JDOCFLAGS         += -verbose
 
-    __intern_VERBOSE  := 1
+    __intern_VERBOSE  = 1
   else
     JDOCFLAGS         += -quiet
   endif
@@ -120,18 +120,19 @@ endif
 # It is equivalent with:
 #   $ make <TARGET> INCLUDE_SRC=true
 #
-ifeq ($(filter $(CUSTOMGOALS),.include-src),.include-src)
-  CUSTOMGOALS        := $(filter-out .include-src,$(CUSTOMGOALS)))
+ifeq ($(findstring .include-src,$(CUSTOMGOALS)),.include-src)
+  CUSTOMGOALS        := $(filter-out .include-src,$(CUSTOMGOALS))
 
   INCLUDE_SRC        := true
-  __intern_INC_SRC   := 1
+  __intern_INC_SRC   = 1
 else
   ifeq ($(INCLUDE_SRC),true)
-    __intern_INC_SRC := 1
+    __intern_INC_SRC = 1
   endif
 endif
 
-# Default target rule; If no target rule specified then display the help message
+# Default target rule; If no target rule specified then display the help message.
+.DEFAULT_GOAL: help
 help:
 ifneq ($(or $(RAW),$(NOCC)),true)
     # User could pipe this (`cat`) command to `less` command with:
