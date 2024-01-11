@@ -11,7 +11,6 @@
     <packaging>jar</packaging>
     <version>1.5.0-SNAPSHOT</version>
 
-
     <name>JMatrix</name>
     <description>JMatrix is a Java library to build matrix with ease. Created by Ryuu Mitsuki.</description>
     <url>https://github.com/mitsuki31/jmatrix.git</url>
@@ -24,7 +23,6 @@
         </license>
     </licenses>
 
-
     <!-- Developers & Maintainers -->
     <developers>
         <developer>
@@ -33,7 +31,6 @@
             <url>https://github.com/mitsuki31</url>
         </developer>
     </developers>
-
 
     <!-- Issues & CI -->
     <issueManagement>
@@ -45,19 +42,14 @@
          <url>https://github.com/mitsuki31/jmatrix/actions</url>
      </ciManagement>
 
-
     <!-- Properties -->
     <properties>
-        <author.name>Ryuu Mitsuki</author.name>
-        <package.name>JMatrix</package.name>
-        <package.version.core>1.2.2</package.version.core>
+        <author.name>${project.developers[0].name}</author.name>
         <package.mainClass>com.mitsuki.jmatrix.internal.MainClass</package.mainClass>
-        <package.releaseType>stable</package.releaseType>
-        <package.betaNum>0</package.betaNum>
         <package.licenseFile>LICENSE</package.licenseFile>
+        <excludePackages>com.mitsuki.jmatrix.internal</excludePackages>
 
-
-        <!-- Users could changes these properties if neccessary, but with caution -->
+        <!-- Users can changes these properties if neccessary, but with caution -->
         <jdkVersion>11</jdkVersion>
         <sourceJdk>${jdkVersion}</sourceJdk>
         <targetJdk>${jdkVersion}</targetJdk>
@@ -70,7 +62,6 @@
         <minmemory>32m</minmemory>
         <maxmemory>64m</maxmemory>
 
-
         <!-- Paths -->
         <paths.manifestFile>${basedir}/META-INF/MANIFEST.MF</paths.manifestFile>
 
@@ -82,7 +73,6 @@
         <paths.testClassesDir>${project.build.testOutputDirectory}</paths.testClassesDir>
         <paths.docsOutputDir>${paths.docsDir}/jmatrix-${project.version}</paths.docsOutputDir>
 
-
         <!-- Encoding -->
         <project.build.sourceEncoding>${_encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${_encoding}</project.reporting.outputEncoding>
@@ -90,7 +80,6 @@
         <!-- Timestamp -->
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
     </properties>
-
 
     <!-- Dependencies -->
     <dependencies>
@@ -102,11 +91,9 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <!-- Plugins -->
         <plugins>
-
             <!-- Maven Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -202,16 +189,13 @@
 
                     <bottom>
                         <![CDATA[
-                            Copyright (C) {inceptionYear} <a href="https://github.com/mitsuki31">${author.name}</a>. All rights reserved.
+                            Copyright &copy; {inceptionYear} - 2024 <a href="${project.developers[0].url}">${author.name}</a>. All rights reserved.
                         ]]>
                     </bottom>
 
                     <!-- Dependencies -->
                     <includeDependencySources>true</includeDependencySources>
-                    <excludePackageNames>
-                        <!-- Exclude com.mitsuki.jmatrix.util and its subpackages -->
-                        com.mitsuki.jmatrix.util
-                    </excludePackageNames>
+                    <excludePackageNames>${excludePackages}</excludePackageNames>
 
                     <!-- Custom Tags -->
                     <tags>
@@ -257,13 +241,11 @@
                 </executions>
             </plugin>
 
-
             <!-- Maven Source -->
             <plugin>
                  <artifactId>maven-source-plugin</artifactId>
                  <version>2.4</version>
              </plugin>
-
 
             <!-- Maven JAR -->
             <plugin>
@@ -284,7 +266,6 @@
                 </configuration>
             </plugin>
 
-
             <!-- Maven Surefire -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -293,7 +274,6 @@
             </plugin>
         </plugins>
     </build>
-
 
     <reporting>
         <plugins>
@@ -317,7 +297,6 @@
             </plugin>
         </plugins>
     </reporting>
-
 
     <profiles>
         <profile>
