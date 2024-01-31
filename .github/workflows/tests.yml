@@ -40,7 +40,7 @@ jobs:
 
     env:
       # Maven's debug flag (`-X`)
-      mvnDebugFlag: ${{ env.debug == true && '-X' || '' }}
+      mvnDebugFlag: ${{ inputs.debug == true && '-X' || '' }}
 
     strategy:
       # Set to maximum number of processes to speed up jobs run
@@ -102,7 +102,7 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
 
     env:
-      MAKE: ${{ env.debug == true && 'make -d' || 'make' }}
+      MAKE: ${{ inputs.debug == true && 'make -d' || 'make' }}
 
     strategy:
       # Set to maximum number of processes to speed up jobs run
@@ -128,7 +128,6 @@ jobs:
 
       # Install deps
       - name: Install dependencies
-        id: init
         if: ${{ steps.setup-py.outputs.cache-hit != true }}
         run: |
           if [ $debug = 'true' ]; then
@@ -144,7 +143,6 @@ jobs:
 
       # Compile
       - name: Compile the project
-        needs: init
         run: |
           [ -d target ] && make clean > /dev/null
           $MAKE compile LINT=true VERBOSE=$debug
