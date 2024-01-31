@@ -47,7 +47,7 @@ jobs:
       max-parallel: 6
       matrix:
         os: [Ubuntu, Windows, macOS]
-        java-ver: [11, latest]  # JDK 11 & latest
+        java-ver: [11, 17, 20]  # JDK 11, 17 & 20
 
     steps:
       # Checkout repository
@@ -71,28 +71,17 @@ jobs:
         with:
           java-version: ${{ matrix.java-ver }}
           distribution: ${{ env.java-dist }}
+          cache: 'maven'
+          cache-dependency-path: '**/pom.xml'
 
-      # Install deps
-      - name: Install dependencies
-        if: ${{ steps.cache-maven.outputs.cache-hit != true }}
-        run: mvn clean install -DskipTests ${{ env.mvnDebugFlag }}
-        shell: bash
-
-      # Packaging and testing
-      - name: Packaging the project
-        run: mvn package -P include-src ${{ env.mvnDebugFlag }}
-        shell: bash
-
-      # Build the docs
-      - name: Build the HTML docs
-        run: mvn site -P lint ${{ env.mvnDebugFlag }}
+      # Build the project
+      - name: Build with Maven
+        run: mvn -B package -P include-src -P lint ${{ env.mvnDebugFlag }}
         shell: bash
 
       # Clean up
       - name: Clean up the project
-        run: |
-          mvn clean ${{ env.mvnDebugFlag }}
-          [ -d docs/jmatrix-* ] && rm --recursive --force docs/jmatrix-*
+        run: mvn clean ${{ env.mvnDebugFlag }}
         shell: bash
 
 
@@ -108,8 +97,8 @@ jobs:
       # Set to maximum number of processes to speed up jobs run
       max-parallel: 6
       matrix:
-        os: [Ubuntu, Windows, macOS]
-        py-ver: [3.7, 3.x]  # Python 3.7 & latest
+        os: [Ubuntu, Windows]
+        py-ver: [3.7, 3.x]  # Python 3.7 & latest of version 3
 
     steps:
       # Checkout
@@ -127,7 +116,7 @@ jobs:
           cache-dependency-path: '**/${{ env.deps }}'
 
       # Install deps
-      - name: Install dependencies
+      - name: Install Python dependencies
         if: ${{ steps.setup-py.outputs.cache-hit != true }}
         run: |
           if [ $debug = 'true' ]; then
@@ -148,16 +137,9 @@ jobs:
           $MAKE compile LINT=true VERBOSE=$debug
         shell: bash
 
-      # Package
-      - name: Packaging the project
+      # Build
+      - name: Build with Make
         run: $MAKE package INCLUDE_SRC=true VERBOSE=$debug
-        shell: bash
-
-      # Build docs
-      - name: Build the HTML docs
-        # For more information on debugging, it will implictly set the
-        # verbose mode to 'all' when the VERBOSE is true.
-        run: $MAKE build-docs LINT=true VERBOSE=$debug
         shell: bash
 
       # Clean up
