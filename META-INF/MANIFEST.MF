@@ -1,6 +1,13 @@
 Manifest-Version: 1.2
-Built-By: Ryuu Mitsuki
-License-File: LICENSE
-Main-Class: com.mitsuki.jmatrix.Main
-Program-Name: JMatrix
-Program-Version: v1.3.0
+Name: ${project.name}
+ID: ${project.groupId}:${project.artifactId}
+Version: ${project.version}
+URL: ${project.url}
+Inception-Year: ${project.inceptionYear}
+Main-Class: ${package.mainClass}
+Author: ${project.developers[0].name}
+Author-URL: ${project.developers[0].url}
+Build-Time: ${maven.build.timestamp}
+License: ${project.licenses[0].name}
+License-URL: ${project.licenses[0].url}
+License-File: ${package.licenseFile}

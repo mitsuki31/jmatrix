@@ -1,0 +1,73 @@
+USAGE:
+   $ make <TARGET>... [OPTION[=<value>] | [CUSTOM_FLAGS]]...
+
+TARGETS:
+   build-docs     Builds and generates HTML-based documentations.
+   clean          Cleans the working directory thoroughly.
+   cleanbin       Cleans all compiled class files only.
+   cleandocs      Cleans all generated HTML-based documentations.
+   compile        Compiles all the source files (.java).
+   package        Creates and generates the JAR file.
+
+   help           Displays this help message.
+
+OPTIONS:
+:: FLAGS - Append the given flags to specific target(s) flags.
+
+     Type: string
+
+     Utilized by: *All targets
+
+     Usage:
+         $ make <TARGET>... FLAGS=<flags>
+
+     WARNING:
+         This option will force all specified targets to use the flags,
+         which may lead to unexpected behaviors.
+         It is recommended to use only one target when using this option.
+
+
+:: INCLUDE_SRC - Whether to also generate other JAR file containing
+                 only the source files during packaging.
+
+     Type: boolean
+
+     Utilized by: package
+
+     Usage:
+         $ make package INCLUDE_SRC=<boolean>
+
+
+:: LINT - Whether to invoke the linter.
+
+     Type: boolean
+
+     Utilized by: compile, build-docs
+
+     Usage:
+         $ make <TARGET>... LINT=<boolean>
+
+
+:: VERBOSE - Whether to activate the verbose output.
+
+     Type: boolean
+
+     Utilized by: *All targets
+
+     Usage:
+         $ make <TARGET>... VERBOSE=<boolean>
+
+TIPS:
+    You can combine multiple targets and options in single command.
+    For example:
+        $ make compile package LINT=true VERBOSE=true
+
+ISSUES:
+    Have any suggestions or want to report some bugs?
+    Feel free to refer to link below.
+
+        https://github.com/mitsuki31/jmatrix/issues/new/choose
+
+AUTHOR:
+    All Make files in this project are written by Ryuu Mitsuki.
+    JMatrix is authored and developed by Ryuu Mitsuki.

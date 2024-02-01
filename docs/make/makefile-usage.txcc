@@ -1,0 +1,73 @@
+[1mUSAGE:[0m
+   [100;97m $ make <TARGET>... [OPTION[=<value>] | [CUSTOM_FLAGS]]... [0m
+
+[1mTARGETS:[0m
+   [1mbuild-docs[0m     Builds and generates HTML-based documentations.
+   [1mclean[0m          Cleans the working directory thoroughly.
+   [1mcleanbin[0m       Cleans all compiled class files only.
+   [1mcleandocs[0m      Cleans all generated HTML-based documentations.
+   [1mcompile[0m        Compiles all the source files (.java).
+   [1mpackage[0m        Creates and generates the JAR file.
+
+   [1mhelp[0m           Displays this help message.
+
+[1mOPTIONS:[0m
+:: [1mFLAGS[0m - Append the given [1mflags[0m to specific target(s) flags.
+
+     [4mType[0m: [3mstring[0m
+
+     [4mUtilized by[0m: *All targets
+
+     [4mUsage[0m:
+         [100;97m $ make <TARGET>... FLAGS=<flags> [0m
+
+     [1m[4mWARNING[0m:
+         This option will force all specified targets to use the [1mflags[0m,
+         which may lead to unexpected behaviors.
+         It is recommended to use only one target when using this option.
+
+
+:: [1mINCLUDE_SRC[0m - Whether to also generate other JAR file containing
+                 only the source files during packaging.
+
+     [4mType[0m: [3mboolean[0m
+
+     [4mUtilized by[0m: [1mpackage[0m
+
+     [4mUsage[0m:
+         [100;97m $ make package INCLUDE_SRC=<boolean> [0m
+
+
+:: [1mLINT[0m - Whether to invoke the linter.
+
+     [4mType[0m: [3mboolean[0m
+
+     [4mUtilized by[0m: [1mcompile[0m, [1mbuild-docs[0m
+
+     [4mUsage[0m:
+         [100;97m $ make <TARGET>... LINT=<boolean> [0m
+
+
+:: [1mVERBOSE[0m - Whether to activate the verbose output.
+
+     [4mType[0m: [3mboolean[0m
+
+     [4mUtilized by[0m: *All targets
+
+     [4mUsage[0m:
+         [100;97m $ make <TARGET>... VERBOSE=<boolean> [0m
+
+[1mTIPS:[0m
+    You can combine multiple targets and options in single command.
+    For example:
+        [100;97m $ make compile package LINT=true VERBOSE=true [0m
+
+[1mISSUES:[0m
+    Have any suggestions or want to report some bugs?
+    Feel free to refer to link below.
+
+        [4;94mhttps://github.com/mitsuki31/jmatrix/issues/new/choose[0m
+
+[1mAUTHOR:[0m
+    All [1mMake[0m files in this project are written by [1mRyuu Mitsuki[0m.
+    [1mJMatrix[0m is authored and developed by [1mRyuu Mitsuki[0m.
