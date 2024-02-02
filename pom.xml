@@ -44,15 +44,12 @@
 
     <!-- Properties -->
     <properties>
-        <author.name>Ryuu Mitsuki</author.name>
-        <package.name>JMatrix</package.name>
-        <package.version.core>1.3.0</package.version.core>
-        <package.mainClass>com.mitsuki.jmatrix.Main</package.mainClass>
-        <package.releaseType>stable</package.releaseType>
-        <package.betaNum>0</package.betaNum>
+        <author.name>${project.developers[0].name}</author.name>
+        <package.mainClass>com.mitsuki.jmatrix.internal.MainClass</package.mainClass>
         <package.licenseFile>LICENSE</package.licenseFile>
+        <excludePackages>com.mitsuki.jmatrix.internal</excludePackages>
 
-        <!-- Users could changes these properties if neccessary, but with caution -->
+        <!-- Users can changes these properties if neccessary, but with caution -->
         <jdkVersion>11</jdkVersion>
         <sourceJdk>${jdkVersion}</sourceJdk>
         <targetJdk>${jdkVersion}</targetJdk>
@@ -95,26 +92,8 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${paths.resourcesDir}</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>${basedir}</directory>
-                <includes>
-                    <include>LICENSE</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/META-INF</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
         <!-- Plugins -->
         <plugins>
-
             <!-- Maven Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -142,6 +121,44 @@
                     <meminitial>${minmemory}</meminitial>
                     <maxmem>${maxmemory}</maxmem>
                 </configuration>
+            </plugin>
+
+            <!-- Maven Resources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <propertiesEncoding>${_encoding}</propertiesEncoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${paths.classesDir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${paths.resourcesDir}</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}</directory>
+                                    <includes>
+                                        <include>LICENSE</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}/META-INF</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Maven Javadoc -->
@@ -172,16 +189,13 @@
 
                     <bottom>
                         <![CDATA[
-                            Copyright (C) {inceptionYear} <a href="https://github.com/mitsuki31">${author.name}</a>. All rights reserved.
+                            Copyright &copy; {inceptionYear} - 2024 <a href="${project.developers[0].url}">${author.name}</a>. All rights reserved.
                         ]]>
                     </bottom>
 
                     <!-- Dependencies -->
                     <includeDependencySources>true</includeDependencySources>
-                    <excludePackageNames>
-                        <!-- Exclude com.mitsuki.jmatrix.util and its subpackages -->
-                        com.mitsuki.jmatrix.util
-                    </excludePackageNames>
+                    <excludePackageNames>${excludePackages}</excludePackageNames>
 
                     <!-- Custom Tags -->
                     <tags>

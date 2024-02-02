@@ -1,12 +1,12 @@
-name: Project Tester
+name: Test
 
 on:
   # Run on push, pull request, and manual trigger
   push:
     # Only run when the specific files are changed
     paths:
-      - 'src/**/*.java'  # Java files
-      - 'src/**/*.py'    # Python files
+      - '**/*.java'  # Java files
+      - '**/*.py'    # Python files
 
   # Unlike push, the workflow always runs on pull requests
   pull_request:
@@ -20,20 +20,34 @@ on:
         required: false
         type: boolean
 
+# Environment variables definitions
+env:
+  ## For Java installation
+  java-dist: temurin
+
+  ## For Python installation
+  arch: x64
+
+  ## Other environments
+  debug: ${{ inputs.debug }}
+  deps: requirements.txt
+
 jobs:
   # ::---:: Maven Test ::---:: #
   maven-test:
-    name: Maven Test / ${{ matrix.os }}
+    name: Maven Test / ${{ matrix.os }} / ${{ matrix.java-ver }}
     runs-on: ${{ matrix.os }}-latest
 
     env:
-      java-ver: 11
-      java-dist: temurin
-      DEBUG: ${{ inputs.debug }}
+      # Maven's debug flag (`-X`)
+      mvnDebugFlag: ${{ inputs.debug == true && '-X' || '' }}
 
     strategy:
+      # Set to maximum number of processes to speed up jobs run
+      max-parallel: 6
       matrix:
-        os: [Ubuntu, Windows]
+        os: [Ubuntu, Windows, macOS]
+        java-ver: [11, 17, 20]  # JDK 11, 17 & 20
 
     steps:
       # Checkout repository
@@ -46,64 +60,44 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-jdk-${{ matrix.java-ver }}-${{ env.java-dist }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-jdk-${{ matrix.java-ver }}-${{ env.java-dist }}-maven-${{ hashFiles('**/pom.xml') }}
+            ${{ runner.os }}-jdk-${{ matrix.java-ver }}-${{ env.java-dist }}-maven-
 
       # Setup Java
-      - name: Setup Java / ${{ matrix.os }}
+      - name: Setup Java / ${{ matrix.os }} / ${{ matrix.java-ver }}
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ env.java-ver }}
+          java-version: ${{ matrix.java-ver }}
           distribution: ${{ env.java-dist }}
+          cache: 'maven'
+          cache-dependency-path: '**/pom.xml'
 
-      # Install deps
-      - name: Install dependencies
-        if: ${{ steps.cache-maven.outputs.cache-hit != true && env.DEBUG != true }}
-        run: mvn install -DskipTests
-
-      - name: Install dependencies (Debug)
-        if: ${{ steps.cache-maven.outputs.cache-hit != true && env.DEBUG == true }}
-        run: mvn install -DskipTests -X
-
-      # Packaging with source files
-      - name: Package source
-        if: ${{ env.DEBUG != true }}
-        run: mvn package -P include-src
-
-      - name: Package source (Debug)
-        if: ${{ env.DEBUG == true }}
-        run: mvn package -P include-src -X
-
-      # Test
-      - name: Test project
-        if: ${{ env.DEBUG != true }}
-        run: mvn test
-
-      - name: Test project (Debug)
-        if: ${{ env.DEBUG == true }}
-        run: mvn test -X
+      # Build the project
+      - name: Build with Maven
+        run: mvn -B package -P include-src -P lint ${{ env.mvnDebugFlag }}
+        shell: bash
 
       # Clean up
       - name: Clean up the project
-        run: mvn clean
+        run: mvn clean ${{ env.mvnDebugFlag }}
+        shell: bash
 
 
   # ::---:: Make Test ::---:: #
   make-test:
-    name: Make Test
+    name: Make Test / Ubuntu / ${{ matrix.py-ver }}
     runs-on: ubuntu-latest
-    continue-on-error: true
-
-    strategy:
-      matrix:
-        py-ver: ['3.7', '3.x']
 
     env:
-      arch: x64
-      DEPS_FILE: 'requirements.txt'
-      DEBUG: ${{ inputs.debug }}
+      MAKE: ${{ inputs.debug == true && 'make -d' || 'make' }}
+
+    strategy:
+      # Set to maximum number of processes to speed up jobs run
+      max-parallel: 6
+      matrix:
+        py-ver: [3.7, 3.x]  # Python 3.7 & latest of version 3
 
     steps:
       # Checkout
@@ -111,24 +105,25 @@ jobs:
         uses: actions/checkout@v4
 
       # Setup Python
-      - name: Setup Python ${{ matrix.py-ver }}
+      - name: Setup Python / Ubuntu / ${{ matrix.py-ver }}
         id: setup-py
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.py-ver }}
           architecture: ${{ env.arch }}
-          cache: 'pip'
-          cache-dependency-path: '**/${{ env.DEPS_FILE }}'
+          cache: pip
+          cache-dependency-path: '**/${{ env.deps }}'
 
       # Install deps
-      - name: Install dependencies
+      - name: Install Python dependencies
         if: ${{ steps.setup-py.outputs.cache-hit != true }}
         run: |
-          if [ $DEBUG = 'true' ]; then
-            python -m pip install -r $DEPS_FILE --debug
+          if [ $debug = 'true' ]; then
+            python -m pip install -r $(git ls-files **/$deps) --debug
           else
-            python -m pip install -r $DEPS_FILE
+            python -m pip install -r $(git ls-files **/$deps)
           fi
+        shell: bash
 
       # Sadly, Make cannot tests the project thoroughly due to unavailability
       # of necessary packages (e.g "org.junit"), so here it just tests
@@ -137,31 +132,16 @@ jobs:
       # Compile
       - name: Compile the project
         run: |
-          [ -d target/classes ] && make clean
-          make compile VERBOSE=$DEBUG LINT=true
+          [ -d target ] && make clean > /dev/null
+          $MAKE compile LINT=true VERBOSE=$debug
+        shell: bash
 
-      # Package
-      - name: Packaging the project
-        run: |
-          make package VERBOSE=$DEBUG
-
-      - name: Packaging the project (with source)
-        run: |
-          make package INCLUDE-SRC=true VERBOSE=$DEBUG
-
-      # Build docs
-      - name: Build the docs
-        run: |
-          # Build docs
-          # For more information on debugging, we prefer to change it
-          # to "all" mode.
-          if [ $DEBUG = 'true' ]; then
-            make build-docs VERBOSE=all
-          else
-            make build-docs
-          fi
+      # Build
+      - name: Build with Make
+        run: $MAKE package INCLUDE_SRC=true VERBOSE=$debug
+        shell: bash
 
       # Clean up
       - name: Clean up the project
-        run: |
-          [ -d target ] && echo "Clean the project" && make clean
+        run: $MAKE clean VERBOSE=$debug
+        shell: bash

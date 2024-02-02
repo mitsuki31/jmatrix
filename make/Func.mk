@@ -245,15 +245,10 @@ endif  # __MAKE_FUNC_MK
 
 # __lines Function
 #
-# This function prints a line with title in the center (if specified) to the console.
-# With custom colors and prefixes applied.
+# This function prints a line to the console. With custom colors and prefixes applied.
 #
 # Usage:
-#   $(call __lines,<title>)
-#
-# Arguments:
-#   title (optional):
-#     The title to be printed.
+#   $(call __lines)
 #
 define __lines
 	$(call __info,------------------------------------------------------------------------)

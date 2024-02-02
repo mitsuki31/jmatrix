@@ -1,6 +1,6 @@
-// ------------------- //
-/*       Options       */
-// ------------------- //
+// ---------------------- //
+/*      JMatrixUtils      */
+// ---------------------- //
 
 /* Copyright (c) 2023 Ryuu Mitsuki
  *
@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package com.mitsuki.jmatrix.util;
+package com.mitsuki.jmatrix.internal;
 
 import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 
@@ -29,135 +29,31 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Properties;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
- * This class provides all requirements for <b>JMatrix</b> library.
+ * This class provides all neccessary utilities for <b>JMatrix</b> library.
  *
- * @author   <a href="https://github.com/mitsuki31" target="_blank">
- *           Ryuu Mitsuki</a>
- * @version  1.33, 17 August 2023
+ * @author   <a href="https://github.com/mitsuki31">Ryuu Mitsuki</a>
+ * @version  1.7, 8 January 2024
  * @since    1.0.0b.1
- * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0">
  *           Apache License 2.0</a>
- *
- * @see      com.mitsuki.jmatrix.util.XMLParser
  */
-public class Options
-{
+public class JMatrixUtils {
 
     /**
-     * An {@code Enum} that contains all available options.
-     *
-     * @since 1.0.0b.1
-     * @see   #getOptions(String)
+     * A {@link Properties} object reference to synchronized setup properties.
      */
-    public enum OPT {
-
-        /**
-         * Represents the "version" option. Users can retrieve this option by using one of the following inputs:
-         *
-         * <ul>
-         *  <li>{@code -V}
-         *  <li>{@code ver}
-         *  <li>{@code version}
-         * </ul>
-         *
-         * @see #OPT(String...)
-         */
-        VERSION("-V", "version", "ver"),
-
-        /**
-         * Represents the "help" option. Users can retrieve this option by using the following input:
-         *
-         * <ul>
-         *  <li>{@code -h}
-         *  <li>{@code help}
-         * </ul>
-         *
-         * @see #OPT(String...)
-         */
-        HELP("-h", "help"),
-
-        /**
-         * Represents the "copyright" option. Users can retrieve this option by using the following input:
-         *
-         * <ul>
-         *  <li>{@code -cr}
-         *  <li>{@code copyright}
-         * </ul>
-         *
-         * @see #OPT(String...)
-         */
-        COPYRIGHT("-cr", "copyright");
-
-        /**
-         * A {@link List} of string to stores all options aliases.
-         */
-        private final List<String> aliases;
-
-        /**
-         * Constructs an option with the given aliases.
-         *
-         * @param aliases  the aliases that represent this option.
-         *
-         * @since          1.0.0b.1
-         * @see            java.util.Arrays#asList
-         */
-        OPT(String ... aliases) {
-            this.aliases = Arrays.asList(aliases);
-        }
-    }
+    private static final Properties setupProperties = SetupProperties.getSetupProperties();
 
     /**
-     * Stores the static object of {@link XMLParser} class.
+     * A string variable holding the program name, retrieved from {@link SetupProperties}.
      */
-    private static XMLParser XML = new XMLParser(XMLParser.XMLType.CONFIG);
-
-    /**
-     * Stores a string that represents the program name.
-     */
-    private static String PROGNAME = XML.getProperty("programName").toLowerCase();
-
-    /**
-     * Stores a string that represents the path to "contents" directory.
-     */
-    private static String contentsPath = "contents/";
-
-    /**
-     * Method that checks the input argument then returns specific option.
-     *
-     * @param  inputOpt                  the {@code String} that wants to be checked.
-     *
-     * @return                           the corresponding {@code OPT} value.
-     *
-     * @throws IllegalArgumentException  if the given option name does not
-     *                                   match with any known options.
-     *                                   This exception will be thrown as the causing exception.
-     *
-     * @since                            1.0.0b.1
-     */
-    public static OPT getOptions(String inputOpt) {
-        for (OPT opt : OPT.values()) {
-            if (opt.aliases.contains(inputOpt)) {
-                return opt;
-            }
-        }
-
-        raiseError(new JMatrixBaseException(
-            new IllegalArgumentException(
-                String.format("Unknown argument option for input \"%s\"", inputOpt)
-            )
-        ), 0);
-
-        System.err.println(System.lineSeparator() + getHelpMsg()[0]);
-        System.err.println("    " +
-            "java -jar <jar_file> [-h|-V|-cr]");
-        System.exit(-1);
-
-        // This never get executed, but to suppress missing return statement error
-        return null;
-    }
-
+    private static final String PROGNAME = setupProperties.getProperty("JM-Name");
 
     ///// ---------------------- /////
     ///      Class & Packages      ///
@@ -169,7 +65,7 @@ public class Options
      * <p>For example:</p>
      *
      * <pre><code class="language-java">&nbsp;
-     *     Options.getPackageName(MyClass.class);
+     *     JMatrixUtils.getPackageName(MyClass.class);
      * </code></pre>
      *
      * @param  cls  the {@link Class} object.
@@ -189,7 +85,7 @@ public class Options
      * <p>For example:</p>
      *
      * <pre><code class="language-java">&nbsp;
-     *     Options.getClassName(MyClass.class);
+     *     JMatrixUtils.getClassName(MyClass.class);
      * </code></pre>
      *
      * @param  cls  the {@link Class} object.
@@ -244,9 +140,9 @@ public class Options
 
 
 
-    ///// -------------------- /////
-    ///       Files Options      ///
-    ///// -------------------- /////
+    ///// --------------------- /////
+    ///      Files Utilities      ///
+    ///// --------------------- /////
 
     /**
      * Returns the total lines of specified file.
@@ -357,7 +253,7 @@ public class Options
      * @see                            java.io.InputStream
      */
     public static InputStream getFileAsStream(String filePath) {
-        return Options.class.getClassLoader().getResourceAsStream(filePath);
+        return JMatrixUtils.class.getClassLoader().getResourceAsStream(filePath);
     }
 
     /**
@@ -379,70 +275,10 @@ public class Options
 
             return true;
         } catch (final IOException ioe) {
-            Options.raiseError(new JMatrixBaseException(ioe), 0);
+            JMatrixUtils.raiseError(new JMatrixBaseException(ioe), 0);
         }
 
         return false;
-    }
-
-
-    ///// ------------------ /////
-    ///        Contents        ///
-    ///// ------------------ /////
-
-    /**
-     * Returns a list containing the help message contents.
-     *
-     * @return the contents of help message.
-     *
-     * @since  1.0.0b.1
-     * @see    #readFile(InputStream)
-     * @see    #getFileAsStream(String)
-     * @see    #removeComment(String[])
-     */
-    public static String[ ] getHelpMsg() {
-        return removeComment(readFile(getFileAsStream(contentsPath + "help.content")));
-    }
-
-    /**
-     * Returns a list containing the copyright contents.
-     *
-     * @return the contents of copyright.
-     *
-     * @since  1.0.0b.1
-     * @see    #readFile(InputStream)
-     * @see    #getFileAsStream(String)
-     * @see    java.lang.StringBuilder
-     */
-    public static String[ ] getCopyright() {
-        final String[ ] contents = readFile(getFileAsStream(contentsPath + "additional.content"));
-        String[ ] copyright = new String[contents.length];
-
-        for (int i = 0; i < contents.length; i++) {
-            // Ignore the comment
-            if (!contents[i].startsWith("#")) {
-                StringBuilder sb = new StringBuilder();
-                for (int j = 0; j < contents[i].length(); j += 2) {
-                    String bytes = contents[i].substring(j, j + 2);
-                    sb.append((char) Integer.parseInt(bytes, 16));
-                }
-                copyright[i] = sb.toString();
-            } else {
-                copyright[i] = contents[i];
-            }
-        }
-
-        for (int i = 0; i != contents.length; i++) {
-            if (copyright[i].contains("${PACKAGE_NAME}")) {
-                copyright[i] = copyright[i].replace("${PACKAGE_NAME}", XML.getProperty("programName"));
-            }
-
-            if (copyright[i].contains("${AUTHOR}")) {
-                copyright[i] = copyright[i].replace("${AUTHOR}", XML.getProperty("author"));
-            }
-        }
-
-        return removeComment(copyright);
     }
 
 
@@ -497,6 +333,69 @@ public class Options
         }
 
         return contents;
+    }
+
+
+    ///// --------------------- /////
+    ///       Date Utilities      ///
+    ///// --------------------- /////
+
+    /**
+     * Converts a date and time string in ISO 8601 format to a localized string
+     * using the specified format pattern.
+     *
+     * <p><b>Note:</b></p>
+     * <p>This method is thread-safe, but does not handle null inputs gracefully.
+     * If {@code date} or {@code formatPattern} is {@code null}, a
+     * {@code NullPointerException} will be thrown.
+     *
+     * @param  date                    The date and time string in ISO 8601
+     *                                 format (e.g., "2024-01-08T21:53:00Z").
+     * @param  formatPattern           The format pattern to use for the
+     *                                 localized date and time string
+     *                                 (e.g., "dd/MM/yyyy HH:mm:ss").
+     * @return                         The localized date and time string in
+     *                                 the specified format.
+     *
+     * @throws DateTimeParseException  If the input {@code date} string cannot be parsed
+     *                                 using the ISO 8601 formatter.
+     * @throws NullPointerException    If {@code null} are known on {@code date} or
+     *                                 {@code formatPattern} argument.
+     *
+     * @since 1.5.0
+     * @see   #dateISOToLocal(String)
+     */
+    public static String dateISOToLocal(String date, String formatPattern) {
+        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(formatPattern);
+        return dateTime.format(formatter);
+    }
+
+    /**
+     * Converts a date and time string in ISO 8601 format to a localized string
+     * using the {@code yyyy-MM-dd HH:mm:ss} format pattern.
+     *
+     * <p>For customizing the format pattern, use the
+     * {@link #dateISOToLocal(String, String)} method instead. The format pattern
+     * will use format {@code yyyy-MM-dd HH:mm:ss}.
+     *
+     * <p><b>Note:</b></p>
+     * <p>This method is thread-safe, but does not handle null inputs gracefully.
+     * If {@code date} is {@code null}, a {@code NullPointerException} will be thrown.
+     *
+     * @param  date                    The date and time string in ISO 8601
+     *                                 format (e.g., "2024-01-08T21:53:00Z").
+     * @return                         The localized date and time string in
+     *                                 the {@code yyyy-MM-dd HH:mm:ss} format.
+     *
+     * @throws DateTimeParseException  If the input {@code date} string cannot be parsed
+     *                                 using the ISO 8601 formatter.
+     * @throws NullPointerException    If {@code null} are known on {@code date} argument.
+     *
+     * @since 1.5.0
+     */
+    public static String dateISOToLocal(String date) {
+        return dateISOToLocal(date, "yyyy-MM-dd HH:mm:ss");
     }
 
 

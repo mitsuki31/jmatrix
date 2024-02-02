@@ -1,0 +1,9 @@
+pylint>=2.17.3
+platformdirs>=2.2.0
+isort>=4.2.5
+mccabe>=0.6
+tomlkit>=0.10.1
+dill>=0.3.6
+colorama>=0.4.5
+lazy-object-proxy>=1.4.0
+wrapt>=1.14
