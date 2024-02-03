@@ -79,7 +79,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.4, 22 August 2023
+ * @version  3.0, 3 February 2024
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -2747,6 +2747,183 @@ public class Matrix implements MatrixUtils {
         return true;
     }
 
+
+    /*---------------------------
+    :: Sparse Matrix
+    ---------------------------*/
+
+    /**
+     * Determines whether this matrix is considered sparse.
+     *
+     * <p>This method employs a specific criterion for sparsity: a matrix is
+     * deemed <b>sparse</b> if the number of non-zero elements within it is less than
+     * or equal to the maximum dimension of the matrix itself. If most of the elements
+     * are non-zero, the matrix is considered <b>dense</b>. To determine whether
+     * an element is effectively zero, it compares its absolute value against a defined
+     * {@linkplain Matrix#THRESHOLD threshold}. Elements falling below this threshold
+     * are considered zero for the purpose of sparsity evaluation.
+     *
+     * <p><b>Examples:</b></p>
+     *
+     * <p>A sparse matrix is one where most of the elements are zero.
+     * Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 1 0 7 0 ]
+     *   [ 9 0 0 3 ]
+     *   [ 0 0 0 0 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x4} matrix, there is only a few non-zero elements,
+     * and the rest are zero. Such matrices are considered <b>sparse</b>.
+     *
+     * <hr>
+     *
+     * <p>A diagonal matrix is a special case of a sparse matrix where all the
+     * non-zero elements are on the main diagonal. Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 7 0 0 ]
+     *   [ 0 2 0 ]
+     *   [ 0 0 5 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x3} matrix, only the diagonal elements (7, 2, 5)
+     * are non-zero, and the rest are zero. Diagonal matrices are a type of
+     * <b>sparse matrix</b>.
+     *
+     * @return {@code true} if the matrix is sparse, {@code false} otherwise.
+     *
+     * @since 1.5.0
+     * @see   #isSparse(Matrix)
+     */
+    public boolean isSparse() {
+        return Matrix.isSparse(this);
+    }
+
+
+    /**
+     * Determines whether the given matrix is considered sparse.
+     *
+     * <p>This method employs a specific criterion for sparsity: a matrix is
+     * deemed <b>sparse</b> if the number of non-zero elements within it is less than
+     * or equal to the maximum dimension of the matrix itself. If most of the elements
+     * are non-zero, the matrix is considered <b>dense</b>. To determine whether
+     * an element is effectively zero, it compares its absolute value against a defined
+     * {@linkplain Matrix#THRESHOLD threshold}. Elements falling below this threshold
+     * are considered zero for the purpose of sparsity evaluation.
+     *
+     * <p><b>Examples:</b></p>
+     *
+     * <p>A sparse matrix is one where most of the elements are zero.
+     * Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 1 0 7 0 ]
+     *   [ 9 0 0 3 ]
+     *   [ 0 0 0 0 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x4} matrix, there is only a few non-zero elements,
+     * and the rest are zero. Such matrices are considered <b>sparse</b>.
+     *
+     * <hr>
+     *
+     * <p>A diagonal matrix is a special case of a sparse matrix where all the
+     * non-zero elements are on the main diagonal. Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 7 0 0 ]
+     *   [ 0 2 0 ]
+     *   [ 0 0 5 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x3} matrix, only the diagonal elements (7, 2, 5)
+     * are non-zero, and the rest are zero. Diagonal matrices are a type of
+     * <b>sparse matrix</b>.
+     *
+     * @param  m  the matrix to be evaluated for sparsity.
+     * @return    {@code true} if the matrix is sparse, {@code false} otherwise.
+     *
+     * @since 1.5.0
+     */
+    public static boolean isSparse(Matrix m) {
+        final int[] mSize = m.getSize();
+        int numberNonZero = 0;  // To hold the total number of non-zero entries
+    
+        for (int r = 0; r < mSize[0]; r++) {
+            for (int c = 0; c < mSize[1]; c++) {
+                if (Math.abs(m.get(r, c)) > Matrix.THRESHOLD) {
+                    numberNonZero++;  // increment
+                }
+            }
+        }
+    
+        return (numberNonZero <= Math.max(mSize[0], mSize[1]));
+    }
+
+
+    /**
+     * Determines whether the two-dimensional array that represents a matrix is
+     * considered sparse.
+     *
+     * <p>This method employs a specific criterion for sparsity: a matrix is
+     * deemed <b>sparse</b> if the number of non-zero elements within it is less than
+     * or equal to the maximum dimension of the matrix itself. If most of the elements
+     * are non-zero, the matrix is considered <b>dense</b>. To determine whether
+     * an element is effectively zero, it compares its absolute value against a defined
+     * {@linkplain Matrix#THRESHOLD threshold}. Elements falling below this threshold
+     * are considered zero for the purpose of sparsity evaluation.
+     *
+     * <p><b>Examples:</b></p>
+     *
+     * <p>A sparse matrix is one where most of the elements are zero.
+     * Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 1 0 7 0 ]
+     *   [ 9 0 0 3 ]
+     *   [ 0 0 0 0 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x4} matrix, there is only a few non-zero elements,
+     * and the rest are zero. Such matrices are considered <b>sparse</b>.
+     *
+     * <hr>
+     *
+     * <p>A diagonal matrix is a special case of a sparse matrix where all the
+     * non-zero elements are on the main diagonal. Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 7 0 0 ]
+     *   [ 0 2 0 ]
+     *   [ 0 0 5 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x3} matrix, only the diagonal elements (7, 2, 5)
+     * are non-zero, and the rest are zero. Diagonal matrices are a type of
+     * <b>sparse matrix</b>.
+     *
+     * @param  a  the two-dimensional array to be evaluated for sparsity.
+     * @return    {@code true} if the array is sparse, {@code false} otherwise.
+     *
+     * @since 1.5.0
+     */
+    public static boolean isSparse(double[ ][ ] a) {
+        final int rows = a.length;
+        final int cols = a[0].length;
+        int numberNonZero = 0;  // To hold the total number of non-zero entries
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (Math.abs(a[r][c]) > Matrix.THRESHOLD) {
+                    numberNonZero++;  // increment
+                }
+            }
+        }
+
+        return (numberNonZero <= Math.max(rows, cols));
+    }
 
 
     /*=========================================
