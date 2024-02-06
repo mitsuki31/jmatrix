@@ -3412,40 +3412,113 @@ public class Matrix implements MatrixUtils {
         return Matrix.getSize(m);
     }
 
+
     /**
-     * Returns the value at the specified row and column in this matrix.
+     * Retrieves the number of rows (height) in this matrix.
      *
-     * <p>If the given index is a negative value, then it will count from the last entry.<br>
-     * For getting all elements of this matrix, please refer to {@link #getEntries()} method.
+     * <p>This method provides a convenient way to access the row dimension
+     * directly from the matrix object.
      *
-     * <p><b>For example:</b></p>
+     * <p>This method is equivalent with {@code m.shape()[0]} or
+     * {@code m.getSize()[0]}, with {@code m} represents the matrix object.
      *
-     * <pre><code class="language-java">&nbsp;
-     *   double[][] arr = {
-     *       { 1, 2 },
-     *       { 3, 4 }
-     *   };
+     * @return The number of rows in this matrix. If the matrix has null entries,
+     *         0 (zero) is returned.
      *
-     *   Matrix m = new Matrix(arr);
-     *   double lastEntry = m.get(-1, -1);
+     * @since 1.5.0
+     * @see   #getNumRows(Matrix)
+     * @see   #getNumCols()
+     * @see   #getSize()
+     * @see   #shape()
+     */
+    public int getNumRows() {
+        return Matrix.getNumRows(this);
+    }
+
+    /**
+     * Retrieves the number of rows (height) in the provided matrix.
      *
-     *   System.out.println(lastEntry);
-     * </code></pre>
+     * <p>This method provides a convenient way to access the row dimension
+     * directly from the matrix object.
      *
-     * <p><b>Output:</b></p>
-     * <pre>4</pre>
+     * <p>This method is equivalent with {@code Matrix.shape(m)[0]} or
+     * {@code Matrix.getSize(m)[0]}, with {@code m} represents the matrix object.
      *
-     * @param  row                    the row index.
-     * @param  col                    the column index.
+     * @param  m  The matrix for which to determine the number of rows.
+     * @return    The number of rows in the provided matrix. If the matrix has
+     *            null entries, 0 (zero) is returned.
      *
-     * @return                        the value at the specified position in this matrix.
+     * @since 1.5.0
+     * @see   #getNumRows()
+     * @see   #getNumCols(Matrix)
+     * @see   #getSize(Matrix)
+     * @see   #shape(Matrix)
+     */
+    public static int getNumRows(Matrix m) {
+        if (MatrixUtils.isNullEntries(m)) return 0;
+        return m.ENTRIES.length;
+    }
+
+
+    /**
+     * Retrieves the number of columns (width) in this matrix.
      *
-     * @throws InvalidIndexException  if the given index is out of range.
-     * @throws NullMatrixException    if the entries of this matrix is {@code null}.
+     * <p>This method provides a convenient way to access the column dimension
+     * directly from the matrix object.
      *
-     * @since                         1.0.0b.7
-     * @see                           #getEntries()
-     * @see                           #getSize()
+     * <p>This method is equivalent with {@code m.shape()[1]} or
+     * {@code m.getSize()[1]}, with {@code m} represents the matrix object.
+     *
+     * @return The number of columns in this matrix. If the matrix has null entries,
+     *         0 (zero) is returned.
+     *
+     * @since 1.5.0
+     * @see   #getNumCols(Matrix)
+     * @see   #getNumRows()
+     * @see   #getSize()
+     * @see   #shape()
+     */
+    public int getNumCols() {
+        return Matrix.getNumCols(this);
+    }
+
+    /**
+     * Retrieves the number of columns (width) in the provided matrix.
+     *
+     * <p>This method provides a convenient way to access the column dimension
+     * directly from the matrix object.
+     *
+     * <p>This method is equivalent with {@code Matrix.shape(m)[1]} or
+     * {@code Matrix.getSize(m)[1]}, with {@code m} represents the matrix object.
+     *
+     * @param  m  The matrix for which to determine the number of columns.
+     * @return    The number of columns in the provided matrix. If the matrix has
+     *            null entries, 0 (zero) is returned.
+     *
+     * @since 1.5.0
+     * @see   #getNumCols(Matrix)
+     * @see   #getNumRows()
+     * @see   #getSize(Matrix)
+     * @see   #shape(Matrix)
+     */
+    public static int getNumCols(Matrix m) {
+        if (MatrixUtils.isNullEntries(m)) return 0;
+        return m.ENTRIES[0].length;
+    }
+
+
+    /**
+     * Returns the value at the specified row and column within this matrix.
+     *
+     * @param  row  the row index of the desired element.
+     * @param  col  the column index of the desired element.
+     * @return      the {@code double} value at the specified entry in this matrix.
+     *
+     * @throws InvalidIndexException  If the row or column index is out of bounds.
+     * @throws NullMatrixException    If the entries of this matrix is {@code null}.
+     *
+     * @since 1.0.0b.7
+     * @see   #getEntries()
      */
     public double get(int row, int col) {
         if (this.ENTRIES == null) {
