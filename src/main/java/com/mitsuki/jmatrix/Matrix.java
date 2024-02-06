@@ -3331,44 +3331,43 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Retrieves the sizes (also known as, number of rows and columns) of this matrix.
+     * Retrieves the dimensions (size) of this matrix as an integer array of length two.
      *
-     * <p>If the entries of this matrix is {@code null} it will returns {@code null} instead.
-     * This also prevents unexpected results that could be happen when comparing the matrix sizes.<br>
-     * To check whether the matrix has {@code null} entries, please refer to {@link MatrixUtils#isNullEntries(Matrix)}.
+     * <p>The first element represents the number of rows (height), and the second element
+     * represents the number of columns (width).
      *
-     * <p><b>For example:</b></p>
+     * <p>This method ensures data consistency by directly retrieving the sizes from the
+     * internal entries array of the matrix instead of relying on pre-defined variables,
+     * guaranteeing synchronized lengths even if those variables haven't been updated.
      *
-     * <p>Retrieve the number of rows and columns:
-     *
-     * <pre><code class="language-java">&nbsp;
-     *   int[] sizes = m.getSize();
-     * </code></pre>
-     *
-     * <p>Only retrieve the number of rows:
-     *
-     * <pre><code class="language-java">&nbsp;
-     *   int sizeRow = m.getSize()[0];
-     * </code></pre>
-     *
-     * <p>Only retrieve the number of columns:
-     *
-     * <pre><code class="language-java">&nbsp;
-     *   int sizeColumn = m.getSize()[1];
-     * </code></pre>
-     *
-     * @return an {@code Integer} list containing number of rows<sup>[0]</sup>
-     *         and columns<sup>[1]</sup>.
+     * @return An array of two integers, where the first element is the number of rows
+     *         (height) and the second element is the number of columns (width). If the
+     *         matrix has null entries, {@code null} is returned instead.
      *
      * @since  0.1.0
      * @see    #getEntries()
      */
     public int[ ] getSize() {
-        // Now if this matrix has null entries, then returns null
-        if (this.ENTRIES == null) return null;
+        // If this matrix has null entries, then returns null
+        if (MatrixUtils.isNullEntries(this)) return null;
 
-        // It would return list: [<rows>, <cols>]
-        return new int[ ] { this.ROWS, this.COLS };
+        // Retrieve both sizes directly from the entries array, ensuring consistency
+        return new int[ ] { this.ENTRIES.length, this.ENTRIES[0].length };
+    }
+
+    /**
+     * Retrieves the dimensions (size) of this matrix, acting as an alias for the
+     * {@link #getSize()} method. It provides a convenient alternative name for
+     * expressing the matrix shape.
+     *
+     * @return An array of two integers, where the first element is the number of rows
+     *         (height) and the second element is the number of columns (width).
+     *
+     * @since 1.5.0
+     * @see   #getSize()
+     */
+    public int[ ] shape() {
+        return this.getSize();
     }
 
 
