@@ -3345,7 +3345,7 @@ public class Matrix implements MatrixUtils {
      *         matrix has null entries, {@code null} is returned instead.
      *
      * @since  0.1.0
-     * @see    #getEntries()
+     * @see    #getSize(Matrix)
      */
     public int[ ] getSize() {
         // If this matrix has null entries, then returns null
@@ -3353,6 +3353,30 @@ public class Matrix implements MatrixUtils {
 
         // Retrieve both sizes directly from the entries array, ensuring consistency
         return new int[ ] { this.ENTRIES.length, this.ENTRIES[0].length };
+    }
+
+    /**
+     * Retrieves the dimensions (size) of the given matrix as an integer array
+     * of length two.
+     *
+     * <p>The first element represents the number of rows (height), and the second element
+     * represents the number of columns (width).
+     *
+     * <p>This method ensures data consistency by directly retrieving the sizes from the
+     * internal entries array of the matrix instead of relying on pre-defined variables,
+     * guaranteeing synchronized lengths even if those variables haven't been updated.
+     *
+     * @param  m  The matrix from which to retrieve the size.
+     * @return    An array of two integers, where the first element is the number of rows
+     *            (height) and the second element is the number of columns (width). If the
+     *            matrix has null entries, {@code null} is returned instead.
+     *
+     * @since  1.5.0
+     * @see    #getSize()
+     */
+    public static int[ ] getSize(Matrix m) {
+        if (MatrixUtils.isNullEntries(m)) return null;
+        return new int[] { m.ENTRIES.length, m.ENTRIES[0].length };
     }
 
     /**
@@ -3365,11 +3389,28 @@ public class Matrix implements MatrixUtils {
      *
      * @since 1.5.0
      * @see   #getSize()
+     * @see   #shape(Matrix)
      */
     public int[ ] shape() {
         return this.getSize();
     }
 
+    /**
+     * Retrieves the dimensions (size) of the given matrix, acting as an alias for the
+     * {@link #getSize(Matrix)} method. It provides a convenient alternative name for
+     * expressing the matrix shape.
+     *
+     * @param  m  The matrix from which to retrieve the size.
+     * @return    An array of two integers, where the first element is the number of rows
+     *            (height) and the second element is the number of columns (width).
+     *
+     * @since 1.5.0
+     * @see   #getSize(Matrix)
+     * @see   #shape()
+     */
+    public static int[ ] shape(Matrix m) {
+        return Matrix.getSize(m);
+    }
 
     /**
      * Returns the value at the specified row and column in this matrix.
