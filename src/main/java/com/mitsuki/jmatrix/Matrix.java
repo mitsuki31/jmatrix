@@ -3348,11 +3348,9 @@ public class Matrix implements MatrixUtils {
      * @see    #getSize(Matrix)
      */
     public int[ ] getSize() {
-        // If this matrix has null entries, then returns null
-        if (MatrixUtils.isNullEntries(this)) return null;
-
         // Retrieve both sizes directly from the entries array, ensuring consistency
-        return new int[ ] { this.ENTRIES.length, this.ENTRIES[0].length };
+        return MatrixUtils.isNullEntries(this)
+            ? null : new int[ ] { this.ENTRIES.length, this.ENTRIES[0].length };
     }
 
     /**
@@ -3375,8 +3373,8 @@ public class Matrix implements MatrixUtils {
      * @see    #getSize()
      */
     public static int[ ] getSize(Matrix m) {
-        if (MatrixUtils.isNullEntries(m)) return null;
-        return new int[] { m.ENTRIES.length, m.ENTRIES[0].length };
+        return MatrixUtils.isNullEntries(m)
+            ? null : new int[] { m.ENTRIES.length, m.ENTRIES[0].length };
     }
 
     /**
@@ -3455,8 +3453,7 @@ public class Matrix implements MatrixUtils {
      * @see   #shape(Matrix)
      */
     public static int getNumRows(Matrix m) {
-        if (MatrixUtils.isNullEntries(m)) return 0;
-        return m.ENTRIES.length;
+        return MatrixUtils.isNullEntries(m) ? 0 : m.ENTRIES.length;
     }
 
 
@@ -3502,8 +3499,7 @@ public class Matrix implements MatrixUtils {
      * @see   #shape(Matrix)
      */
     public static int getNumCols(Matrix m) {
-        if (MatrixUtils.isNullEntries(m)) return 0;
-        return m.ENTRIES[0].length;
+        return MatrixUtils.isNullEntries(m) ? 0 : m.ENTRIES[0].length;
     }
 
 
