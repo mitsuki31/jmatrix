@@ -52,16 +52,16 @@ public class Test_MatrixOperations {
         assertNotNull(nI.getEntries());
 
         // Test and check the dimensions
-        assertEquals(2, m.getSize()[0]);
-        assertEquals(3, m.getSize()[1]);
-        assertEquals(2, n.getSize()[0]);
-        assertEquals(3, n.getSize()[1]);
+        assertEquals(2, m.getNumRows());
+        assertEquals(3, m.getNumCols());
+        assertEquals(2, n.getNumRows());
+        assertEquals(3, n.getNumCols());
         assertTrue(MatrixUtils.isEqualsSize(m, n));
 
-        assertEquals(6, mI.getSize()[0]);
-        assertEquals(6, mI.getSize()[1]);
-        assertEquals(6, nI.getSize()[0]);
-        assertEquals(6, nI.getSize()[1]);
+        assertEquals(6, mI.getNumRows());
+        assertEquals(6, mI.getNumCols());
+        assertEquals(6, nI.getNumRows());
+        assertEquals(6, nI.getNumCols());
         assertTrue(MatrixUtils.isEqualsSize(mI, nI));
 
         // Test and check the matrix type
@@ -125,16 +125,16 @@ public class Test_MatrixOperations {
         assertNotNull(nI.getEntries());
 
         // Test and check the dimensions
-        assertEquals(4, m.getSize()[0]);
-        assertEquals(2, m.getSize()[1]);
-        assertEquals(4, n.getSize()[0]);
-        assertEquals(2, n.getSize()[1]);
+        assertEquals(4, m.getNumRows());
+        assertEquals(2, m.getNumCols());
+        assertEquals(4, n.getNumRows());
+        assertEquals(2, n.getNumCols());
         assertTrue(MatrixUtils.isEqualsSize(m, n));
 
-        assertEquals(12, mI.getSize()[0]);
-        assertEquals(12, mI.getSize()[1]);
-        assertEquals(12, nI.getSize()[0]);
-        assertEquals(12, nI.getSize()[1]);
+        assertEquals(12, mI.getNumRows());
+        assertEquals(12, mI.getNumCols());
+        assertEquals(12, nI.getNumRows());
+        assertEquals(12, nI.getNumCols());
         assertTrue(MatrixUtils.isEqualsSize(mI, nI));
 
         // Test and check the matrix type
@@ -191,11 +191,11 @@ public class Test_MatrixOperations {
         assertNotNull(mI.getEntries());
 
         // Test and check the dimensions
-        assertEquals(2, m.getSize()[0]);
-        assertEquals(4, m.getSize()[1]);
+        assertEquals(2, m.getNumRows());
+        assertEquals(4, m.getNumCols());
 
-        assertEquals(8, mI.getSize()[0]);
-        assertEquals(8, mI.getSize()[1]);
+        assertEquals(8, mI.getNumRows());
+        assertEquals(8, mI.getNumCols());
 
         // Test and check the matrix type
         assertFalse(m.isSquare());
@@ -256,16 +256,16 @@ public class Test_MatrixOperations {
         assertNotNull(nI.getEntries());
 
         // Test and check the dimensions
-        assertEquals(2, m.getSize()[0]);
-        assertEquals(3, m.getSize()[1]);
-        assertEquals(3, n.getSize()[0]);
-        assertEquals(2, n.getSize()[1]);
+        assertEquals(2, m.getNumRows());
+        assertEquals(3, m.getNumCols());
+        assertEquals(3, n.getNumRows());
+        assertEquals(2, n.getNumCols());
         assertFalse(MatrixUtils.isEqualsSize(m, n));
 
-        assertEquals(4, mI.getSize()[0]);
-        assertEquals(4, mI.getSize()[1]);
-        assertEquals(4, nI.getSize()[0]);
-        assertEquals(4, nI.getSize()[1]);
+        assertEquals(4, mI.getNumRows());
+        assertEquals(4, mI.getNumCols());
+        assertEquals(4, nI.getNumRows());
+        assertEquals(4, nI.getNumCols());
         assertTrue(MatrixUtils.isEqualsSize(mI, nI));
 
         // Test and check the matrix type
@@ -322,11 +322,11 @@ public class Test_MatrixOperations {
         assertNotNull(x.getEntries());
 
         // Test and check the dimensions
-        assertEquals(3, m.getSize()[0]);
-        assertEquals(5, m.getSize()[1]);
+        assertEquals(3, m.getNumRows());
+        assertEquals(5, m.getNumCols());
 
-        assertEquals(3, x.getSize()[0]);
-        assertEquals(3, x.getSize()[1]);
+        assertEquals(3, x.getNumRows());
+        assertEquals(3, x.getNumCols());
 
         // Test and check the matrix type
         assertFalse(m.isSquare());
@@ -342,5 +342,36 @@ public class Test_MatrixOperations {
         assertEquals(expected_xT, xT);
         assertTrue(mT.equals(expected_mT));
         assertTrue(xT.equals(expected_xT));
+    }
+
+    @Test
+    public void test_MatrixTrace() {
+        Matrix m = new Matrix(new double[][] {
+            { 5, 6, 7 },
+            { 8, 9, 0 },
+            { 4, 3, 2 }
+        });
+        Matrix i = Matrix.identity(5);  // 5x5 identity matrix
+        double[][] a = {
+            { -8, 12 },
+            { -2, -6 }
+        };
+
+        // t = 5 + 9 + 2 = 16
+        double m_expectedTrace = 16.0;
+        double m_trace = m.trace();
+
+        // t = 1 + 1 + 1 + 1 + 1 = 5
+        double i_expectedTrace = 5.0;
+        double i_trace = i.trace();
+
+        // t = -8 + (-6) = -14
+        double a_expectedTrace = -14.0;
+        double a_trace = Matrix.trace(a);
+
+        // Equality tests
+        assertEquals(m_expectedTrace, m_trace, Matrix.THRESHOLD);
+        assertEquals(i_expectedTrace, i_trace, Matrix.THRESHOLD);
+        assertEquals(a_expectedTrace, a_trace, Matrix.THRESHOLD);
     }
 }
