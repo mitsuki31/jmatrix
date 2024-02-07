@@ -3506,48 +3506,119 @@ public class Matrix implements MatrixUtils {
     /**
      * Returns the value at the specified row and column within this matrix.
      *
-     * @param  row  the row index of the desired element.
-     * @param  col  the column index of the desired element.
-     * @return      the {@code double} value at the specified entry in this matrix.
+     * <p>This method is an alias for {@link #getEntry(int, int)} method, also it
+     * allows both positive and negative indexing.
+     *
+     * @param  row  The row index of the desired element.
+     * @param  col  The column index of the desired element.
+     * @return      The {@code double} value at the specified entry in this matrix.
      *
      * @throws InvalidIndexException  If the row or column index is out of bounds.
      * @throws NullMatrixException    If the entries of this matrix is {@code null}.
      *
      * @since 1.0.0b.7
+     * @see   #get(Matrix, int, int)
+     * @see   #getEntry(int, int)
      * @see   #getEntries()
      */
     public double get(int row, int col) {
-        if (this.ENTRIES == null) {
+        return this.getEntry(row, col);
+    }
+
+    /**
+     * Returns the value at the specified row and column within a given matrix.
+     *
+     * <p>This method is an alias for {@link #getEntry(Matrix, int, int)} method,
+     * also it allows both positive and negative indexing.
+     *
+     * @param  m    The matrix from which to retrieve the element.
+     * @param  row  The row index of the desired element.
+     * @param  col  The column index of the desired element.
+     * @return      The {@code double} value at the specified entry in this matrix.
+     *
+     * @throws InvalidIndexException  If the row or column index is out of bounds.
+     * @throws NullMatrixException    If the entries of this matrix is {@code null}.
+     *
+     * @since 1.5.0
+     * @see   #get(int, int)
+     * @see   #getEntry(Matrix, int, int)
+     * @see   #getEntries()
+     */
+    public static double get(Matrix m, int row, int col) {
+        return Matrix.getEntry(m, row, col);
+    }
+
+
+    /**
+     * Retrieves the value of the element at a specified row and column within
+     * this matrix.
+     *
+     * This method allows for both positive and negative indexing, where negative
+     * indices wrap around to the end of the respective dimension. For example,
+     * {@code get(m, -1, -1)} would return the value at the last row and last
+     * column of this matrix.
+     *
+     * @param  row  The row index of the desired element.
+     * @param  col  The column index of the desired element.
+     * @return      The {@code double} value of the specified entry in this matrix.
+     *
+     * @throws InvalidIndexException  If the row or column index is out of bounds.
+     * @throws NullMatrixException    If the provided matrix is {@code null}.
+     *
+     * @since 1.5.0
+     * @see   #get(int, int)
+     * @see   #getEntry(Matrix, int, int)
+     */
+    public double getEntry(int row, int col) {
+        return Matrix.getEntry(this, row, col);
+    }
+
+    /**
+     * Retrieves the value of the element at a specified row and column within
+     * a given matrix.
+     *
+     * This method allows for both positive and negative indexing, where negative
+     * indices wrap around to the end of the respective dimension. For example,
+     * {@code get(m, -1, -1)} would return the value at the last row and last
+     * column of the matrix {@code m}.
+     *
+     * @param  m    The matrix from which to retrieve the element.
+     * @param  row  The row index of the desired element.
+     * @param  col  The column index of the desired element.
+     * @return      The {@code double} value of the specified entry in the matrix.
+     *
+     * @throws InvalidIndexException  If the row or column index is out of bounds.
+     * @throws NullMatrixException    If the provided matrix is {@code null}.
+     *
+     * @since 1.5.0
+     * @see   #get(Matrix, int, int)
+     * @see   #getEntry(int, int)
+     */
+    public static double getEntry(Matrix m, int row, int col) {
+        final int[] mSize = m.getSize();  // Retrieve the matrix shape
+        // Allow negative indexing
+        row += (row < 0) ? mSize[0] : 0;
+        col += (col < 0) ? mSize[1] : 0;
+
+        if (MatrixUtils.isNullEntries(m)) {
             cause = new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized.");
-        } else if (row >= this.ROWS || (row < 0 && (row + this.ROWS) >= this.ROWS || (row + this.ROWS) < 0)) {
-            cause = new InvalidIndexException(
-                String.format(
-                    "Invalid row index: %d (matrix size: %dx%d)",
-                    row, this.ROWS, this.COLS
-                )
-            );
-        } else if (col >= this.COLS || (col < 0 && (col + this.COLS) >= this.COLS || (col + this.COLS) < 0)) {
-            cause = new InvalidIndexException(
-                String.format(
-                    "Invalid column index: %d (matrix size: %dx%d",
-                    col, this.ROWS, this.COLS
-                )
-            );
+        } else if (row >= mSize[0] || row < 0) {
+            cause = new InvalidIndexException(String.format(
+                "Invalid row index: %d (matrix size: %dx%d)",
+                (row < 0) ? (row - mSize[0]) : row, mSize[0], mSize[1]
+            ));
+        } else if (col >= mSize[1] || col < 0) {
+            cause = new InvalidIndexException(String.format(
+                "Invalid column index: %d (matrix size: %dx%d",
+                (col < 0) ? (col - mSize[1]) : col, mSize[0], mSize[1]
+            ));
         }
 
         // Throw the exception if got one
         if (cause != null) JMatrixUtils.raiseError(cause);
 
-        // Check for negative index for both inputs
-        if (row < 0) {
-            row += this.ROWS;
-        }
-        if (col < 0) {
-            col += this.COLS;
-        }
-
-        return this.ENTRIES[row][col];
+        return m.ENTRIES[row][col];
     }
 
 
@@ -3558,7 +3629,7 @@ public class Matrix implements MatrixUtils {
      * If the matrix constructed by using {@link #Matrix()} constructor,
      * this method would returns {@code null} instead (similar with the entries).
      *
-     * @return a two-dimensional array that represents entries of this matrix,
+     * @return A two-dimensional array that represents entries of this matrix,
      *         returns {@code null} instead if the entries is uninitialized.
      *
      * @since  1.0.0b.5
@@ -3567,6 +3638,8 @@ public class Matrix implements MatrixUtils {
      * @see    MatrixUtils#isNullEntries(Matrix)
      */
     public double[ ][ ] getEntries() {
+        // TODO: Fix the shallow copy of the returned array
+        // Here will lead to shallow copy of the entries array.
         return this.ENTRIES;
     }
 
