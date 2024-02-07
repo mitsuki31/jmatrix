@@ -178,4 +178,20 @@ public class Test_MatrixConstructor {
             assertFalse(m4[i].equals(new Matrix()));
         }
     }
+
+    @Test
+    public void test_SparseMatrix() {
+        Matrix m = new Matrix(new double[][] {
+            { 6, 8, 4, 5 },
+            { 11, 6, 0, 0 },
+            { 0, 5, 21, 10 }
+        });
+        Matrix i = Matrix.identity(3);  // 3x3 identity matrix
+
+        assertFalse(MatrixUtils.isEqualsSize(m, i));
+        assertFalse(m.equals(i));
+
+        assertFalse(m.isSparse());
+        assertTrue(i.isSparse());
+    }
 }
