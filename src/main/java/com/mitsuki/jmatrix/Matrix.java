@@ -41,9 +41,19 @@ import java.util.Arrays;
  * <li> {@linkplain #mult(Matrix)   Matrix multiplication}
  * <li> {@linkplain #mult(double)   Scalar multiplication}
  * <li> {@linkplain #transpose()    Transposition}
+ * <li> {@linkplain #trace()        Trace}
  * </ul>
  *
- * <p><b>For example:</b></p>
+ * <p>This also provides several matrix type checkers, such as:
+ * <ul>
+ * <li> {@link #isSquare()}
+ * <li> {@link #isDiagonal()}
+ * <li> {@link isLowerTriangular()}
+ * <li> {@link isUpperTriangular()}
+ * <li> {@link isSparse()}
+ * </ul>
+ *
+ * <p><b>Example:</b></p>
  *
  * <pre><code class="language-java">&nbsp;
  *   double[][] entries = {
@@ -79,7 +89,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  3.0, 3 February 2024
+ * @version  3.0, 8 February 2024
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -2794,6 +2804,8 @@ public class Matrix implements MatrixUtils {
      *
      * @return {@code true} if the matrix is sparse, {@code false} otherwise.
      *
+     * @throws NullMatrixException  If this matrix has {@code null} entries.
+     *
      * @since 1.5.0
      * @see   #isSparse(Matrix)
      */
@@ -2842,14 +2854,22 @@ public class Matrix implements MatrixUtils {
      * are non-zero, and the rest are zero. Diagonal matrices are a type of
      * <b>sparse matrix</b>.
      *
-     * @param  m  the matrix to be evaluated for sparsity.
+     * @param  m  The matrix to be evaluated for sparsity.
      * @return    {@code true} if the matrix is sparse, {@code false} otherwise.
+     *
+     * @throws NullMatrixException  If the provided matrix has {@code null} entries.
      *
      * @since 1.5.0
      */
     public static boolean isSparse(Matrix m) {
         final int[] mSize = m.getSize();
         int numberNonZero = 0;  // To hold the total number of non-zero entries
+
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix have been initialized.")
+            );
+        }
     
         for (int r = 0; r < mSize[0]; r++) {
             for (int c = 0; c < mSize[1]; c++) {
@@ -2904,8 +2924,10 @@ public class Matrix implements MatrixUtils {
      * are non-zero, and the rest are zero. Diagonal matrices are a type of
      * <b>sparse matrix</b>.
      *
-     * @param  a  the two-dimensional array to be evaluated for sparsity.
+     * @param  a  The two-dimensional array to be evaluated for sparsity.
      * @return    {@code true} if the array is sparse, {@code false} otherwise.
+     *
+     * @throws NullMatrixException  If the provided array is {@code null} or empty.
      *
      * @since 1.5.0
      */
@@ -2913,6 +2935,12 @@ public class Matrix implements MatrixUtils {
         final int rows = a.length;
         final int cols = a[0].length;
         int numberNonZero = 0;  // To hold the total number of non-zero entries
+
+        if (a == null || a.length == 0) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Array is null. Please ensure the array has valid elements.")
+            );
+        }
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
