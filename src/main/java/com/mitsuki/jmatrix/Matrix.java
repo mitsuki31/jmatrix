@@ -41,9 +41,19 @@ import java.util.Arrays;
  * <li> {@linkplain #mult(Matrix)   Matrix multiplication}
  * <li> {@linkplain #mult(double)   Scalar multiplication}
  * <li> {@linkplain #transpose()    Transposition}
+ * <li> {@linkplain #trace()        Trace}
  * </ul>
  *
- * <p><b>For example:</b></p>
+ * <p>This also provides several matrix type checkers, such as:
+ * <ul>
+ * <li> {@link #isSquare()}
+ * <li> {@link #isDiagonal()}
+ * <li> {@link isLowerTriangular()}
+ * <li> {@link isUpperTriangular()}
+ * <li> {@link isSparse()}
+ * </ul>
+ *
+ * <p><b>Example:</b></p>
  *
  * <pre><code class="language-java">&nbsp;
  *   double[][] entries = {
@@ -79,7 +89,7 @@ import java.util.Arrays;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  2.4, 22 August 2023
+ * @version  3.0, 8 February 2024
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -2032,6 +2042,157 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*---------------------------
+    ::       Matrix Trace
+    ---------------------------*/
+
+    /**
+     * Calculates the trace of this matrix.
+     *
+     * <p>The trace of a square matrix is the sum of its diagonal elements.
+     * In other words, it is the sum of the elements located at the main diagonal of
+     * the matrix, from the top-left to the bottom-right.
+     *
+     * <p>Throws {@link IllegalMatrixSizeException} if this matrix is not a square matrix.
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5, 6, 2, 8 },
+     *       { 3, 2, 4, 19 },
+     *       { 1, 1, -2, 12 },
+     *       { 15, 11, -9, 7 }
+     *   });
+     *
+     *   System.out.println(m.trace());
+     * </code></pre>
+     *
+     * <p>Output:</p>
+     * <code>trace = 5 + 2 + (-2) + 7 = <b>12</b></code>.
+     *
+     * @return                             the sum of the diagonal elements of this matrix.
+     *
+     * @throws IllegalMatrixSizeException  If this matrix is not square.
+     *                                     In other words, it does not have the same
+     *                                     number of rows and columns.
+     *
+     * @since                              1.5.0
+     * @see                                #trace(Matrix)
+     * @see                                #trace(double[][])
+     */
+    public double trace() {
+        return Matrix.trace(this);
+    }
+
+
+    /**
+     * Calculates the trace of a square matrix.
+     *
+     * <p>The trace of a square matrix is the sum of its diagonal elements.
+     * In other words, it is the sum of the elements located at the main diagonal of
+     * the matrix, from the top-left to the bottom-right.
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5, 6, 2, 8 },
+     *       { 3, 2, 4, 19 },
+     *       { 1, 1, -2, 12 },
+     *       { 15, 11, -9, 7 }
+     *   });
+     *
+     *   System.out.println(m.trace());
+     * </code></pre>
+     *
+     * <p>Output:</p>
+     * <code>trace = 5 + 2 + (-2) + 7 = <b>12</b></code>.
+     *
+     * @param  m                           the square matrix for which to calculate the trace.
+     *
+     * @return                             the sum of the diagonal elements of the given matrix.
+     *
+     * @throws IllegalMatrixSizeException  If the given matrix is not square.
+     *                                     In other words, it does not have the same
+     *                                     number of rows and columns.
+     *
+     * @since                              1.5.0
+     * @see                                #trace()
+     * @see                                #trace(double[][])
+     */
+    public static double trace(Matrix m) {
+        // Raise an error if the matrix is not square
+        if (!m.isSquare()) {
+            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+                "Matrix is non-square type. " +
+                "Please ensure the matrix has the same number of rows and columns."
+            ));
+        }
+
+        double res = 0.0;  // Store the result
+
+        // Iterate through the matrix and calculate
+        // the sum of its diagonal elements
+        for (int i = 0; i < m.getSize()[0]; i++) {
+            res += m.get(i, i);
+        }
+
+        return res;
+    }
+
+
+    /**
+     * Calculates the trace of a two-dimensional array that represents a square matrix.
+     *
+     * <p>The trace of a square matrix is the sum of its diagonal elements.
+     * In other words, it is the sum of the elements located at the main diagonal of
+     * the matrix, from the top-left to the bottom-right.
+     *
+     * <p><b>Example:</b></p>
+     *
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5, 6, 2, 8 },
+     *       { 3, 2, 4, 19 },
+     *       { 1, 1, -2, 12 },
+     *       { 15, 11, -9, 7 }
+     *   });
+     *
+     *   System.out.println(m.trace());
+     * </code></pre>
+     *
+     * <p>Output:</p>
+     * <code>trace = 5 + 2 + (-2) + 7 = <b>12.0</b></code>.
+     *
+     * @param  arr                         the two-dimensional array for which to calculate the trace.
+     *
+     * @return                             the sum of the diagonal elements of the given array.
+     *
+     * @throws IllegalMatrixSizeException  If the given two-dimensional array is not square.
+     *                                     In other words, it does not have the same
+     *                                     number of rows and columns.
+     *
+     * @since                              1.5.0
+     * @see                                #trace()
+     * @see                                #trace(double[][])
+     */
+    public static double trace(double[ ][ ] arr) {
+        if (!Matrix.isSquare(arr)) {
+            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+                "Array is non-square type. " +
+                "Please ensure the array has the same number of rows and columns."
+            ));
+        }
+
+        double res = 0.0;
+        for (int i = 0; i < arr.length; i++) {
+            res += arr[i][i];
+        }
+
+        return res;
+    }
+
 
     /*=========================================
     ::
@@ -2597,6 +2758,201 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*---------------------------
+    :: Sparse Matrix
+    ---------------------------*/
+
+    /**
+     * Determines whether this matrix is considered sparse.
+     *
+     * <p>This method employs a specific criterion for sparsity: a matrix is
+     * deemed <b>sparse</b> if the number of non-zero elements within it is less than
+     * or equal to the maximum dimension of the matrix itself. If most of the elements
+     * are non-zero, the matrix is considered <b>dense</b>. To determine whether
+     * an element is effectively zero, it compares its absolute value against a defined
+     * {@linkplain Matrix#THRESHOLD threshold}. Elements falling below this threshold
+     * are considered zero for the purpose of sparsity evaluation.
+     *
+     * <p><b>Examples:</b></p>
+     *
+     * <p>A sparse matrix is one where most of the elements are zero.
+     * Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 1 0 7 0 ]
+     *   [ 9 0 0 3 ]
+     *   [ 0 0 0 0 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x4} matrix, there is only a few non-zero elements,
+     * and the rest are zero. Such matrices are considered <b>sparse</b>.
+     *
+     * <hr>
+     *
+     * <p>A diagonal matrix is a special case of a sparse matrix where all the
+     * non-zero elements are on the main diagonal. Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 7 0 0 ]
+     *   [ 0 2 0 ]
+     *   [ 0 0 5 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x3} matrix, only the diagonal elements (7, 2, 5)
+     * are non-zero, and the rest are zero. Diagonal matrices are a type of
+     * <b>sparse matrix</b>.
+     *
+     * @return {@code true} if the matrix is sparse, {@code false} otherwise.
+     *
+     * @throws NullMatrixException  If this matrix has {@code null} entries.
+     *
+     * @since 1.5.0
+     * @see   #isSparse(Matrix)
+     */
+    public boolean isSparse() {
+        return Matrix.isSparse(this);
+    }
+
+
+    /**
+     * Determines whether the given matrix is considered sparse.
+     *
+     * <p>This method employs a specific criterion for sparsity: a matrix is
+     * deemed <b>sparse</b> if the number of non-zero elements within it is less than
+     * or equal to the maximum dimension of the matrix itself. If most of the elements
+     * are non-zero, the matrix is considered <b>dense</b>. To determine whether
+     * an element is effectively zero, it compares its absolute value against a defined
+     * {@linkplain Matrix#THRESHOLD threshold}. Elements falling below this threshold
+     * are considered zero for the purpose of sparsity evaluation.
+     *
+     * <p><b>Examples:</b></p>
+     *
+     * <p>A sparse matrix is one where most of the elements are zero.
+     * Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 1 0 7 0 ]
+     *   [ 9 0 0 3 ]
+     *   [ 0 0 0 0 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x4} matrix, there is only a few non-zero elements,
+     * and the rest are zero. Such matrices are considered <b>sparse</b>.
+     *
+     * <hr>
+     *
+     * <p>A diagonal matrix is a special case of a sparse matrix where all the
+     * non-zero elements are on the main diagonal. Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 7 0 0 ]
+     *   [ 0 2 0 ]
+     *   [ 0 0 5 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x3} matrix, only the diagonal elements (7, 2, 5)
+     * are non-zero, and the rest are zero. Diagonal matrices are a type of
+     * <b>sparse matrix</b>.
+     *
+     * @param  m  The matrix to be evaluated for sparsity.
+     * @return    {@code true} if the matrix is sparse, {@code false} otherwise.
+     *
+     * @throws NullMatrixException  If the provided matrix has {@code null} entries.
+     *
+     * @since 1.5.0
+     */
+    public static boolean isSparse(Matrix m) {
+        final int[] mSize = m.getSize();
+        int numberNonZero = 0;  // To hold the total number of non-zero entries
+
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix have been initialized.")
+            );
+        }
+    
+        for (int r = 0; r < mSize[0]; r++) {
+            for (int c = 0; c < mSize[1]; c++) {
+                if (Math.abs(m.get(r, c)) > Matrix.THRESHOLD) {
+                    numberNonZero++;  // increment
+                }
+            }
+        }
+    
+        return (numberNonZero <= Math.max(mSize[0], mSize[1]));
+    }
+
+
+    /**
+     * Determines whether the two-dimensional array that represents a matrix is
+     * considered sparse.
+     *
+     * <p>This method employs a specific criterion for sparsity: a matrix is
+     * deemed <b>sparse</b> if the number of non-zero elements within it is less than
+     * or equal to the maximum dimension of the matrix itself. If most of the elements
+     * are non-zero, the matrix is considered <b>dense</b>. To determine whether
+     * an element is effectively zero, it compares its absolute value against a defined
+     * {@linkplain Matrix#THRESHOLD threshold}. Elements falling below this threshold
+     * are considered zero for the purpose of sparsity evaluation.
+     *
+     * <p><b>Examples:</b></p>
+     *
+     * <p>A sparse matrix is one where most of the elements are zero.
+     * Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 1 0 7 0 ]
+     *   [ 9 0 0 3 ]
+     *   [ 0 0 0 0 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x4} matrix, there is only a few non-zero elements,
+     * and the rest are zero. Such matrices are considered <b>sparse</b>.
+     *
+     * <hr>
+     *
+     * <p>A diagonal matrix is a special case of a sparse matrix where all the
+     * non-zero elements are on the main diagonal. Here's an example:
+     *
+     * <pre>&nbsp;
+     *   [ 7 0 0 ]
+     *   [ 0 2 0 ]
+     *   [ 0 0 5 ]
+     * </pre>
+     *
+     * <p>In this {@code 3x3} matrix, only the diagonal elements (7, 2, 5)
+     * are non-zero, and the rest are zero. Diagonal matrices are a type of
+     * <b>sparse matrix</b>.
+     *
+     * @param  a  The two-dimensional array to be evaluated for sparsity.
+     * @return    {@code true} if the array is sparse, {@code false} otherwise.
+     *
+     * @throws NullMatrixException  If the provided array is {@code null} or empty.
+     *
+     * @since 1.5.0
+     */
+    public static boolean isSparse(double[ ][ ] a) {
+        final int rows = a.length;
+        final int cols = a[0].length;
+        int numberNonZero = 0;  // To hold the total number of non-zero entries
+
+        if (a == null || a.length == 0) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Array is null. Please ensure the array has valid elements.")
+            );
+        }
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (Math.abs(a[r][c]) > Matrix.THRESHOLD) {
+                    numberNonZero++;  // increment
+                }
+            }
+        }
+
+        return (numberNonZero <= Math.max(rows, cols));
+    }
+
 
     /*=========================================
     ::
@@ -3003,114 +3359,294 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Retrieves the sizes (also known as, number of rows and columns) of this matrix.
+     * Retrieves the dimensions (size) of this matrix as an integer array of length two.
      *
-     * <p>If the entries of this matrix is {@code null} it will returns {@code null} instead.
-     * This also prevents unexpected results that could be happen when comparing the matrix sizes.<br>
-     * To check whether the matrix has {@code null} entries, please refer to {@link MatrixUtils#isNullEntries(Matrix)}.
+     * <p>The first element represents the number of rows (height), and the second element
+     * represents the number of columns (width).
      *
-     * <p><b>For example:</b></p>
+     * <p>This method ensures data consistency by directly retrieving the sizes from the
+     * internal entries array of the matrix instead of relying on pre-defined variables,
+     * guaranteeing synchronized lengths even if those variables haven't been updated.
      *
-     * <p>Retrieve the number of rows and columns:
-     *
-     * <pre><code class="language-java">&nbsp;
-     *   int[] sizes = m.getSize();
-     * </code></pre>
-     *
-     * <p>Only retrieve the number of rows:
-     *
-     * <pre><code class="language-java">&nbsp;
-     *   int sizeRow = m.getSize()[0];
-     * </code></pre>
-     *
-     * <p>Only retrieve the number of columns:
-     *
-     * <pre><code class="language-java">&nbsp;
-     *   int sizeColumn = m.getSize()[1];
-     * </code></pre>
-     *
-     * @return an {@code Integer} list containing number of rows<sup>[0]</sup>
-     *         and columns<sup>[1]</sup>.
+     * @return An array of two integers, where the first element is the number of rows
+     *         (height) and the second element is the number of columns (width). If the
+     *         matrix has null entries, {@code null} is returned instead.
      *
      * @since  0.1.0
-     * @see    #getEntries()
+     * @see    #getSize(Matrix)
      */
     public int[ ] getSize() {
-        // Now if this matrix has null entries, then returns null
-        if (this.ENTRIES == null) return null;
+        // Retrieve both sizes directly from the entries array, ensuring consistency
+        return MatrixUtils.isNullEntries(this)
+            ? null : new int[ ] { this.ENTRIES.length, this.ENTRIES[0].length };
+    }
 
-        // It would return list: [<rows>, <cols>]
-        return new int[ ] { this.ROWS, this.COLS };
+    /**
+     * Retrieves the dimensions (size) of the given matrix as an integer array
+     * of length two.
+     *
+     * <p>The first element represents the number of rows (height), and the second element
+     * represents the number of columns (width).
+     *
+     * <p>This method ensures data consistency by directly retrieving the sizes from the
+     * internal entries array of the matrix instead of relying on pre-defined variables,
+     * guaranteeing synchronized lengths even if those variables haven't been updated.
+     *
+     * @param  m  The matrix from which to retrieve the size.
+     * @return    An array of two integers, where the first element is the number of rows
+     *            (height) and the second element is the number of columns (width). If the
+     *            matrix has null entries, {@code null} is returned instead.
+     *
+     * @since  1.5.0
+     * @see    #getSize()
+     */
+    public static int[ ] getSize(Matrix m) {
+        return MatrixUtils.isNullEntries(m)
+            ? null : new int[] { m.ENTRIES.length, m.ENTRIES[0].length };
+    }
+
+    /**
+     * Retrieves the dimensions (size) of this matrix, acting as an alias for the
+     * {@link #getSize()} method. It provides a convenient alternative name for
+     * expressing the matrix shape.
+     *
+     * @return An array of two integers, where the first element is the number of rows
+     *         (height) and the second element is the number of columns (width).
+     *
+     * @since 1.5.0
+     * @see   #getSize()
+     * @see   #shape(Matrix)
+     */
+    public int[ ] shape() {
+        return this.getSize();
+    }
+
+    /**
+     * Retrieves the dimensions (size) of the given matrix, acting as an alias for the
+     * {@link #getSize(Matrix)} method. It provides a convenient alternative name for
+     * expressing the matrix shape.
+     *
+     * @param  m  The matrix from which to retrieve the size.
+     * @return    An array of two integers, where the first element is the number of rows
+     *            (height) and the second element is the number of columns (width).
+     *
+     * @since 1.5.0
+     * @see   #getSize(Matrix)
+     * @see   #shape()
+     */
+    public static int[ ] shape(Matrix m) {
+        return Matrix.getSize(m);
     }
 
 
     /**
-     * Returns the value at the specified row and column in this matrix.
+     * Retrieves the number of rows (height) in this matrix.
      *
-     * <p>If the given index is a negative value, then it will count from the last entry.<br>
-     * For getting all elements of this matrix, please refer to {@link #getEntries()} method.
+     * <p>This method provides a convenient way to access the row dimension
+     * directly from the matrix object.
      *
-     * <p><b>For example:</b></p>
+     * <p>This method is equivalent with {@code m.shape()[0]} or
+     * {@code m.getSize()[0]}, with {@code m} represents the matrix object.
      *
-     * <pre><code class="language-java">&nbsp;
-     *   double[][] arr = {
-     *       { 1, 2 },
-     *       { 3, 4 }
-     *   };
+     * @return The number of rows in this matrix. If the matrix has null entries,
+     *         0 (zero) is returned.
      *
-     *   Matrix m = new Matrix(arr);
-     *   double lastEntry = m.get(-1, -1);
+     * @since 1.5.0
+     * @see   #getNumRows(Matrix)
+     * @see   #getNumCols()
+     * @see   #getSize()
+     * @see   #shape()
+     */
+    public int getNumRows() {
+        return Matrix.getNumRows(this);
+    }
+
+    /**
+     * Retrieves the number of rows (height) in the provided matrix.
      *
-     *   System.out.println(lastEntry);
-     * </code></pre>
+     * <p>This method provides a convenient way to access the row dimension
+     * directly from the matrix object.
      *
-     * <p><b>Output:</b></p>
-     * <pre>4</pre>
+     * <p>This method is equivalent with {@code Matrix.shape(m)[0]} or
+     * {@code Matrix.getSize(m)[0]}, with {@code m} represents the matrix object.
      *
-     * @param  row                    the row index.
-     * @param  col                    the column index.
+     * @param  m  The matrix for which to determine the number of rows.
+     * @return    The number of rows in the provided matrix. If the matrix has
+     *            null entries, 0 (zero) is returned.
      *
-     * @return                        the value at the specified position in this matrix.
+     * @since 1.5.0
+     * @see   #getNumRows()
+     * @see   #getNumCols(Matrix)
+     * @see   #getSize(Matrix)
+     * @see   #shape(Matrix)
+     */
+    public static int getNumRows(Matrix m) {
+        return MatrixUtils.isNullEntries(m) ? 0 : m.ENTRIES.length;
+    }
+
+
+    /**
+     * Retrieves the number of columns (width) in this matrix.
      *
-     * @throws InvalidIndexException  if the given index is out of range.
-     * @throws NullMatrixException    if the entries of this matrix is {@code null}.
+     * <p>This method provides a convenient way to access the column dimension
+     * directly from the matrix object.
      *
-     * @since                         1.0.0b.7
-     * @see                           #getEntries()
-     * @see                           #getSize()
+     * <p>This method is equivalent with {@code m.shape()[1]} or
+     * {@code m.getSize()[1]}, with {@code m} represents the matrix object.
+     *
+     * @return The number of columns in this matrix. If the matrix has null entries,
+     *         0 (zero) is returned.
+     *
+     * @since 1.5.0
+     * @see   #getNumCols(Matrix)
+     * @see   #getNumRows()
+     * @see   #getSize()
+     * @see   #shape()
+     */
+    public int getNumCols() {
+        return Matrix.getNumCols(this);
+    }
+
+    /**
+     * Retrieves the number of columns (width) in the provided matrix.
+     *
+     * <p>This method provides a convenient way to access the column dimension
+     * directly from the matrix object.
+     *
+     * <p>This method is equivalent with {@code Matrix.shape(m)[1]} or
+     * {@code Matrix.getSize(m)[1]}, with {@code m} represents the matrix object.
+     *
+     * @param  m  The matrix for which to determine the number of columns.
+     * @return    The number of columns in the provided matrix. If the matrix has
+     *            null entries, 0 (zero) is returned.
+     *
+     * @since 1.5.0
+     * @see   #getNumCols(Matrix)
+     * @see   #getNumRows()
+     * @see   #getSize(Matrix)
+     * @see   #shape(Matrix)
+     */
+    public static int getNumCols(Matrix m) {
+        return MatrixUtils.isNullEntries(m) ? 0 : m.ENTRIES[0].length;
+    }
+
+
+    /**
+     * Returns the value at the specified row and column within this matrix.
+     *
+     * <p>This method is an alias for {@link #getEntry(int, int)} method, also it
+     * allows both positive and negative indexing.
+     *
+     * @param  row  The row index of the desired element.
+     * @param  col  The column index of the desired element.
+     * @return      The {@code double} value at the specified entry in this matrix.
+     *
+     * @throws InvalidIndexException  If the row or column index is out of bounds.
+     * @throws NullMatrixException    If the entries of this matrix is {@code null}.
+     *
+     * @since 1.0.0b.7
+     * @see   #get(Matrix, int, int)
+     * @see   #getEntry(int, int)
+     * @see   #getEntries()
      */
     public double get(int row, int col) {
-        if (this.ENTRIES == null) {
+        return this.getEntry(row, col);
+    }
+
+    /**
+     * Returns the value at the specified row and column within a given matrix.
+     *
+     * <p>This method is an alias for {@link #getEntry(Matrix, int, int)} method,
+     * also it allows both positive and negative indexing.
+     *
+     * @param  m    The matrix from which to retrieve the element.
+     * @param  row  The row index of the desired element.
+     * @param  col  The column index of the desired element.
+     * @return      The {@code double} value at the specified entry in this matrix.
+     *
+     * @throws InvalidIndexException  If the row or column index is out of bounds.
+     * @throws NullMatrixException    If the entries of this matrix is {@code null}.
+     *
+     * @since 1.5.0
+     * @see   #get(int, int)
+     * @see   #getEntry(Matrix, int, int)
+     * @see   #getEntries()
+     */
+    public static double get(Matrix m, int row, int col) {
+        return Matrix.getEntry(m, row, col);
+    }
+
+
+    /**
+     * Retrieves the value of the element at a specified row and column within
+     * this matrix.
+     *
+     * This method allows for both positive and negative indexing, where negative
+     * indices wrap around to the end of the respective dimension. For example,
+     * {@code get(m, -1, -1)} would return the value at the last row and last
+     * column of this matrix.
+     *
+     * @param  row  The row index of the desired element.
+     * @param  col  The column index of the desired element.
+     * @return      The {@code double} value of the specified entry in this matrix.
+     *
+     * @throws InvalidIndexException  If the row or column index is out of bounds.
+     * @throws NullMatrixException    If the provided matrix is {@code null}.
+     *
+     * @since 1.5.0
+     * @see   #get(int, int)
+     * @see   #getEntry(Matrix, int, int)
+     */
+    public double getEntry(int row, int col) {
+        return Matrix.getEntry(this, row, col);
+    }
+
+    /**
+     * Retrieves the value of the element at a specified row and column within
+     * a given matrix.
+     *
+     * This method allows for both positive and negative indexing, where negative
+     * indices wrap around to the end of the respective dimension. For example,
+     * {@code get(m, -1, -1)} would return the value at the last row and last
+     * column of the matrix {@code m}.
+     *
+     * @param  m    The matrix from which to retrieve the element.
+     * @param  row  The row index of the desired element.
+     * @param  col  The column index of the desired element.
+     * @return      The {@code double} value of the specified entry in the matrix.
+     *
+     * @throws InvalidIndexException  If the row or column index is out of bounds.
+     * @throws NullMatrixException    If the provided matrix is {@code null}.
+     *
+     * @since 1.5.0
+     * @see   #get(Matrix, int, int)
+     * @see   #getEntry(int, int)
+     */
+    public static double getEntry(Matrix m, int row, int col) {
+        final int[] mSize = m.getSize();  // Retrieve the matrix shape
+        // Allow negative indexing
+        row += (row < 0) ? mSize[0] : 0;
+        col += (col < 0) ? mSize[1] : 0;
+
+        if (MatrixUtils.isNullEntries(m)) {
             cause = new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized.");
-        } else if (row >= this.ROWS || (row < 0 && (row + this.ROWS) >= this.ROWS || (row + this.ROWS) < 0)) {
-            cause = new InvalidIndexException(
-                String.format(
-                    "Invalid row index: %d (matrix size: %dx%d)",
-                    row, this.ROWS, this.COLS
-                )
-            );
-        } else if (col >= this.COLS || (col < 0 && (col + this.COLS) >= this.COLS || (col + this.COLS) < 0)) {
-            cause = new InvalidIndexException(
-                String.format(
-                    "Invalid column index: %d (matrix size: %dx%d",
-                    col, this.ROWS, this.COLS
-                )
-            );
+        } else if (row >= mSize[0] || row < 0) {
+            cause = new InvalidIndexException(String.format(
+                "Invalid row index: %d (matrix size: %dx%d)",
+                (row < 0) ? (row - mSize[0]) : row, mSize[0], mSize[1]
+            ));
+        } else if (col >= mSize[1] || col < 0) {
+            cause = new InvalidIndexException(String.format(
+                "Invalid column index: %d (matrix size: %dx%d",
+                (col < 0) ? (col - mSize[1]) : col, mSize[0], mSize[1]
+            ));
         }
 
         // Throw the exception if got one
         if (cause != null) JMatrixUtils.raiseError(cause);
 
-        // Check for negative index for both inputs
-        if (row < 0) {
-            row += this.ROWS;
-        }
-        if (col < 0) {
-            col += this.COLS;
-        }
-
-        return this.ENTRIES[row][col];
+        return m.ENTRIES[row][col];
     }
 
 
@@ -3121,7 +3657,7 @@ public class Matrix implements MatrixUtils {
      * If the matrix constructed by using {@link #Matrix()} constructor,
      * this method would returns {@code null} instead (similar with the entries).
      *
-     * @return a two-dimensional array that represents entries of this matrix,
+     * @return A two-dimensional array that represents entries of this matrix,
      *         returns {@code null} instead if the entries is uninitialized.
      *
      * @since  1.0.0b.5
@@ -3130,6 +3666,8 @@ public class Matrix implements MatrixUtils {
      * @see    MatrixUtils#isNullEntries(Matrix)
      */
     public double[ ][ ] getEntries() {
+        // TODO: Fix the shallow copy of the returned array
+        // Here will lead to shallow copy of the entries array.
         return this.ENTRIES;
     }
 
