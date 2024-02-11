@@ -28,6 +28,10 @@ import com.mitsuki.jmatrix.internal.JMatrixUtils;
 import com.mitsuki.jmatrix.core.MatrixUtils;
 
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The <b>Matrix</b> class represents a two-dimensional (2D) array of {@code double}s.
@@ -3672,12 +3676,64 @@ public class Matrix implements MatrixUtils {
      *         matrix entries, or {@code null} if the matrix is uninitialized.
      *
      * @since  1.0.0b.5
-     * @see    #get(int, int)
-     * @see    #shape()
+     * @see    #getReadOnlyEntries()
      * @see    MatrixUtils#isNullEntries(Matrix)
      */
     public double[ ][ ] getEntries() {
         return MatrixUtils.deepCopyOf(this.ENTRIES);
+    }
+
+    /**
+     * Obtains a read-only view of the matrix elements, safeguarding against
+     * unintended modifications.
+     *
+     * <p>This method offers a secure way to access the matrix elements without
+     * the risk of unintended modifications. This method returns a list of lists,
+     * where each inner list represents an immutable row of the matrix, ensuring
+     * data integrity and preventing accidental changes. Attempting to modify the
+     * elements will causing the method to throws an exception
+     * {@code UnsupportedOperationException}. If you want to get the matrix
+     * elements but can still access and modify each elements, consider to use the
+     * {@link #getEntries()} method instead.
+     *
+     * <p><b>Implementation Note:</b></p>
+     * <p>The method leverages the {@code Arrays.stream} API introduced in Java 8.
+     * This allows for concise and efficient conversion of primitive {@code double}
+     * arrays to {@code Double} objects and subsequent creation of unmodifiable
+     * lists. However, it's crucial to note that this approach might not be
+     * compatible with older Java versions that lack {@code Arrays.stream} functionality.
+     *
+     * @return An unmodifiable view list of lists containing the matrix entries.
+     *         Each inner list represents a single row of the matrix, containing
+     *         {@code Double} objects instead of primitive {@code double} values.
+     *
+     * @throws NullMatrixException  If the entries of this matrix is {@code null}
+     *                              or this matrix has not been initialized.
+     *
+     * @since 1.5.0
+     * @see   #getEntries()
+     */
+    public List<List<Double>> getReadOnlyEntries() {
+        if (MatrixUtils.isNullEntries(this)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized."));
+        }
+
+        final int rows = this.getNumRows();  // Get the rows size
+        final List<List<Double>> readonlyEntries = new ArrayList<>(rows /* initial size */);
+
+        for (int i = 0; i < rows; i++) {
+            // Convert the double (primitive type) array to list of Double (class type)
+            List<Double> thisRow = Arrays.stream(this.ENTRIES[i])
+                                         .boxed()
+                                         .collect(Collectors.toList());  // Convert to List
+            // Lock each row and make it unmodifiable
+            readonlyEntries.add(Collections.unmodifiableList(thisRow));
+        }
+
+        // For the last touch, lock entirely the entries
+        // and return the read-only entries
+        return Collections.unmodifiableList(readonlyEntries);
     }
 
 
