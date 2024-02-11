@@ -28,6 +28,10 @@ import com.mitsuki.jmatrix.internal.JMatrixUtils;
 import com.mitsuki.jmatrix.core.MatrixUtils;
 
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The <b>Matrix</b> class represents a two-dimensional (2D) array of {@code double}s.
@@ -2870,7 +2874,7 @@ public class Matrix implements MatrixUtils {
                 "Matrix is null. Please ensure the matrix have been initialized.")
             );
         }
-    
+
         for (int r = 0; r < mSize[0]; r++) {
             for (int c = 0; c < mSize[1]; c++) {
                 if (Math.abs(m.get(r, c)) > Matrix.THRESHOLD) {
@@ -2878,7 +2882,7 @@ public class Matrix implements MatrixUtils {
                 }
             }
         }
-    
+
         return (numberNonZero <= Math.max(mSize[0], mSize[1]));
     }
 
@@ -3651,24 +3655,85 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Returns the {@code double} two-dimensional array representation of this matrix elements.
+     * Retrieves a two-dimensional array representing the elements of this matrix,
+     * preserving data integrity.
      *
-     * <p><b>Note:</b></p>
-     * If the matrix constructed by using {@link #Matrix()} constructor,
-     * this method would returns {@code null} instead (similar with the entries).
+     * <p>If the matrix was constructed using the default {@link #Matrix()} constructor
+     * without any explicit entries, this method returns {@code null}, indicating that
+     * the matrix has not been initialized with any data. To determine whether a matrix
+     * has uninitialized ({@code null}) entries, use the
+     * {@link MatrixUtils#isNullEntries(Matrix)} helper method.
      *
-     * @return A two-dimensional array that represents entries of this matrix,
-     *         returns {@code null} instead if the entries is uninitialized.
+     * <p><b>Implementation Note:</b></p>
+     * <p>As of version 1.5.0, this method would returns a deep copy of the internal
+     * matrix entries instead of returning the object reference of the entries itself
+     * (see <a href="https://github.com/mitsuki31/jmatrix/issues/103">#103</a>),
+     * this ensuring that modifications to the returned array do not affect
+     * the original matrix data. This is essential for preventing unintended side
+     * effects and maintaining data consistency.
+     *
+     * @return A two-dimensional array of {@code double} values representing the
+     *         matrix entries, or {@code null} if the matrix is uninitialized.
      *
      * @since  1.0.0b.5
-     * @see    #get(int, int)
-     * @see    #getSize()
+     * @see    #getReadOnlyEntries()
      * @see    MatrixUtils#isNullEntries(Matrix)
      */
     public double[ ][ ] getEntries() {
-        // TODO: Fix the shallow copy of the returned array
-        // Here will lead to shallow copy of the entries array.
-        return this.ENTRIES;
+        return MatrixUtils.deepCopyOf(this.ENTRIES);
+    }
+
+    /**
+     * Obtains a read-only view of the matrix elements, safeguarding against
+     * unintended modifications.
+     *
+     * <p>This method offers a secure way to access the matrix elements without
+     * the risk of unintended modifications. This method returns a list of lists,
+     * where each inner list represents an immutable row of the matrix, ensuring
+     * data integrity and preventing accidental changes. Attempting to modify the
+     * elements will causing the method to throws an exception
+     * {@code UnsupportedOperationException}. If you want to get the matrix
+     * elements but can still access and modify each elements, consider to use the
+     * {@link #getEntries()} method instead.
+     *
+     * <p><b>Implementation Note:</b></p>
+     * <p>The method leverages the {@code Arrays.stream} API introduced in Java 8.
+     * This allows for concise and efficient conversion of primitive {@code double}
+     * arrays to {@code Double} objects and subsequent creation of unmodifiable
+     * lists. However, it's crucial to note that this approach might not be
+     * compatible with older Java versions that lack {@code Arrays.stream} functionality.
+     *
+     * @return An unmodifiable view list of lists containing the matrix entries.
+     *         Each inner list represents a single row of the matrix, containing
+     *         {@code Double} objects instead of primitive {@code double} values.
+     *
+     * @throws NullMatrixException  If the entries of this matrix is {@code null}
+     *                              or this matrix has not been initialized.
+     *
+     * @since 1.5.0
+     * @see   #getEntries()
+     */
+    public List<List<Double>> getReadOnlyEntries() {
+        if (MatrixUtils.isNullEntries(this)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized."));
+        }
+
+        final int rows = this.getNumRows();  // Get the rows size
+        final List<List<Double>> readonlyEntries = new ArrayList<>(rows /* initial size */);
+
+        for (int i = 0; i < rows; i++) {
+            // Convert the double (primitive type) array to list of Double (class type)
+            List<Double> thisRow = Arrays.stream(this.ENTRIES[i])
+                                         .boxed()
+                                         .collect(Collectors.toList());  // Convert to List
+            // Lock each row and make it unmodifiable
+            readonlyEntries.add(Collections.unmodifiableList(thisRow));
+        }
+
+        // For the last touch, lock entirely the entries
+        // and return the read-only entries
+        return Collections.unmodifiableList(readonlyEntries);
     }
 
 
