@@ -2870,7 +2870,7 @@ public class Matrix implements MatrixUtils {
                 "Matrix is null. Please ensure the matrix have been initialized.")
             );
         }
-    
+
         for (int r = 0; r < mSize[0]; r++) {
             for (int c = 0; c < mSize[1]; c++) {
                 if (Math.abs(m.get(r, c)) > Matrix.THRESHOLD) {
@@ -2878,7 +2878,7 @@ public class Matrix implements MatrixUtils {
                 }
             }
         }
-    
+
         return (numberNonZero <= Math.max(mSize[0], mSize[1]));
     }
 
@@ -3651,24 +3651,33 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Returns the {@code double} two-dimensional array representation of this matrix elements.
+     * Retrieves a two-dimensional array representing the elements of this matrix,
+     * preserving data integrity.
      *
-     * <p><b>Note:</b></p>
-     * If the matrix constructed by using {@link #Matrix()} constructor,
-     * this method would returns {@code null} instead (similar with the entries).
+     * <p>If the matrix was constructed using the default {@link #Matrix()} constructor
+     * without any explicit entries, this method returns {@code null}, indicating that
+     * the matrix has not been initialized with any data. To determine whether a matrix
+     * has uninitialized ({@code null}) entries, use the
+     * {@link MatrixUtils#isNullEntries(Matrix)} helper method.
      *
-     * @return A two-dimensional array that represents entries of this matrix,
-     *         returns {@code null} instead if the entries is uninitialized.
+     * <p><b>Implementation Note:</b></p>
+     * <p>As of version 1.5.0, this method would returns a deep copy of the internal
+     * matrix entries instead of returning the object reference of the entries itself
+     * (see <a href="https://github.com/mitsuki31/jmatrix/issues/103">#103</a>),
+     * this ensuring that modifications to the returned array do not affect
+     * the original matrix data. This is essential for preventing unintended side
+     * effects and maintaining data consistency.
+     *
+     * @return A two-dimensional array of {@code double} values representing the
+     *         matrix entries, or {@code null} if the matrix is uninitialized.
      *
      * @since  1.0.0b.5
      * @see    #get(int, int)
-     * @see    #getSize()
+     * @see    #shape()
      * @see    MatrixUtils#isNullEntries(Matrix)
      */
     public double[ ][ ] getEntries() {
-        // TODO: Fix the shallow copy of the returned array
-        // Here will lead to shallow copy of the entries array.
-        return this.ENTRIES;
+        return MatrixUtils.deepCopyOf(this.ENTRIES);
     }
 
 
