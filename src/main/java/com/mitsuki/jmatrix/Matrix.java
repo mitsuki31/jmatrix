@@ -540,6 +540,112 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*--------------------------
+    ::        Drop Row
+    --------------------------*/
+
+    /**
+     * Constructs a new matrix by removing the specified row from this matrix.
+     *
+     * <p>This method demonstrates a fundamental matrix manipulation technique:
+     * removing a specific row to create a new matrix tailored to different needs.
+     * It is crucial for various matrix-based operations, such as data filtering,
+     * feature selection, or numerical analysis.
+     *
+     * <p>Additionally, this method also supports negative indexing, where negative
+     * values count from the end of the matrix. For example, -1 refers to the
+     * <b>last row</b>, -2 to the <b>second-to-last row</b>, and so on.
+     *
+     * <p>Supporting negative indexing aligns with common indexing conventions
+     * in programming languages. It offers flexibility in accessing and
+     * manipulating elements from the end of the matrix, often simplifying
+     * calculations and logical operations.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix matrix = // ... Initialize a new matrix
+     *   Matrix matrixWithoutLastRow = matrix.dropRow(-1);
+     * </code></pre>
+     *
+     * @param  row  An integer represents the index of the row to remove.
+     *              Negative values count from the end of the matrix.
+     * @return      A new matrix with the specified row removed.
+     *
+     * @throws NullMatrixException    If the given matrix is null.
+     * @throws InvalidIndexException  If the provided row index is out of bounds.
+     *
+     * @since 1.5.0
+     * @see   #dropRow(Matrix, int)
+     * @see   #dropColumn(int)
+     */
+    public Matrix dropRow(int row) {
+        return Matrix.dropRow(this, row);
+    }
+
+    /**
+     * Constructs a new matrix by removing the specified row from the given matrix.
+     *
+     * <p>This method demonstrates a fundamental matrix manipulation technique:
+     * removing a specific row to create a new matrix tailored to different needs.
+     * It is crucial for various matrix-based operations, such as data filtering,
+     * feature selection, or numerical analysis.
+     *
+     * <p>Additionally, this method also supports negative indexing, where negative
+     * values count from the end of the matrix. For example, -1 refers to the
+     * <b>last row</b>, -2 to the <b>second-to-last row</b>, and so on.
+     *
+     * <p>Supporting negative indexing aligns with common indexing conventions
+     * in programming languages. It offers flexibility in accessing and
+     * manipulating elements from the end of the matrix, often simplifying
+     * calculations and logical operations.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix matrix = // ... Initialize a new matrix
+     *   Matrix matrixWithoutLastRow = matrix.dropRow(-1);
+     * </code></pre>
+     *
+     * @param  m    The matrix to remove a row from.
+     * @param  row  An integer represents the index of the row to remove.
+     *              Negative values count from the end of the matrix.
+     * @return      A new matrix with the specified row removed.
+     *
+     * @throws NullMatrixException    If the given matrix is null.
+     * @throws InvalidIndexException  If the provided row index is out of bounds.
+     *
+     * @since 1.5.0
+     * @see   #dropRow(int)
+     * @see   #dropColumn(Matrix, int)
+     */
+    public static Matrix dropRow(Matrix m, int row) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        }
+
+        int rows = m.getNumRows();
+        int cols = m.getNumCols();
+
+        row += (row < 0) ? rows : 0;  // Allow negative indexing
+        if (row >= rows || row < 0) {
+            JMatrixUtils.raiseError(new InvalidIndexException(
+                String.format("Given row index is out of range: %d",
+                    (row < 0) ? (row - rows) : row
+                )
+            ));
+        }
+
+        double[][] entries = m.getEntries();
+        double[][] newEntries = new double[rows - 1][cols];
+        for (int i = 0, destRow = 0; i < rows; i++) {
+            if (i == row) continue;  // Skip the desired row index
+            newEntries[destRow++] = Arrays.copyOf(entries[i], cols);
+        }
+
+        return new Matrix(newEntries);
+    }
+
+
     /**
      * Fills the column with specified array.
      *
