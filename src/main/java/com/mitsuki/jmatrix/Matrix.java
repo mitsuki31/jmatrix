@@ -577,6 +577,7 @@ public class Matrix implements MatrixUtils {
      * @since 1.5.0
      * @see   #dropRow(Matrix, int)
      * @see   #dropColumn(int)
+     * @see   #minorMatrix(int, int)
      */
     public Matrix dropRow(int row) {
         return Matrix.dropRow(this, row);
@@ -616,6 +617,7 @@ public class Matrix implements MatrixUtils {
      * @since 1.5.0
      * @see   #dropRow(int)
      * @see   #dropColumn(Matrix, int)
+     * @see   #minorMatrix(Matrix, int, int)
      */
     public static Matrix dropRow(Matrix m, int row) {
         if (MatrixUtils.isNullEntries(m)) {
@@ -683,6 +685,7 @@ public class Matrix implements MatrixUtils {
      * @since 1.5.0
      * @see   #dropColumn(Matrix, int)
      * @see   #dropRow(int)
+     * @see   #minorMatrix(int, int)
      */
     public Matrix dropColumn(int col) {
         return Matrix.dropColumn(this, col);
@@ -722,6 +725,7 @@ public class Matrix implements MatrixUtils {
      * @since 1.5.0
      * @see   #dropColumn(int)
      * @see   #dropRow(Matrix, int)
+     * @see   #minorMatrix(Matrix, int, int)
      */
     public static Matrix dropColumn(Matrix m, int col) {
         if (MatrixUtils.isNullEntries(m)) {
@@ -2408,6 +2412,144 @@ public class Matrix implements MatrixUtils {
         }
 
         return res;
+    }
+
+
+    /*--------------------------
+    ::      Minor Matrix
+    --------------------------*/
+
+    /**
+     * Calculates and returns a new matrix representing the <b>minor</b> of this matrix.
+     *
+     * <p>The minor of a matrix is a submatrix formed by deleting a single row and a
+     * single column from the original matrix. It plays a crucial role in various
+     * linear algebra operations, including determinant calculations, matrix inversion,
+     * and cofactor expansion.
+     *
+     * <p>This method supports <b>negative indexing</b> for both row and column
+     * indices. A negative index is interpreted as an offset from the end of the
+     * respective dimension.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = // ... initialize a new matrix
+     *   // Remove the last row and last column
+     *   Matrix minorM = m.minorMatrix(-1, -1);
+     * </code></pre>
+     *
+     * <p><b>Note:</b>
+     * <p>This method only works for <b>square matrices</b>. If the input matrix
+     * is not square, an {@link IllegalMatrixSizeException} will be thrown.
+     * Users can use the {@link #isSquare()} helper method to check whether
+     * the matrix is square type.
+     *
+     * <p>From <a href="https://en.wikipedia.org/wiki/Minor_(linear_algebra)">
+     * <q>Minor (linear algebra), Wikipedia</q></a>:
+     *
+     * <blockquote>
+     * <p>In linear algebra, a <b>minor</b> of a matrix is the determinant of some
+     * smaller square matrix, by removing one or more of its rows and columns. Minors
+     * obtained by removing just one row and one column from square matrices
+     * (<b>first minors</b>) are required for calculating matrix <b>cofactors</b>,
+     * which in turn are useful for computing both the determinant and inverse of
+     * square matrices.
+     * </blockquote>
+     *
+     * @param  row  The index of the row to be removed (0-based or negative index).
+     * @param  col  The index of the column to be removed (0-based or negative index).
+     * @return      A new matrix representing the minor of this matrix, with the
+     *              specified row and column removed.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is null.
+     * @throws InvalidIndexException
+     *           If either the given {@code row} or {@code col} index is out of bounds.
+     * @throws IllegalMatrixSizeException
+     *           If this matrix is not square.
+     *
+     * @since 1.5.0
+     * @see   #minorMatrix(Matrix, int, int)
+     * @see   #dropRow(int)
+     * @see   #dropColumn(int)
+     * @see   #isSquare()
+     */
+    public Matrix minorMatrix(int row, int col) {
+        return Matrix.minorMatrix(this, row, col);
+    }
+
+    /**
+     * Calculates and returns a new matrix representing the <b>minor</b> of the
+     * given matrix.
+     *
+     * <p>The minor of a matrix is a submatrix formed by deleting a single row and a
+     * single column from the original matrix. It plays a crucial role in various
+     * linear algebra operations, including determinant calculations, matrix inversion,
+     * and cofactor expansion.
+     *
+     * <p>This method supports <b>negative indexing</b> for both row and column
+     * indices. A negative index is interpreted as an offset from the end of the
+     * respective dimension.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = // ... initialize a new matrix
+     *   // Remove the last row and last column
+     *   Matrix minorM = m.minorMatrix(-1, -1);
+     * </code></pre>
+     *
+     * <p><b>Note:</b>
+     * <p>This method only works for <b>square matrices</b>. If the input matrix
+     * is not square, an {@link IllegalMatrixSizeException} will be thrown.
+     * <p>From <a href="https://en.wikipedia.org/wiki/Minor_(linear_algebra)">
+     * <q>Minor (linear algebra), Wikipedia</q></a>:
+     *
+     * <blockquote>
+     * <p>In linear algebra, a <b>minor</b> of a matrix is the determinant of some
+     * smaller square matrix, by removing one or more of its rows and columns. Minors
+     * obtained by removing just one row and one column from square matrices
+     * (<b>first minors</b>) are required for calculating matrix <b>cofactors</b>,
+     * which in turn are useful for computing both the determinant and inverse of
+     * square matrices.
+     * </blockquote>
+     *
+     * @param  m    The matrix to compute the minor of.
+     * @param  row  The index of the row to be removed (0-based or negative index).
+     * @param  col  The index of the column to be removed (0-based or negative index).
+     * @return      A new matrix representing the minor of this matrix, with the
+     *              specified row and column removed.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is null.
+     * @throws InvalidIndexException
+     *           If either the given {@code row} or {@code col} index is out of bounds.
+     * @throws IllegalMatrixSizeException
+     *           If the given matrix is not square.
+     *
+     * @since 1.5.0
+     * @see   #minorMatrix(int, int)
+     * @see   #dropRow(Matrix, int)
+     * @see   #dropColumn(Matrix, int)
+     * @see   #isSquare()
+     */
+    public static Matrix minorMatrix(Matrix m, int row, int col) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        }
+
+        if (!m.isSquare()) {
+            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+                "Matrix is not square. Please ensure the matrix have the same rows"
+                    + " and columns size"
+            ));
+        }
+
+        // This method are utilizes both `dropRow` and `dropColumn` methods to
+        // remove and exclude the specified row and column index, and then returns
+        // a new matrix with specified row and column removed,
+        // also known as minor matrix.
+        return m.dropRow(row).dropColumn(col);
     }
 
 
