@@ -540,6 +540,379 @@ public class Matrix implements MatrixUtils {
     }
 
 
+
+    /*--------------------------
+    ::       Insert Row
+    --------------------------*/
+
+    /**
+     * Inserts a new row into this matrix at a specified index, shifting existing
+     * rows down.
+     *
+     * <p>This method prioritizes clarity, efficiency, flexibility, and data
+     * integrity by:
+     *
+     * <ul>
+     * <li> Emphasizes data integrity by avoiding shallow copies. It creates
+     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      that modifications to the inserted <b>row</b> or the original matrix
+     *      do not affect each other unintentionally.
+     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     *      potentially offers performance benefits over direct assignment due
+     *      to its avoidance of reflection-based copying.
+     * <li> Gracefully handles potential inconsistencies between the input array
+     *      length and the matrix column count. If the array is longer,
+     *      it truncates it to match the matrix shape, maintaining structural
+     *      consistency.
+     * <li> The support for negative row indices allows for more flexible row
+     *      selection, enabling users to count from the end of the matrix for
+     *      convenience.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5.0 }, { 5.0 }
+     *   });
+     *   // Insert the array to the second row
+     *   m = m.insertRow(1, new double[] { 10.0 });
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will be looks like this after inserted a row:</p>
+     * <pre>&nbsp;
+     *   [   [5.0],
+     *       [10.0],
+     *       [5.0]   ]
+     * </pre>
+     *
+     * @param  row  The index at which to insert the row (can be negative).
+     * @param  a    The array representing the new row to be inserted (not {@code null}
+     *              and not less than matrix column count).
+     * @return      A new matrix with the specified array inserted as a new row
+     *              at the given index.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception
+     *           might be thrown as caused exception.
+     * @throws InvalidIndexException
+     *           If the row index is out of bounds.
+     * @throws IllegalArgumentException
+     *           If the length of the array is less than the number of columns
+     *           in the matrix. This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #insertRow(Matrix, int, double[])
+     * @see   #addRow(double[])
+     * @see   #dropRow(int)
+     */
+    public Matrix insertRow(int row, double[] a) {
+        return Matrix.insertRow(this, row, a);
+    }
+
+    /**
+     * Inserts a new row into a matrix at a specified index, shifting existing
+     * rows down.
+     *
+     * <p>This method prioritizes clarity, efficiency, flexibility, and data
+     * integrity by:
+     *
+     * <ul>
+     * <li> Emphasizes data integrity by avoiding shallow copies. It creates
+     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      that modifications to the inserted <b>row</b> or the original matrix
+     *      do not affect each other unintentionally.
+     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     *      potentially offers performance benefits over direct assignment due
+     *      to its avoidance of reflection-based copying.
+     * <li> Gracefully handles potential inconsistencies between the input array
+     *      length and the matrix column count. If the array is longer,
+     *      it truncates it to match the matrix shape, maintaining structural
+     *      consistency.
+     * <li> The support for negative row indices allows for more flexible row
+     *      selection, enabling users to count from the end of the matrix for
+     *      convenience.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5.0 }, { 5.0 }
+     *   });
+     *   // Insert the array to the second row
+     *   m = Matrix.insertRow(m, 1, new double[] { 10.0 });
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will be looks like this after inserted a row:</p>
+     * <pre>&nbsp;
+     *   [   [5.0],
+     *       [10.0],
+     *       [5.0]   ]
+     * </pre>
+     *
+     * @param  m    The matrix to insert the row into (not {@code null}).
+     * @param  row  The index at which to insert the row (can be negative).
+     * @param  a    The array representing the new row to be inserted (not {@code null}
+     *              and not less than matrix column count).
+     * @return      A new matrix with the specified array inserted as a new row
+     *              at the given index.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception
+     *           might be thrown as caused exception.
+     * @throws InvalidIndexException
+     *           If the row index is out of bounds.
+     * @throws IllegalArgumentException
+     *           If the length of the array is less than the number of columns
+     *           in the matrix. This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #insertRow(int, double[])
+     * @see   #addRow(Matrix, double[])
+     * @see   #dropRow(Matrix, int)
+     */
+    public static Matrix insertRow(Matrix m, int row, double[] a) {
+        // Retrieve the matrix sizes, do not worry about users
+        // input a null matrix (uninitialized matrix), because these
+        // will be zeros (0), and then an exception will be thrown after
+        int mRows = m.getNumRows();
+        int mCols = m.getNumCols();
+        row += (row < 0) ? (mRows + 1) : 0;  // Allow negative indexing
+
+        if (MatrixUtils.isNullEntries(m)) {  // Check for null matrix
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        } else if (a == null || a.length == 0) {  // Check for null or empty array
+            JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
+                "Given array is null or empty. Cannot insert it into the matrix")));
+        } else if (row < 0 || row > mRows) {  // Check for the index is out of bounds
+            JMatrixUtils.raiseError(new InvalidIndexException(
+                String.format("Given row index is out of range: %d",
+                    (row < 0) ? (row - mRows - 1) : row
+                )
+            ));
+        } else if (a.length < mRows) {
+            // Check for the array length is less than matrix number of rows
+            JMatrixUtils.raiseError(new JMatrixBaseException(
+                new IllegalArgumentException(String.format(
+                    "The length of array is less than matrix row count: %d < %d",
+                    a.length, mRows
+                ))
+            ));
+        }
+
+        double[][] entries = m.getEntries();                   // Matrix entries array
+        double[][] newEntries = new double[mRows + 1][mCols];  // Result array
+
+        for (int i = 0, x = 0; i < newEntries.length; i++) {
+            if (i == row) {
+                // Create the copy of the array and truncating the array to fit
+                // with the column of the matrix and also it would not use
+                // reflection-based copy as far as it being used to copy primitive types.
+                // This code equivalent with:
+                //     System.arraycopy(a, 0, newEntries, 0, mCols);
+                newEntries[i] = Arrays.copyOf(a, mCols);
+                continue;
+            }
+            newEntries[i] = Arrays.copyOf(entries[x++], entries[0].length);
+        }
+
+        return new Matrix(newEntries);
+    }
+
+
+    /*--------------------------
+    ::     Insert Column
+    --------------------------*/
+
+    /**
+     * Inserts a new column into this matrix at a specified index, shifting existing
+     * columns to the right.
+     *
+     * <p>This method prioritizes clarity, efficiency, flexibility, and data
+     * integrity by:
+     *
+     * <ul>
+     * <li> Emphasizes data integrity by avoiding shallow copies. It creates
+     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      that modifications to the inserted <b>column</b> or the original matrix
+     *      do not affect each other unintentionally.
+     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     *      potentially offers performance benefits over direct assignment due
+     *      to its avoidance of reflection-based copying.
+     * <li> Gracefully handles potential inconsistencies between the input array
+     *      length and the matrix row count. If the array is longer,
+     *      it truncates it to match the matrix shape, maintaining structural
+     *      consistency.
+     * <li> The support for negative column indices allows for more flexible column
+     *      selection, enabling users to count from the end of the matrix for
+     *      convenience.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 15.0, 16.0 }
+     *   });
+     *   // Insert the array to the last column
+     *   m = m.insertColumn(-1, new double[] { 17.0 });
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will be looks like this after inserted a row:</p>
+     * <pre>&nbsp;
+     *   [   [15.0, 16.0, 17.0]   ]
+     * </pre>
+     *
+     * <p><b>Implementation Note:</b></p>
+     * <p>This method achieves its purpose efficiently by leveraging the
+     * {@link #insertRow} method and matrix transpositions, as follows:
+     *
+     * <ol>
+     * <li> The method begins by transposing the input matrix using
+     *      {@link #transpose}. This effectively swaps rows and columns,
+     *      converting the original columns into rows.
+     * <li> With the matrix transposed, the method calls {@link #insertRow} to
+     *      insert the given array as a new row at the specified index {@code col}.
+     *      Importantly, this insertion now operates on the transposed matrix,
+     *      effectively adding a new column in the original context.
+     * <li> The result of {@link #insertRow} is a transposed matrix with the new
+     *      column added. The method then transposes the matrix again using
+     *      {@link #transpose}, returning it to its original shape with the new
+     *      column correctly positioned.
+     * </ol>
+     *
+     * @param  col  The index at which to insert the column (can be negative).
+     * @param  a    The array representing the new column to be inserted (not
+     *              {@code null} and not less than matrix row count).
+     * @return      A new matrix with the specified array inserted as a new column
+     *              at the given index.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception
+     *           might be thrown as caused exception.
+     * @throws InvalidIndexException
+     *           If the column index is out of bounds.
+     * @throws IllegalArgumentException
+     *           If the length of the array is less than the number of rows
+     *           in the matrix. This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #insertColumn(Matrix, int, double[])
+     * @see   #addColumn(double[])
+     * @see   #dropColumn(int)
+     */
+    public Matrix insertColumn(int col, double[] a) {
+        return Matrix.insertColumn(this, col, a);
+    }
+
+    /**
+     * Inserts a new column into a matrix at a specified index, shifting existing
+     * columns to the right.
+     *
+     * <p>This method prioritizes clarity, efficiency, flexibility, and data
+     * integrity by:
+     *
+     * <ul>
+     * <li> Emphasizes data integrity by avoiding shallow copies. It creates
+     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      that modifications to the inserted <b>column</b> or the original matrix
+     *      do not affect each other unintentionally.
+     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     *      potentially offers performance benefits over direct assignment due
+     *      to its avoidance of reflection-based copying.
+     * <li> Gracefully handles potential inconsistencies between the input array
+     *      length and the matrix row count. If the array is longer,
+     *      it truncates it to match the matrix shape, maintaining structural
+     *      consistency.
+     * <li> The support for negative column indices allows for more flexible column
+     *      selection, enabling users to count from the end of the matrix for
+     *      convenience.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 15.0, 16.0 }
+     *   });
+     *   // Insert the array to the last column
+     *   m = Matrix.insertColumn(m, -1, new double[] { 17.0 });
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will be looks like this after inserted a row:</p>
+     * <pre>&nbsp;
+     *   [   [15.0, 16.0, 17.0]   ]
+     * </pre>
+     *
+     * <p><b>Implementation Note:</b></p>
+     * <p>This method achieves its purpose efficiently by leveraging the
+     * {@link #insertRow} method and matrix transpositions, as follows:
+     *
+     * <ol>
+     * <li> The method begins by transposing the input matrix using
+     *      {@link #transpose}. This effectively swaps rows and columns,
+     *      converting the original columns into rows.
+     * <li> With the matrix transposed, the method calls {@link #insertRow} to
+     *      insert the given array as a new row at the specified index {@code col}.
+     *      Importantly, this insertion now operates on the transposed matrix,
+     *      effectively adding a new column in the original context.
+     * <li> The result of {@link #insertRow} is a transposed matrix with the new
+     *      column added. The method then transposes the matrix again using
+     *      {@link #transpose}, returning it to its original shape with the new
+     *      column correctly positioned.
+     * </ol>
+     *
+     * @param  m    The matrix to insert the column into (not {@code null}).
+     * @param  col  The index at which to insert the column (can be negative).
+     * @param  a    The array representing the new column to be inserted (not
+     *              {@code null} and not less than matrix row count).
+     * @return      A new matrix with the specified array inserted as a new column
+     *              at the given index.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception
+     *           might be thrown as caused exception.
+     * @throws InvalidIndexException
+     *           If the column index is out of bounds.
+     * @throws IllegalArgumentException
+     *           If the length of the array is less than the number of rows
+     *           in the matrix. This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #insertColumn(int, double[])
+     * @see   #addColumn(Matrix, double[])
+     * @see   #dropColumn(Matrix, int)
+     */
+    public static Matrix insertColumn(Matrix m, int col, double[] a) {
+        int mCols = m.getNumCols();          // Get the number of rows
+        col += (col < 0) ? (mCols + 1) : 0;  // Allow negative indexing
+
+        if (col < 0 || col > mCols) {  // Check for the index is out of bounds
+            JMatrixUtils.raiseError(new InvalidIndexException(
+                String.format("Given column index is out of range: %d",
+                    (col < 0) ? (col - mCols - 1) : col
+                )
+            ));
+        } else if (a.length < mCols) {
+            // Check for the array length is less than matrix number of rows
+            JMatrixUtils.raiseError(new JMatrixBaseException(
+                new IllegalArgumentException(String.format(
+                    "The length of array is less than matrix column count: %d < %d",
+                    a.length, mCols
+                ))
+            ));
+        }
+
+        return Matrix.transpose(Matrix.insertRow(Matrix.transpose(m), col, a));
+    }
+
+
     /*--------------------------
     ::        Drop Row
     --------------------------*/
