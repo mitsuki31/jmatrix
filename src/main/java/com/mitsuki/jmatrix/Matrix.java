@@ -668,6 +668,124 @@ public class Matrix implements MatrixUtils {
 
 
     /*--------------------------
+    ::       Add Column
+    --------------------------*/
+
+    /**
+     * Adds a new column to this matrix by appending the specified array, while
+     * avoiding shallow copies.
+     *
+     * <p>This method appends the given array {@code a} as a new column to the
+     * last column of the matrix. It ensures that no shallow copies are created,
+     * guaranteeing independent data structures for the matrix and the
+     * appended array.
+     *
+     * <p>The length of the input array {@code a} must be equal to the number
+     * of rows in the matrix. If not, an {@code IllegalArgumentException}
+     * is thrown. The appended column might be truncated if the input array has
+     * more elements than the matrix row count.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   // Create a 3x3 identity matrix
+     *   Matrix m = Matrix.identity(3);
+     *   double[] p = { 7, 7, 7 };
+     *
+     *   // Append the array 'p' to matrix 'm'
+     *   m = m.addRow(p);
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will looks like this after appended the array:</p>
+     * <pre>&nbsp;
+     *   [   [1.0, 0.0, 0.0, 7.0],
+     *       [0.0, 1.0, 0.0, 7.0],
+     *       [0.0, 0.0, 1.0, 7.0]   ]
+     * </pre>
+     *
+     * @param  a  The array to be appended as the new column.
+     * @return    A new matrix with the appended column.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception might
+     *           be thrown as caused exception.
+     * @throws IllegalArgumentException
+     *           If the length of array is less than the number of rows in matrix.
+     *           This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #addColumn(Matrix, double[])
+     * @see   #insertColumn(int, double[])
+     * @see   #dropColumn(int)
+     */
+    public Matrix addColumn(double[] a) {
+        return Matrix.addColumn(this, a);
+    }
+
+    /**
+     * Adds a new column to a matrix by appending the specified array, while
+     * avoiding shallow copies.
+     *
+     * <p>This method appends the given array {@code a} as a new column to the
+     * last column of the matrix. It ensures that no shallow copies are created,
+     * guaranteeing independent data structures for the matrix and the
+     * appended array.
+     *
+     * <p>The length of the input array {@code a} must be equal to the number
+     * of rows in the matrix. If not, an {@code IllegalArgumentException}
+     * is thrown. The appended column might be truncated if the input array has
+     * more elements than the matrix row count.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   // Create a 3x3 identity matrix
+     *   Matrix m = Matrix.identity(3);
+     *   double[] p = { 7, 7, 7 };
+     *
+     *   // Append the array 'p' to matrix 'm'
+     *   m = Matrix.addRow(m, p);
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will looks like this after appended the array:</p>
+     * <pre>&nbsp;
+     *   [   [1.0, 0.0, 0.0, 7.0],
+     *       [0.0, 1.0, 0.0, 7.0],
+     *       [0.0, 0.0, 1.0, 7.0]   ]
+     * </pre>
+     *
+     * @param  m  The matrix to which the new column will be added.
+     * @param  a  The array to be appended as the new column.
+     * @return    A new matrix with the appended column.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception might
+     *           be thrown as caused exception.
+     * @throws IllegalArgumentException
+     *           If the length of array is less than the number of rows in matrix.
+     *           This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #addColumn(double[])
+     * @see   #insertColumn(Matrix, int, double[])
+     * @see   #dropColumn(Matrix, int)
+     */
+    public static Matrix addColumn(Matrix m, double[] a) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        } else if (a == null || a.length == 0) {
+            JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
+                "Given array is null or empty. Cannot append it into the matrix")));
+        }
+
+        return Matrix.insertColumn(m, m.getNumCols(), a);
+    }
+
+
+    /*--------------------------
     ::       Insert Row
     --------------------------*/
 
