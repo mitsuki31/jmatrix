@@ -394,6 +394,9 @@ public class Matrix implements MatrixUtils {
     ::
     =========================================*/
 
+    /*--------------------------
+    ::         Create
+    --------------------------*/
 
     /**
      * Creates a new matrix with specified number of rows and columns.
@@ -487,6 +490,10 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*--------------------------
+    ::     Matrix Identity
+    --------------------------*/
+
     /**
      * Constructs an identity matrix with dimensions {@code n x n}.
      *
@@ -539,6 +546,125 @@ public class Matrix implements MatrixUtils {
         return new Matrix(entries);
     }
 
+
+    /*--------------------------
+    ::        Add Row
+    --------------------------*/
+
+    /**
+     * Adds a new row to this matrix by appending the specified array, while
+     * avoiding shallow copies.
+     *
+     * <p>This method appends the given array {@code a} as a new row to the
+     * bottom of the matrix. It ensures that no shallow copies are created,
+     * guaranteeing independent data structures for the matrix and the
+     * appended array.
+     *
+     * <p>The length of the input array {@code a} must be equal to the number
+     * of columns in the matrix. If not, an {@code IllegalArgumentException}
+     * is thrown. The appended row might be truncated if the input array has
+     * more elements than the matrix column count.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   // Create a 3x3 matrix filled with 5.0
+     *   Matrix m = new Matrix(3, 3, 5);
+     *   double[] p = { 7, 7, 7 };
+     *
+     *   // Append the array 'p' to matrix 'm'
+     *   m = m.addRow(p);
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will looks like this after appended the array:</p>
+     * <pre>&nbsp;
+     *   [   [5.0, 5.0, 5.0],
+     *       [5.0, 5.0, 5.0],
+     *       [5.0, 5.0, 5.0],
+     *       [7.0, 7.0, 7.0]   ]
+     * </pre>
+     *
+     * @param  a  The array to be appended as the new row.
+     * @return    A new matrix with the appended row.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception might
+     *           be thrown as caused exception.
+     * @throws IllegalArgumentException
+     *           If the length of array is less than the number of columns in matrix.
+     *           This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #addRow(Matrix, double[])
+     * @see   #insertRow(int, double[])
+     * @see   #dropRow(int)
+     */
+    public Matrix addRow(double[] a) {
+        return Matrix.addRow(this, a);
+    }
+
+    /**
+     * Adds a new row to a matrix by appending the specified array, while
+     * avoiding shallow copies.
+     *
+     * <p>This method appends the given array {@code a} as a new row to the
+     * bottom of the matrix {@code m}. It ensures that <b>no shallow copies</b> are
+     * created, guaranteeing independent data structures for the matrix and the
+     * appended array.
+     *
+     * <p>The length of the input array {@code a} must be equal to the number
+     * of columns in the matrix. If not, an {@code IllegalArgumentException}
+     * is thrown. The appended row might be <b>truncated</b> if the input array has
+     * more elements than the matrix column count.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   // Create a 3x3 matrix filled with 5.0
+     *   Matrix m = new Matrix(3, 3, 5);
+     *   double[] p = { 7, 7, 7 };
+     *
+     *   // Append the array 'p' to matrix 'm'
+     *   m = Matrix.addRow(m, p);
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will looks like this after appended the array:</p>
+     * <pre>&nbsp;
+     *   [   [5.0, 5.0, 5.0],
+     *       [5.0, 5.0, 5.0],
+     *       [5.0, 5.0, 5.0],
+     *       [7.0, 7.0, 7.0]   ]
+     * </pre>
+     *
+     * @param  m  The matrix to which the new row will be added.
+     * @param  a  The array to be appended as the new row.
+     * @return    A new matrix with the appended row.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception might
+     *           be thrown as caused exception.
+     * @throws IllegalArgumentException
+     *           If the length of array is less than the number of columns in matrix.
+     *           This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #addRow(double[])
+     * @see   #insertRow(Matrix, int, double[])
+     * @see   #dropRow(Matrix, int)
+     */
+    public static Matrix addRow(Matrix m, double[] a) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        } else if (a == null || a.length == 0) {
+            JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
+                "Given array is null or empty. Cannot append it into the matrix")));
+        }
+
+        return Matrix.insertRow(m, m.getNumRows(), a);
+    }
 
 
     /*--------------------------
