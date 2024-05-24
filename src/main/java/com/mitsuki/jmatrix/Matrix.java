@@ -22,7 +22,6 @@ package com.mitsuki.jmatrix;
 import com.mitsuki.jmatrix.exception.IllegalMatrixSizeException;
 import com.mitsuki.jmatrix.exception.InvalidIndexException;
 import com.mitsuki.jmatrix.exception.JMatrixBaseException;
-import com.mitsuki.jmatrix.exception.MatrixArrayFullException;
 import com.mitsuki.jmatrix.exception.NullMatrixException;
 import com.mitsuki.jmatrix.internal.JMatrixUtils;
 import com.mitsuki.jmatrix.core.MatrixUtils;
@@ -1383,7 +1382,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws     IllegalArgumentException  if the given argument is overcapacity to matrix column
      *                                       or not enough argument to fill the column.
-     * @throws     MatrixArrayFullException  if the matrix cannot be added more values.
+     * @throws     com.mitsuki.jmatrix.exception.MatrixArrayFullException  if the matrix cannot be added more values.
      * @throws     NullMatrixException       if this matrix is a {@code null} object.
      *
      * @since                                0.1.0
@@ -1402,7 +1401,7 @@ public class Matrix implements MatrixUtils {
                     "Cannot add values, becuase this matrix is null");
             }
             else if (this.index >= this.ROWS) {
-                throw new MatrixArrayFullException(
+                throw new com.mitsuki.jmatrix.exception.MatrixArrayFullException(
                     "Cannot add values anymore, Matrix is already full");
             }
             // Length of values list shouldn't greater than total matrix columns
@@ -1440,7 +1439,7 @@ public class Matrix implements MatrixUtils {
      *
      * @param      value                     the value to filled out the matrix column.
      *
-     * @throws     MatrixArrayFullException  if the matrix cannot be added more values.
+     * @throws     com.mitsuki.jmatrix.exception.MatrixArrayFullException  if the matrix cannot be added more values.
      * @throws     NullMatrixException       if this matrix is {@code null}.
      *
      * @since                                0.1.0
@@ -1463,7 +1462,7 @@ public class Matrix implements MatrixUtils {
                 a new column, but the index has equal to total matrix rows
             --- **/
             else if (this.index >= this.ROWS) {
-                throw new MatrixArrayFullException(
+                throw new com.mitsuki.jmatrix.exception.MatrixArrayFullException(
                     "Cannot add values anymore, Matrix is already full");
             }
         } catch (final RuntimeException re) {

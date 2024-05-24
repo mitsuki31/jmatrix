@@ -52,11 +52,6 @@ import java.util.Properties;
 public final class PropertiesParser {
 
     /**
-     * A path to the specified property file (initialized inside constructor).
-     */
-    private String propertyFile;
-
-    /**
      * Stores the properties data from the specified properties file.
      */
     private Properties properties;
@@ -77,7 +72,6 @@ public final class PropertiesParser {
      */
     private PropertiesParser(InputStream inStream,
                              String propertyPath) throws IOException {
-        this.propertyFile = propertyPath;
         this.properties = new Properties();
         this.properties.load(inStream);
     }
