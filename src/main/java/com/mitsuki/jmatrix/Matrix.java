@@ -22,7 +22,6 @@ package com.mitsuki.jmatrix;
 import com.mitsuki.jmatrix.exception.IllegalMatrixSizeException;
 import com.mitsuki.jmatrix.exception.InvalidIndexException;
 import com.mitsuki.jmatrix.exception.JMatrixBaseException;
-import com.mitsuki.jmatrix.exception.MatrixArrayFullException;
 import com.mitsuki.jmatrix.exception.NullMatrixException;
 import com.mitsuki.jmatrix.internal.JMatrixUtils;
 import com.mitsuki.jmatrix.core.MatrixUtils;
@@ -394,6 +393,9 @@ public class Matrix implements MatrixUtils {
     ::
     =========================================*/
 
+    /*--------------------------
+    ::         Create
+    --------------------------*/
 
     /**
      * Creates a new matrix with specified number of rows and columns.
@@ -487,6 +489,10 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*--------------------------
+    ::     Matrix Identity
+    --------------------------*/
+
     /**
      * Constructs an identity matrix with dimensions {@code n x n}.
      *
@@ -540,6 +546,833 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*--------------------------
+    ::        Add Row
+    --------------------------*/
+
+    /**
+     * Adds a new row to this matrix by appending the specified array, while
+     * avoiding shallow copies.
+     *
+     * <p>This method appends the given array {@code a} as a new row to the
+     * bottom of the matrix. It ensures that no shallow copies are created,
+     * guaranteeing independent data structures for the matrix and the
+     * appended array.
+     *
+     * <p>The length of the input array {@code a} must be equal to the number
+     * of columns in the matrix. If not, an {@code IllegalArgumentException}
+     * is thrown. The appended row might be truncated if the input array has
+     * more elements than the matrix column count.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   // Create a 3x3 matrix filled with 5.0
+     *   Matrix m = new Matrix(3, 3, 5);
+     *   double[] p = { 7, 7, 7 };
+     *
+     *   // Append the array 'p' to matrix 'm'
+     *   m = m.addRow(p);
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will looks like this after appended the array:</p>
+     * <pre>&nbsp;
+     *   [   [5.0, 5.0, 5.0],
+     *       [5.0, 5.0, 5.0],
+     *       [5.0, 5.0, 5.0],
+     *       [7.0, 7.0, 7.0]   ]
+     * </pre>
+     *
+     * @param  a  The array to be appended as the new row.
+     * @return    A new matrix with the appended row.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception might
+     *           be thrown as caused exception.
+     * @throws IllegalArgumentException
+     *           If the length of array is less than the number of columns in matrix.
+     *           This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #addRow(Matrix, double[])
+     * @see   #insertRow(int, double[])
+     * @see   #dropRow(int)
+     */
+    public Matrix addRow(double[] a) {
+        return Matrix.addRow(this, a);
+    }
+
+    /**
+     * Adds a new row to a matrix by appending the specified array, while
+     * avoiding shallow copies.
+     *
+     * <p>This method appends the given array {@code a} as a new row to the
+     * bottom of the matrix {@code m}. It ensures that <b>no shallow copies</b> are
+     * created, guaranteeing independent data structures for the matrix and the
+     * appended array.
+     *
+     * <p>The length of the input array {@code a} must be equal to the number
+     * of columns in the matrix. If not, an {@code IllegalArgumentException}
+     * is thrown. The appended row might be <b>truncated</b> if the input array has
+     * more elements than the matrix column count.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   // Create a 3x3 matrix filled with 5.0
+     *   Matrix m = new Matrix(3, 3, 5);
+     *   double[] p = { 7, 7, 7 };
+     *
+     *   // Append the array 'p' to matrix 'm'
+     *   m = Matrix.addRow(m, p);
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will looks like this after appended the array:</p>
+     * <pre>&nbsp;
+     *   [   [5.0, 5.0, 5.0],
+     *       [5.0, 5.0, 5.0],
+     *       [5.0, 5.0, 5.0],
+     *       [7.0, 7.0, 7.0]   ]
+     * </pre>
+     *
+     * @param  m  The matrix to which the new row will be added.
+     * @param  a  The array to be appended as the new row.
+     * @return    A new matrix with the appended row.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception might
+     *           be thrown as caused exception.
+     * @throws IllegalArgumentException
+     *           If the length of array is less than the number of columns in matrix.
+     *           This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #addRow(double[])
+     * @see   #insertRow(Matrix, int, double[])
+     * @see   #dropRow(Matrix, int)
+     */
+    public static Matrix addRow(Matrix m, double[] a) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        } else if (a == null || a.length == 0) {
+            JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
+                "Given array is null or empty. Cannot append it into the matrix")));
+        }
+
+        return Matrix.insertRow(m, m.getNumRows(), a);
+    }
+
+
+    /*--------------------------
+    ::       Add Column
+    --------------------------*/
+
+    /**
+     * Adds a new column to this matrix by appending the specified array, while
+     * avoiding shallow copies.
+     *
+     * <p>This method appends the given array {@code a} as a new column to the
+     * last column of the matrix. It ensures that no shallow copies are created,
+     * guaranteeing independent data structures for the matrix and the
+     * appended array.
+     *
+     * <p>The length of the input array {@code a} must be equal to the number
+     * of rows in the matrix. If not, an {@code IllegalArgumentException}
+     * is thrown. The appended column might be truncated if the input array has
+     * more elements than the matrix row count.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   // Create a 3x3 identity matrix
+     *   Matrix m = Matrix.identity(3);
+     *   double[] p = { 7, 7, 7 };
+     *
+     *   // Append the array 'p' to matrix 'm'
+     *   m = m.addRow(p);
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will looks like this after appended the array:</p>
+     * <pre>&nbsp;
+     *   [   [1.0, 0.0, 0.0, 7.0],
+     *       [0.0, 1.0, 0.0, 7.0],
+     *       [0.0, 0.0, 1.0, 7.0]   ]
+     * </pre>
+     *
+     * @param  a  The array to be appended as the new column.
+     * @return    A new matrix with the appended column.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception might
+     *           be thrown as caused exception.
+     * @throws IllegalArgumentException
+     *           If the length of array is less than the number of rows in matrix.
+     *           This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #addColumn(Matrix, double[])
+     * @see   #insertColumn(int, double[])
+     * @see   #dropColumn(int)
+     */
+    public Matrix addColumn(double[] a) {
+        return Matrix.addColumn(this, a);
+    }
+
+    /**
+     * Adds a new column to a matrix by appending the specified array, while
+     * avoiding shallow copies.
+     *
+     * <p>This method appends the given array {@code a} as a new column to the
+     * last column of the matrix. It ensures that no shallow copies are created,
+     * guaranteeing independent data structures for the matrix and the
+     * appended array.
+     *
+     * <p>The length of the input array {@code a} must be equal to the number
+     * of rows in the matrix. If not, an {@code IllegalArgumentException}
+     * is thrown. The appended column might be truncated if the input array has
+     * more elements than the matrix row count.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   // Create a 3x3 identity matrix
+     *   Matrix m = Matrix.identity(3);
+     *   double[] p = { 7, 7, 7 };
+     *
+     *   // Append the array 'p' to matrix 'm'
+     *   m = Matrix.addRow(m, p);
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will looks like this after appended the array:</p>
+     * <pre>&nbsp;
+     *   [   [1.0, 0.0, 0.0, 7.0],
+     *       [0.0, 1.0, 0.0, 7.0],
+     *       [0.0, 0.0, 1.0, 7.0]   ]
+     * </pre>
+     *
+     * @param  m  The matrix to which the new column will be added.
+     * @param  a  The array to be appended as the new column.
+     * @return    A new matrix with the appended column.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception might
+     *           be thrown as caused exception.
+     * @throws IllegalArgumentException
+     *           If the length of array is less than the number of rows in matrix.
+     *           This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #addColumn(double[])
+     * @see   #insertColumn(Matrix, int, double[])
+     * @see   #dropColumn(Matrix, int)
+     */
+    public static Matrix addColumn(Matrix m, double[] a) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        } else if (a == null || a.length == 0) {
+            JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
+                "Given array is null or empty. Cannot append it into the matrix")));
+        }
+
+        return Matrix.insertColumn(m, m.getNumCols(), a);
+    }
+
+
+    /*--------------------------
+    ::       Insert Row
+    --------------------------*/
+
+    /**
+     * Inserts a new row into this matrix at a specified index, shifting existing
+     * rows down.
+     *
+     * <p>This method prioritizes clarity, efficiency, flexibility, and data
+     * integrity by:
+     *
+     * <ul>
+     * <li> Emphasizes data integrity by avoiding shallow copies. It creates
+     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      that modifications to the inserted <b>row</b> or the original matrix
+     *      do not affect each other unintentionally.
+     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     *      potentially offers performance benefits over direct assignment due
+     *      to its avoidance of reflection-based copying.
+     * <li> Gracefully handles potential inconsistencies between the input array
+     *      length and the matrix column count. If the array is longer,
+     *      it truncates it to match the matrix shape, maintaining structural
+     *      consistency.
+     * <li> The support for negative row indices allows for more flexible row
+     *      selection, enabling users to count from the end of the matrix for
+     *      convenience.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5.0 }, { 5.0 }
+     *   });
+     *   // Insert the array to the second row
+     *   m = m.insertRow(1, new double[] { 10.0 });
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will be looks like this after inserted a row:</p>
+     * <pre>&nbsp;
+     *   [   [5.0],
+     *       [10.0],
+     *       [5.0]   ]
+     * </pre>
+     *
+     * @param  row  The index at which to insert the row (can be negative).
+     * @param  a    The array representing the new row to be inserted (not {@code null}
+     *              and not less than matrix column count).
+     * @return      A new matrix with the specified array inserted as a new row
+     *              at the given index.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception
+     *           might be thrown as caused exception.
+     * @throws InvalidIndexException
+     *           If the row index is out of bounds.
+     * @throws IllegalArgumentException
+     *           If the length of the array is less than the number of columns
+     *           in the matrix. This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #insertRow(Matrix, int, double[])
+     * @see   #addRow(double[])
+     * @see   #dropRow(int)
+     */
+    public Matrix insertRow(int row, double[] a) {
+        return Matrix.insertRow(this, row, a);
+    }
+
+    /**
+     * Inserts a new row into a matrix at a specified index, shifting existing
+     * rows down.
+     *
+     * <p>This method prioritizes clarity, efficiency, flexibility, and data
+     * integrity by:
+     *
+     * <ul>
+     * <li> Emphasizes data integrity by avoiding shallow copies. It creates
+     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      that modifications to the inserted <b>row</b> or the original matrix
+     *      do not affect each other unintentionally.
+     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     *      potentially offers performance benefits over direct assignment due
+     *      to its avoidance of reflection-based copying.
+     * <li> Gracefully handles potential inconsistencies between the input array
+     *      length and the matrix column count. If the array is longer,
+     *      it truncates it to match the matrix shape, maintaining structural
+     *      consistency.
+     * <li> The support for negative row indices allows for more flexible row
+     *      selection, enabling users to count from the end of the matrix for
+     *      convenience.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 5.0 }, { 5.0 }
+     *   });
+     *   // Insert the array to the second row
+     *   m = Matrix.insertRow(m, 1, new double[] { 10.0 });
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will be looks like this after inserted a row:</p>
+     * <pre>&nbsp;
+     *   [   [5.0],
+     *       [10.0],
+     *       [5.0]   ]
+     * </pre>
+     *
+     * @param  m    The matrix to insert the row into (not {@code null}).
+     * @param  row  The index at which to insert the row (can be negative).
+     * @param  a    The array representing the new row to be inserted (not {@code null}
+     *              and not less than matrix column count).
+     * @return      A new matrix with the specified array inserted as a new row
+     *              at the given index.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception
+     *           might be thrown as caused exception.
+     * @throws InvalidIndexException
+     *           If the row index is out of bounds.
+     * @throws IllegalArgumentException
+     *           If the length of the array is less than the number of columns
+     *           in the matrix. This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #insertRow(int, double[])
+     * @see   #addRow(Matrix, double[])
+     * @see   #dropRow(Matrix, int)
+     */
+    public static Matrix insertRow(Matrix m, int row, double[] a) {
+        // Retrieve the matrix sizes, do not worry about users
+        // input a null matrix (uninitialized matrix), because these
+        // will be zeros (0), and then an exception will be thrown after
+        int mRows = m.getNumRows();
+        int mCols = m.getNumCols();
+        row += (row < 0) ? (mRows + 1) : 0;  // Allow negative indexing
+
+        if (MatrixUtils.isNullEntries(m)) {  // Check for null matrix
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        } else if (a == null || a.length == 0) {  // Check for null or empty array
+            JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
+                "Given array is null or empty. Cannot insert it into the matrix")));
+        } else if (row < 0 || row > mRows) {  // Check for the index is out of bounds
+            JMatrixUtils.raiseError(new InvalidIndexException(
+                String.format("Given row index is out of range: %d",
+                    (row < 0) ? (row - mRows - 1) : row
+                )
+            ));
+        } else if (a.length < mRows) {
+            // Check for the array length is less than matrix number of rows
+            JMatrixUtils.raiseError(new JMatrixBaseException(
+                new IllegalArgumentException(String.format(
+                    "The length of array is less than matrix row count: %d < %d",
+                    a.length, mRows
+                ))
+            ));
+        }
+
+        double[][] entries = m.getEntries();                   // Matrix entries array
+        double[][] newEntries = new double[mRows + 1][mCols];  // Result array
+
+        for (int i = 0, x = 0; i < newEntries.length; i++) {
+            if (i == row) {
+                // Create the copy of the array and truncating the array to fit
+                // with the column of the matrix and also it would not use
+                // reflection-based copy as far as it being used to copy primitive types.
+                // This code equivalent with:
+                //     System.arraycopy(a, 0, newEntries, 0, mCols);
+                newEntries[i] = Arrays.copyOf(a, mCols);
+                continue;
+            }
+            newEntries[i] = Arrays.copyOf(entries[x++], entries[0].length);
+        }
+
+        return new Matrix(newEntries);
+    }
+
+
+    /*--------------------------
+    ::     Insert Column
+    --------------------------*/
+
+    /**
+     * Inserts a new column into this matrix at a specified index, shifting existing
+     * columns to the right.
+     *
+     * <p>This method prioritizes clarity, efficiency, flexibility, and data
+     * integrity by:
+     *
+     * <ul>
+     * <li> Emphasizes data integrity by avoiding shallow copies. It creates
+     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      that modifications to the inserted <b>column</b> or the original matrix
+     *      do not affect each other unintentionally.
+     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     *      potentially offers performance benefits over direct assignment due
+     *      to its avoidance of reflection-based copying.
+     * <li> Gracefully handles potential inconsistencies between the input array
+     *      length and the matrix row count. If the array is longer,
+     *      it truncates it to match the matrix shape, maintaining structural
+     *      consistency.
+     * <li> The support for negative column indices allows for more flexible column
+     *      selection, enabling users to count from the end of the matrix for
+     *      convenience.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 15.0, 16.0 }
+     *   });
+     *   // Insert the array to the last column
+     *   m = m.insertColumn(-1, new double[] { 17.0 });
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will be looks like this after inserted a row:</p>
+     * <pre>&nbsp;
+     *   [   [15.0, 16.0, 17.0]   ]
+     * </pre>
+     *
+     * <p><b>Implementation Note:</b></p>
+     * <p>This method achieves its purpose efficiently by leveraging the
+     * {@link #insertRow} method and matrix transpositions, as follows:
+     *
+     * <ol>
+     * <li> The method begins by transposing the input matrix using
+     *      {@link #transpose}. This effectively swaps rows and columns,
+     *      converting the original columns into rows.
+     * <li> With the matrix transposed, the method calls {@link #insertRow} to
+     *      insert the given array as a new row at the specified index {@code col}.
+     *      Importantly, this insertion now operates on the transposed matrix,
+     *      effectively adding a new column in the original context.
+     * <li> The result of {@link #insertRow} is a transposed matrix with the new
+     *      column added. The method then transposes the matrix again using
+     *      {@link #transpose}, returning it to its original shape with the new
+     *      column correctly positioned.
+     * </ol>
+     *
+     * @param  col  The index at which to insert the column (can be negative).
+     * @param  a    The array representing the new column to be inserted (not
+     *              {@code null} and not less than matrix row count).
+     * @return      A new matrix with the specified array inserted as a new column
+     *              at the given index.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception
+     *           might be thrown as caused exception.
+     * @throws InvalidIndexException
+     *           If the column index is out of bounds.
+     * @throws IllegalArgumentException
+     *           If the length of the array is less than the number of rows
+     *           in the matrix. This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #insertColumn(Matrix, int, double[])
+     * @see   #addColumn(double[])
+     * @see   #dropColumn(int)
+     */
+    public Matrix insertColumn(int col, double[] a) {
+        return Matrix.insertColumn(this, col, a);
+    }
+
+    /**
+     * Inserts a new column into a matrix at a specified index, shifting existing
+     * columns to the right.
+     *
+     * <p>This method prioritizes clarity, efficiency, flexibility, and data
+     * integrity by:
+     *
+     * <ul>
+     * <li> Emphasizes data integrity by avoiding shallow copies. It creates
+     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      that modifications to the inserted <b>column</b> or the original matrix
+     *      do not affect each other unintentionally.
+     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     *      potentially offers performance benefits over direct assignment due
+     *      to its avoidance of reflection-based copying.
+     * <li> Gracefully handles potential inconsistencies between the input array
+     *      length and the matrix row count. If the array is longer,
+     *      it truncates it to match the matrix shape, maintaining structural
+     *      consistency.
+     * <li> The support for negative column indices allows for more flexible column
+     *      selection, enabling users to count from the end of the matrix for
+     *      convenience.
+     * </ul>
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 15.0, 16.0 }
+     *   });
+     *   // Insert the array to the last column
+     *   m = Matrix.insertColumn(m, -1, new double[] { 17.0 });
+     * </code></pre>
+     *
+     * <p>Matrix {@code m} will be looks like this after inserted a row:</p>
+     * <pre>&nbsp;
+     *   [   [15.0, 16.0, 17.0]   ]
+     * </pre>
+     *
+     * <p><b>Implementation Note:</b></p>
+     * <p>This method achieves its purpose efficiently by leveraging the
+     * {@link #insertRow} method and matrix transpositions, as follows:
+     *
+     * <ol>
+     * <li> The method begins by transposing the input matrix using
+     *      {@link #transpose}. This effectively swaps rows and columns,
+     *      converting the original columns into rows.
+     * <li> With the matrix transposed, the method calls {@link #insertRow} to
+     *      insert the given array as a new row at the specified index {@code col}.
+     *      Importantly, this insertion now operates on the transposed matrix,
+     *      effectively adding a new column in the original context.
+     * <li> The result of {@link #insertRow} is a transposed matrix with the new
+     *      column added. The method then transposes the matrix again using
+     *      {@link #transpose}, returning it to its original shape with the new
+     *      column correctly positioned.
+     * </ol>
+     *
+     * @param  m    The matrix to insert the column into (not {@code null}).
+     * @param  col  The index at which to insert the column (can be negative).
+     * @param  a    The array representing the new column to be inserted (not
+     *              {@code null} and not less than matrix row count).
+     * @return      A new matrix with the specified array inserted as a new column
+     *              at the given index.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is {@code null}.
+     * @throws NullPointerException
+     *           If the given array is {@code null} or empty. This exception
+     *           might be thrown as caused exception.
+     * @throws InvalidIndexException
+     *           If the column index is out of bounds.
+     * @throws IllegalArgumentException
+     *           If the length of the array is less than the number of rows
+     *           in the matrix. This exception might be thrown as caused exception.
+     *
+     * @since 1.5.0
+     * @see   #insertColumn(int, double[])
+     * @see   #addColumn(Matrix, double[])
+     * @see   #dropColumn(Matrix, int)
+     */
+    public static Matrix insertColumn(Matrix m, int col, double[] a) {
+        int mCols = m.getNumCols();          // Get the number of rows
+        col += (col < 0) ? (mCols + 1) : 0;  // Allow negative indexing
+
+        if (col < 0 || col > mCols) {  // Check for the index is out of bounds
+            JMatrixUtils.raiseError(new InvalidIndexException(
+                String.format("Given column index is out of range: %d",
+                    (col < 0) ? (col - mCols - 1) : col
+                )
+            ));
+        } else if (a.length < mCols) {
+            // Check for the array length is less than matrix number of rows
+            JMatrixUtils.raiseError(new JMatrixBaseException(
+                new IllegalArgumentException(String.format(
+                    "The length of array is less than matrix column count: %d < %d",
+                    a.length, mCols
+                ))
+            ));
+        }
+
+        return Matrix.transpose(Matrix.insertRow(Matrix.transpose(m), col, a));
+    }
+
+
+    /*--------------------------
+    ::        Drop Row
+    --------------------------*/
+
+    /**
+     * Constructs a new matrix by removing the specified row from this matrix.
+     *
+     * <p>This method demonstrates a fundamental matrix manipulation technique:
+     * removing a specific row to create a new matrix tailored to different needs.
+     * It is crucial for various matrix-based operations, such as data filtering,
+     * feature selection, or numerical analysis.
+     *
+     * <p>Additionally, this method also supports negative indexing, where negative
+     * values count from the end of the matrix. For example, -1 refers to the
+     * <b>last row</b>, -2 to the <b>second-to-last row</b>, and so on.
+     *
+     * <p>Supporting negative indexing aligns with common indexing conventions
+     * in programming languages. It offers flexibility in accessing and
+     * manipulating elements from the end of the matrix, often simplifying
+     * calculations and logical operations.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix matrix = // ... Initialize a new matrix
+     *   Matrix matrixWithoutLastRow = matrix.dropRow(-1);
+     * </code></pre>
+     *
+     * @param  row  An integer represents the index of the row to remove.
+     *              Negative values count from the end of the matrix.
+     * @return      A new matrix with the specified row removed.
+     *
+     * @throws NullMatrixException    If the given matrix is null.
+     * @throws InvalidIndexException  If the provided row index is out of bounds.
+     *
+     * @since 1.5.0
+     * @see   #dropRow(Matrix, int)
+     * @see   #dropColumn(int)
+     * @see   #minorMatrix(int, int)
+     */
+    public Matrix dropRow(int row) {
+        return Matrix.dropRow(this, row);
+    }
+
+    /**
+     * Constructs a new matrix by removing the specified row from the given matrix.
+     *
+     * <p>This method demonstrates a fundamental matrix manipulation technique:
+     * removing a specific row to create a new matrix tailored to different needs.
+     * It is crucial for various matrix-based operations, such as data filtering,
+     * feature selection, or numerical analysis.
+     *
+     * <p>Additionally, this method also supports negative indexing, where negative
+     * values count from the end of the matrix. For example, -1 refers to the
+     * <b>last row</b>, -2 to the <b>second-to-last row</b>, and so on.
+     *
+     * <p>Supporting negative indexing aligns with common indexing conventions
+     * in programming languages. It offers flexibility in accessing and
+     * manipulating elements from the end of the matrix, often simplifying
+     * calculations and logical operations.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix matrix = // ... Initialize a new matrix
+     *   Matrix matrixWithoutLastRow = matrix.dropRow(-1);
+     * </code></pre>
+     *
+     * @param  m    The matrix to remove a row from.
+     * @param  row  An integer represents the index of the row to remove.
+     *              Negative values count from the end of the matrix.
+     * @return      A new matrix with the specified row removed.
+     *
+     * @throws NullMatrixException    If the given matrix is null.
+     * @throws InvalidIndexException  If the provided row index is out of bounds.
+     *
+     * @since 1.5.0
+     * @see   #dropRow(int)
+     * @see   #dropColumn(Matrix, int)
+     * @see   #minorMatrix(Matrix, int, int)
+     */
+    public static Matrix dropRow(Matrix m, int row) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        }
+
+        int rows = m.getNumRows();
+        int cols = m.getNumCols();
+
+        row += (row < 0) ? rows : 0;  // Allow negative indexing
+        if (row >= rows || row < 0) {
+            JMatrixUtils.raiseError(new InvalidIndexException(
+                String.format("Given row index is out of range: %d",
+                    (row < 0) ? (row - rows) : row
+                )
+            ));
+        }
+
+        double[][] entries = m.getEntries();
+        double[][] newEntries = new double[rows - 1][cols];
+        for (int i = 0, destRow = 0; i < rows; i++) {
+            if (i == row) continue;  // Skip the desired row index
+            newEntries[destRow++] = Arrays.copyOf(entries[i], cols);
+        }
+
+        return new Matrix(newEntries);
+    }
+
+
+    /*--------------------------
+    ::       Drop Column
+    --------------------------*/
+
+    /**
+     * Constructs a new matrix by removing the specified column from this matrix.
+     *
+     * <p>This method demonstrates a fundamental matrix manipulation technique:
+     * removing a specific column to create a new matrix tailored to different needs.
+     * It is crucial for various matrix-based operations, such as data filtering,
+     * feature selection, or numerical analysis.
+     *
+     * <p>Additionally, this method also supports negative indexing, where negative
+     * values count from the end of the matrix. For example, -1 refers to the
+     * <b>last column</b>, -2 to the <b>second-to-last column</b>, and so on.
+     *
+     * <p>Supporting negative indexing aligns with common indexing conventions
+     * in programming languages. It offers flexibility in accessing and
+     * manipulating elements from the end of the matrix, often simplifying
+     * calculations and logical operations.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix matrix = // ... Initialize a new matrix
+     *   Matrix matrixWithoutLastColumn = matrix.dropColumn(-1);
+     * </code></pre>
+     *
+     * @param  col  An integer represents the index of the column to remove.
+     *              Negative values count from the end of the matrix.
+     * @return      A new matrix with the specified column removed.
+     *
+     * @throws NullMatrixException    If the given matrix is null.
+     * @throws InvalidIndexException  If the provided column index is out of bounds.
+     *
+     * @since 1.5.0
+     * @see   #dropColumn(Matrix, int)
+     * @see   #dropRow(int)
+     * @see   #minorMatrix(int, int)
+     */
+    public Matrix dropColumn(int col) {
+        return Matrix.dropColumn(this, col);
+    }
+
+    /**
+     * Constructs a new matrix by removing the specified column from the given matrix.
+     *
+     * <p>This method demonstrates a fundamental matrix manipulation technique:
+     * removing a specific column to create a new matrix tailored to different needs.
+     * It is crucial for various matrix-based operations, such as data filtering,
+     * feature selection, or numerical analysis.
+     *
+     * <p>Additionally, this method also supports negative indexing, where negative
+     * values count from the end of the matrix. For example, -1 refers to the
+     * <b>last column</b>, -2 to the <b>second-to-last column</b>, and so on.
+     *
+     * <p>Supporting negative indexing aligns with common indexing conventions
+     * in programming languages. It offers flexibility in accessing and
+     * manipulating elements from the end of the matrix, often simplifying
+     * calculations and logical operations.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix matrix = // ... Initialize a new matrix
+     *   Matrix matrixWithoutLastColumn = matrix.dropColumn(-1);
+     * </code></pre>
+     *
+     * @param  m    The matrix to remove a column from.
+     * @param  col  An integer represents the index of the column to remove.
+     *              Negative values count from the end of the matrix.
+     * @return      A new matrix with the specified column removed.
+     *
+     * @throws NullMatrixException    If the given matrix is null.
+     * @throws InvalidIndexException  If the provided column index is out of bounds.
+     *
+     * @since 1.5.0
+     * @see   #dropColumn(int)
+     * @see   #dropRow(Matrix, int)
+     * @see   #minorMatrix(Matrix, int, int)
+     */
+    public static Matrix dropColumn(Matrix m, int col) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        }
+
+        int rows = m.getNumRows();
+        int cols = m.getNumCols();
+
+        col += (col < 0) ? cols : 0;  // Allow negative indexing
+        if (col >= cols || col < 0) {
+            JMatrixUtils.raiseError(new InvalidIndexException(
+                String.format("Given column index is out of range: %d",
+                    (col < 0) ? (col - cols) : col
+                )
+            ));
+        }
+
+        double[][] entries = new double[rows][cols - 1];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0, destCol = 0; j < cols; j++) {
+                if (j == col) continue;  // Skip the desired column index
+                entries[i][destCol++] = m.get(i, j);
+            }
+        }
+
+        return new Matrix(entries);
+    }
+
+
     /**
      * Fills the column with specified array.
      *
@@ -549,7 +1382,7 @@ public class Matrix implements MatrixUtils {
      *
      * @throws     IllegalArgumentException  if the given argument is overcapacity to matrix column
      *                                       or not enough argument to fill the column.
-     * @throws     MatrixArrayFullException  if the matrix cannot be added more values.
+     * @throws     com.mitsuki.jmatrix.exception.MatrixArrayFullException  if the matrix cannot be added more values.
      * @throws     NullMatrixException       if this matrix is a {@code null} object.
      *
      * @since                                0.1.0
@@ -568,7 +1401,7 @@ public class Matrix implements MatrixUtils {
                     "Cannot add values, becuase this matrix is null");
             }
             else if (this.index >= this.ROWS) {
-                throw new MatrixArrayFullException(
+                throw new com.mitsuki.jmatrix.exception.MatrixArrayFullException(
                     "Cannot add values anymore, Matrix is already full");
             }
             // Length of values list shouldn't greater than total matrix columns
@@ -606,7 +1439,7 @@ public class Matrix implements MatrixUtils {
      *
      * @param      value                     the value to filled out the matrix column.
      *
-     * @throws     MatrixArrayFullException  if the matrix cannot be added more values.
+     * @throws     com.mitsuki.jmatrix.exception.MatrixArrayFullException  if the matrix cannot be added more values.
      * @throws     NullMatrixException       if this matrix is {@code null}.
      *
      * @since                                0.1.0
@@ -629,7 +1462,7 @@ public class Matrix implements MatrixUtils {
                 a new column, but the index has equal to total matrix rows
             --- **/
             else if (this.index >= this.ROWS) {
-                throw new MatrixArrayFullException(
+                throw new com.mitsuki.jmatrix.exception.MatrixArrayFullException(
                     "Cannot add values anymore, Matrix is already full");
             }
         } catch (final RuntimeException re) {
@@ -2198,6 +3031,144 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*--------------------------
+    ::      Minor Matrix
+    --------------------------*/
+
+    /**
+     * Calculates and returns a new matrix representing the <b>minor</b> of this matrix.
+     *
+     * <p>The minor of a matrix is a submatrix formed by deleting a single row and a
+     * single column from the original matrix. It plays a crucial role in various
+     * linear algebra operations, including determinant calculations, matrix inversion,
+     * and cofactor expansion.
+     *
+     * <p>This method supports <b>negative indexing</b> for both row and column
+     * indices. A negative index is interpreted as an offset from the end of the
+     * respective dimension.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = // ... initialize a new matrix
+     *   // Remove the last row and last column
+     *   Matrix minorM = m.minorMatrix(-1, -1);
+     * </code></pre>
+     *
+     * <p><b>Note:</b>
+     * <p>This method only works for <b>square matrices</b>. If the input matrix
+     * is not square, an {@link IllegalMatrixSizeException} will be thrown.
+     * Users can use the {@link #isSquare()} helper method to check whether
+     * the matrix is square type.
+     *
+     * <p>From <a href="https://en.wikipedia.org/wiki/Minor_(linear_algebra)">
+     * <q>Minor (linear algebra), Wikipedia</q></a>:
+     *
+     * <blockquote>
+     * <p>In linear algebra, a <b>minor</b> of a matrix is the determinant of some
+     * smaller square matrix, by removing one or more of its rows and columns. Minors
+     * obtained by removing just one row and one column from square matrices
+     * (<b>first minors</b>) are required for calculating matrix <b>cofactors</b>,
+     * which in turn are useful for computing both the determinant and inverse of
+     * square matrices.
+     * </blockquote>
+     *
+     * @param  row  The index of the row to be removed (0-based or negative index).
+     * @param  col  The index of the column to be removed (0-based or negative index).
+     * @return      A new matrix representing the minor of this matrix, with the
+     *              specified row and column removed.
+     *
+     * @throws NullMatrixException
+     *           If this matrix is null.
+     * @throws InvalidIndexException
+     *           If either the given {@code row} or {@code col} index is out of bounds.
+     * @throws IllegalMatrixSizeException
+     *           If this matrix is not square.
+     *
+     * @since 1.5.0
+     * @see   #minorMatrix(Matrix, int, int)
+     * @see   #dropRow(int)
+     * @see   #dropColumn(int)
+     * @see   #isSquare()
+     */
+    public Matrix minorMatrix(int row, int col) {
+        return Matrix.minorMatrix(this, row, col);
+    }
+
+    /**
+     * Calculates and returns a new matrix representing the <b>minor</b> of the
+     * given matrix.
+     *
+     * <p>The minor of a matrix is a submatrix formed by deleting a single row and a
+     * single column from the original matrix. It plays a crucial role in various
+     * linear algebra operations, including determinant calculations, matrix inversion,
+     * and cofactor expansion.
+     *
+     * <p>This method supports <b>negative indexing</b> for both row and column
+     * indices. A negative index is interpreted as an offset from the end of the
+     * respective dimension.
+     *
+     * <p><b>Example:</b></p>
+     * <pre><code class="language-java">&nbsp;
+     *   Matrix m = // ... initialize a new matrix
+     *   // Remove the last row and last column
+     *   Matrix minorM = m.minorMatrix(-1, -1);
+     * </code></pre>
+     *
+     * <p><b>Note:</b>
+     * <p>This method only works for <b>square matrices</b>. If the input matrix
+     * is not square, an {@link IllegalMatrixSizeException} will be thrown.
+     * <p>From <a href="https://en.wikipedia.org/wiki/Minor_(linear_algebra)">
+     * <q>Minor (linear algebra), Wikipedia</q></a>:
+     *
+     * <blockquote>
+     * <p>In linear algebra, a <b>minor</b> of a matrix is the determinant of some
+     * smaller square matrix, by removing one or more of its rows and columns. Minors
+     * obtained by removing just one row and one column from square matrices
+     * (<b>first minors</b>) are required for calculating matrix <b>cofactors</b>,
+     * which in turn are useful for computing both the determinant and inverse of
+     * square matrices.
+     * </blockquote>
+     *
+     * @param  m    The matrix to compute the minor of.
+     * @param  row  The index of the row to be removed (0-based or negative index).
+     * @param  col  The index of the column to be removed (0-based or negative index).
+     * @return      A new matrix representing the minor of this matrix, with the
+     *              specified row and column removed.
+     *
+     * @throws NullMatrixException
+     *           If the given matrix is null.
+     * @throws InvalidIndexException
+     *           If either the given {@code row} or {@code col} index is out of bounds.
+     * @throws IllegalMatrixSizeException
+     *           If the given matrix is not square.
+     *
+     * @since 1.5.0
+     * @see   #minorMatrix(int, int)
+     * @see   #dropRow(Matrix, int)
+     * @see   #dropColumn(Matrix, int)
+     * @see   #isSquare()
+     */
+    public static Matrix minorMatrix(Matrix m, int row, int col) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized"));
+        }
+
+        if (!m.isSquare()) {
+            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+                "Matrix is not square. Please ensure the matrix have the same rows"
+                    + " and columns size"
+            ));
+        }
+
+        // This method are utilizes both `dropRow` and `dropColumn` methods to
+        // remove and exclude the specified row and column index, and then returns
+        // a new matrix with specified row and column removed,
+        // also known as minor matrix.
+        return m.dropRow(row).dropColumn(col);
+    }
+
+
     /*=========================================
     ::
     ::  MATRIX TYPE CHECKERS
@@ -3063,10 +4034,13 @@ public class Matrix implements MatrixUtils {
      *                                or larger than number of matrix rows.
      * @throws NullMatrixException    if entries of this matrix is {@code null}.
      *
-     * @since                         0.2.0
+     * @since                         0.2.0, 1.5.0
      * @see                           #change(double ...)
      * @see                           #change(double)
+     * @deprecated                    As of the deprecation of {@link #change} methods,
+     *                                this method is no longer in use and no longer recommended.
      */
+    @Deprecated
     public Matrix select(final int index) {
         // Check for matrix with null entries
         if (this.ENTRIES == null) {
@@ -3136,10 +4110,17 @@ public class Matrix implements MatrixUtils {
      *                                   but have not called {@link #select(int) select} method
      *                                   or the selected index is a negative value.
      *
-     * @since                            0.2.0
+     * @since                            0.2.0, 1.5.0
      * @see                              #select(int)
      * @see                              #change(double)
+     * @deprecated                       Due to having an inefficient way to change entries in a
+     *                                   specific row of the matrix. Please transition to using
+     *                                   the {@link #insertRow(int, double[]) insertRow}
+     *                                   method for improved performance and functionality.
+     *                                   If want to update and change specific column of the matrix,
+     *                                   you can utilize the {@link #insertColumn(int, double[]) insertColumn} method.
      */
+    @Deprecated
     public void change(double ... values) {
         // Check whether the values size is greater than number of columns of this matrix
         if (values.length > this.COLS) {
@@ -3207,10 +4188,17 @@ public class Matrix implements MatrixUtils {
      *                                but have not called {@link #select(int) select} method
      *                                or the selected index is a negative value.
      *
-     * @since                         0.2.0
+     * @since                         0.2.0, 1.5.0
      * @see                           #select(int)
      * @see                           #change(double ...)
+     * @deprecated                    Due to having an inefficient way to change entries in a
+     *                                specific row of the matrix. Please transition to using
+     *                                the {@link #insertRow(int, double[]) insertRow}
+     *                                method for improved performance and functionality.
+     *                                If want to update and change specific column of the matrix,
+     *                                you can utilize the {@link #insertColumn(int, double[]) insertColumn} method.
      */
+    @Deprecated
     public void change(double value) {
         // Check if the user have not select any index row
         // If user have not then it will immediately raise the exception
