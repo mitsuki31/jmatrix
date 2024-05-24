@@ -4035,10 +4035,13 @@ public class Matrix implements MatrixUtils {
      *                                or larger than number of matrix rows.
      * @throws NullMatrixException    if entries of this matrix is {@code null}.
      *
-     * @since                         0.2.0
+     * @since                         0.2.0, 1.5.0
      * @see                           #change(double ...)
      * @see                           #change(double)
+     * @deprecated                    As of the deprecation of {@link #change} methods,
+     *                                this method is no longer in use and no longer recommended.
      */
+    @Deprecated
     public Matrix select(final int index) {
         // Check for matrix with null entries
         if (this.ENTRIES == null) {
@@ -4108,10 +4111,17 @@ public class Matrix implements MatrixUtils {
      *                                   but have not called {@link #select(int) select} method
      *                                   or the selected index is a negative value.
      *
-     * @since                            0.2.0
+     * @since                            0.2.0, 1.5.0
      * @see                              #select(int)
      * @see                              #change(double)
+     * @deprecated                       Due to having an inefficient way to change entries in a
+     *                                   specific row of the matrix. Please transition to using
+     *                                   the {@link #insertRow(int, double[]) insertRow}
+     *                                   method for improved performance and functionality.
+     *                                   If want to update and change specific column of the matrix,
+     *                                   you can utilize the {@link #insertColumn(int, double[]) insertColumn} method.
      */
+    @Deprecated
     public void change(double ... values) {
         // Check whether the values size is greater than number of columns of this matrix
         if (values.length > this.COLS) {
@@ -4179,10 +4189,17 @@ public class Matrix implements MatrixUtils {
      *                                but have not called {@link #select(int) select} method
      *                                or the selected index is a negative value.
      *
-     * @since                         0.2.0
+     * @since                         0.2.0, 1.5.0
      * @see                           #select(int)
      * @see                           #change(double ...)
+     * @deprecated                    Due to having an inefficient way to change entries in a
+     *                                specific row of the matrix. Please transition to using
+     *                                the {@link #insertRow(int, double[]) insertRow}
+     *                                method for improved performance and functionality.
+     *                                If want to update and change specific column of the matrix,
+     *                                you can utilize the {@link #insertColumn(int, double[]) insertColumn} method.
      */
+    @Deprecated
     public void change(double value) {
         // Check if the user have not select any index row
         // If user have not then it will immediately raise the exception
