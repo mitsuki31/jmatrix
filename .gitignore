@@ -54,3 +54,7 @@ target/
 **/ENV/
 **/env.bak/
 **/venv.bak/
+
+# Documentation output
+docs/
+!docs/make/
