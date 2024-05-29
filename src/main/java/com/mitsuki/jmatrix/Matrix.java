@@ -1395,6 +1395,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since  1.5.0
      * @see    #swapRows(Matrix, int, int)
+     * @see    #swapColumns(int, int)
      */
     public Matrix swapRows(int row1, int row2) {
         return Matrix.swapRows(this, row1, row2);
@@ -1425,6 +1426,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since  1.5.0
      * @see    #swapRows(int, int)
+     * @see    #swapColumns(Matrix, int, int)
      */
     public static Matrix swapRows(Matrix m, int row1, int row2) {
         if (MatrixUtils.isNullEntries(m)) {
@@ -1468,6 +1470,101 @@ public class Matrix implements MatrixUtils {
                          Math.min(temp.length, entries[row2].length));           // Copy the copy of `row1` to `row2`
         return new Matrix(entries);  // Return a new Matrix with the rows swapped
     }
+
+
+    /**
+     * Swaps the specified columns in this matrix.
+     *
+     * <p>This method swaps the columns specified by the indices {@code col1} and {@code col2} in this matrix.
+     * The indices are zero-based and can be negative, where negative indices represent counting from the end of the columns.
+     *
+     * <p>If either {@code col1} or {@code col2} is out of range, an {@link InvalidIndexException} will be thrown.
+     *
+     * <p>The method modifies the entries of the matrix without any modification to the original matrix.
+     * It swaps the elements of columns {@code col1} and {@code col2} directly without using a temporary variable,
+     * relying on arithmetic operations to perform the swap.
+     *
+     * @param  col1  The index of the first column to swap (accept negative indexing).
+     * @param  col2  The index of the second column to swap (accept negative indexing).
+     *
+     * @return       A new {@link Matrix} object with the specified columns swapped.
+     *
+     * @throws InvalidIndexException  If either {@code col1} or {@code col2} is out of range.
+     *
+     * @since  1.5.0
+     * @see    #swapColumns(Matrix, int, int)
+     * @see    #swapRows(int, int)
+     */
+    public Matrix swapColumns(int col1, int col2) {
+        return Matrix.swapColumns(this, col1, col2);
+    }
+
+    /**
+     * Swaps the specified columns in the given matrix.
+     *
+     * <p>This method swaps the columns specified by the indices {@code col1} and {@code col2} in the provided matrix.
+     * The indices are zero-based and can be negative, where negative indices represent counting from the end of the columns.
+     *
+     * <p>If either {@code m} is {@code null}, or its entries are {@code null}, a {@link NullMatrixException} will be thrown.
+     * If either {@code col1} or {@code col2} is out of range, an {@link InvalidIndexException} will be thrown.
+     *
+     * <p>The method modifies the entries of the matrix without any modification to the original matrix.
+     * It swaps the elements of columns {@code col1} and {@code col2} directly without using a temporary variable,
+     * relying on arithmetic operations to perform the swap.
+     *
+     * @param  m     The {@link Matrix} whose columns are to be swapped.
+     * @param  col1  The index of the first column to be swapped.
+     * @param  col2  The index of the second column to be swapped.
+     *
+     * @return       A new {@link Matrix} object with the specified columns swapped.
+     *
+     * @throws NullMatrixException    If the provided matrix or its entries are {@code null}.
+     * @throws InvalidIndexException  If either {@code col1} or {@code col2} is out of range.
+     *
+     * @since  1.5.0
+     * @see    #swapColumns(int, int)
+     * @see    #swapRows(Matrix, int, int)
+     */
+    public static Matrix swapColumns(Matrix m, int col1, int col2) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized."));
+        }
+
+        double[][] entries = m.getEntries();
+
+        // Allow negative indexing
+        col1 += (col1 < 0) ? entries[0].length : 0;
+        col2 += (col2 < 0) ? entries[0].length : 0;
+
+        if (col1 >= entries.length || col1 < 0) {
+            cause = new InvalidIndexException(
+                String.format("Given column index #1 is out of range: %d",
+                    (col1 < 0) ? (col1 - entries[col1].length) : col1
+                )
+            );
+        } else if (col2 >= entries.length || col2 < 0) {
+            cause = new InvalidIndexException(
+                String.format("Given column index #2 is out of range: %d",
+                    (col2 < 0) ? (col2 - entries[col2].length) : col2
+                )
+            );
+        }
+
+        // Raise the error, if any
+        if (cause != null) JMatrixUtils.raiseError(cause);
+
+        for (int i = 0; i < entries.length; i++) {
+            // Swap the elements of columns `col1` and `col2` directly without using
+            // a temporary variable, but it relies on arithmetic operations to perform the swap.
+            entries[i][col1] = entries[i][col1] + entries[i][col2];
+            entries[i][col2] = entries[i][col1] - entries[i][col2];
+            entries[i][col1] = entries[i][col1] - entries[i][col2];
+        }
+
+        return new Matrix(entries);  // Return a new Matrix with columns swapped
+    }
+
 
     /**
      * Fills the column with specified array.
