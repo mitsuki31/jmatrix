@@ -1374,6 +1374,102 @@ public class Matrix implements MatrixUtils {
 
 
     /**
+     * Swaps the specified rows in this matrix.
+     *
+     * <p>This method swaps the rows specified by the indices {@code row1} and {@code row2}
+     * in this matrix. The indices are zero-based and can be negative, where negative indices
+     * represent counting from the end of the rows.
+     *
+     * <p>This method is used to efficiently swap two rows of a matrix. It utilizes the
+     * {@link System#arraycopy} method to perform the row swaps, which offers better performance
+     * compared to using a <i>for-loop</i> or other methods such as {@link java.util.Arrays#copyOf}.
+     *
+     * <p>If either {@code row1} or {@code row2} is out of range, an {@link InvalidIndexException} will be thrown.
+     *
+     * @param  row1  The index of the first row to swap (accept negative indexing).
+     * @param  row2  The index of the second row to swap (accept negative indexing).
+     *
+     * @return       A new {@link Matrix} object with the specified rows swapped.
+     *
+     * @throws InvalidIndexException  If either {@code row1} or {@code row2} index is out of range.
+     *
+     * @since  1.5.0
+     * @see    #swapRows(Matrix, int, int)
+     */
+    public Matrix swapRows(int row1, int row2) {
+        return Matrix.swapRows(this, row1, row2);
+    }
+
+    /**
+     * Swaps the specified rows in the given matrix.
+     *
+     * <p>This method swaps the rows specified by the indices {@code row1} and {@code row2}
+     * in the provided matrix. The indices are zero-based and can be negative, where negative
+     * indices represent counting from the end of the rows.
+     *
+     * <p>This method is used to efficiently swap two rows of a matrix. It utilizes the
+     * {@link System#arraycopy} method to perform the row swaps, which offers better performance
+     * compared to using a <i>for-loop</i> or other methods such as {@link java.util.Arrays#copyOf}.
+     *
+     * <p>If either {@code m} is {@code null}, or its entries are {@code null}, a {@link NullMatrixException} will be thrown.
+     * If either {@code row1} or {@code row2} is out of range, an {@link InvalidIndexException} will be thrown.
+     *
+     * @param  m     The {@link Matrix} whose rows are to be swapped.
+     * @param  row1  The index of the first row to swap (accept negative indexing).
+     * @param  row2  The index of the second row to swap (accept negative indexing).
+     *
+     * @return       A new {@link Matrix} object with the specified rows swapped.
+     *
+     * @throws NullMatrixException    If the given matrix is a null matrix.
+     * @throws InvalidIndexException  If either {@code row1} or {@code row2} index is out of range.
+     *
+     * @since  1.5.0
+     * @see    #swapRows(int, int)
+     */
+    public static Matrix swapRows(Matrix m, int row1, int row2) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized."));
+        }
+
+        double[][] entries = m.getEntries();
+        double[] temp = new double[entries[row1].length];
+
+        // Allow negative indexing
+        row1 += (row1 < 0) ? entries.length : 0;
+        row2 += (row2 < 0) ? entries.length : 0;
+
+        if (row1 >= entries.length || row1 < 0) {
+            cause = new InvalidIndexException(
+                String.format("Given row index #1 is out of range: %d",
+                    (row1 < 0) ? (row1 - entries.length) : row1
+                )
+            );
+        } else if (row2 >= entries.length || row2 < 0) {
+            cause = new InvalidIndexException(
+                String.format("Given row index #2 is out of range: %d",
+                    (row2 < 0) ? (row2 - entries.length) : row2
+                )
+            );
+        }
+
+        // Raise the error, if any
+        if (cause != null) JMatrixUtils.raiseError(cause);
+
+        // We prefer use the `System.arraycopy` method instead of `Arrays.copyOf` or
+        // use a very slow method, *for-loop*. It because the `System.arraycopy` offers
+        // better performance and speed when compared to those methods, and also
+        // it is a native call which does copy operation directly at memory.
+        System.arraycopy(entries[row1], 0, temp, 0,
+                         Math.min(entries[row1].length, temp.length));
+        System.arraycopy(entries[row2], 0, entries[row1], 0,
+                         Math.min(entries[row2].length, entries[row1].length));  // Copy `row2` to `row1`
+        System.arraycopy(temp, 0, entries[row2], 0,
+                         Math.min(temp.length, entries[row2].length));           // Copy the copy of `row1` to `row2`
+        return new Matrix(entries);  // Return a new Matrix with the rows swapped
+    }
+
+    /**
      * Fills the column with specified array.
      *
      * <p>It can be an array or insert the values one by one.
