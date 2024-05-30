@@ -2,7 +2,8 @@
 /* --   MATRIX BUILDER    -- */
 // :: ------------------- :: //
 
-/* Copyright (c) 2023 Ryuu Mitsuki
+/*
+ * Copyright (c) 2023-2024 Ryuu Mitsuki
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
 
 /**
  * The <b>Matrix</b> class represents a two-dimensional (2D) array of {@code double}s.
- * An array with two dimensions (has a rows and columns), also can be called a matrix.
+ * An array with two dimensions (has rows and columns), also can be called a matrix.
  *
  * <p>It provides methods for creating, accessing and manipulating matrices,
  * as well as basic matrix operations such as:
@@ -51,9 +52,9 @@ import java.util.stream.Collectors;
  * <ul>
  * <li> {@link #isSquare()}
  * <li> {@link #isDiagonal()}
- * <li> {@link isLowerTriangular()}
- * <li> {@link isUpperTriangular()}
- * <li> {@link isSparse()}
+ * <li> {@link #isLowerTriangular()}
+ * <li> {@link #isUpperTriangular()}
+ * <li> {@link #isSparse()}
  * </ul>
  *
  * <p><b>Example:</b></p>
@@ -1009,7 +1010,7 @@ public class Matrix implements MatrixUtils {
      *   [   [15.0, 16.0, 17.0]   ]
      * </pre>
      *
-     * <p><b>Implementation Note:</b></p>
+     * @implNote
      * <p>This method achieves its purpose efficiently by leveraging the
      * {@link #insertRow} method and matrix transpositions, as follows:
      *
@@ -1091,7 +1092,7 @@ public class Matrix implements MatrixUtils {
      *   [   [15.0, 16.0, 17.0]   ]
      * </pre>
      *
-     * <p><b>Implementation Note:</b></p>
+     * @implNote
      * <p>This method achieves its purpose efficiently by leveraging the
      * {@link #insertRow} method and matrix transpositions, as follows:
      *
@@ -1227,7 +1228,7 @@ public class Matrix implements MatrixUtils {
      *              Negative values count from the end of the matrix.
      * @return      A new matrix with the specified row removed.
      *
-     * @throws NullMatrixException    If the given matrix is null.
+     * @throws NullMatrixException    If the given matrix is {@code null}.
      * @throws InvalidIndexException  If the provided row index is out of bounds.
      *
      * @since 1.5.0
@@ -1295,7 +1296,7 @@ public class Matrix implements MatrixUtils {
      *              Negative values count from the end of the matrix.
      * @return      A new matrix with the specified column removed.
      *
-     * @throws NullMatrixException    If the given matrix is null.
+     * @throws NullMatrixException    If the given matrix is {@code null}.
      * @throws InvalidIndexException  If the provided column index is out of bounds.
      *
      * @since 1.5.0
@@ -1335,7 +1336,7 @@ public class Matrix implements MatrixUtils {
      *              Negative values count from the end of the matrix.
      * @return      A new matrix with the specified column removed.
      *
-     * @throws NullMatrixException    If the given matrix is null.
+     * @throws NullMatrixException    If the given matrix is {@code null}.
      * @throws InvalidIndexException  If the provided column index is out of bounds.
      *
      * @since 1.5.0
@@ -1421,7 +1422,7 @@ public class Matrix implements MatrixUtils {
      *
      * @return       A new {@link Matrix} object with the specified rows swapped.
      *
-     * @throws NullMatrixException    If the given matrix is a null matrix.
+     * @throws NullMatrixException    If the provided matrix or its entries are {@code null}.
      * @throws InvalidIndexException  If either {@code row1} or {@code row2} index is out of range.
      *
      * @since  1.5.0
@@ -1478,11 +1479,11 @@ public class Matrix implements MatrixUtils {
      * <p>This method swaps the columns specified by the indices {@code col1} and {@code col2} in this matrix.
      * The indices are zero-based and can be negative, where negative indices represent counting from the end of the columns.
      *
-     * <p>If either {@code col1} or {@code col2} is out of range, an {@link InvalidIndexException} will be thrown.
-     *
      * <p>The method modifies the entries of the matrix without any modification to the original matrix.
      * It swaps the elements of columns {@code col1} and {@code col2} directly without using a temporary variable,
-     * relying on arithmetic operations to perform the swap.
+     * relying on arithmetic operations to perform the swap with a single loop.
+     *
+     * <p>If either {@code col1} or {@code col2} is out of range, an {@link InvalidIndexException} will be thrown.
      *
      * @param  col1  The index of the first column to swap (accept negative indexing).
      * @param  col2  The index of the second column to swap (accept negative indexing).
@@ -1505,12 +1506,12 @@ public class Matrix implements MatrixUtils {
      * <p>This method swaps the columns specified by the indices {@code col1} and {@code col2} in the provided matrix.
      * The indices are zero-based and can be negative, where negative indices represent counting from the end of the columns.
      *
-     * <p>If either {@code m} is {@code null}, or its entries are {@code null}, a {@link NullMatrixException} will be thrown.
-     * If either {@code col1} or {@code col2} is out of range, an {@link InvalidIndexException} will be thrown.
-     *
      * <p>The method modifies the entries of the matrix without any modification to the original matrix.
      * It swaps the elements of columns {@code col1} and {@code col2} directly without using a temporary variable,
-     * relying on arithmetic operations to perform the swap.
+     * relying on arithmetic operations to perform the swap with a single loop.
+     *
+     * <p>If either {@code m} is {@code null}, or its entries are {@code null}, a {@link NullMatrixException} will be thrown.
+     * If either {@code col1} or {@code col2} is out of range, an {@link InvalidIndexException} will be thrown.
      *
      * @param  m     The {@link Matrix} whose columns are to be swapped.
      * @param  col1  The index of the first column to be swapped.
@@ -2915,8 +2916,7 @@ public class Matrix implements MatrixUtils {
      *       [8.0, 2.0]   ]
      * </pre>
      *
-     * <p><b>Note:</b></p>
-     *
+     * @apiNote
      * <p>Repeating the process on the transposed matrix returns
      * the elements to their original position. Also can be written
      * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
@@ -2948,8 +2948,7 @@ public class Matrix implements MatrixUtils {
      * indices of the array. Which means the array size would be switched
      * (for example, {@code 2x4 -> 4x2}).
      *
-     * <p><b>Note:</b></p>
-     *
+     * @apiNote
      * <p>Repeating the process on the transposed two-dimensional array returns
      * the elements to their original position. Also can be written
      * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
@@ -3018,8 +3017,7 @@ public class Matrix implements MatrixUtils {
      *       [8.0, 2.0]   ]
      * </pre>
      *
-     * <p><b>Note:</b></p>
-     *
+     * @apiNote
      * <p>Repeating the process on the transposed matrix returns
      * the elements to their original position. Also can be written
      * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
@@ -3247,7 +3245,7 @@ public class Matrix implements MatrixUtils {
      *   Matrix minorM = m.minorMatrix(-1, -1);
      * </code></pre>
      *
-     * <p><b>Note:</b>
+     * @apiNote
      * <p>This method only works for <b>square matrices</b>. If the input matrix
      * is not square, an {@link IllegalMatrixSizeException} will be thrown.
      * Users can use the {@link #isSquare()} helper method to check whether
@@ -3307,9 +3305,10 @@ public class Matrix implements MatrixUtils {
      *   Matrix minorM = m.minorMatrix(-1, -1);
      * </code></pre>
      *
-     * <p><b>Note:</b>
+     * @apiNote
      * <p>This method only works for <b>square matrices</b>. If the input matrix
      * is not square, an {@link IllegalMatrixSizeException} will be thrown.
+     *
      * <p>From <a href="https://en.wikipedia.org/wiki/Minor_(linear_algebra)">
      * <q>Minor (linear algebra), Wikipedia</q></a>:
      *
@@ -3555,7 +3554,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if this matrix is lower triangular.
+     * Checks whether this matrix is lower triangular.
      *
      * <p>A square matrix is considered lower triangular if all the elements above
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3600,7 +3599,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if the given square matrix is lower triangular.
+     * Checks whether the given square matrix is lower triangular.
      *
      * <p>A square matrix is considered lower triangular if all the elements above
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3669,7 +3668,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if the given square two-dimensional array is lower triangular.
+     * Checks whether the given square two-dimensional array is lower triangular.
      *
      * <p>A square matrix is considered lower triangular if all the elements above
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3744,7 +3743,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if this matrix is upper triangular.
+     * Checks whether this matrix is upper triangular.
      *
      * <p>A square matrix is considered upper triangular if all the elements below
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3789,7 +3788,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if the given square matrix is upper triangular.
+     * Checks whether the given square matrix is upper triangular.
      *
      * <p>A square matrix is considered upper triangular if all the elements below
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3858,7 +3857,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if the given square two-dimensional array is upper triangular.
+     * Checks whether the given square two-dimensional array is upper triangular.
      *
      * <p>A square matrix is considered upper triangular if all the elements below
      * the main diagonal (elements with row index greater than column index) are zero
@@ -4845,7 +4844,7 @@ public class Matrix implements MatrixUtils {
      * has uninitialized ({@code null}) entries, use the
      * {@link MatrixUtils#isNullEntries(Matrix)} helper method.
      *
-     * <p><b>Implementation Note:</b></p>
+     * @implNote
      * <p>As of version 1.5.0, this method would returns a deep copy of the internal
      * matrix entries instead of returning the object reference of the entries itself
      * (see <a href="https://github.com/mitsuki31/jmatrix/issues/103">#103</a>),
@@ -4877,7 +4876,7 @@ public class Matrix implements MatrixUtils {
      * elements but can still access and modify each elements, consider to use the
      * {@link #getEntries()} method instead.
      *
-     * <p><b>Implementation Note:</b></p>
+     * @implNote
      * <p>The method leverages the {@code Arrays.stream} API introduced in Java 8.
      * This allows for concise and efficient conversion of primitive {@code double}
      * arrays to {@code Double} objects and subsequent creation of unmodifiable
