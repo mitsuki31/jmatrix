@@ -2,7 +2,8 @@
 /* --   MATRIX BUILDER    -- */
 // :: ------------------- :: //
 
-/* Copyright (c) 2023 Ryuu Mitsuki
+/*
+ * Copyright (c) 2023-2024 Ryuu Mitsuki
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +35,16 @@ import java.util.stream.Collectors;
 
 /**
  * The <b>Matrix</b> class represents a two-dimensional (2D) array of {@code double}s.
- * An array with two dimensions (has a rows and columns), also can be called a matrix.
+ * An array with two dimensions (has rows and columns), also can be called a matrix.
  *
- * <p>It provides methods for creating, accessing and manipulating matrices,
+ * <p><b>In mathematics, a matrix is a rectangular array or table of numbers, arranged in rows and columns,
+ * and enclosed by brackets {@code ( )} or square brackets {@code [ ]}, which is used to represent a
+ * mathematical object or a property of such an object</b>. Numbers arranged in a matrix are called matrix's
+ * <b>elements</b> or <b>entries</b>. Matrices are usually symbolized using upper-case letters, while the corresponding
+ * lower-case letters, with two subscript indices. Matrices are widely used in various fields, including
+ * mathematics, computer science, physics, and engineering, to represent and manipulate data.
+ *
+ * <p>This class provides methods for creating, accessing and manipulating matrices,
  * as well as basic matrix operations such as:
  * <ul>
  * <li> {@linkplain #sum(Matrix)    Addition}
@@ -47,14 +55,30 @@ import java.util.stream.Collectors;
  * <li> {@linkplain #trace()        Trace}
  * </ul>
  *
- * <p>This also provides several matrix type checkers, such as:
+ * <p>Also it provides several matrix type checkers, such as:
  * <ul>
- * <li> {@link #isSquare()}
- * <li> {@link #isDiagonal()}
- * <li> {@link isLowerTriangular()}
- * <li> {@link isUpperTriangular()}
- * <li> {@link isSparse()}
+ * <li> {@link #isSquare()} - Checks whether the matrix is a square matrix.
+ * <li> {@link #isDiagonal()} - Checks whether the matrix is a diagonal matrix.
+ * <li> {@link #isLowerTriangular()} - Checks whether the matrix is a lower triangular matrix.
+ * <li> {@link #isUpperTriangular()} - Checks whether the matrix is a upper triangular matrix.
+ * <li> {@link #isSparse()} - Checks whether the matrix is a sparse matrix.
  * </ul>
+ *
+ * <p>Moreover, there are also some helper methods, such as:
+ * <ul>
+ * <li> {@link #addRow(double[])} - Appends a given array to the last row in the matrix.
+ * <li> {@link #addColumn(double[])} - Appends a given array to the last column in the matrix.
+ * <li> {@link #insertRow(int, double[])} - Inserts a given array at the specified row index in the matrix.
+ * <li> {@link #insertColumn(int, double[])} - Inserts a given array at the specified column index in the matrix.
+ * <li> {@link #dropRow(int)} - Drops and removes specific row at the given row index.
+ * <li> {@link #dropColumn(int)} - Drops and removes specific column at the given column index.
+ * </ul>
+ *
+ * <blockquote>
+ * <p><b>Note:</b> All the above helper methods are implemented in such a way that they help in transforming the
+ * matrix entries efficiently. Additionally, they also allow the use of negative indices in arguments that depend
+ * on the matrix index (all of them, except {@link #addRow} and {@link #addColumn} methods).
+ * </blockquote>
  *
  * <p><b>Example:</b></p>
  *
@@ -92,7 +116,7 @@ import java.util.stream.Collectors;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  3.0, 8 February 2024
+ * @version  3.2, 30 May 2024
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -1009,7 +1033,7 @@ public class Matrix implements MatrixUtils {
      *   [   [15.0, 16.0, 17.0]   ]
      * </pre>
      *
-     * <p><b>Implementation Note:</b></p>
+     * @implNote
      * <p>This method achieves its purpose efficiently by leveraging the
      * {@link #insertRow} method and matrix transpositions, as follows:
      *
@@ -1091,7 +1115,7 @@ public class Matrix implements MatrixUtils {
      *   [   [15.0, 16.0, 17.0]   ]
      * </pre>
      *
-     * <p><b>Implementation Note:</b></p>
+     * @implNote
      * <p>This method achieves its purpose efficiently by leveraging the
      * {@link #insertRow} method and matrix transpositions, as follows:
      *
@@ -1227,7 +1251,7 @@ public class Matrix implements MatrixUtils {
      *              Negative values count from the end of the matrix.
      * @return      A new matrix with the specified row removed.
      *
-     * @throws NullMatrixException    If the given matrix is null.
+     * @throws NullMatrixException    If the given matrix is {@code null}.
      * @throws InvalidIndexException  If the provided row index is out of bounds.
      *
      * @since 1.5.0
@@ -1295,7 +1319,7 @@ public class Matrix implements MatrixUtils {
      *              Negative values count from the end of the matrix.
      * @return      A new matrix with the specified column removed.
      *
-     * @throws NullMatrixException    If the given matrix is null.
+     * @throws NullMatrixException    If the given matrix is {@code null}.
      * @throws InvalidIndexException  If the provided column index is out of bounds.
      *
      * @since 1.5.0
@@ -1335,7 +1359,7 @@ public class Matrix implements MatrixUtils {
      *              Negative values count from the end of the matrix.
      * @return      A new matrix with the specified column removed.
      *
-     * @throws NullMatrixException    If the given matrix is null.
+     * @throws NullMatrixException    If the given matrix is {@code null}.
      * @throws InvalidIndexException  If the provided column index is out of bounds.
      *
      * @since 1.5.0
@@ -1370,6 +1394,199 @@ public class Matrix implements MatrixUtils {
         }
 
         return new Matrix(entries);
+    }
+
+
+    /**
+     * Swaps the specified rows in this matrix.
+     *
+     * <p>This method swaps the rows specified by the indices {@code row1} and {@code row2}
+     * in this matrix. The indices are zero-based and can be negative, where negative indices
+     * represent counting from the end of the rows.
+     *
+     * <p>This method is used to efficiently swap two rows of a matrix. It utilizes the
+     * {@link System#arraycopy} method to perform the row swaps, which offers better performance
+     * compared to using a <i>for-loop</i> or other methods such as {@link java.util.Arrays#copyOf}.
+     *
+     * <p>If either {@code row1} or {@code row2} is out of range, an {@link InvalidIndexException} will be thrown.
+     *
+     * @param  row1  The index of the first row to swap (accept negative indexing).
+     * @param  row2  The index of the second row to swap (accept negative indexing).
+     *
+     * @return       A new {@link Matrix} object with the specified rows swapped.
+     *
+     * @throws InvalidIndexException  If either {@code row1} or {@code row2} index is out of range.
+     *
+     * @since  1.5.0
+     * @see    #swapRows(Matrix, int, int)
+     * @see    #swapColumns(int, int)
+     */
+    public Matrix swapRows(int row1, int row2) {
+        return Matrix.swapRows(this, row1, row2);
+    }
+
+    /**
+     * Swaps the specified rows in the given matrix.
+     *
+     * <p>This method swaps the rows specified by the indices {@code row1} and {@code row2}
+     * in the provided matrix. The indices are zero-based and can be negative, where negative
+     * indices represent counting from the end of the rows.
+     *
+     * <p>This method is used to efficiently swap two rows of a matrix. It utilizes the
+     * {@link System#arraycopy} method to perform the row swaps, which offers better performance
+     * compared to using a <i>for-loop</i> or other methods such as {@link java.util.Arrays#copyOf}.
+     *
+     * <p>If either {@code m} is {@code null}, or its entries are {@code null}, a {@link NullMatrixException} will be thrown.
+     * If either {@code row1} or {@code row2} is out of range, an {@link InvalidIndexException} will be thrown.
+     *
+     * @param  m     The {@link Matrix} whose rows are to be swapped.
+     * @param  row1  The index of the first row to swap (accept negative indexing).
+     * @param  row2  The index of the second row to swap (accept negative indexing).
+     *
+     * @return       A new {@link Matrix} object with the specified rows swapped.
+     *
+     * @throws NullMatrixException    If the provided matrix or its entries are {@code null}.
+     * @throws InvalidIndexException  If either {@code row1} or {@code row2} index is out of range.
+     *
+     * @since  1.5.0
+     * @see    #swapRows(int, int)
+     * @see    #swapColumns(Matrix, int, int)
+     */
+    public static Matrix swapRows(Matrix m, int row1, int row2) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized."));
+        }
+
+        double[][] entries = m.getEntries();
+        double[] temp = new double[entries[row1].length];
+
+        // Allow negative indexing
+        row1 += (row1 < 0) ? entries.length : 0;
+        row2 += (row2 < 0) ? entries.length : 0;
+
+        if (row1 >= entries.length || row1 < 0) {
+            cause = new InvalidIndexException(
+                String.format("Given row index #1 is out of range: %d",
+                    (row1 < 0) ? (row1 - entries.length) : row1
+                )
+            );
+        } else if (row2 >= entries.length || row2 < 0) {
+            cause = new InvalidIndexException(
+                String.format("Given row index #2 is out of range: %d",
+                    (row2 < 0) ? (row2 - entries.length) : row2
+                )
+            );
+        }
+
+        // Raise the error, if any
+        if (cause != null) JMatrixUtils.raiseError(cause);
+
+        // We prefer use the `System.arraycopy` method instead of `Arrays.copyOf` or
+        // use a very slow method, *for-loop*. It because the `System.arraycopy` offers
+        // better performance and speed when compared to those methods, and also
+        // it is a native call which does copy operation directly at memory.
+        System.arraycopy(entries[row1], 0, temp, 0,
+                         Math.min(entries[row1].length, temp.length));
+        System.arraycopy(entries[row2], 0, entries[row1], 0,
+                         Math.min(entries[row2].length, entries[row1].length));  // Copy `row2` to `row1`
+        System.arraycopy(temp, 0, entries[row2], 0,
+                         Math.min(temp.length, entries[row2].length));           // Copy the copy of `row1` to `row2`
+        return new Matrix(entries);  // Return a new Matrix with the rows swapped
+    }
+
+
+    /**
+     * Swaps the specified columns in this matrix.
+     *
+     * <p>This method swaps the columns specified by the indices {@code col1} and {@code col2} in this matrix.
+     * The indices are zero-based and can be negative, where negative indices represent counting from the end of the columns.
+     *
+     * <p>The method modifies the entries of the matrix without any modification to the original matrix.
+     * It swaps the elements of columns {@code col1} and {@code col2} directly without using a temporary variable,
+     * relying on arithmetic operations to perform the swap with a single loop.
+     *
+     * <p>If either {@code col1} or {@code col2} is out of range, an {@link InvalidIndexException} will be thrown.
+     *
+     * @param  col1  The index of the first column to swap (accept negative indexing).
+     * @param  col2  The index of the second column to swap (accept negative indexing).
+     *
+     * @return       A new {@link Matrix} object with the specified columns swapped.
+     *
+     * @throws InvalidIndexException  If either {@code col1} or {@code col2} is out of range.
+     *
+     * @since  1.5.0
+     * @see    #swapColumns(Matrix, int, int)
+     * @see    #swapRows(int, int)
+     */
+    public Matrix swapColumns(int col1, int col2) {
+        return Matrix.swapColumns(this, col1, col2);
+    }
+
+    /**
+     * Swaps the specified columns in the given matrix.
+     *
+     * <p>This method swaps the columns specified by the indices {@code col1} and {@code col2} in the provided matrix.
+     * The indices are zero-based and can be negative, where negative indices represent counting from the end of the columns.
+     *
+     * <p>The method modifies the entries of the matrix without any modification to the original matrix.
+     * It swaps the elements of columns {@code col1} and {@code col2} directly without using a temporary variable,
+     * relying on arithmetic operations to perform the swap with a single loop.
+     *
+     * <p>If either {@code m} is {@code null}, or its entries are {@code null}, a {@link NullMatrixException} will be thrown.
+     * If either {@code col1} or {@code col2} is out of range, an {@link InvalidIndexException} will be thrown.
+     *
+     * @param  m     The {@link Matrix} whose columns are to be swapped.
+     * @param  col1  The index of the first column to be swapped.
+     * @param  col2  The index of the second column to be swapped.
+     *
+     * @return       A new {@link Matrix} object with the specified columns swapped.
+     *
+     * @throws NullMatrixException    If the provided matrix or its entries are {@code null}.
+     * @throws InvalidIndexException  If either {@code col1} or {@code col2} is out of range.
+     *
+     * @since  1.5.0
+     * @see    #swapColumns(int, int)
+     * @see    #swapRows(Matrix, int, int)
+     */
+    public static Matrix swapColumns(Matrix m, int col1, int col2) {
+        if (MatrixUtils.isNullEntries(m)) {
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized."));
+        }
+
+        double[][] entries = m.getEntries();
+
+        // Allow negative indexing
+        col1 += (col1 < 0) ? entries[0].length : 0;
+        col2 += (col2 < 0) ? entries[0].length : 0;
+
+        if (col1 >= entries.length || col1 < 0) {
+            cause = new InvalidIndexException(
+                String.format("Given column index #1 is out of range: %d",
+                    (col1 < 0) ? (col1 - entries[col1].length) : col1
+                )
+            );
+        } else if (col2 >= entries.length || col2 < 0) {
+            cause = new InvalidIndexException(
+                String.format("Given column index #2 is out of range: %d",
+                    (col2 < 0) ? (col2 - entries[col2].length) : col2
+                )
+            );
+        }
+
+        // Raise the error, if any
+        if (cause != null) JMatrixUtils.raiseError(cause);
+
+        for (int i = 0; i < entries.length; i++) {
+            // Swap the elements of columns `col1` and `col2` directly without using
+            // a temporary variable, but it relies on arithmetic operations to perform the swap.
+            entries[i][col1] = entries[i][col1] + entries[i][col2];
+            entries[i][col2] = entries[i][col1] - entries[i][col2];
+            entries[i][col1] = entries[i][col1] - entries[i][col2];
+        }
+
+        return new Matrix(entries);  // Return a new Matrix with columns swapped
     }
 
 
@@ -2722,8 +2939,7 @@ public class Matrix implements MatrixUtils {
      *       [8.0, 2.0]   ]
      * </pre>
      *
-     * <p><b>Note:</b></p>
-     *
+     * @apiNote
      * <p>Repeating the process on the transposed matrix returns
      * the elements to their original position. Also can be written
      * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
@@ -2755,8 +2971,7 @@ public class Matrix implements MatrixUtils {
      * indices of the array. Which means the array size would be switched
      * (for example, {@code 2x4 -> 4x2}).
      *
-     * <p><b>Note:</b></p>
-     *
+     * @apiNote
      * <p>Repeating the process on the transposed two-dimensional array returns
      * the elements to their original position. Also can be written
      * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
@@ -2825,8 +3040,7 @@ public class Matrix implements MatrixUtils {
      *       [8.0, 2.0]   ]
      * </pre>
      *
-     * <p><b>Note:</b></p>
-     *
+     * @apiNote
      * <p>Repeating the process on the transposed matrix returns
      * the elements to their original position. Also can be written
      * like this, <code><b>(A</b><sup>T</sup>)<sup>T</sup></code>.
@@ -3054,7 +3268,7 @@ public class Matrix implements MatrixUtils {
      *   Matrix minorM = m.minorMatrix(-1, -1);
      * </code></pre>
      *
-     * <p><b>Note:</b>
+     * @apiNote
      * <p>This method only works for <b>square matrices</b>. If the input matrix
      * is not square, an {@link IllegalMatrixSizeException} will be thrown.
      * Users can use the {@link #isSquare()} helper method to check whether
@@ -3114,9 +3328,10 @@ public class Matrix implements MatrixUtils {
      *   Matrix minorM = m.minorMatrix(-1, -1);
      * </code></pre>
      *
-     * <p><b>Note:</b>
+     * @apiNote
      * <p>This method only works for <b>square matrices</b>. If the input matrix
      * is not square, an {@link IllegalMatrixSizeException} will be thrown.
+     *
      * <p>From <a href="https://en.wikipedia.org/wiki/Minor_(linear_algebra)">
      * <q>Minor (linear algebra), Wikipedia</q></a>:
      *
@@ -3362,7 +3577,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if this matrix is lower triangular.
+     * Checks whether this matrix is lower triangular.
      *
      * <p>A square matrix is considered lower triangular if all the elements above
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3407,7 +3622,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if the given square matrix is lower triangular.
+     * Checks whether the given square matrix is lower triangular.
      *
      * <p>A square matrix is considered lower triangular if all the elements above
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3476,7 +3691,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if the given square two-dimensional array is lower triangular.
+     * Checks whether the given square two-dimensional array is lower triangular.
      *
      * <p>A square matrix is considered lower triangular if all the elements above
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3551,7 +3766,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if this matrix is upper triangular.
+     * Checks whether this matrix is upper triangular.
      *
      * <p>A square matrix is considered upper triangular if all the elements below
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3596,7 +3811,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if the given square matrix is upper triangular.
+     * Checks whether the given square matrix is upper triangular.
      *
      * <p>A square matrix is considered upper triangular if all the elements below
      * the main diagonal (elements with row index greater than column index) are zero
@@ -3665,7 +3880,7 @@ public class Matrix implements MatrixUtils {
 
 
     /**
-     * Checks if the given square two-dimensional array is upper triangular.
+     * Checks whether the given square two-dimensional array is upper triangular.
      *
      * <p>A square matrix is considered upper triangular if all the elements below
      * the main diagonal (elements with row index greater than column index) are zero
@@ -4652,7 +4867,7 @@ public class Matrix implements MatrixUtils {
      * has uninitialized ({@code null}) entries, use the
      * {@link MatrixUtils#isNullEntries(Matrix)} helper method.
      *
-     * <p><b>Implementation Note:</b></p>
+     * @implNote
      * <p>As of version 1.5.0, this method would returns a deep copy of the internal
      * matrix entries instead of returning the object reference of the entries itself
      * (see <a href="https://github.com/mitsuki31/jmatrix/issues/103">#103</a>),
@@ -4684,7 +4899,7 @@ public class Matrix implements MatrixUtils {
      * elements but can still access and modify each elements, consider to use the
      * {@link #getEntries()} method instead.
      *
-     * <p><b>Implementation Note:</b></p>
+     * @implNote
      * <p>The method leverages the {@code Arrays.stream} API introduced in Java 8.
      * This allows for concise and efficient conversion of primitive {@code double}
      * arrays to {@code Double} objects and subsequent creation of unmodifiable

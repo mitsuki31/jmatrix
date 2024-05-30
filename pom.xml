@@ -104,7 +104,6 @@
                     <target>${targetJdk}</target>
                     <testSource>${sourceJdk}</testSource>
                     <testTarget>${targetJdk}</testTarget>
-                    <compilerVersion>${jdkVersion}</compilerVersion>
                     <showDeprecation>true</showDeprecation>
                     <fork>true</fork>
 
@@ -167,7 +166,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.6.3</version>
                 <configuration>
-                    <windowtitle>${project.name} API</windowtitle>
+                    <windowtitle>${project.name} ${project.version} API</windowtitle>
                     <destDir>${paths.docsOutputDir}</destDir>
                     <reportOutputDirectory>${paths.docsOutputDir}</reportOutputDirectory>
                     <show>protected</show>
@@ -213,6 +212,16 @@
                             <!-- All places -->
                             <placement>a</placement>
                             <head>Warning:</head>
+                        </tag>
+                        <tag>
+                            <name>apiNote</name>
+                            <placement>ptcmf</placement>
+                            <head>API Note:</head>
+                        </tag>
+                        <tag>
+                            <name>implNote</name>
+                            <placement>ptcmf</placement>
+                            <head>Implementation Note:</head>
                         </tag>
                         <tag>
                             <name>author</name>
