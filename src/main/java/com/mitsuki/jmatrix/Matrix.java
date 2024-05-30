@@ -37,7 +37,14 @@ import java.util.stream.Collectors;
  * The <b>Matrix</b> class represents a two-dimensional (2D) array of {@code double}s.
  * An array with two dimensions (has rows and columns), also can be called a matrix.
  *
- * <p>It provides methods for creating, accessing and manipulating matrices,
+ * <p><b>In mathematics, a matrix is a rectangular array or table of numbers, arranged in rows and columns,
+ * and enclosed by brackets {@code ( )} or square brackets {@code [ ]}, which is used to represent a
+ * mathematical object or a property of such an object</b>. Numbers arranged in a matrix are called matrix's
+ * <b>elements</b> or <b>entries</b>. Matrices are usually symbolized using upper-case letters, while the corresponding
+ * lower-case letters, with two subscript indices. Matrices are widely used in various fields, including
+ * mathematics, computer science, physics, and engineering, to represent and manipulate data.
+ *
+ * <p>This class provides methods for creating, accessing and manipulating matrices,
  * as well as basic matrix operations such as:
  * <ul>
  * <li> {@linkplain #sum(Matrix)    Addition}
@@ -48,14 +55,30 @@ import java.util.stream.Collectors;
  * <li> {@linkplain #trace()        Trace}
  * </ul>
  *
- * <p>This also provides several matrix type checkers, such as:
+ * <p>Also it provides several matrix type checkers, such as:
  * <ul>
- * <li> {@link #isSquare()}
- * <li> {@link #isDiagonal()}
- * <li> {@link #isLowerTriangular()}
- * <li> {@link #isUpperTriangular()}
- * <li> {@link #isSparse()}
+ * <li> {@link #isSquare()} - Checks whether the matrix is a square matrix.
+ * <li> {@link #isDiagonal()} - Checks whether the matrix is a diagonal matrix.
+ * <li> {@link #isLowerTriangular()} - Checks whether the matrix is a lower triangular matrix.
+ * <li> {@link #isUpperTriangular()} - Checks whether the matrix is a upper triangular matrix.
+ * <li> {@link #isSparse()} - Checks whether the matrix is a sparse matrix.
  * </ul>
+ *
+ * <p>Moreover, there are also some helper methods, such as:
+ * <ul>
+ * <li> {@link #addRow(double[])} - Appends a given array to the last row in the matrix.
+ * <li> {@link #addColumn(double[])} - Appends a given array to the last column in the matrix.
+ * <li> {@link #insertRow(int, double[])} - Inserts a given array at the specified row index in the matrix.
+ * <li> {@link #insertColumn(int, double[])} - Inserts a given array at the specified column index in the matrix.
+ * <li> {@link #dropRow(int)} - Drops and removes specific row at the given row index.
+ * <li> {@link #dropColumn(int)} - Drops and removes specific column at the given column index.
+ * </ul>
+ *
+ * <blockquote>
+ * <p><b>Note:</b> All the above helper methods are implemented in such a way that they help in transforming the
+ * matrix entries efficiently. Additionally, they also allow the use of negative indices in arguments that depend
+ * on the matrix index (all of them, except {@link #addRow} and {@link #addColumn} methods).
+ * </blockquote>
  *
  * <p><b>Example:</b></p>
  *
@@ -93,7 +116,7 @@ import java.util.stream.Collectors;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  3.0, 8 February 2024
+ * @version  3.2, 30 May 2024
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
