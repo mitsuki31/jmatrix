@@ -955,7 +955,7 @@ public class Matrix implements MatrixUtils {
         } else if (a == null || a.length == 0) {  // Check for null or empty array
             JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
                 "Given array is null or empty. Cannot insert it into the matrix")));
-        } else if (row < 0 || row > mRows) {  // Check for the index is out of bounds
+        } else if (row < 0 || row >= mRows) {  // Check for the index is out of bounds
             JMatrixUtils.raiseError(new InvalidIndexException(
                 String.format("Given row index is out of range: %d",
                     (row < 0) ? (row - mRows - 1) : row
