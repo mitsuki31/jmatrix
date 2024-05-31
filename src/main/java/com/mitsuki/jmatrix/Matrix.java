@@ -821,12 +821,12 @@ public class Matrix implements MatrixUtils {
      *
      * <ul>
      * <li> Emphasizes data integrity by avoiding shallow copies. It creates
-     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      independent copies of arrays using {@link System#arraycopy}, ensuring
      *      that modifications to the inserted <b>row</b> or the original matrix
      *      do not affect each other unintentionally.
-     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     * <li> For primitive types like {@code double[]}, {@link System#arraycopy}
      *      potentially offers performance benefits over direct assignment due
-     *      to its avoidance of reflection-based copying.
+     *      to its avoidance of reflection-based copying and it is a native call.
      * <li> Gracefully handles potential inconsistencies between the input array
      *      length and the matrix column count. If the array is longer,
      *      it truncates it to match the matrix shape, maintaining structural
@@ -871,6 +871,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since 1.5.0
      * @see   #insertRow(Matrix, int, double[])
+     * @see   #insertColumn(int, double[])
      * @see   #addRow(double[])
      * @see   #dropRow(int)
      */
@@ -887,12 +888,12 @@ public class Matrix implements MatrixUtils {
      *
      * <ul>
      * <li> Emphasizes data integrity by avoiding shallow copies. It creates
-     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      independent copies of arrays using {@link System#arraycopy}, ensuring
      *      that modifications to the inserted <b>row</b> or the original matrix
      *      do not affect each other unintentionally.
-     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     * <li> For primitive types like {@code double[]}, {@link System#arraycopy}
      *      potentially offers performance benefits over direct assignment due
-     *      to its avoidance of reflection-based copying.
+     *      to its avoidance of reflection-based copying and it is a native call.
      * <li> Gracefully handles potential inconsistencies between the input array
      *      length and the matrix column count. If the array is longer,
      *      it truncates it to match the matrix shape, maintaining structural
@@ -938,13 +939,14 @@ public class Matrix implements MatrixUtils {
      *
      * @since 1.5.0
      * @see   #insertRow(int, double[])
+     * @see   #insertColumn(Matrix, int, double[])
      * @see   #addRow(Matrix, double[])
      * @see   #dropRow(Matrix, int)
      */
     public static Matrix insertRow(Matrix m, int row, double[] a) {
         // Retrieve the matrix sizes, do not worry about users
         // input a null matrix (uninitialized matrix), because these
-        // will be zeros (0), and then an exception will be thrown after
+        // will be zeros (0), and then an exception will be thrown afterwards
         int mRows = m.getNumRows();
         int mCols = m.getNumCols();
         row += (row < 0) ? (mRows + 1) : 0;  // Allow negative indexing
@@ -955,7 +957,7 @@ public class Matrix implements MatrixUtils {
         } else if (a == null || a.length == 0) {  // Check for null or empty array
             JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
                 "Given array is null or empty. Cannot insert it into the matrix")));
-        } else if (row < 0 || row > mRows) {  // Check for the index is out of bounds
+        } else if (row < 0 || row >= mRows) {  // Check for the index is out of bounds
             JMatrixUtils.raiseError(new InvalidIndexException(
                 String.format("Given row index is out of range: %d",
                     (row < 0) ? (row - mRows - 1) : row
@@ -979,12 +981,10 @@ public class Matrix implements MatrixUtils {
                 // Create the copy of the array and truncating the array to fit
                 // with the column of the matrix and also it would not use
                 // reflection-based copy as far as it being used to copy primitive types.
-                // This code equivalent with:
-                //     System.arraycopy(a, 0, newEntries, 0, mCols);
-                newEntries[i] = Arrays.copyOf(a, mCols);
+                System.arraycopy(a, 0, newEntries[i], 0, Math.min(mCols, newEntries[0].length));
                 continue;
             }
-            newEntries[i] = Arrays.copyOf(entries[x++], entries[0].length);
+            System.arraycopy(entries[x++], 0, newEntries[i], 0, Math.min(mCols, newEntries[0].length));
         }
 
         return new Matrix(newEntries);
@@ -1004,12 +1004,12 @@ public class Matrix implements MatrixUtils {
      *
      * <ul>
      * <li> Emphasizes data integrity by avoiding shallow copies. It creates
-     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      independent copies of arrays using {@link System#arraycopy}, ensuring
      *      that modifications to the inserted <b>column</b> or the original matrix
      *      do not affect each other unintentionally.
-     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     * <li> For primitive types like {@code double[]}, {@link System#arraycopy}
      *      potentially offers performance benefits over direct assignment due
-     *      to its avoidance of reflection-based copying.
+     *      to its avoidance of reflection-based copying and it is a native call.
      * <li> Gracefully handles potential inconsistencies between the input array
      *      length and the matrix row count. If the array is longer,
      *      it truncates it to match the matrix shape, maintaining structural
@@ -1070,6 +1070,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since 1.5.0
      * @see   #insertColumn(Matrix, int, double[])
+     * @see   #insertRow(int, double[])
      * @see   #addColumn(double[])
      * @see   #dropColumn(int)
      */
@@ -1086,12 +1087,12 @@ public class Matrix implements MatrixUtils {
      *
      * <ul>
      * <li> Emphasizes data integrity by avoiding shallow copies. It creates
-     *      independent copies of arrays using {@code Arrays.copyOf}, ensuring
+     *      independent copies of arrays using {@link System#arraycopy}, ensuring
      *      that modifications to the inserted <b>column</b> or the original matrix
      *      do not affect each other unintentionally.
-     * <li> For primitive types like {@code double[]}, {@code Arrays.copyOf}
+     * <li> For primitive types like {@code double[]}, {@link System#arraycopy}
      *      potentially offers performance benefits over direct assignment due
-     *      to its avoidance of reflection-based copying.
+     *      to its avoidance of reflection-based copying and it is a native call.
      * <li> Gracefully handles potential inconsistencies between the input array
      *      length and the matrix row count. If the array is longer,
      *      it truncates it to match the matrix shape, maintaining structural
@@ -1153,6 +1154,7 @@ public class Matrix implements MatrixUtils {
      *
      * @since 1.5.0
      * @see   #insertColumn(int, double[])
+     * @see   #insertRow(Matrix, int, double[])
      * @see   #addColumn(Matrix, double[])
      * @see   #dropColumn(Matrix, int)
      */
@@ -1193,8 +1195,8 @@ public class Matrix implements MatrixUtils {
      * feature selection, or numerical analysis.
      *
      * <p>Additionally, this method also supports negative indexing, where negative
-     * values count from the end of the matrix. For example, -1 refers to the
-     * <b>last row</b>, -2 to the <b>second-to-last row</b>, and so on.
+     * values count from the end of the matrix. For example, {@code -1} refers to the
+     * <b>last row</b>, {@code -2} to the <b>second-to-last row</b>, and so on.
      *
      * <p>Supporting negative indexing aligns with common indexing conventions
      * in programming languages. It offers flexibility in accessing and
@@ -1208,10 +1210,10 @@ public class Matrix implements MatrixUtils {
      * </code></pre>
      *
      * @param  row  An integer represents the index of the row to remove.
-     *              Negative values count from the end of the matrix.
+     *              Allow negative indexing, which count from the end of the matrix.
      * @return      A new matrix with the specified row removed.
      *
-     * @throws NullMatrixException    If the given matrix is null.
+     * @throws NullMatrixException    If the given matrix is {@code null}.
      * @throws InvalidIndexException  If the provided row index is out of bounds.
      *
      * @since 1.5.0
@@ -1232,8 +1234,8 @@ public class Matrix implements MatrixUtils {
      * feature selection, or numerical analysis.
      *
      * <p>Additionally, this method also supports negative indexing, where negative
-     * values count from the end of the matrix. For example, -1 refers to the
-     * <b>last row</b>, -2 to the <b>second-to-last row</b>, and so on.
+     * values count from the end of the matrix. For example, {@code -1} refers to the
+     * <b>last row</b>, {@code -2} to the <b>second-to-last row</b>, and so on.
      *
      * <p>Supporting negative indexing aligns with common indexing conventions
      * in programming languages. It offers flexibility in accessing and
@@ -1248,7 +1250,7 @@ public class Matrix implements MatrixUtils {
      *
      * @param  m    The matrix to remove a row from.
      * @param  row  An integer represents the index of the row to remove.
-     *              Negative values count from the end of the matrix.
+     *              Allow negative indexing, which count from the end of the matrix.
      * @return      A new matrix with the specified row removed.
      *
      * @throws NullMatrixException    If the given matrix is {@code null}.
@@ -1301,8 +1303,8 @@ public class Matrix implements MatrixUtils {
      * feature selection, or numerical analysis.
      *
      * <p>Additionally, this method also supports negative indexing, where negative
-     * values count from the end of the matrix. For example, -1 refers to the
-     * <b>last column</b>, -2 to the <b>second-to-last column</b>, and so on.
+     * values count from the end of the matrix. For example, {@code -1} refers to the
+     * <b>last column</b>, {@code -2} to the <b>second-to-last column</b>, and so on.
      *
      * <p>Supporting negative indexing aligns with common indexing conventions
      * in programming languages. It offers flexibility in accessing and
@@ -1316,7 +1318,7 @@ public class Matrix implements MatrixUtils {
      * </code></pre>
      *
      * @param  col  An integer represents the index of the column to remove.
-     *              Negative values count from the end of the matrix.
+     *              Allow negative indexing, which count from the end of the matrix.
      * @return      A new matrix with the specified column removed.
      *
      * @throws NullMatrixException    If the given matrix is {@code null}.
@@ -1340,8 +1342,8 @@ public class Matrix implements MatrixUtils {
      * feature selection, or numerical analysis.
      *
      * <p>Additionally, this method also supports negative indexing, where negative
-     * values count from the end of the matrix. For example, -1 refers to the
-     * <b>last column</b>, -2 to the <b>second-to-last column</b>, and so on.
+     * values count from the end of the matrix. For example, {@code -1} refers to the
+     * <b>last column</b>, {@code -2} to the <b>second-to-last column</b>, and so on.
      *
      * <p>Supporting negative indexing aligns with common indexing conventions
      * in programming languages. It offers flexibility in accessing and
@@ -1356,7 +1358,7 @@ public class Matrix implements MatrixUtils {
      *
      * @param  m    The matrix to remove a column from.
      * @param  col  An integer represents the index of the column to remove.
-     *              Negative values count from the end of the matrix.
+     *              Allow negative indexing, which count from the end of the matrix.
      * @return      A new matrix with the specified column removed.
      *
      * @throws NullMatrixException    If the given matrix is {@code null}.
@@ -1406,7 +1408,7 @@ public class Matrix implements MatrixUtils {
      *
      * <p>This method is used to efficiently swap two rows of a matrix. It utilizes the
      * {@link System#arraycopy} method to perform the row swaps, which offers better performance
-     * compared to using a <i>for-loop</i> or other methods such as {@link java.util.Arrays#copyOf}.
+     * compared to using a <i>for-loop</i> or other methods such as {@link Arrays#copyOf}.
      *
      * <p>If either {@code row1} or {@code row2} is out of range, an {@link InvalidIndexException} will be thrown.
      *
