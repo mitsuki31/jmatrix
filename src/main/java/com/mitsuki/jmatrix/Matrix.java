@@ -4146,6 +4146,147 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /**
+     * Checks whether this matrix represents an identity matrix.
+     *
+     * <p>An <b>identity matrix</b> is a square matrix with all elements on the main diagonal is
+     * equal to {@code 1}, and all other elements equal to {@code 0}. In an identity matrix,
+     * the number of rows is equal to the number of columns, also known as square matrix.
+     * You can utilize the {@link #isSquare()} method to determine whether the matrix is square.
+     *
+     * <p>The elements on the main diagonal must be represents as integers or floating-point numbers
+     * represented as integers (for example, {@code 1.0}), but not fractions or decimal numbers with
+     * fractional parts (for example, {@code 1.2} or {@code 1.8}).
+     *
+     * @apiNote
+     * This method has a time complexity of {@code O(n^2)} and a space complexity of {@code O(1)},
+     * where {@code n} is the number of rows or columns in the matrix.
+     *
+     * @return    {@code true} if the matrix represents an identity matrix, {@code false} otherwise.
+     *
+     * @throws NullMatrixException         If this matrix has {@code null} entries.
+     * @throws IllegalMatrixSizeException  If this matrix is not a square matrix.
+     *
+     * @since  1.5.0
+     * @see    #isIdentity(Matrix)
+     * @see    #isIdentity(double[][])
+     */
+    public boolean isIdentity() {
+        return Matrix.isIdentity(this);
+    }
+
+    /**
+     * Checks whether the given matrix represents an identity matrix.
+     *
+     * <p>An <b>identity matrix</b> is a square matrix with all elements on the main diagonal is
+     * equal to {@code 1}, and all other elements equal to {@code 0}. In an identity matrix,
+     * the number of rows is equal to the number of columns, also known as square matrix.
+     * You can utilize the {@link #isSquare()} method to determine whether the matrix is square.
+     *
+     * <p>The elements on the main diagonal must be represents as integers or floating-point numbers
+     * represented as integers (for example, {@code 1.0}), but not fractions or decimal numbers with
+     * fractional parts (for example, {@code 1.2} or {@code 1.8}).
+     *
+     * @apiNote
+     * This method has a time complexity of {@code O(n^2)} and a space complexity of {@code O(1)},
+     * where {@code n} is the number of rows or columns in the input matrix.
+     * 
+     * @param  m  The {@link Matrix} to be checked.
+     *
+     * @return    {@code true} if the matrix represents an identity matrix, {@code false} otherwise.
+     *
+     * @throws NullMatrixException         If the input matrix is {@code null}.
+     * @throws IllegalMatrixSizeException  If the input matrix is not a square matrix.
+     *
+     * @since  1.5.0
+     * @see    #isIdentity()
+     * @see    #isIdentity(double[][])
+     */
+    public static boolean isIdentity(Matrix m) {
+        if (MatrixUtils.isNullEntries(m)) {  // Check for uninitialized matrix
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix have been initialized."));
+        }
+        // ** no else-if after throw
+        if (!m.isSquare()) {  // Check for non-square matrix
+            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+                "Matrix is not square. " +
+                "Please ensure the matrix has the same number of rows and columns."
+            ));
+        }
+
+        // First, check whether the matrix is a diagonal matrix
+        if (!m.isDiagonal()) return false;  // Return false if not a diagonal matrix
+
+        // After that, check each of the elements of its principal diagonal
+        // and they all must be strictly equal to 1.0
+        for (int n = 0; n < m.getNumRows(); n++) {
+            // The elements on the main diagonal must be integers or floating-point numbers
+            // represented as integers (e.g., 1.0), but not fractions or decimal numbers with
+            // fractional parts (e.g., 1.2 or 1.8).
+            if (m.get(n, n) != 1.0) return false;
+        }
+
+        return true;  // Pass all checks of identity matrix
+    }
+
+    /**
+     * Checks whether the given two-dimensional array represents an identity matrix.
+     *
+     * <p>An <b>identity matrix</b> is a square matrix with all elements on the main diagonal is
+     * equal to {@code 1}, and all other elements equal to {@code 0}. In an identity matrix,
+     * the number of rows is equal to the number of columns, also known as square matrix.
+     * You can utilize the {@link #isSquare(double[][])} to determine whether the two-dimensional
+     * array represents a square matrix.
+     *
+     * <p>The elements on the main diagonal must be represents as integers or floating-point numbers
+     * represented as integers (for example, {@code 1.0}), but not fractions or decimal numbers with
+     * fractional parts (for example, {@code 1.2} or {@code 1.8}).
+     *
+     * @apiNote
+     * This method has a time complexity of {@code O(n^2)} and a space complexity of {@code O(1)},
+     * where {@code n} is the number of rows or columns in the input array.
+     * 
+     * @param  arr  The two-dimensional array to be checked.
+     *
+     * @return      {@code true} if the array represents an identity matrix, {@code false} otherwise.
+     *
+     * @throws NullMatrixException         If the input array is {@code null}.
+     * @throws IllegalMatrixSizeException  If the input array is not represented as a square matrix.
+     *
+     * @since  1.5.0
+     * @see    #isIdentity()
+     * @see    #isIdentity(Matrix)
+     */
+    public static boolean isIdentity(double[][] arr) {
+        if (arr == null || arr.length == 0) {  // Check for null array
+            JMatrixUtils.raiseError(new NullMatrixException(
+                "Array is null. Please ensure the array have been initialized."));
+        }
+        // ** no else-if after throw
+        if (!Matrix.isSquare(arr)) {  // Check for non-square array
+            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+                "Array is not square. " +
+                "Please ensure the array has the same number of rows and columns."
+            ));
+        }
+
+        // First, check whether the 2D array is represented as diagonal matrix
+        if (!Matrix.isDiagonal(arr)) return false;  // Return false if not a diagonal matrix
+
+        // After that, check each of the elements of its principal diagonal
+        // and they all must be strictly equal to 1.0
+        for (int n = 0; n < arr.length; n++) {
+            // The elements on the main diagonal must be integers or floating-point numbers
+            // represented as integers (e.g., 1.0), but not fractions or decimal numbers with
+            // fractional parts (e.g., 1.2 or 1.8).
+            if (arr[n][n] != 1.0) return false;
+        }
+
+        return true;  // Pass all checks of identity matrix
+    }
+
+
     /*=========================================
     ::
     ::  ADDITIONAL / UTILITIES METHODS
