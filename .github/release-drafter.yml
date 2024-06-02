@@ -51,11 +51,18 @@ autolabeler:
     branch:
       - '/fix\/.+/'
       - '/fixes\/.+/'
-  # Enhancements / New Features
-  - label: 'enhancement'
+  # New Features
+  - label: 'feature'
     branch:
       - '/feature\/.+/'
       - '/features\/.+/'
+
+  # Refactor / Enhancements
+  - label: 'enhancement'
+    branch:
+      - '/refactor\/.+/'
+      - '/refactors\/.+/'
+
   - label: 'chore'
     files:
       - '.github/**/*'
@@ -69,7 +76,7 @@ autolabeler:
     files:
       - '*.py'
 
-change-template: '- $TITLE (#$NUMBER) - @$AUTHOR'
+change-template: '- $TITLE (JM#$NUMBER) - @$AUTHOR'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 version-resolver:
   major:
@@ -91,7 +98,7 @@ template: |
   
   ## 🚧 Issues
   
-  Report any issues or have any suggestions? [Create new issue][new-issue] and help us improve **JMatrix**.
+  Report any issues or have any suggestions? [Send them to us][new-issue] and help us improve **JMatrix**.
   
   ---
   
@@ -103,5 +110,5 @@ template: |
   
   <!-- LINKS -->
   [changelogs]: https://github.com/mitsuki31/jmatrix/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
-  [new-issue]: https://github.com/mitsuki31/jmatrix/issues/new
+  [new-issue]: https://github.com/mitsuki31/jmatrix/issues/new/choose
   [virustotal]: https://www.virustotal.com
