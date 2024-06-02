@@ -28,20 +28,30 @@ body:
   - type: dropdown
     id: os
     attributes:
-      label: Operating system
-      multiple: false
-      description: Which operating system have you used?
+      label: Used operating systems
+      # Allow to set multiple options
+      multiple: true
+      description: Which operating systems have you used?
       options:
-        - Unix
+        - UNIX
         - Windows
 
   - type: dropdown
     id: download
     attributes:
-      label: How did you use the software?
+      label: Software usage
+      description: How did you use the software?
       options:
         - Built from source
         - Download and use from release package
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Software version
+      description: What version of JMatrix are you running?
     validations:
       required: true
 
@@ -51,10 +61,9 @@ body:
       label: Steps to reproduce
       description: How do you trigger this bug? Please walk us through it step by step.
       value: |
-        1.
-        2.
+        1. 
+        2. 
         ...
-      render: bash
 
   - type: textarea
     id: bug-logs
@@ -67,9 +76,9 @@ body:
     id: terms
     attributes:
       label: Code of Conduct
-      description: "By contributing to this project, you are agree with the [Code of Conduct](../../CODE_OF_CONDUCT.md) of this project."
+      description: "By contributing to this project, you agree to follow our [Code of Conduct](../../CODE_OF_CONDUCT.md)."
       options:
-        - label: "Yes, I agree."
+        - label: "Yes, I agree to follow this project's Code of Conduct."
           required: true
 
   - type: markdown
@@ -77,4 +86,4 @@ body:
       value: |
         ---
 
-        Thank you for taking the time to fill out this bug report.
+        Thank you for taking your time to fill out this bug report. We will check and resolve the issue ASAP.
