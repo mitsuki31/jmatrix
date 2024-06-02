@@ -67,7 +67,7 @@
 **JMatrix** is an educational [Java][java-wiki] library and designed to facilitate and simplify [matrix operations][matrix-ops].  
 It offers a range of intuitive methods to perform common matrix operations with ease, making it an ideal learning tool for high school students exploring [linear algebra][linear-algebra-wiki] concepts.  
 
-> **Important**  
+> [!IMPORTANT]  
 > This project is currently in development and is intended for educational purposes only.  
 > It is not recommended for use in large-scale projects or production environments.
 
@@ -107,27 +107,32 @@ If you are interested in obtaining the latest stable version of the project, ple
 For improved stability and better usability, we highly recommend downloading the archived package that also includes the source files (`jmatrix-<VERSION>_with_sources.jar`).
 This package contains all the necessary documentation about classes, methods, and other aspects related to **JMatrix**, making it easier to explore and understand the project.
 
+> [!WARNING]  
+> Currently, there is an issue with pre-build processes when using **Make** on Windows systems. The issue was that it failed while trying to create child processes to configure the build requirements.
+> 
+> For better functionality, we recommend using [**Maven**][maven] instead. Because using **Make** is an alternative way for flexibility on UNIX systems.
+
 ### <a name="prerequisites" /> 🎯 Prerequisites
 
 #### <a name="normal-use" /> For Normal Use
 
 To use **JMatrix** in your project, you will need the following prerequisites:
 
-- [**Java**][java] *(minimum version 11, recommended is 17 and later)*
-- [**Git Bash**][git-bash] *(optional, but recommended)*
+- [**Java**][java] *(min. JDK 11, recommended is JDK 17 and later)*
+- [**Git Bash**][git-bash] *(optional, Windows only)*
 
 #### <a name="build-use" /> For Building the Project
 
 If you plan to build the **JMatrix** project, please ensure you have the following prerequisites:
 
-- [**Java**][java] *(minimum version 11, recommended is 17 and later)*.
-- [**Python**][python] *(minimum version 3.7, recommended is 3.11 and later)*.
-- Latest version of [**Make/MinGW**][mingw] or [**Maven**][maven].
-- [**Git Bash**][git-bash] *(highly recommended for Windows users)*.
+- [**Java**][java] *(min. JDK 11, recommended is JDK 17 and later)*.
+- [**Python**][python] *(min. version 3.7, recommended is 3.11 and later)*.
+- Latest version of [**Make**][mingw] or [**Maven**][maven].
 
-> **Important**  
-> If you choose to build the project using [Maven][maven], you don't need to install [Python][python].  
-> However, if you are Windows user and prefer using [Make][mingw] for building, we highly recommend using [Git Bash][git-bash] as the shell environment. The `Makefile` utilizes [Bash][bash-wiki], making it more compatible with [Git Bash][git-bash].
+> [!IMPORTANT]  
+> If you choose to build the project using [Maven][maven], you don't need [Python][python].
+> 
+> Sadly, we're having a problem with pre-build processes on Windows systems. It is recommended to use [Maven][maven] instead if you're using Windows to build the project, ensuring better functionality.
 
 For more detailed instructions on building the project, you can refer to the [:bookmark:Getting Started][get-started] page.
 
@@ -140,7 +145,7 @@ Once you have the necessary prerequisites, you can start exploring and using **J
 
 There are five constructors available for constructing matrices in the **JMatrix** library. Each constructor serves a specific purpose, providing users with flexibility and ease of use.  
 
-> **Note**  
+> [!NOTE]  
 > If you are unfamiliar with matrices or need a refresher, you can check the [:bookmark:Introduction to Matrix][what-is-matrix] page to gain a basic understanding before delving into matrix constructors.
 
 
@@ -153,7 +158,7 @@ This constructor does not require any arguments and constructs a Matrix with nul
 Matrix m = new Matrix();
 ```
 
-> **Note**  
+> [!NOTE]  
 > Do not confuse the **null matrix** with the **zero matrix**.
 > A **null matrix** has null entries, whereas the **zero matrix** contains all elements as zeros.
 
@@ -228,7 +233,7 @@ The constructed matrix will look like this:
 
 This constructor is highly recommended for constructing a new [matrix][what-is-matrix]. You can declare the entries first and then convert them into a **Matrix** object whenever needed.
 
-> **Note**
+> [!NOTE]  
 > Please note, this constructor only accepts two-dimensional array with type of `double`.
 
 For example:
@@ -258,7 +263,7 @@ Matrix m = new Matrix(new double[][] {
 
 This constructor creates a new **identity matrix** with a size of $n \times n$ (where $n$ is from input). An **identity matrix** is a square matrix with ones on the main diagonal and zeros elsewhere, often denoted as $I$.
 
-Please avoid using $I$ or $i$ as variable names for matrices in code, as $i$ is commonly used in `for-loop` statements. Instead, consider using $mI$ or a similar alternative. For example:
+Please avoid using $I$ or $i$ as variable names for matrices in code, as $i$ is commonly used in `for-loop` statements. Instead, consider using $mI$ or a similar alternative. For instance:
 
 ```java
 // Create new identity matrix with size 5x5
@@ -296,7 +301,7 @@ For more detailed information about each matrix operation, you can refer to the 
 
 In **matrix addition**, two matrices with the same dimensions are added together element-wise. Each element of the resulting matrix is the sum of the corresponding elements from the two input matrices.
 
-> **Important**  
+> [!IMPORTANT]  
 > Before performing **matrix addition**, ensure that the two matrices have the same dimensions.
 
 **Example code:**
@@ -381,7 +386,7 @@ In the example above, two matrices $m$ and $n$ are created. The `Matrix.sub(m, n
 
 **Scalar multiplication** involves multiplying all elements of a matrix by a scalar value. The resulting matrix will have each of its elements multiplied by the given scalar value.
 
-> **Note**  
+> [!NOTE]  
 > The resulting matrix's sizes of **scalar multiplication** will be always the same with the sizes of the operand matrix.
 
 **Example code:**
@@ -417,7 +422,7 @@ In the example above, a matrix $m$ is created. The `Matrix.mult(m, 5)` method is
 
 **Matrix multiplication** involves multiplying two matrices together following a specific rule.
 
-> **Important**  
+> [!IMPORTANT]  
 > Before performing **matrix multiplication**, ensure the number of [columns][matrix-col] in the first matrix must be equal to the number of [rows][matrix-row] in the second matrix.
 
 **Example code:**
@@ -459,7 +464,7 @@ In the example above, two matrices $m$ and $n$ are created. The `Matrix.mult(m, 
 
 **Matrix transposition** involves swapping the [rows][matrix-row] and [columns][matrix-col] of a matrix. The resulting matrix will have its rows and columns interchanged.
 
-> **Note**  
+> [!NOTE]  
 > Repeating this operation to the transposed matrix will reset their indices position to the original position.
 
 **Example code:**
