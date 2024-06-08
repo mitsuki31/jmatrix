@@ -2,7 +2,8 @@
 /* --    JMatrixBaseException    -- */
 // :: -------------------------- :: //
 
-/* Copyright (c) 2023 Ryuu Mitsuki
+/*
+ * Copyright (c) 2023-2024 Ryuu Mitsuki
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +20,10 @@
 
 package com.mitsuki.jmatrix.exception;
 
+import com.mitsuki.jmatrix.Matrix;
+import com.mitsuki.jmatrix.core.MatrixUtils;
+import com.mitsuki.jmatrix.enums.JMErrorCode;
+
 import java.lang.RuntimeException;
 
 /**
@@ -28,39 +33,40 @@ import java.lang.RuntimeException;
  * <p><b>Type:</b> Unchecked exception</p>
  *
  * @since   1.0.0b.1
- * @version 1.2, 18 July 2023
+ * @version 1.3, 06 June 2024
  * @author  <a href="https://github.com/mitsuki31" target="_blank">
  *          Ryuu Mitsuki</a>
  * @license <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *          Apache License 2.0</a>
  */
-public class JMatrixBaseException extends RuntimeException
-{
+public class JMatrixBaseException extends RuntimeException {
 
     /**
      * Stores the serial version number of this class for deserialization to
      * verify that the sender and receiver of a serialized object have loaded classes
      * for that object that are compatible with respect to serialization.
      *
-     * @see java.io.Serializable
+     * @serial
+     * @see    java.io.Serializable
      */
     private static final long serialVersionUID = 8_294_400_000L;
 
     /**
-     * Stores the stack trace elements for this exception.
+     * A string represents the detail message of this exception.
      *
-     * @see   StackTraceElement
-     * @see   Throwable#getStackTrace()
+     * @serial
+     * @see    #getMessage()
      */
-    private StackTraceElement[ ] stackTraceElements = null;
+    private String message = null;
 
     /**
-     * Stores the stack trace elements for the causing exception.
+     * Stores the corresponding {@link JMErrorCode} for later retrieval
+     * by {@link #getErrorCode()}.
      *
-     * @see   StackTraceElement
-     * @see   Throwable#getStackTrace()
+     * @serial
+     * @see    #getErrorCode()
      */
-    private StackTraceElement[ ] causedStackTraceElements = null;
+    private JMErrorCode errcode = null;
 
     /**
      * Stores the string representation of the causing exception.
@@ -88,20 +94,38 @@ public class JMatrixBaseException extends RuntimeException
      */
     public JMatrixBaseException() {
         super();
-        this.stackTraceElements = this.getStackTrace();
     }
 
     /**
      * Constructs a new {@code JMatrixBaseException} with the specified detail message.
      *
-     * @param s  the detail message.
+     * @param s  The detail message and will be saved for later retrieval
+     *           by the {@link #getMessage()} method.
      *
      * @since    1.0.0b.1
      */
     public JMatrixBaseException(String s) {
         super(s);
         this.message = s;
-        this.stackTraceElements = this.getStackTrace();
+        this.errcode = JMErrorCode.UNKERR;  // Set to 'Unknown error'
+    }
+
+    /**
+     * Constructs a new {@code JMatrixBaseException} with the specified errno
+     * and the detail message.
+     *
+     * @param errno  The error number.
+     * @param s      The detail message and will be saved for later retrieval
+     *               by the {@link #getMessage()} method.
+     *
+     * @since  1.5.0
+     * @see    #getMessage()
+     * @see    #getErrorCode()
+     */
+    public JMatrixBaseException(int errno, String s) {
+        super(s);
+        this.message = s;
+        this.errcode = JMErrorCode.valueOf(errno);
     }
 
     /**
@@ -114,11 +138,29 @@ public class JMatrixBaseException extends RuntimeException
      */
     public JMatrixBaseException(Throwable cause) {
         super(cause);
-        this.stackTraceElements = this.getStackTrace();
-        this.causedStackTraceElements = cause.getStackTrace();
-        this.strCause = cause.toString();
-        this.message = cause.getMessage();
-        this.isCausedException = true;
+        this.message = (cause == null) ? null : cause.toString();
+
+        // Get the error code if the `cause` is an instance of this class
+        if (cause instanceof JMatrixBaseException) {
+            this.errcode = ((JMatrixBaseException) cause).errcode;
+        }
+    }
+        
+    public JMatrixBaseException(String s, Throwable cause) {
+        super(s, cause);
+        this.message = s;
+
+        // Get the error code if the `cause` is an instance of this class
+        if (cause instanceof JMatrixBaseException) {
+            this.errcode = ((JMatrixBaseException) cause).errcode;
+        }
+    }
+
+    protected JMatrixBaseException(String message, Throwable cause,
+                                   boolean enableSuppression,
+                                   boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+        this.message = message;
     }
 
     /**
