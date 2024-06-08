@@ -24,6 +24,7 @@ import com.mitsuki.jmatrix.Matrix;
 import com.mitsuki.jmatrix.core.MatrixUtils;
 import com.mitsuki.jmatrix.enums.JMErrorCode;
 
+import java.io.PrintStream;
 import java.lang.RuntimeException;
 
 /**
@@ -68,12 +69,25 @@ public class JMatrixBaseException extends RuntimeException {
      */
     private JMErrorCode errcode = null;
 
+    /** An error message format without the error code. */
+    protected final String ERR_MSG_FORMAT = "%s: %s";
+    /** An error message format with the error code. */
+    protected final String ERR_MSG_WITH_CODE_FORMAT = "%s <%s>: %s";
+
+    /** A stack trace format for this throwable's stack traces. */
+    private final String STACK_TRACE_FORMAT = "\tat \"%s.%s\" -> \"%s\": line %d\n";
+    /** A stack trace format for this throwable's stack traces. */
+    private final String EXCEPTION_INFO_FORMAT =
+        "\n[EXCEPTION INFO]\nType: %s\nCode: %s\nMessage: %s\n";
+
+    /** Caption for labelling this exception. */
+    private final String MSG_CAPTION = "/!\\ EXCEPTION";
+    /** Caption for labelling causative exception stack traces. */
+    private final String CAUSE_CAPTION = "/!\\ CAUSED BY";
+
     /**
-     * Stores the string representation of the causing exception.
      *
-     * @see   Throwable#toString()
      */
-    private String strCause = null;
 
     /**
      * Stores a string represents the detail message of this exception.
@@ -164,80 +178,133 @@ public class JMatrixBaseException extends RuntimeException {
     }
 
     /**
-     * Prints the stack trace of this exception to the standard error stream.
+     * Prints this throwable and its backtrace to the standard error stream ({@code System.err}).
+     *
+     * <p>The format of this information depends on the implementation, but the following
+     * example may be regarded as typical:
+     *
+     * <blockquote><pre>&nbsp;
+     * /!\ EXCEPTION
+     * >>>>>>>>>>>>>
+     * com.mitsuki.jmatrix.exception.InvalidIndexException [INVIDX]: Given row index is out of bounds
+     *
+     * [EXCEPTION INFO]
+     * Type: com.mitsuki.jmatrix.exception.InvalidIndexException
+     * Code: INVIDX
+     * Message: Given row index is out of bounds
+     * </pre></blockquote>
+     *
+     * <p>Output above was produced by this code:
+     * <pre>&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 10, 10, 10 },
+     *       { 20, 20, 20 }
+     *   });
+     *   m = m.dropRow(3);  // Throws
+     * </pre>
      *
      * @since 1.0.0b.1
      */
     @Override
     public void printStackTrace() {
-        String spc = "        ";
-        String arrow = ">>>>>>>>>>>>>";
-
-        if (this.isCausedException && this.stackTraceElements.length > 2) {
-            System.err.printf("/!\\ EXCEPTION%s%s%s",
-                    System.lineSeparator(),
-                    arrow,
-                    System.lineSeparator());
-            System.err.println(this.toString());
-
-            for (int i = this.stackTraceElements.length - 2; i != this.stackTraceElements.length; i++) {
-                System.err.printf("%sat \"%s.%s\" -> \"%s\": line %d" + System.lineSeparator(),
-                    spc,
-                    this.stackTraceElements[i].getClassName(),
-                    this.stackTraceElements[i].getMethodName(),
-                    this.stackTraceElements[i].getFileName(),
-                    this.stackTraceElements[i].getLineNumber());
-            }
-        } else {
-            System.err.printf("/!\\ EXCEPTION%s%s%s",
-                    System.lineSeparator(),
-                    arrow,
-                    System.lineSeparator());
-            System.err.println(this.toString());
-
-            for (StackTraceElement ste : this.stackTraceElements) {
-                System.err.printf("%sat \"%s.%s\" -> \"%s\": line %d" + System.lineSeparator(),
-                    spc,
-                    ste.getClassName(),
-                    ste.getMethodName(),
-                    ste.getFileName(),
-                    ste.getLineNumber());
-            }
-        }
-
-        if (this.isCausedException) {
-            System.err.printf("%s/!\\ CAUSED BY%s%s%s",
-                    System.lineSeparator(),
-                    System.lineSeparator(),
-                    arrow,
-                    System.lineSeparator());
-            System.err.println(this.strCause);
-
-            for (StackTraceElement cste : this.causedStackTraceElements) {
-                System.err.printf("%sat \"%s.%s\" -> \"%s\": line %d" + System.lineSeparator(),
-                    spc,
-                    cste.getClassName(),
-                    cste.getMethodName(),
-                    cste.getFileName(),
-                    cste.getLineNumber());
-            }
-        }
-        System.err.println(System.lineSeparator() + "[EXCEPTION INFO]");
-        System.err.println("Type: " + (this.isCausedException ? this.strCause.split(":\\s")[0] : this.getClass().getName()));
-        System.err.println("Message: " + this.message);
+        printStackTrace(System.err);
     }
 
     /**
-     * Returns the detail message of this exception.
+     * {@inheritDoc}
      *
-     * @return the detail message.
+     * @since 1.5.0
+     */
+    @Override
+    public void printStackTrace(PrintStream stream) {
+        final String arrows = ">>>>>>>>>>>>>";
+        final StackTraceElement[] trace = getStackTrace();
+        final Throwable cause = getCause();
+
+        // First, print the title including the exception description
+        stream.printf("\n%s\n%s\n%s\n", MSG_CAPTION, arrows, this.toString());
+
+        if (trace != null) {
+            if (trace.length > 2) {
+                for (int i = trace.length - 2; i != trace.length - 1; i++) {
+                    stream.printf(STACK_TRACE_FORMAT,
+                        trace[i].getClassName(),   //* class name
+                        trace[i].getMethodName(),  //* method name
+                        trace[i].getFileName(),    //* file name
+                        trace[i].getLineNumber()   //* line number
+                    );
+                }
+            } else {
+                for (StackTraceElement ste : trace) {
+                    stream.printf(STACK_TRACE_FORMAT,
+                        ste.getClassName(),   //* class name
+                        ste.getMethodName(),  //* method name
+                        ste.getFileName(),    //* file name
+                        ste.getLineNumber()   //* line number
+                    );
+                }
+            }
+
+            if (cause != this) {
+                // Retrieve the stack trace of cause exception
+                final StackTraceElement[] causeTrace = cause.getStackTrace();
+                stream.printf("\n%s\n%s\n%s\n", CAUSE_CAPTION, arrows, getCause());
+
+                for (StackTraceElement cste : causeTrace) {
+                    stream.printf(STACK_TRACE_FORMAT,
+                        cste.getClassName(),   //* class name
+                        cste.getMethodName(),  //* method name
+                        cste.getFileName(),    //* file name
+                        cste.getLineNumber()   //* line number
+                    );
+                }
+            }
+        }
+
+        stream.printf(EXCEPTION_INFO_FORMAT,
+            (cause == this)
+                ? this.getClass().getName()
+                : cause.toString().split(":\\s")[0],
+            this.getErrorCode().getCode(),
+            this.message
+        );
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @since  1.0.0b.1
      */
     @Override
     public String getMessage() {
-        return (this.message != null ? this.message : this.strCause);
+        return (this.message != null) ? this.message : getCause().toString();
     }
+
+    /**
+     * Returns the error code of this throwable.
+     *
+     * If the error code is {@code null} or not known, it returns {@link JMErrorCode#UNKERR UNKERR} error code.
+     *
+     * @return  The {@link JMErrorCode} object which contains the message and the error number.
+     *
+     * @since  1.5.0
+     * @see    JMErrorCode
+     */
+    public synchronized JMErrorCode getErrorCode() {
+        return (this.errcode != null) ? this.errcode : JMErrorCode.UNKERR;
+     }
+
+     /**
+      * {@inheritDoc}
+      *
+      * @since  1.5.0
+      */
+     @Override
+     public synchronized Throwable getCause() {
+        // Return null if the cause is a reference to this class
+        Throwable cause = super.getCause();
+        return (cause == this) ? null : cause;
+     }
 
     /**
      * Returns a string representation of this exception, including the class name and the detail message.
@@ -248,6 +315,13 @@ public class JMatrixBaseException extends RuntimeException {
      */
     @Override
     public String toString() {
-        return String.format("%s: %s", this.getClass().getName(), (this.isCausedException ? this.strCause : this.message));
+        return ((this.errcode == null)
+            ? String.format(ERR_MSG_FORMAT, this.getClass().getName(), this.message)
+            : String.format(ERR_MSG_WITH_CODE_FORMAT, this.getClass().getName(),
+                this.getErrorCode(),
+                this.message
+            )
+        );
     }
+
 }
