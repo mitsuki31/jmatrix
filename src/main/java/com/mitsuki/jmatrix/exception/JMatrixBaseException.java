@@ -108,6 +108,7 @@ public class JMatrixBaseException extends RuntimeException {
      */
     public JMatrixBaseException() {
         super();
+        this.errcode = JMErrorCode.UNKERR;
     }
 
     /**
@@ -140,34 +141,89 @@ public class JMatrixBaseException extends RuntimeException {
         super(s);
         this.message = s;
         this.errcode = JMErrorCode.valueOf(errno);
+        // Prevent from internal error due to null value
+        if (this.errcode == null) this.errcode = JMErrorCode.UNKERR;
     }
 
     /**
-     * Constructs a new {@code JMatrixBaseException} with the specified cause
-     * and a detail message of the cause.
+     * Constructs a new {@code JMatrixBaseException} with the specified cause.
      *
-     * @param cause  the cause of this exception.
+     * <p>This constructor allows for exception chaining, where the new exception 
+     * is caused by an existing throwable. This is useful for wrapping lower-level
+     * exceptions in higher-level exceptions, providing more context about the error
+     * that occurred.
      *
-     * @since        1.0.0b.1
+     * <p>The detailed message for the new exception is derived from the cause:
+     * <ul>
+     * <li> If the {@code cause} is not {@code null}, the detailed message is obtained
+     *      by calling {@code cause.toString()}, which typically includes the class name 
+     *      and the message of the cause.
+     * <li> If the {@code cause} is {@code null}, the detailed message for the new 
+     *      exception is set to {@code null}.
+     * </ul>
+     *
+     * <p>Additionally, this constructor attempts to propagate the error code from 
+     * the cause to the new exception:
+     * <ul>
+     * <li> If the {@code cause} is an instance of {@code JMatrixBaseException} or a 
+     *      subclass thereof, the error code is retrieved using {@link #getErrorCode()} 
+     *      and set for the new exception.
+     * <li> If the {@code cause} is not an instance of {@code JMatrixBaseException}, 
+     *      the error code for the new exception is set to {@link JMErrorCode#UNKERR 
+     *      UNKERR} (Unknown error).
+     * </ul>
+     *
+     * @param cause  The cause of this exception. A {@code null} value is permitted
+     *               and indicates that the cause is nonexistent or unknown.
+     *
+     * @since  1.0.0b.1
      */
     public JMatrixBaseException(Throwable cause) {
         super(cause);
         this.message = (cause == null) ? null : cause.toString();
 
-        // Get the error code if the `cause` is an instance of this class
-        if (cause instanceof JMatrixBaseException) {
-            this.errcode = ((JMatrixBaseException) cause).errcode;
-        }
+        // Get the error code if the `cause` is an instance of this class,
+        // if not, fallback to UNKERR error code
+        this.errcode = (cause instanceof JMatrixBaseException)
+            ? ((JMatrixBaseException) cause).errcode
+            : JMErrorCode.UNKERR;
     }
-        
+
+    /**
+     * Constructs a new {@code JMatrixBaseException} with the specified cause
+     * and a detailed message for later retrieval by {@link #getMessage()}.
+     *
+     * <p>This constructor allows for exception chaining, where the new exception 
+     * is caused by an existing throwable. This is useful for wrapping lower-level
+     * exceptions in higher-level exceptions, providing more context about the error
+     * that occurred.
+     *
+     * <p>Additionally, this constructor attempts to propagate the error code from 
+     * the cause to the new exception:
+     * <ul>
+     * <li> If the {@code cause} is an instance of {@code JMatrixBaseException} or a 
+     *      subclass thereof, the error code is retrieved using {@link #getErrorCode()} 
+     *      and set for the new exception.
+     * <li> If the {@code cause} is not an instance of {@code JMatrixBaseException}, 
+     *      the error code for the new exception is set to {@link JMErrorCode#UNKERR 
+     *      UNKERR} (Unknown error).
+     * </ul>
+     *
+     * @param s      The descriptive message.
+     * @param cause  The cause of this exception. A {@code null} value is permitted
+     *               and indicates that the cause is nonexistent or unknown.
+     *
+     * @since  1.5.0
+     */
     public JMatrixBaseException(String s, Throwable cause) {
         super(s, cause);
         this.message = s;
 
-        // Get the error code if the `cause` is an instance of this class
-        if (cause instanceof JMatrixBaseException) {
-            this.errcode = ((JMatrixBaseException) cause).errcode;
-        }
+        // Get the error code if the `cause` is an instance of this class,
+        // if not, fallback to UNKERR error code
+        this.errcode = (cause instanceof JMatrixBaseException)
+            ? ((JMatrixBaseException) cause).errcode
+            : JMErrorCode.UNKERR;
     }
 
     protected JMatrixBaseException(String message, Throwable cause,
@@ -175,6 +231,12 @@ public class JMatrixBaseException extends RuntimeException {
                                    boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
         this.message = message;
+
+        // Get the error code if the `cause` is an instance of this class,
+        // if not, fallback to UNKERR error code
+        this.errcode = (cause instanceof JMatrixBaseException)
+            ? ((JMatrixBaseException) cause).errcode
+            : JMErrorCode.UNKERR;
     }
 
     /**
