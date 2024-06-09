@@ -200,8 +200,11 @@ public enum JMErrorCode {
      * @return      The corresponding {@code JMErrorCode}, or {@code null} if the type of
      *              {@code x} is not known.
      *
-     * @since  1.5.0
-     * @see    Enum#valueOf(String)
+     * @throws  IllegalArgumentException  If this enum has no constant with the specified
+     *                                    name (with string representation).
+     *
+     * @since   1.5.0
+     * @see     Enum#valueOf(String)
      */
     public static <T extends Object> JMErrorCode valueOf(T x) {
         if (x instanceof Integer) {
@@ -209,6 +212,7 @@ public enum JMErrorCode {
                 if ((Integer) x == ec.getErrno()) return ec;
             }
         } else if (x instanceof String) {
+            // This might throws an `IllegalArgumentException`
             return JMErrorCode.valueOf((String) x);
         }
         //* No error being thrown if got unknown type, but return `null`
