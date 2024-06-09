@@ -69,7 +69,7 @@ public enum JMErrorCode {
      * such as {@link Matrix#insertRow(int, double[])}, {@link
      * Matrix#dropColumn(int)}, and {@link Matrix#display(int)}).
      *
-     * <p><b>Error number:</b> {@code JM201}
+     * <p><b>Error number:</b> {@code 201}
      * <p><b>Related exception:</b> {@link InvalidIndexException}
      */
     INVIDX( 0xD3 ^ (0xD + 0xD), "Given index is out of bounds" ),
@@ -81,7 +81,7 @@ public enum JMErrorCode {
      * calculate trace with a {@code 5x3} matrix, which is an illegal attemption
      * because trace calculation are only for square matrices.
      *
-     * <p><b>Error number:</b> {@code JM202}
+     * <p><b>Error number:</b> {@code 202}
      * <p><b>Related exception:</b> {@link IllegalMatrixSizeException}
      */
     INVTYP( 0xD3 ^ (0xD + 0xC), "Matrix has invalid type of matrix" ),
@@ -127,7 +127,7 @@ public enum JMErrorCode {
      * @since  1.5.0
      */
     JMErrorCode(int errno, String message) {
-        this.code = this.toString();
+        this.code = super.toString();
         this.errno = errno;
         this.message = message;
     }
@@ -176,6 +176,16 @@ public enum JMErrorCode {
      */
     public String getMessage() {
         return this.message;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since  1.5.0
+     */
+    @Override
+    public String toString() {
+        return String.format("%s[%s]", this.code, this.errno);
     }
 
     /**
