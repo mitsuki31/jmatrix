@@ -2,7 +2,8 @@
 /* --  IllegalMatrixSizeException  -- */
 // :: ---------------------------- :: //
 
-/* Copyright (c) 2023 Ryuu Mitsuki
+/*
+ * Copyright (c) 2023-2024 Ryuu Mitsuki
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +20,8 @@
 
 package com.mitsuki.jmatrix.exception;
 
+import com.mitsuki.jmatrix.enums.JMErrorCode;
+
 /**
  * Thrown when attempting to perform matrix operations with matrices that do not
  * conform to the sizes requirements of the operation.
@@ -29,14 +32,13 @@ package com.mitsuki.jmatrix.exception;
  * <p><b>Type:</b> Unchecked exception</p>
  *
  * @since   0.1.0
- * @version 1.2, 18 July 2023
+ * @version 1.3, 09 June 2024
  * @author  <a href="https://github.com/mitsuki31" target="_blank">
  *          Ryuu Mitsuki</a>
  * @license <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *          Apache License 2.0</a>
  */
-public class IllegalMatrixSizeException extends JMatrixBaseException
-{
+public class IllegalMatrixSizeException extends JMatrixBaseException {
 
     /**
      * Stores the serial version number of this class for deserialization to
@@ -47,12 +49,7 @@ public class IllegalMatrixSizeException extends JMatrixBaseException
      */
     private static final long serialVersionUID = 30_796_526_592L;
 
-    /**
-     * Stores a string represents the detail message of this exception.
-     *
-     * @see #getMessage()
-     */
-    private String message = null;
+    private static int defaultErrno = JMErrorCode.INVTYP.getErrno();
 
     /**
      * Constructs a new {@code IllegalMatrixSizeException} with no detail message.
@@ -60,7 +57,7 @@ public class IllegalMatrixSizeException extends JMatrixBaseException
      * @since 0.1.0
      */
     public IllegalMatrixSizeException() {
-        super();
+        super(defaultErrno, null);
     }
 
     /**
@@ -71,8 +68,12 @@ public class IllegalMatrixSizeException extends JMatrixBaseException
      * @since          0.1.0
      */
     public IllegalMatrixSizeException(String message) {
-        super(message);
-        this.message = message;
+        super(defaultErrno, message);
+    }
+
+    public IllegalMatrixSizeException(int errno, String message) {
+        super(errno, message);
+        defaultErrno = errno;
     }
 
     /**
@@ -85,7 +86,16 @@ public class IllegalMatrixSizeException extends JMatrixBaseException
      */
     public IllegalMatrixSizeException(Throwable cause) {
         super(cause);
-        this.message = cause.getMessage();
+    }
+
+    public IllegalMatrixSizeException(String s, Throwable cause) {
+        super(s, cause);
+    }
+    
+    public IllegalMatrixSizeException(String s, Throwable cause,
+                                      boolean enableSuppression,
+                                      boolean writableStackTrace) {
+        super(s, cause, enableSuppression, writableStackTrace);
     }
 
     /**
@@ -97,7 +107,12 @@ public class IllegalMatrixSizeException extends JMatrixBaseException
      */
     @Override
     public String getMessage() {
-        return this.message;
+        return super.getMessage();
+    }
+
+    @Override
+    public JMErrorCode getErrorCode() {
+        return JMErrorCode.valueOf(defaultErrno);
     }
 
     /**
@@ -109,6 +124,12 @@ public class IllegalMatrixSizeException extends JMatrixBaseException
      */
     @Override
     public String toString() {
-        return String.format("%s: %s", this.getClass().getName(), this.message);
+        JMErrorCode ec = this.getErrorCode();
+        String errmsg = this.getMessage();
+        return String.format(this.ERR_MSG_WITH_CODE_FORMAT,
+            this.getClass().getName(),
+            ec.getCode(),
+            (errmsg != null) ? errmsg : ec.getMessage()
+        );
     }
 }

@@ -19,6 +19,10 @@
 
 package com.mitsuki.jmatrix.exception;
 
+import com.mitsuki.jmatrix.Matrix;
+import com.mitsuki.jmatrix.core.MatrixUtils;
+import com.mitsuki.jmatrix.enums.JMErrorCode;
+
 /**
  * Thrown when an operation is attempted on uninitialized matrices. This exception
  * indicates that the matrices involved in the operation have not been initialized
@@ -32,7 +36,7 @@ package com.mitsuki.jmatrix.exception;
  * <p><b>Type:</b> Unchecked exception</p>
  *
  * <p>The uninitialized or {@code null} matrices can be identified by
- * using {@link com.mitsuki.jmatrix.core.MatrixUtils#isNullEntries(Matrix)}.
+ * using {@link MatrixUtils#isNullEntries(Matrix)}.
  * Or can be manually, for example:
  *
  * <pre><code class="language-java">&nbsp;
@@ -44,7 +48,7 @@ package com.mitsuki.jmatrix.exception;
  * </code></pre>
  *
  * @since   0.1.0
- * @version 1.3, 18 July 2023
+ * @version 1.4, 09 June 2024
  * @author  <a href="https://github.com/mitsuki31" target="_blank">
  *          Ryuu Mitsuki</a>
  * @license <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
@@ -52,8 +56,7 @@ package com.mitsuki.jmatrix.exception;
  *
  * @see     com.mitsuki.jmatrix.exception.JMatrixBaseException
  */
-public class NullMatrixException extends JMatrixBaseException
-{
+public class NullMatrixException extends JMatrixBaseException {
 
     /**
      * Stores the serial version number of this class for deserialization to
@@ -64,12 +67,7 @@ public class NullMatrixException extends JMatrixBaseException
      */
     private static final long serialVersionUID = 6_418_048_608L;
 
-    /**
-     * Stores a string represents the detail message of this exception.
-     *
-     * @see   #getMessage()
-     */
-    private String message = null;
+    private static int defaultErrno = JMErrorCode.NULLMT.getErrno();
 
     /**
      * Constructs a new {@code NullMatrixException} with no detail message.
@@ -78,7 +76,7 @@ public class NullMatrixException extends JMatrixBaseException
      * @since 0.1.0
      */
     public NullMatrixException() {
-        super();
+        super(defaultErrno, null);
     }
 
     /**
@@ -89,8 +87,12 @@ public class NullMatrixException extends JMatrixBaseException
      * @since          0.1.0
      */
     public NullMatrixException(String message) {
-        super(message);
-        this.message = message;
+        super(defaultErrno, message);
+    }
+
+    public NullMatrixException(int errno, String message) {
+        super(errno, message);
+        defaultErrno = errno;
     }
 
     /**
@@ -103,7 +105,16 @@ public class NullMatrixException extends JMatrixBaseException
      */
     public NullMatrixException(Throwable cause) {
         super(cause);
-        this.message = cause.getMessage();
+    }
+
+    public NullMatrixException(String s, Throwable cause) {
+        super(s, cause);
+    }
+
+    public NullMatrixException(String s, Throwable cause,
+                               boolean enableSuppression,
+                               boolean writableStackTrace) {
+        super(s, cause, enableSuppression, writableStackTrace);
     }
 
 
@@ -116,7 +127,12 @@ public class NullMatrixException extends JMatrixBaseException
      */
     @Override
     public String getMessage() {
-        return this.message;
+        return super.getMessage();
+    }
+    
+    @Override
+    public JMErrorCode getErrorCode() {
+        return JMErrorCode.valueOf(defaultErrno);
     }
 
     /**
@@ -129,6 +145,12 @@ public class NullMatrixException extends JMatrixBaseException
      */
     @Override
     public String toString() {
-        return String.format("%s: %s", this.getClass().getName(), this.message);
+        JMErrorCode ec = this.getErrorCode();
+        String errmsg = this.getMessage();
+        return String.format(this.ERR_MSG_WITH_CODE_FORMAT,
+            this.getClass().getName(),
+            ec.getCode(),
+            (errmsg != null) ? errmsg : ec.getMessage()
+        );
     }
 }
