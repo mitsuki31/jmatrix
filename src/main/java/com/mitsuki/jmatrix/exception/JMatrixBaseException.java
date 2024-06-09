@@ -247,8 +247,10 @@ public class JMatrixBaseException extends RuntimeException {
      *
      * <blockquote><pre>&nbsp;
      * /!\ EXCEPTION
-     * >>>>>>>>>>>>>
+     * &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
      * com.mitsuki.jmatrix.exception.InvalidIndexException [INVIDX]: Given row index is out of bounds
+     *         at "Example.main" -> "Example.java": line 7
+     *         ...
      *
      * [EXCEPTION INFO]
      * Type: com.mitsuki.jmatrix.exception.InvalidIndexException
@@ -258,11 +260,15 @@ public class JMatrixBaseException extends RuntimeException {
      *
      * <p>Output above was produced by this code:
      * <pre>&nbsp;
-     *   Matrix m = new Matrix(new double[][] {
-     *       { 10, 10, 10 },
-     *       { 20, 20, 20 }
-     *   });
-     *   m = m.dropRow(3);  // Throws
+     *   public class Example {
+     *      public static void main(String[] args) {
+     *          Matrix m = new Matrix(new double[][] {
+     *              { 10, 10, 10 },
+     *              { 20, 20, 20 }
+     *          });
+     *          m = m.dropRow(3);  // Throws
+     *      }
+     *   }
      * </pre>
      *
      * @since 1.0.0b.1
@@ -286,49 +292,38 @@ public class JMatrixBaseException extends RuntimeException {
         // First, print the title including the exception description
         stream.printf("\n%s\n%s\n%s\n", MSG_CAPTION, arrows, this.toString());
 
-        if (trace != null) {
-            if (trace.length > 2) {
-                for (int i = trace.length - 2; i != trace.length - 1; i++) {
-                    stream.printf(STACK_TRACE_FORMAT,
-                        trace[i].getClassName(),   //* class name
-                        trace[i].getMethodName(),  //* method name
-                        trace[i].getFileName(),    //* file name
-                        trace[i].getLineNumber()   //* line number
-                    );
-                }
-            } else {
-                for (StackTraceElement ste : trace) {
-                    stream.printf(STACK_TRACE_FORMAT,
-                        ste.getClassName(),   //* class name
-                        ste.getMethodName(),  //* method name
-                        ste.getFileName(),    //* file name
-                        ste.getLineNumber()   //* line number
-                    );
-                }
+        if (trace.length != 0 /* detect UNASSIGNED_STACK */) {
+            for (StackTraceElement ste : trace) {
+                stream.printf(STACK_TRACE_FORMAT,
+                    ste.getClassName(),   //* class name
+                    ste.getMethodName(),  //* method name
+                    ste.getFileName(),    //* file name
+                    ste.getLineNumber()   //* line number
+                );
             }
+        }
 
-            if (cause != this) {
-                // Retrieve the stack trace of cause exception
-                final StackTraceElement[] causeTrace = cause.getStackTrace();
-                stream.printf("\n%s\n%s\n%s\n", CAUSE_CAPTION, arrows, getCause());
+        if (cause != null) {
+            // Retrieve the stack trace of cause exception
+            final StackTraceElement[] causeTrace = cause.getStackTrace();
+            stream.printf("\n%s\n%s\n%s\n", CAUSE_CAPTION, arrows, getCause());
 
-                for (StackTraceElement cste : causeTrace) {
-                    stream.printf(STACK_TRACE_FORMAT,
-                        cste.getClassName(),   //* class name
-                        cste.getMethodName(),  //* method name
-                        cste.getFileName(),    //* file name
-                        cste.getLineNumber()   //* line number
-                    );
-                }
+            for (StackTraceElement cste : causeTrace) {
+                stream.printf(STACK_TRACE_FORMAT,
+                    cste.getClassName(),   //* class name
+                    cste.getMethodName(),  //* method name
+                    cste.getFileName(),    //* file name
+                    cste.getLineNumber()   //* line number
+                );
             }
         }
 
         stream.printf(EXCEPTION_INFO_FORMAT,
-            (cause == this)
+            (cause == null)
                 ? this.getClass().getName()
                 : cause.toString().split(":\\s")[0],
             this.getErrorCode().getCode(),
-            this.message
+            this.getMessage()
         );
     }
 
@@ -339,7 +334,10 @@ public class JMatrixBaseException extends RuntimeException {
      */
     @Override
     public String getMessage() {
-        return (this.message != null) ? this.message : getCause().toString();
+        Throwable cause = getCause();
+        return (this.message != null)
+            ? this.message
+            : (cause != null) ? cause.toString() : this.errcode.getMessage();
     }
 
     /**
@@ -352,7 +350,7 @@ public class JMatrixBaseException extends RuntimeException {
      * @since  1.5.0
      * @see    JMErrorCode
      */
-    public synchronized JMErrorCode getErrorCode() {
+     public synchronized JMErrorCode getErrorCode() {
         return (this.errcode != null) ? this.errcode : JMErrorCode.UNKERR;
      }
 
@@ -377,12 +375,11 @@ public class JMatrixBaseException extends RuntimeException {
      */
     @Override
     public String toString() {
-        return ((this.errcode == null)
-            ? String.format(ERR_MSG_FORMAT, this.getClass().getName(), this.message)
-            : String.format(ERR_MSG_WITH_CODE_FORMAT, this.getClass().getName(),
-                this.getErrorCode(),
-                this.message
-            )
+        JMErrorCode ec = getErrorCode();
+        return String.format(ERR_MSG_WITH_CODE_FORMAT,
+            getClass().getName(),
+            ec.getCode(),
+            (this.message != null) ? this.message : ec.getMessage()
         );
     }
 
