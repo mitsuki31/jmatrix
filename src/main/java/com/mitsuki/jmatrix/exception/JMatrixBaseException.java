@@ -85,21 +85,88 @@ public class JMatrixBaseException extends RuntimeException {
     /** Caption for labelling causative exception stack traces. */
     private final String CAUSE_CAPTION = "/!\\ CAUSED BY";
 
-    /**
-     *
-     */
+    /** An environment variable name for the exception raise configuration. */
+    private static final String raiseEnvName = "jm.raise";
 
     /**
-     * Stores a string represents the detail message of this exception.
+     * A value of {@value #raiseEnvName} environment variable.
      *
-     * @see   #getMessage()
+     * <p>The value can be one of the following:
+     * <ul>
+     * <li>{@code auto}
+     * <li>{@code manual}
+     * </ul>
+     *
+     * Fallback to {@code auto} if the {@value #raiseEnvName} is not defined
+     * or set to an empty string.
+     *
+     * @see   #getRaiseConfig()
      */
-    private String message = null;
+    private static final String raiseConf = getRaiseConfig();
 
     /**
-     * Indicates whether this exception is caused by another exception.
+     * Retrieves the value of the {@value #raiseEnvName} environment variable
+     * from the system environment variables.
+     *
+     * <p>This method checks the value of the environment variable and sets
+     * the configuration accordingly. The configuration will be set to {@code auto}
+     * if the value is equal to one of these known values:
+     * <ul>
+     * <li>{@code auto} or {@code a}
+     * <li>{@code yes} or {@code y}
+     * </ul>
+     *
+     * <p>The configuration will be set to {@code manual} if the value is
+     * equal to one of these known values:
+     * <ul>
+     * <li>{@code manual} or {@code m}
+     * <li>{@code no} or {@code n}
+     * </ul>
+     *
+     * <p>If the environment variable is not set or is empty, the default
+     * configuration is {@code auto}. If the value of the environment variable
+     * is not recognized, an {@link IllegalArgumentException} is thrown.
+     *
+     * @implNote This method is synchronized to ensure thread safety.
+     *
+     * @return  The configuration value, either {@code auto} or {@code manual}.
+     *
+     * @throws IllegalArgumentException  If the environment variable value is
+     *                                   set to an unrecognized value.
+     *
+     * @since  1.5.0
+     * @see    #raiseConf
      */
-    private boolean isCausedException = false;
+    protected static synchronized final String getRaiseConfig() {
+        String value = null;
+        // Retrieve the environment variable
+        String raiseErrEnv = System.getenv(raiseEnvName);
+        // Lower case the value if not null (undeclared)
+        raiseErrEnv = (raiseErrEnv != null) ? raiseErrEnv.toLowerCase() : raiseErrEnv;
+
+        if (raiseErrEnv == null || (raiseErrEnv != null && raiseErrEnv.length() == 0)) {
+            value = "auto";  // ! Default to 'auto' if undeclared or has an empty string
+        } else {
+            if (  // Check for 'auto' value
+                (raiseErrEnv.equals("auto") || raiseErrEnv.equals("a")) ||
+                (raiseErrEnv.equals("yes") || raiseErrEnv.equals("y"))
+            ) {
+                value = "auto";
+            } else if (  // Check for 'manual' value
+                (raiseErrEnv.equals("manual") || raiseErrEnv.equals("m")) ||
+                (raiseErrEnv.equals("no") || raiseErrEnv.equals("n"))
+            ) {
+                value = "manual";
+            } else {
+                // Throw an exception if the value is not known
+                throw new IllegalArgumentException(String.format(
+                    "Unknown value of '%s': %s",
+                    raiseEnvName, raiseErrEnv
+                ));
+            }
+        }
+        return value;
+    }
 
     /**
      * Constructs a new {@code JMatrixBaseException} with no detail message.
@@ -383,4 +450,130 @@ public class JMatrixBaseException extends RuntimeException {
         );
     }
 
+
+    /**
+     * Returns {@code true} if the {@value #raiseEnvName} environment variable
+     * is set to {@code auto}.
+     * 
+     * @return {@code true} if the {@value #raiseEnvName} equals to {@code auto}.
+     *         Otherwise, returns {@code false}.
+     *
+     * @since  1.5.0
+     */
+    public static boolean isAutoRaise() {
+        return raiseConf.equals("auto");
+    }
+
+    /**
+     * Raises an exception based on the specified cause, with an automatically
+     * determined error number.
+     *
+     * <p>This method provides a mechanism to either print the stack trace of a 
+     * given exception and exit the application with a specified error code, or 
+     * throw the exception, depending on the configuration set by the 
+     * {@value #raiseEnvName} environment variable. The error number is determined 
+     * based on the type of the provided exception.
+     *
+     * <p>If the {@link #isAutoRaise()} method returns {@code true}, indicating 
+     * that the {@value #raiseEnvName} environment variable is set to {@code auto}:
+     * <ul>
+     * <li> The stack trace of the provided exception {@code cause} is printed to 
+     *      the standard error stream.
+     * <li> The application then exits with the determined error number.
+     * <li> An error message indicating the exit code is printed to the standard 
+     *      error stream ({@code System.err}).
+     * </ul>
+     *
+     * <p>If the {@link #isAutoRaise()} returns {@code false}, the provided exception 
+     * {@code cause} is thrown, allowing it to propagate up the call stack. This 
+     * behavior supports scenarios where the application prefers to handle exceptions 
+     * using traditional try-catch blocks rather than exiting.
+     *
+     * <p>The error number is determined as follows:
+     * <ul>
+     * <li> If the provided {@code cause} is either of an instance of {@link JMatrixBaseException}
+     *      or a subclass thereof, the error number is retrieved using the {@link
+     *      JMErrorCode#getErrno() cause.getErrorCode().getErrno()} method.
+     * <li> If the provided {@code cause} is not an instance of {@link JMatrixBaseException}, 
+     *      the error number is set to {@link JMErrorCode#UNKERR UNKERR} (Unknown error), 
+     *      which corresponds to the error code {@code 400}.
+     * </ul>
+     *
+     * @param <E>    The type of the runtime exception to be raised.
+     * @param cause  The exception that caused the error. This exception will either 
+     *               be printed and cause the application to exit, or will be thrown 
+     *               based on the configuration.
+     *
+     * @throws E     If the {@value #raiseEnvName} environment variable is not set to 
+     *               {@code auto}, the method throws the provided exception {@code cause}.
+     *
+     * @since  1.5.0
+     * @see    #raise(RuntimeException, int)
+     */
+    public static <E extends RuntimeException> void raise(E cause) {
+        raise(cause,
+            // Retrieve the errno if the given object is an instance of this class
+            // Otherwise, set the errno to 400 (Unknown error)
+            (cause instanceof JMatrixBaseException)
+                ? ((JMatrixBaseException) cause).errcode.getErrno()
+                : JMErrorCode.UNKERR.getErrno()
+        );
+    }
+
+    /**
+     * Raises an exception based on the specified cause and error number.
+     *
+     * <p>This method provides a mechanism to either print the stack trace of a 
+     * given exception and exit the application with a specified error code, or 
+     * throw the exception, depending on the configuration set by the 
+     * {@value #raiseEnvName} environment variable. This allows for configurable 
+     * error handling that can be controlled through environment settings.
+     *
+     * <p>It will checks whether the {@value #raiseEnvName} is set to {@code auto}
+     * utilizing the {@link #isAutoRaise()} method, if the {@link #isAutoRaise()}
+     * method returns {@code true}, indicating that the {@value #raiseEnvName}
+     * environment variable is set to {@code auto}:
+     * <ul>
+     * <li> The stack trace of the provided exception {@code cause} is printed to 
+     *      the standard error stream.
+     * <li> The application then exits with the specified error number {@code errno}.
+     *      If {@code errno} is less than {@link Integer#MIN_VALUE} ({@value
+     *      Integer#MIN_VALUE}), it is set to {@link Integer#MIN_VALUE} to ensure
+     *      it is within valid range.
+     * <li> An error message indicating the exit code is printed to the standard 
+     *      error stream.
+     * </ul>
+     *
+     * <p>If {@link #isAutoRaise()} returns {@code false}, the provided exception 
+     * {@code cause} is thrown, allowing it to propagate up the call stack. This 
+     * behavior supports scenarios where the application prefers to handle exceptions 
+     * using traditional try-catch blocks rather than exiting.
+     *
+     * @param <E>    The type of the runtime exception to be raised.
+     * @param cause  The exception that caused the error. This exception will either 
+     *               be printed and cause the application to exit, or will be thrown 
+     *               based on the configuration.
+     * @param errno  The error number to exit with if auto-raise is enabled. This 
+     *               number should be a valid integer within the range 
+     *               {@link Integer#MIN_VALUE} to {@link Integer#MAX_VALUE}. If the 
+     *               provided value is less than {@link Integer#MIN_VALUE}, it will 
+     *               be adjusted to {@link Integer#MIN_VALUE}.
+     *
+     * @throws E     If the {@value #raiseEnvName} environment variable is not set to 
+     *               {@code auto}, the method throws the provided exception {@code cause}.
+     *
+     * @since  1.5.0
+     * @see    #raise(RuntimeException)
+     */
+    public static <E extends RuntimeException> void raise(E cause, int errno) {
+        if (isAutoRaise()) {
+            // Print the stack trace and exit with the specified errno
+            cause.printStackTrace();
+            errno = (errno < Integer.MIN_VALUE) ? Integer.MIN_VALUE : errno;
+            System.err.printf("\nExited with error code: %d\n", errno);
+            System.exit(errno);
+        } else {
+            throw cause;  // Throw the cause if not auto raise
+        }
+    }
 }
