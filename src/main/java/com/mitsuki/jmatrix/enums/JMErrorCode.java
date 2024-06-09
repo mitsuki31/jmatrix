@@ -106,10 +106,10 @@ public enum JMErrorCode {
      * is not an instance of that class while trying to get the error code from the
      * given cause exception, and ended up constructs with this error code.
      *
-     * <p><b>Error number:</b> {@code 200}
+     * <p><b>Error number:</b> {@code 400}
      * <p><b>Related exception:</b> {@link JMatrixBaseException}
      */
-    UNKERR( 0xD3 ^ (0xD - 0xE), "Unknown error" );
+    UNKERR( ((0xD3 << 1) - (0xF & 0xF) - 0b111), "Unknown error" );
 
     /** The error nuumber stored for later retrieval by {@link #getErrno()} */
     private int errno = 0x00;
