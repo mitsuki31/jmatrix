@@ -28,13 +28,74 @@ import java.io.PrintStream;
 import java.lang.RuntimeException;
 
 /**
- * Base exception class for all <b>JMatrix</b> exceptions. This exception and its subclasses are unchecked exceptions,
- * which means they can be thrown during runtime.
+ * Base exception class for all <b>JMatrix</b> exceptions. This exception and its subclasses
+ * are unchecked exceptions, which means they can be thrown during runtime without being 
+ * explicitly caught or declared.
+ *
+ * <p>The class {@code JMatrixBaseException} serves as a foundational exception that can be 
+ * used in a matrix-related context. It provides a consistent interface for handling errors 
+ * and can wrap other exceptions, allowing for a more flexible and unified error-handling 
+ * strategy across the JMatrix library.
  *
  * <p><b>Type:</b> Unchecked exception</p>
  *
+ * <p>As of version 1.5.0, a new capability has been introduced to configure the behavior
+ * of auto-raised exceptions either using an environment variable or system property. This
+ * feature allows applications to determine whether exceptions should be automatically
+ * raised and cause the application to exit, or if they should be thrown and handled
+ * via traditional try-catch blocks. This flexibility is crucial for scenarios where
+ * different environments or phases of development might require different error-handling
+ * approaches.
+ *
+ * <p><b>Configure Auto-raise Behavior:</b>
+ *
+ * <p>The behavior is controlled by setting either the system property {@value #raiseConfName}
+ * or the environment variable {@value #raiseConfEnvName}. The configuration options are
+ * as follows:
+ *
+ * <ul>
+ * <li> If the auto-raise configuration either from the system property ({@value
+ *      #raiseConfName}) or environment variable ({@value #raiseConfEnvName}) is set to
+ *      {@code manual} or {@code no}, the exceptions will be thrown, enabling traditional
+ *      error handling through try-catch blocks.
+ * <li> If the auto-raise configuration either from the system property ({@value
+ *      #raiseConfName}) or environment variable ({@value #raiseConfEnvName}) is set to
+ *      {@code auto} or {@code yes}, or if it is undefined or an empty string,
+ *      the exceptions will be auto-raised. This means the stack trace of the exception
+ *      will be printed, and the application will exit immediately with the specified
+ *      error code. This is useful for environments where immediate feedback is necessary,
+ *      such as in development or testing phases.
+ * </ul>
+ *
+ * <p>If the auto-raise configuration is set using both environment variables
+ * and system properties, the system property will take precedence.
+ *
+ * <p>This enhancement offers greater control over exception handling, making the
+ * <b>JMatrix</b> library more adaptable to various use cases and environments. It
+ * ensures that developers can choose the most appropriate error-handling strategy
+ * based on their specific needs.
+ *
+ * <p><b>It is RECOMMENDED to set the configuration using system property.</b>
+ * Here is an example usage to set the {@value #raiseConfName} configuration using
+ * system property from command-line.
+ * <pre>&nbsp;
+ *   $ java -D{@value #raiseConfName}=manual -cp /path/to/jmatrix-<VERSION>.jar Foo.java
+ * </pre>
+ *
+ * <p>And this is an example usage to set the {@value #raiseConfName} configuration at runtime.
+ * <pre>&nbsp;
+ *   // Set the environment variable to configure behavior
+ *   System.setProperty({@value #raiseConfName}, "manual");
+ *   try {
+ *      // Some matrix-related operations that might throw
+ *      // JMatrixBaseException or its subclasses
+ *   } catch (JMatrixBaseException e) {
+ *      // Handle exception
+ *   }
+ * </pre>
+ *
  * @since   1.0.0b.1
- * @version 1.3, 06 June 2024
+ * @version 1.3, 10 June 2024
  * @author  <a href="https://github.com/mitsuki31" target="_blank">
  *          Ryuu Mitsuki</a>
  * @license <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
@@ -499,7 +560,8 @@ public class JMatrixBaseException extends RuntimeException {
      }
 
     /**
-     * Returns a string representation of this exception, including the class name and the detail message.
+     * Returns a string representation of this exception, including the class name, error code, and
+     * the detail message.
      *
      * @return a string representation of this exception.
      *
