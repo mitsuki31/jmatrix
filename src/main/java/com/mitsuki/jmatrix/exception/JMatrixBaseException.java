@@ -85,11 +85,13 @@ public class JMatrixBaseException extends RuntimeException {
     /** Caption for labelling causative exception stack traces. */
     private final String CAUSE_CAPTION = "/!\\ CAUSED BY";
 
-    /** An environment variable name for the exception raise configuration. */
-    private static final String raiseEnvName = "jm.autoraise";
+    /** A property name for the auto-raise configuration. */
+    private static final String raiseConfName = "jm.autoraise";
+    /** An environment variable name for the auto-raise configuration. */
+    private static final String raiseConfEnvName = "jm_autoraise";
 
     /**
-     * A value of {@value #raiseEnvName} environment variable.
+     * The value of auto-raise configuration.
      *
      * <p>The value can be one of the following:
      * <ul>
@@ -97,20 +99,24 @@ public class JMatrixBaseException extends RuntimeException {
      * <li>{@code manual}
      * </ul>
      *
-     * Fallback to {@code auto} if the {@value #raiseEnvName} is not defined
-     * or set to an empty string.
+     * Fallback to {@code auto} if both the {@value #raiseConfName} (in system
+     * properties) and {@value #raiseConfEnvName} (in environment variables) is not
+     * defined or set to an empty string.
      *
      * @see   #getRaiseConfig()
+     * @see   #getRaiseConfigFromSystemProps()
      */
-    private static final String raiseConf = getRaiseConfig();
+    private static String raiseConf = getRaiseConfig();
 
     /**
-     * Retrieves the value of the {@value #raiseEnvName} environment variable
-     * from the system environment variables.
+     * Retrieves the value of the {@value #raiseConfName} from the system property,
+     * if not set, then it tries to retrieves from environment variables named
+     * {@value #raiseConfEnvName}.
      *
-     * <p>This method checks the value of the environment variable and sets
+     * <p>This method checks the value of the {@value #raiseConfName} (from system
+     * properties) or {@value #raiseConfEnvName} (from environment variables) and sets
      * the configuration accordingly. The configuration will be set to {@code auto}
-     * if the value is equal to one of these known values:
+     * if the value is equal to one of these known values (case-insensitive):
      * <ul>
      * <li>{@code auto} or {@code a}
      * <li>{@code yes} or {@code y}
@@ -123,49 +129,107 @@ public class JMatrixBaseException extends RuntimeException {
      * <li>{@code no} or {@code n}
      * </ul>
      *
-     * <p>If the environment variable is not set or is empty, the default
-     * configuration is {@code auto}. If the value of the environment variable
-     * is not recognized, an {@link IllegalArgumentException} is thrown.
+     * <p>If the auto-raise configuration from the system properties is not set or
+     * is empty, it tries to retrieve the {@value #raiseConfEnvName} from environment
+     * variables. If not set or is an empty string too, set the auto-raise configuration
+     * to {@code auto}.
+     *
+     * <p>If the {@value #raiseConfName} configuration is set using both environment
+     * variables and system properties, the system property will take precedence.
+     * So, it is recommended to set the auto-raise configuration using system property.
      *
      * @implNote This method is synchronized to ensure thread safety.
      *
      * @return  The configuration value, either {@code auto} or {@code manual}.
      *
-     * @throws IllegalArgumentException  If the environment variable value is
-     *                                   set to an unrecognized value.
+     * @throws  SecurityException  If a security manager exists and its
+     *                             {@code checkPropertyAccess} method does not
+     *                             allow access to the specified system property.
+     *                             <b>This exception will never be thrown, but users
+     *                             will be warned by a warning message.</b>
+     * @throws  IllegalArgumentException  If the auto-raise configuration either from
+     *                                    the system property or environment variable
+     *                                    is set to an unrecognized value.
      *
      * @since  1.5.0
-     * @see    #raiseConf
+     * @see    #getRaiseConfigFromSystemProps()
      */
-    protected static synchronized final String getRaiseConfig() {
-        String value = null;
-        // Retrieve the environment variable
-        String raiseErrEnv = System.getenv(raiseEnvName);
-        // Lower case the value if not null (undeclared)
-        raiseErrEnv = (raiseErrEnv != null) ? raiseErrEnv.toLowerCase() : raiseErrEnv;
+    static synchronized final String getRaiseConfig() {
+        String value = getRaiseConfigFromSystemProps();
 
-        if (raiseErrEnv == null || (raiseErrEnv != null && raiseErrEnv.length() == 0)) {
-            value = "auto";  // ! Default to 'auto' if undeclared or has an empty string
-        } else {
-            if (  // Check for 'auto' value
-                (raiseErrEnv.equals("auto") || raiseErrEnv.equals("a")) ||
-                (raiseErrEnv.equals("yes") || raiseErrEnv.equals("y"))
-            ) {
-                value = "auto";
-            } else if (  // Check for 'manual' value
-                (raiseErrEnv.equals("manual") || raiseErrEnv.equals("m")) ||
-                (raiseErrEnv.equals("no") || raiseErrEnv.equals("n"))
-            ) {
-                value = "manual";
-            } else {
-                // Throw an exception if the value is not known
-                throw new IllegalArgumentException(String.format(
-                    "Unknown value of '%s': %s",
-                    raiseEnvName, raiseErrEnv
+        if (value == null || (value != null && value.length() == 0)) {
+            try {
+                // If the auto-raise configuration from system property is not set,
+                // then it tries to retrieve from environment variables safely
+                value = System.getenv(raiseConfEnvName);
+                if (value == null || (value != null && value.length() == 0))
+                    return "auto";
+            } catch (final SecurityException se) {
+                System.err.println(String.format(
+                    "jmatrix: [Warning] SecurityException has been occurred internally " +
+                    "while attempting to get \"%s\" from environment variables",
+                    raiseConfEnvName
                 ));
             }
         }
+
+        // Lower case the value if not null (undeclared)
+        value = value.toLowerCase();
+
+        if (  // Check for 'auto' value
+            (value.equals("auto") || value.equals("a")) ||
+            (value.equals("yes") || value.equals("y"))
+        ) {
+            value = "auto";
+        } else if (  // Check for 'manual' value
+            (value.equals("manual") || value.equals("m")) ||
+            (value.equals("no") || value.equals("n"))
+        ) {
+            value = "manual";
+        } else {
+            // Throw an exception if the value is not known
+            throw new IllegalArgumentException(String.format(
+                "Unknown value of '%s': %s",
+                raiseConfName, value
+            ));
+        }
         return value;
+    }
+
+    /**
+     * Retrieves the value of the system property named {@value #raiseConfName}.
+     *
+     * <p>This method attempts to obtain the value of the system property named
+     * {@value raiseEnvName}. It handles any {@link SecurityException} that may occur
+     * during this process and logs a warning message if such an exception is
+     * encountered without throwing the exception.
+     *
+     * @implNote The method is synchronized to ensure thread safety.
+     *
+     * @return  The value of the system property {@value raiseEnvName}, or {@code null}
+     *          if the property is not found or a {@link SecurityException} occurs.
+     *
+     * @throws  SecurityException  If a security manager exists and its
+     *                             {@code checkPropertyAccess} method does not
+     *                             allow access to the specified system property.
+     *                             <b>This exception will never be thrown, but users
+     *                             will be warned by a warning message.</b>
+     *
+     * @since  1.5.0
+     * @see    #getRaiseConfig()
+     */
+    static synchronized final String getRaiseConfigFromSystemProps() {
+        try {
+            return System.getProperty(raiseConfName);
+        } catch (final SecurityException se) {
+            // Print a warning message when SecurityException occurred
+            System.err.println(String.format(
+                "jmatrix: [Warning] SecurityException has been occurred internally " +
+                "while attempting to get \"%s\" from system properties",
+                raiseConfName
+            ));
+        }
+        return null;
     }
 
     /**
@@ -349,6 +413,7 @@ public class JMatrixBaseException extends RuntimeException {
      * {@inheritDoc}
      *
      * @since 1.5.0
+     * @see   #printStackTrace()
      */
     @Override
     public void printStackTrace(PrintStream stream) {
@@ -452,15 +517,17 @@ public class JMatrixBaseException extends RuntimeException {
 
 
     /**
-     * Returns {@code true} if the {@value #raiseEnvName} environment variable
-     * is set to {@code auto}.
+     * Checks whether the current value of auto-raise configuration is set to {@code auto}.
      * 
-     * @return {@code true} if the {@value #raiseEnvName} equals to {@code auto}.
+     * @return {@code true} if the auto-raise configuration is set to {@code auto}.
      *         Otherwise, returns {@code false}.
+     *
+     * @implNote The method is synchronized to ensure thread safety.
      *
      * @since  1.5.0
      */
-    public static boolean isAutoRaise() {
+    public static synchronized boolean isAutoRaise() {
+        raiseConf = getRaiseConfig();
         return raiseConf.equals("auto");
     }
 
@@ -471,11 +538,11 @@ public class JMatrixBaseException extends RuntimeException {
      * <p>This method provides a mechanism to either print the stack trace of a 
      * given exception and exit the application with a specified error code, or 
      * throw the exception, depending on the configuration set by the 
-     * {@value #raiseEnvName} environment variable. The error number is determined 
+     * {@value #raiseConfName} environment variable. The error number is determined 
      * based on the type of the provided exception.
      *
      * <p>If the {@link #isAutoRaise()} method returns {@code true}, indicating 
-     * that the {@value #raiseEnvName} environment variable is set to {@code auto}:
+     * that the {@value #raiseConfName} environment variable is set to {@code auto}:
      * <ul>
      * <li> The stack trace of the provided exception {@code cause} is printed to 
      *      the standard error stream.
@@ -504,8 +571,8 @@ public class JMatrixBaseException extends RuntimeException {
      *               be printed and cause the application to exit, or will be thrown 
      *               based on the configuration.
      *
-     * @throws E     If the {@value #raiseEnvName} environment variable is not set to 
-     *               {@code auto}, the method throws the provided exception {@code cause}.
+     * @throws E     If the auto-raise configuration is not set to {@code auto},
+     *               the method throws the provided exception {@code cause}.
      *
      * @since  1.5.0
      * @see    #raise(RuntimeException, int)
@@ -526,13 +593,13 @@ public class JMatrixBaseException extends RuntimeException {
      * <p>This method provides a mechanism to either print the stack trace of a 
      * given exception and exit the application with a specified error code, or 
      * throw the exception, depending on the configuration set by the 
-     * {@value #raiseEnvName} environment variable. This allows for configurable 
+     * {@value #raiseConfName} environment variable. This allows for configurable 
      * error handling that can be controlled through environment settings.
      *
-     * <p>It will checks whether the {@value #raiseEnvName} is set to {@code auto}
+     * <p>It will checks whether the auto-raise configuration is set to {@code auto}
      * utilizing the {@link #isAutoRaise()} method, if the {@link #isAutoRaise()}
-     * method returns {@code true}, indicating that the {@value #raiseEnvName}
-     * environment variable is set to {@code auto}:
+     * method returns {@code true}, indicating that the auto-raise configuration
+     * is set to {@code auto}:
      * <ul>
      * <li> The stack trace of the provided exception {@code cause} is printed to 
      *      the standard error stream.
@@ -559,8 +626,8 @@ public class JMatrixBaseException extends RuntimeException {
      *               provided value is less than {@link Integer#MIN_VALUE}, it will 
      *               be adjusted to {@link Integer#MIN_VALUE}.
      *
-     * @throws E     If the {@value #raiseEnvName} environment variable is not set to 
-     *               {@code auto}, the method throws the provided exception {@code cause}.
+     * @throws E     If the auto-raise configuration is not set to {@code auto},
+     *               the method throws the provided exception {@code cause}.
      *
      * @since  1.5.0
      * @see    #raise(RuntimeException)
