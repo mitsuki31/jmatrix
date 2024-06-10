@@ -34,7 +34,7 @@ import com.mitsuki.jmatrix.enums.JMErrorCode;
  * <p><b>Type:</b> Unchecked exception</p>
  *
  * @since   0.1.0
- * @version 1.3, 09 June 2024
+ * @version 1.3, 10 June 2024
  * @author  <a href="https://github.com/mitsuki31" target="_blank">
  *          Ryuu Mitsuki</a>
  * @license <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
@@ -49,7 +49,7 @@ public class InvalidIndexException extends JMatrixBaseException {
      *
      * @see java.io.Serializable
      */
-    private static final long serialVersionUID = 10_585_989_792L;
+    private static final long serialVersionUID = 43_003_192_023_201L;
 
     private static int defaultErrno = JMErrorCode.INVIDX.getErrno();
 

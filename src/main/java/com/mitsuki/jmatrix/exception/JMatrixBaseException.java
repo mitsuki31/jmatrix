@@ -111,7 +111,7 @@ public class JMatrixBaseException extends RuntimeException {
      * @serial
      * @see    java.io.Serializable
      */
-    private static final long serialVersionUID = 8_294_400_000L;
+    private static final long serialVersionUID = 43_003_192_023_400L;
 
     /**
      * A string represents the detail message of this exception.

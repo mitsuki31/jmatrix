@@ -48,7 +48,7 @@ import com.mitsuki.jmatrix.enums.JMErrorCode;
  * </code></pre>
  *
  * @since   0.1.0
- * @version 1.4, 09 June 2024
+ * @version 1.4, 10 June 2024
  * @author  <a href="https://github.com/mitsuki31" target="_blank">
  *          Ryuu Mitsuki</a>
  * @license <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
@@ -65,7 +65,7 @@ public class NullMatrixException extends JMatrixBaseException {
      *
      * @see java.io.Serializable
      */
-    private static final long serialVersionUID = 6_418_048_608L;
+    private static final long serialVersionUID = 43_003_192_023_203L;
 
     private static int defaultErrno = JMErrorCode.NULLMT.getErrno();
 
