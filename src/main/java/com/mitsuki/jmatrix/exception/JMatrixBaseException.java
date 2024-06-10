@@ -86,7 +86,7 @@ public class JMatrixBaseException extends RuntimeException {
     private final String CAUSE_CAPTION = "/!\\ CAUSED BY";
 
     /** An environment variable name for the exception raise configuration. */
-    private static final String raiseEnvName = "jm.raise";
+    private static final String raiseEnvName = "jm.autoraise";
 
     /**
      * A value of {@value #raiseEnvName} environment variable.
