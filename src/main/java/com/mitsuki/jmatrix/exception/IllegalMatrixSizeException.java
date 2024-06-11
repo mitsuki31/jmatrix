@@ -49,6 +49,7 @@ public class IllegalMatrixSizeException extends JMatrixBaseException {
      */
     private static final long serialVersionUID = 43_003_192_023_202L;
 
+    /** Stores the default errno of this exception based on {@link JMErrorCode}. */
     private static int defaultErrno = JMErrorCode.INVTYP.getErrno();
 
     /**
@@ -71,37 +72,84 @@ public class IllegalMatrixSizeException extends JMatrixBaseException {
         super(defaultErrno, message);
     }
 
+    /**
+     * Constructs a new {@code IllegalMatrixSizeException} with the specified error
+     * number and the detailed message.
+     *
+     * <p>The given errno will replace the default errno of this exception.
+     *
+     * @param errno    The error number.
+     * @param message  The detail message and will be saved for later retrieval
+     *                 by the {@link #getMessage()} method.
+     *
+     * @since  1.5.0
+     * @see    #getMessage()
+     * @see    #getErrorCode()
+     */
     public IllegalMatrixSizeException(int errno, String message) {
         super(errno, message);
         defaultErrno = errno;
     }
 
     /**
-     * Constructs a new {@code IllegalMatrixSizeException} with the specified cause
-     * and a detail message of the cause.
+     * Constructs a new {@code IllegalMatrixSizeException} with the specified cause.
      *
-     * @param cause  the cause of this exception.
+     * <p>This constructor allows for exception chaining, where the new exception
+     * is caused by an existing throwable. This is useful for wrapping lower-level
+     * exceptions in higher-level exceptions, providing more context about the error
+     * that occurred.
      *
-     * @since        0.1.0
+     * @param cause  The cause of this exception. A {@code null} value is permitted
+     *               and indicates that the cause is nonexistent or unknown.
+     *
+     * @since  0.1.0
      */
     public IllegalMatrixSizeException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Constructs a new {@code IllegalMatrixSizeException} with the specified cause
+     * and a detailed message for later retrieval by {@link #getMessage()}.
+     *
+     * <p>This constructor allows for exception chaining, where the new exception 
+     * is caused by an existing throwable. This is useful for wrapping lower-level
+     * exceptions in higher-level exceptions, providing more context about the error
+     * that occurred.
+     *
+     * @param s      The descriptive message.
+     * @param cause  The cause of this exception. A {@code null} value is permitted
+     *               and indicates that the cause is nonexistent or unknown.
+     *
+     * @since  1.5.0
+     */
     public IllegalMatrixSizeException(String s, Throwable cause) {
         super(s, cause);
     }
-    
-    public IllegalMatrixSizeException(String s, Throwable cause,
+
+    /**
+     * Constructs a new {@code IllegalMatrixSizeException} with the specified detail message,
+     * cause, suppression enabled or disabled, and writable stack trace enabled or disabled.
+     *
+     * @param s                   The detail message (which is saved for later retrieval
+     *                            by the {@link #getMessage()} method)
+     * @param cause               The cause (which is saved for later retrieval by the
+     *                            {@link #getCause()} method).
+     *                            A {@code null} value is permitted, and indicates that
+     *                            the cause is nonexistent or unknown.
+     * @param enableSuppression   Whether or not suppression is enabled or disabled.
+     * @param writableStackTrace  Whether or not the stack trace should be writable.
+     *
+     * @since  1.5.0
+     */
+    protected IllegalMatrixSizeException(String s, Throwable cause,
                                       boolean enableSuppression,
                                       boolean writableStackTrace) {
         super(s, cause, enableSuppression, writableStackTrace);
     }
 
     /**
-     * Returns the detail message of this exception.
-     *
-     * @return the detail message.
+     * {@inheritDoc}
      *
      * @since  0.1.0
      */
@@ -110,15 +158,18 @@ public class IllegalMatrixSizeException extends JMatrixBaseException {
         return super.getMessage();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since  1.5.0
+     */
     @Override
     public JMErrorCode getErrorCode() {
         return JMErrorCode.valueOf(defaultErrno);
     }
 
     /**
-     * Returns a string representation of this exception, including the class name and the detail message.
-     *
-     * @return a string representation of this exception.
+     * {@inheritDoc}
      *
      * @since  0.1.0
      */

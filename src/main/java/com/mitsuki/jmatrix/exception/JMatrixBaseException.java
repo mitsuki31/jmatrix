@@ -26,6 +26,7 @@ import com.mitsuki.jmatrix.enums.JMErrorCode;
 
 import java.io.PrintStream;
 import java.lang.RuntimeException;
+import java.lang.SecurityException;
 
 /**
  * Base exception class for all <b>JMatrix</b> exceptions. This exception and its subclasses
@@ -79,7 +80,7 @@ import java.lang.RuntimeException;
  * Here is an example usage to set the {@value #raiseConfName} configuration using
  * system property from command-line.
  * <pre>&nbsp;
- *   $ java -D{@value #raiseConfName}=manual -cp /path/to/jmatrix-<VERSION>.jar Foo.java
+ *   $ java -D{@value #raiseConfName}=manual -cp /path/to/jmatrix-&lt;VERSION&gt;.jar Foo.java
  * </pre>
  *
  * <p>And this is an example usage to set the {@value #raiseConfName} configuration at runtime.
@@ -261,13 +262,13 @@ public class JMatrixBaseException extends RuntimeException {
      * Retrieves the value of the system property named {@value #raiseConfName}.
      *
      * <p>This method attempts to obtain the value of the system property named
-     * {@value raiseEnvName}. It handles any {@link SecurityException} that may occur
+     * {@value #raiseConfName}. It handles any {@link SecurityException} that may occur
      * during this process and logs a warning message if such an exception is
      * encountered without throwing the exception.
      *
      * @implNote The method is synchronized to ensure thread safety.
      *
-     * @return  The value of the system property {@value raiseEnvName}, or {@code null}
+     * @return  The value of the system property {@value #raiseConfName}, or {@code null}
      *          if the property is not found or a {@link SecurityException} occurs.
      *
      * @throws  SecurityException  If a security manager exists and its
@@ -418,6 +419,27 @@ public class JMatrixBaseException extends RuntimeException {
             : JMErrorCode.UNKERR;
     }
 
+    /**
+     * Constructs a new {@code JMatrixBaseException} with the specified detail message,
+     * cause, suppression enabled or disabled, and writable stack trace enabled or disabled.
+     *
+     * <p>The detail message is saved for later retrieval by the {@link #getMessage()}
+     * method. If {@code cause} is not {@code null}, the error code will be determined
+     * based on whether the cause is an instance of {@code JMatrixBaseException} of its
+     * subclasses. If it is, the error code will be inherited from the cause; otherwise,
+     * the error code will be set to {@link JMErrorCode#UNKERR}.
+     *
+     * @param message             The detail message (which is saved for later retrieval
+     *                            by the {@link #getMessage()} method)
+     * @param cause               The cause (which is saved for later retrieval by the
+     *                            {@link #getCause()} method).
+     *                            A {@code null} value is permitted, and indicates that
+     *                            the cause is nonexistent or unknown.
+     * @param enableSuppression   Whether or not suppression is enabled or disabled.
+     * @param writableStackTrace  Whether or not the stack trace should be writable.
+     *
+     * @since  1.5.0
+     */
     protected JMatrixBaseException(String message, Throwable cause,
                                    boolean enableSuppression,
                                    boolean writableStackTrace) {
@@ -441,7 +463,7 @@ public class JMatrixBaseException extends RuntimeException {
      * /!\ EXCEPTION
      * &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;
      * com.mitsuki.jmatrix.exception.InvalidIndexException [INVIDX]: Given row index is out of bounds
-     *         at "Example.main" -> "Example.java": line 7
+     *         at "Example.main" -&gt; "Example.java": line 7
      *         ...
      *
      * [EXCEPTION INFO]

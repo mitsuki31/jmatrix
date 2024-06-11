@@ -204,7 +204,7 @@ public enum JMErrorCode {
      *                                    name (with string representation).
      *
      * @since   1.5.0
-     * @see     Enum#valueOf(String)
+     * @see     Enum#valueOf(Class, String)
      */
     public static <T extends Object> JMErrorCode valueOf(T x) {
         if (x instanceof Integer) {

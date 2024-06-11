@@ -67,6 +67,7 @@ public class NullMatrixException extends JMatrixBaseException {
      */
     private static final long serialVersionUID = 43_003_192_023_203L;
 
+    /** Stores the default errno of this exception based on {@link JMErrorCode}. */
     private static int defaultErrno = JMErrorCode.NULLMT.getErrno();
 
     /**
@@ -90,28 +91,77 @@ public class NullMatrixException extends JMatrixBaseException {
         super(defaultErrno, message);
     }
 
+    /**
+     * Constructs a new {@code NullMatrixException} with the specified errno
+     * and the detail message.
+     *
+     * <p>The given errno will replace the default errno of this exception.
+     *
+     * @param errno    The error number.
+     * @param message  The detail message and will be saved for later retrieval
+     *                 by the {@link #getMessage()} method.
+     *
+     * @since  1.5.0
+     * @see    #getMessage()
+     * @see    #getErrorCode()
+     */
     public NullMatrixException(int errno, String message) {
         super(errno, message);
         defaultErrno = errno;
     }
 
     /**
-     * Constructs a new {@code NullMatrixException} with the specified cause
-     * and a detail message of the cause.
+     * Constructs a new {@code NullMatrixException} with the specified cause.
      *
-     * @param cause  the cause of this exception.
+     * <p>This constructor allows for exception chaining, where the new exception
+     * is caused by an existing throwable. This is useful for wrapping lower-level
+     * exceptions in higher-level exceptions, providing more context about the error
+     * that occurred.
      *
-     * @since        0.1.0
+     * @param cause  The cause of this exception. A {@code null} value is permitted
+     *               and indicates that the cause is nonexistent or unknown.
+     *
+     * @since  0.1.0
      */
     public NullMatrixException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Constructs a new {@code NullMatrixException} with the specified cause
+     * and a detailed message for later retrieval by {@link #getMessage()}.
+     *
+     * <p>This constructor allows for exception chaining, where the new exception 
+     * is caused by an existing throwable. This is useful for wrapping lower-level
+     * exceptions in higher-level exceptions, providing more context about the error
+     * that occurred.
+     *
+     * @param s      The descriptive message.
+     * @param cause  The cause of this exception. A {@code null} value is permitted
+     *               and indicates that the cause is nonexistent or unknown.
+     *
+     * @since  1.5.0
+     */
     public NullMatrixException(String s, Throwable cause) {
         super(s, cause);
     }
 
-    public NullMatrixException(String s, Throwable cause,
+    /**
+     * Constructs a new {@code NullMatrixException} with the specified detail message,
+     * cause, suppression enabled or disabled, and writable stack trace enabled or disabled.
+     *
+     * @param s                   The detail message (which is saved for later retrieval
+     *                            by the {@link #getMessage()} method)
+     * @param cause               The cause (which is saved for later retrieval by the
+     *                            {@link #getCause()} method).
+     *                            A {@code null} value is permitted, and indicates that
+     *                            the cause is nonexistent or unknown.
+     * @param enableSuppression   Whether or not suppression is enabled or disabled.
+     * @param writableStackTrace  Whether or not the stack trace should be writable.
+     *
+     * @since  1.5.0
+     */
+    protected NullMatrixException(String s, Throwable cause,
                                boolean enableSuppression,
                                boolean writableStackTrace) {
         super(s, cause, enableSuppression, writableStackTrace);
@@ -119,9 +169,7 @@ public class NullMatrixException extends JMatrixBaseException {
 
 
     /**
-     * Returns the detail message of this exception.
-     *
-     * @return the detail message.
+     * {@inheritDoc}
      *
      * @since  0.1.0
      */
@@ -129,17 +177,19 @@ public class NullMatrixException extends JMatrixBaseException {
     public String getMessage() {
         return super.getMessage();
     }
-    
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since  1.5.0
+     */
     @Override
     public JMErrorCode getErrorCode() {
         return JMErrorCode.valueOf(defaultErrno);
     }
 
     /**
-     * Returns a string representation of this exception, including
-     * the class name and the detail message.
-     *
-     * @return a string representation of this exception.
+     * {@inheritDoc}
      *
      * @since  0.1.0
      */
