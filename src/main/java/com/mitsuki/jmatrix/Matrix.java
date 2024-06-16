@@ -20,12 +20,12 @@
 
 package com.mitsuki.jmatrix;
 
+import com.mitsuki.jmatrix.core.MatrixUtils;
 import com.mitsuki.jmatrix.exception.IllegalMatrixSizeException;
 import com.mitsuki.jmatrix.exception.InvalidIndexException;
 import com.mitsuki.jmatrix.exception.JMatrixBaseException;
 import com.mitsuki.jmatrix.exception.NullMatrixException;
-import com.mitsuki.jmatrix.internal.JMatrixUtils;
-import com.mitsuki.jmatrix.core.MatrixUtils;
+import static com.mitsuki.jmatrix.exception.JMatrixBaseException.raise;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -265,7 +265,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Copy the sizes from input parameters
         this.ROWS = rows;
@@ -327,7 +327,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Copy the sizes from input parameters
         this.ROWS = rows;
@@ -390,7 +390,7 @@ public class Matrix implements MatrixUtils {
     public Matrix(double[ ][ ] arr) {
         // Raise the exception immediately if given array is null
         if (arr == null || arr.length == 0) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Given two-dimensional array is null. Please ensure the array has valid elements."));
         }
 
@@ -465,7 +465,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Copy the sizes from input parameters
         this.ROWS = rows;
@@ -493,7 +493,7 @@ public class Matrix implements MatrixUtils {
     public void create(double[ ][ ] arr) {
         // Raise the exception immediately if given array is null
         if (arr == null || arr.length == 0) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Given two-dimensional array is null. Please ensure the array has valid elements."));
         }
 
@@ -555,7 +555,7 @@ public class Matrix implements MatrixUtils {
     public static Matrix identity(int n) {
         // Check for negative value on input argument
         if (n < 1) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Sizes of identity matrix cannot be lower than 1."));
         }
 
@@ -679,10 +679,10 @@ public class Matrix implements MatrixUtils {
      */
     public static Matrix addRow(Matrix m, double[] a) {
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized"));
         } else if (a == null || a.length == 0) {
-            JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
+            raise(new JMatrixBaseException(new NullPointerException(
                 "Given array is null or empty. Cannot append it into the matrix")));
         }
 
@@ -797,10 +797,10 @@ public class Matrix implements MatrixUtils {
      */
     public static Matrix addColumn(Matrix m, double[] a) {
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized"));
         } else if (a == null || a.length == 0) {
-            JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
+            raise(new JMatrixBaseException(new NullPointerException(
                 "Given array is null or empty. Cannot append it into the matrix")));
         }
 
@@ -952,20 +952,20 @@ public class Matrix implements MatrixUtils {
         row += (row < 0) ? (mRows + 1) : 0;  // Allow negative indexing
 
         if (MatrixUtils.isNullEntries(m)) {  // Check for null matrix
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized"));
         } else if (a == null || a.length == 0) {  // Check for null or empty array
-            JMatrixUtils.raiseError(new JMatrixBaseException(new NullPointerException(
+            raise(new JMatrixBaseException(new NullPointerException(
                 "Given array is null or empty. Cannot insert it into the matrix")));
         } else if (row < 0 || row >= mRows) {  // Check for the index is out of bounds
-            JMatrixUtils.raiseError(new InvalidIndexException(
+            raise(new InvalidIndexException(
                 String.format("Given row index is out of range: %d",
                     (row < 0) ? (row - mRows - 1) : row
                 )
             ));
         } else if (a.length < mRows) {
             // Check for the array length is less than matrix number of rows
-            JMatrixUtils.raiseError(new JMatrixBaseException(
+            raise(new JMatrixBaseException(
                 new IllegalArgumentException(String.format(
                     "The length of array is less than matrix row count: %d < %d",
                     a.length, mRows
@@ -1163,14 +1163,14 @@ public class Matrix implements MatrixUtils {
         col += (col < 0) ? (mCols + 1) : 0;  // Allow negative indexing
 
         if (col < 0 || col > mCols) {  // Check for the index is out of bounds
-            JMatrixUtils.raiseError(new InvalidIndexException(
+            raise(new InvalidIndexException(
                 String.format("Given column index is out of range: %d",
                     (col < 0) ? (col - mCols - 1) : col
                 )
             ));
         } else if (a.length < mCols) {
             // Check for the array length is less than matrix number of rows
-            JMatrixUtils.raiseError(new JMatrixBaseException(
+            raise(new JMatrixBaseException(
                 new IllegalArgumentException(String.format(
                     "The length of array is less than matrix column count: %d < %d",
                     a.length, mCols
@@ -1263,7 +1263,7 @@ public class Matrix implements MatrixUtils {
      */
     public static Matrix dropRow(Matrix m, int row) {
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized"));
         }
 
@@ -1272,7 +1272,7 @@ public class Matrix implements MatrixUtils {
 
         row += (row < 0) ? rows : 0;  // Allow negative indexing
         if (row >= rows || row < 0) {
-            JMatrixUtils.raiseError(new InvalidIndexException(
+            raise(new InvalidIndexException(
                 String.format("Given row index is out of range: %d",
                     (row < 0) ? (row - rows) : row
                 )
@@ -1371,7 +1371,7 @@ public class Matrix implements MatrixUtils {
      */
     public static Matrix dropColumn(Matrix m, int col) {
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized"));
         }
 
@@ -1380,7 +1380,7 @@ public class Matrix implements MatrixUtils {
 
         col += (col < 0) ? cols : 0;  // Allow negative indexing
         if (col >= cols || col < 0) {
-            JMatrixUtils.raiseError(new InvalidIndexException(
+            raise(new InvalidIndexException(
                 String.format("Given column index is out of range: %d",
                     (col < 0) ? (col - cols) : col
                 )
@@ -1456,7 +1456,7 @@ public class Matrix implements MatrixUtils {
      */
     public static Matrix swapRows(Matrix m, int row1, int row2) {
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized."));
         }
 
@@ -1482,7 +1482,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Raise the error, if any
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // We prefer use the `System.arraycopy` method instead of `Arrays.copyOf` or
         // use a very slow method, *for-loop*. It because the `System.arraycopy` offers
@@ -1553,7 +1553,7 @@ public class Matrix implements MatrixUtils {
      */
     public static Matrix swapColumns(Matrix m, int col1, int col2) {
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized."));
         }
 
@@ -1578,7 +1578,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Raise the error, if any
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         for (int i = 0; i < entries.length; i++) {
             // Swap the elements of columns `col1` and `col2` directly without using
@@ -1637,10 +1637,10 @@ public class Matrix implements MatrixUtils {
             try {
                 throw new JMatrixBaseException(iae);
             } catch (final JMatrixBaseException jme) {
-                JMatrixUtils.raiseError(jme);
+                raise(jme);
             }
         } catch (final RuntimeException re) {
-            JMatrixUtils.raiseError(re);
+            raise(re);
         }
 
         // Iterate values list and fill elements of matrix array
@@ -1685,7 +1685,7 @@ public class Matrix implements MatrixUtils {
                     "Cannot add values anymore, Matrix is already full");
             }
         } catch (final RuntimeException re) {
-            JMatrixUtils.raiseError(re);
+            raise(re);
         }
 
         // Creates list of repeated value
@@ -1827,7 +1827,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][m.COLS];
@@ -1911,7 +1911,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][arr[0].length];
@@ -1998,7 +1998,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create a new array for the result
         double[ ][ ] result = new double[a.length][b[0].length];
@@ -2086,7 +2086,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix object
         Matrix matrixRes = new Matrix(a.getSize()[0], b.getSize()[1]);
@@ -2172,7 +2172,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][m.COLS];
@@ -2252,7 +2252,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][arr[0].length];
@@ -2338,7 +2338,7 @@ public class Matrix implements MatrixUtils {
             );
         }
 
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create a new matrix array
         double[ ][ ] result = new double[a.length][b[0].length];
@@ -2423,7 +2423,7 @@ public class Matrix implements MatrixUtils {
             );
         }
 
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix object
         Matrix matrixRes = new Matrix(a.getSize()[0], b.getSize()[1]);
@@ -2514,7 +2514,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix array
         double[ ][ ] result = new double[this.ROWS][m.COLS];
@@ -2600,7 +2600,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix array
         double[ ][ ] result = new double[this.ROWS][a[0].length];
@@ -2686,7 +2686,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         double[ ][ ] result = new double[a.length][b[0].length];
 
@@ -2773,7 +2773,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix object
         Matrix result = new Matrix(a.getSize()[0], b.getSize()[1]);
@@ -2828,7 +2828,7 @@ public class Matrix implements MatrixUtils {
     public void mult(double x) {
         // Throw the exception immediately if this matrix has null entries
         if (this.ENTRIES == null) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "This matrix is null. " +
                 "Please ensure the matrix are initialized before performing scalar multiplication."
             ));
@@ -2878,7 +2878,7 @@ public class Matrix implements MatrixUtils {
     public static Matrix mult(Matrix m, double x) {
         // Throw the exception immediately if given matrix has null entries
         if (m == null || m.getEntries() == null) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Given matrix is null. " +
                 "Please ensure the matrix are initialized before performing scalar multiplication."
             ));
@@ -2955,7 +2955,7 @@ public class Matrix implements MatrixUtils {
     public void transpose() {
         // Throw the exception immediately if this matrix has null entries
         if (this.ENTRIES == null) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "This matrix is null. " +
                 "Please ensure the matrix are initialized before performing transposition."
             ));
@@ -2990,7 +2990,7 @@ public class Matrix implements MatrixUtils {
      */
     public static double[ ][ ] transpose(double[ ][ ] arr) {
         if (arr == null || arr.length == 0) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Given array is null. " +
                 "Please ensure the array has valid elements before performing transposition."
             ));
@@ -3060,7 +3060,7 @@ public class Matrix implements MatrixUtils {
     public static Matrix transpose(Matrix m) {
         // Throw the exception immediately if the given matrix has null entries
         if (m == null || m.getEntries() == null) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Given matrix is null. " +
                 "Please ensure the matrix are initialized before performing transposition."
             ));
@@ -3177,7 +3177,7 @@ public class Matrix implements MatrixUtils {
     public static double trace(Matrix m) {
         // Raise an error if the matrix is not square
         if (!m.isSquare()) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Matrix is non-square type. " +
                 "Please ensure the matrix has the same number of rows and columns."
             ));
@@ -3232,7 +3232,7 @@ public class Matrix implements MatrixUtils {
      */
     public static double trace(double[ ][ ] arr) {
         if (!Matrix.isSquare(arr)) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Array is non-square type. " +
                 "Please ensure the array has the same number of rows and columns."
             ));
@@ -3367,12 +3367,12 @@ public class Matrix implements MatrixUtils {
      */
     public static Matrix minorMatrix(Matrix m, int row, int col) {
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized"));
         }
 
         if (!m.isSquare()) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Matrix is not square. Please ensure the matrix have the same rows"
                     + " and columns size"
             ));
@@ -3437,7 +3437,7 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isSquare(double[ ][ ] arr) {
         if (arr == null || arr.length == 0) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Given array is null. Please ensure the array has valid elements."));
         }
 
@@ -3464,7 +3464,7 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isSquare(Matrix m) {
         if (m == null || m.getEntries() == null) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized."));
         }
 
@@ -3517,7 +3517,7 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isDiagonal(Matrix m) {
         if (!m.isSquare()) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Matrix is non-square type. " +
                 "Please ensure the matrix has the same number of rows and columns."
             ));
@@ -3554,7 +3554,7 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isDiagonal(double[ ][ ] arr) {
         if (!Matrix.isSquare(arr)) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Given array is non-square type. " +
                 "Please ensure the array has the same number of rows and columns."
             ));
@@ -3667,14 +3667,14 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isLowerTriangular(Matrix m) {
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix have been initialized.")
             );
         }
 
         // The matrix must be square
         else if (!m.isSquare()) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Matrix is non-square type. " +
                 "Please ensure the matrix has the same number of rows and columns."
             ));
@@ -3736,14 +3736,14 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isLowerTriangular(double[ ][ ] arr) {
         if (arr == null || arr.length == 0) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Array is null. Please ensure the array has valid elements.")
             );
         }
 
         // The two-dimensional array must be square
         else if (!Matrix.isSquare(arr)) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Array is non-square type. " +
                 "Please ensure the array has the same number of rows and columns."
             ));
@@ -3856,14 +3856,14 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isUpperTriangular(Matrix m) {
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix have been initialized.")
             );
         }
 
         // The matrix must be square
         else if (!m.isSquare()) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Matrix is non-square type. " +
                 "Please ensure the matrix has the same number of rows and columns."
             ));
@@ -3925,14 +3925,14 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isUpperTriangular(double[ ][ ] arr) {
         if (arr == null || arr.length == 0) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Array is null. Please ensure the array has valid elements.")
             );
         }
 
         // The matrix must be square
         else if (!Matrix.isSquare(arr)) {
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Array is non-square type. " +
                 "Please ensure the array has the same number of rows and columns."
             ));
@@ -4058,7 +4058,7 @@ public class Matrix implements MatrixUtils {
         int numberNonZero = 0;  // To hold the total number of non-zero entries
 
         if (MatrixUtils.isNullEntries(m)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix have been initialized.")
             );
         }
@@ -4129,7 +4129,7 @@ public class Matrix implements MatrixUtils {
         int numberNonZero = 0;  // To hold the total number of non-zero entries
 
         if (a == null || a.length == 0) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Array is null. Please ensure the array has valid elements.")
             );
         }
@@ -4204,12 +4204,12 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isIdentity(Matrix m) {
         if (MatrixUtils.isNullEntries(m)) {  // Check for uninitialized matrix
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix have been initialized."));
         }
         // ** no else-if after throw
         if (!m.isSquare()) {  // Check for non-square matrix
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Matrix is not square. " +
                 "Please ensure the matrix has the same number of rows and columns."
             ));
@@ -4260,12 +4260,12 @@ public class Matrix implements MatrixUtils {
      */
     public static boolean isIdentity(double[][] arr) {
         if (arr == null || arr.length == 0) {  // Check for null array
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Array is null. Please ensure the array have been initialized."));
         }
         // ** no else-if after throw
         if (!Matrix.isSquare(arr)) {  // Check for non-square array
-            JMatrixUtils.raiseError(new IllegalMatrixSizeException(
+            raise(new IllegalMatrixSizeException(
                 "Array is not square. " +
                 "Please ensure the array has the same number of rows and columns."
             ));
@@ -4325,7 +4325,7 @@ public class Matrix implements MatrixUtils {
                     "Matrix is null. Please ensure the matrix are initialized.");
             }
         } catch (final NullMatrixException nme) {
-            JMatrixUtils.raiseError(nme);
+            raise(nme);
         }
 
         // Create new and copy the matrix
@@ -4416,7 +4416,7 @@ public class Matrix implements MatrixUtils {
                 "Given index is too larger than number of rows.");
         }
 
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         this.selectedIndex = index;
         this.hasSelect = true;
@@ -4499,7 +4499,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         // Change values of matrix column with values from argument parameter
         for (int i = 0; i < this.COLS; i++) {
@@ -4561,7 +4561,7 @@ public class Matrix implements MatrixUtils {
         // Check if the user have not select any index row
         // If user have not then it will immediately raise the exception
         if (!this.hasSelect) {
-            JMatrixUtils.raiseError(new InvalidIndexException(
+            raise(new InvalidIndexException(
                 "Selected index is null. " +
                 "Please ensure you have already called \"select(int)\" method."
             ));
@@ -4600,7 +4600,7 @@ public class Matrix implements MatrixUtils {
      */
     public void clear() {
         if (this.ENTRIES == null) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix have been initialized."));
         }
 
@@ -4630,7 +4630,7 @@ public class Matrix implements MatrixUtils {
      */
     public void sort() {
         if (this.ENTRIES == null) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "This matrix is null. Please ensure the matrix are initialized."));
         }
 
@@ -4660,7 +4660,7 @@ public class Matrix implements MatrixUtils {
      */
     public static void sort(double[ ][ ] arr) {
         if (arr == null || arr.length == 0) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Given array is null. Please ensure the array has valid elements."));
         }
 
@@ -4687,7 +4687,7 @@ public class Matrix implements MatrixUtils {
     public static Matrix sort(Matrix m) {
         // Check for matrix with null entries
         if (m == null || m.getEntries() == null) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Given matrix is null. Please ensure the matrix are initialized."));
         }
 
@@ -4994,7 +4994,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) JMatrixUtils.raiseError(cause);
+        if (cause != null) raise((RuntimeException) cause);
 
         return m.ENTRIES[row][col];
     }
@@ -5061,7 +5061,7 @@ public class Matrix implements MatrixUtils {
      */
     public List<List<Double>> getReadOnlyEntries() {
         if (MatrixUtils.isNullEntries(this)) {
-            JMatrixUtils.raiseError(new NullMatrixException(
+            raise(new NullMatrixException(
                 "Matrix is null. Please ensure the matrix are initialized."));
         }
 
@@ -5153,7 +5153,7 @@ public class Matrix implements MatrixUtils {
             }
 
             // Throw the exception if got one
-            if (cause != null) JMatrixUtils.raiseError(cause);
+            if (cause != null) raise((RuntimeException) cause);
 
             System.out.println(Arrays.toString(this.ENTRIES[index]));
         } else {
@@ -5226,7 +5226,7 @@ public class Matrix implements MatrixUtils {
             }
 
             // Throw the exception if got one
-            if (cause != null) JMatrixUtils.raiseError(cause);
+            if (cause != null) raise((RuntimeException) cause);
 
             System.out.println(Arrays.toString(arr[index]));
         }
