@@ -64,7 +64,7 @@ public enum JMErrorCode {
     /**
      * Error code indicating that the given index is out of bounds.
      *
-     * This error code is useful to indicates that user gives an index
+     * <p>This error code is useful to indicates that user gives an index
      * either of row or column (which from methods that indexing-related,
      * such as {@link Matrix#insertRow(int, double[])}, {@link
      * Matrix#dropColumn(int)}, and {@link Matrix#display(int)}).
@@ -76,7 +76,7 @@ public enum JMErrorCode {
     /**
      * Error code indicating that the matrix has an invalid type.
      *
-     * This error code will be in the {@link IllegalMatrixSizeException} exception
+     * <p>This error code will be in the {@link IllegalMatrixSizeException} exception
      * which related to invalid type of matrix. For example, user attempting to
      * calculate trace with a {@code 5x3} matrix, which is an illegal attemption
      * because trace calculation are only for square matrices.
@@ -101,7 +101,7 @@ public enum JMErrorCode {
     /**
      * Error code indicating an unknown error.
      *
-     * <p>This error code can be made by the {@Link JMatrixBaseException} class
+     * <p>This error code can be made by the {@link JMatrixBaseException} class
      * when failed to evaluate the given error number (errno) or the cause exception
      * is not an instance of that class while trying to get the error code from the
      * given cause exception, and ended up constructs with this error code.
