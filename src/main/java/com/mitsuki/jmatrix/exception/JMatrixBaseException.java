@@ -20,8 +20,6 @@
 
 package com.mitsuki.jmatrix.exception;
 
-import com.mitsuki.jmatrix.Matrix;
-import com.mitsuki.jmatrix.core.MatrixUtils;
 import com.mitsuki.jmatrix.enums.JMErrorCode;
 
 import java.io.PrintStream;
@@ -96,7 +94,7 @@ import java.lang.SecurityException;
  * </pre>
  *
  * @since   1.0.0b.1
- * @version 1.3, 10 June 2024
+ * @version 1.4, 12 September 2024
  * @author  <a href="https://github.com/mitsuki31" target="_blank">
  *          Ryuu Mitsuki</a>
  * @license <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
@@ -650,8 +648,7 @@ public class JMatrixBaseException extends RuntimeException {
      *      which corresponds to the error code {@code 400}.
      * </ul>
      *
-     * @param <E>    The type of the runtime exception to be raised.
-     * @param cause  The exception that caused the error. This exception will either 
+     * @param cause  The runtime exception that caused the error. This exception will either 
      *               be printed and cause the application to exit, or will be thrown 
      *               based on the configuration.
      *
@@ -661,7 +658,7 @@ public class JMatrixBaseException extends RuntimeException {
      * @since  1.5.0
      * @see    #raise(RuntimeException, int)
      */
-    public static <E extends RuntimeException> void raise(E cause) {
+    public static void raise(RuntimeException cause) {
         raise(cause,
             // Retrieve the errno if the given object is an instance of this class
             // Otherwise, set the errno to 400 (Unknown error)
@@ -700,8 +697,7 @@ public class JMatrixBaseException extends RuntimeException {
      * behavior supports scenarios where the application prefers to handle exceptions 
      * using traditional try-catch blocks rather than exiting.
      *
-     * @param <E>    The type of the runtime exception to be raised.
-     * @param cause  The exception that caused the error. This exception will either 
+     * @param cause  The runtime exception that caused the error. This exception will either 
      *               be printed and cause the application to exit, or will be thrown 
      *               based on the configuration.
      * @param errno  The error number to exit with if auto-raise is enabled. This 
@@ -716,7 +712,7 @@ public class JMatrixBaseException extends RuntimeException {
      * @since  1.5.0
      * @see    #raise(RuntimeException)
      */
-    public static <E extends RuntimeException> void raise(E cause, int errno) {
+    public static void raise(RuntimeException cause, int errno) {
         if (isAutoRaise()) {
             // Print the stack trace and exit with the specified errno
             cause.printStackTrace();
