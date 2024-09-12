@@ -322,7 +322,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Copy the sizes from input parameters
         this.ROWS = rows;
@@ -1897,7 +1897,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][arr[0].length];
@@ -1984,7 +1984,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create a new array for the result
         double[ ][ ] result = new double[a.length][b[0].length];
@@ -2072,7 +2072,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create new matrix object
         Matrix matrixRes = new Matrix(a.getSize()[0], b.getSize()[1]);
@@ -2158,7 +2158,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][m.COLS];
@@ -2238,7 +2238,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][arr[0].length];
@@ -2324,7 +2324,7 @@ public class Matrix implements MatrixUtils {
             );
         }
 
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create a new matrix array
         double[ ][ ] result = new double[a.length][b[0].length];
@@ -2409,7 +2409,7 @@ public class Matrix implements MatrixUtils {
             );
         }
 
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create new matrix object
         Matrix matrixRes = new Matrix(a.getSize()[0], b.getSize()[1]);
@@ -2500,7 +2500,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create new matrix array
         double[ ][ ] result = new double[this.ROWS][m.COLS];
@@ -2586,7 +2586,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create new matrix array
         double[ ][ ] result = new double[this.ROWS][a[0].length];
@@ -2672,7 +2672,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         double[ ][ ] result = new double[a.length][b[0].length];
 
@@ -2759,7 +2759,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Create new matrix object
         Matrix result = new Matrix(a.getSize()[0], b.getSize()[1]);
@@ -4402,7 +4402,7 @@ public class Matrix implements MatrixUtils {
                 "Given index is too larger than number of rows.");
         }
 
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         this.selectedIndex = index;
         this.hasSelect = true;
@@ -4485,7 +4485,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Change values of matrix column with values from argument parameter
         for (int i = 0; i < this.COLS; i++) {
@@ -4980,7 +4980,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         return m.ENTRIES[row][col];
     }
@@ -5139,7 +5139,7 @@ public class Matrix implements MatrixUtils {
             }
 
             // Throw the exception if got one
-            if (cause != null) raise((RuntimeException) cause);
+            if (cause != null) raise(cause);
 
             System.out.println(Arrays.toString(this.ENTRIES[index]));
         } else {
@@ -5212,7 +5212,7 @@ public class Matrix implements MatrixUtils {
             }
 
             // Throw the exception if got one
-            if (cause != null) raise((RuntimeException) cause);
+            if (cause != null) raise(cause);
 
             System.out.println(Arrays.toString(arr[index]));
         }
