@@ -20,6 +20,7 @@
 
 package com.mitsuki.jmatrix;
 
+import com.mitsuki.jmatrix.core.MatrixChecker;
 import com.mitsuki.jmatrix.core.MatrixUtils;
 import com.mitsuki.jmatrix.exception.IllegalMatrixSizeException;
 import com.mitsuki.jmatrix.exception.InvalidIndexException;
@@ -116,12 +117,12 @@ import java.util.stream.Collectors;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  3.2, 30 May 2024
+ * @version  3.3, 12 September 2024
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
  *
- * @see      com.mitsuki.jmatrix.core.MatrixUtils
+ * @see      MatrixUtils
  * @see      <a href="https://en.m.wikipedia.org/wiki/Matrix_(mathematics)" target="_blank">
  *           "Matrix (Wikipedia)"</a>
  */
@@ -184,10 +185,8 @@ public class Matrix implements MatrixUtils {
      * This variable stores the exception that want to be thrown.
      *
      * <p>The value itself is currently {@code null} unless it stored an exception.
-     *
-     * @see java.lang.Throwable
      */
-    private static Throwable cause = null;
+    private static RuntimeException cause = null;
 
 
     /**
@@ -265,11 +264,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
-
-        // Copy the sizes from input parameters
-        this.ROWS = rows;
-        this.COLS = cols;
+        if (cause != null) raise(cause);
 
         // Initialize the entries, but does not assign any values.
         // Which means it would creates zero matrix with specified dimensions.
@@ -465,7 +460,7 @@ public class Matrix implements MatrixUtils {
         }
 
         // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
+        if (cause != null) raise(cause);
 
         // Copy the sizes from input parameters
         this.ROWS = rows;
@@ -492,21 +487,18 @@ public class Matrix implements MatrixUtils {
      */
     public void create(double[ ][ ] arr) {
         // Raise the exception immediately if given array is null
-        if (arr == null || arr.length == 0) {
-            raise(new NullMatrixException(
-                "Given two-dimensional array is null. Please ensure the array has valid elements."));
-        }
-
-        // Retrieve the sizes
-        this.ROWS = arr.length;
-        this.COLS = arr[0].length;
+        MatrixChecker.requireNonNull(arr, (new StringBuilder())
+            .append("Given two-dimensional array is null. ")
+            .append("Please ensure the array has valid elements.")
+            .toString()
+        );
 
         // Initialize the entries
-        this.ENTRIES = new double[this.ROWS][this.COLS];
+        this.ENTRIES = new double[arr.length][arr[0].length];
 
         // Iterate over each elements to prevent the shallow copy
-        for (int r = 0; r < this.ROWS; r++) {
-            for (int c = 0; c < this.COLS; c++) {
+        for (int r = 0; r < arr.length; r++) {
+            for (int c = 0; c < arr[0].length; c++) {
                 this.ENTRIES[r][c] = arr[r][c];
             }
         }
@@ -551,6 +543,7 @@ public class Matrix implements MatrixUtils {
      * @see                                #Matrix(int, int)
      * @see                                #Matrix(double[][])
      * @see                                #isDiagonal()
+     * @see                                #isIdentity()
      */
     public static Matrix identity(int n) {
         // Check for negative value on input argument
@@ -686,7 +679,7 @@ public class Matrix implements MatrixUtils {
                 "Given array is null or empty. Cannot append it into the matrix")));
         }
 
-        return Matrix.insertRow(m, m.getNumRows(), a);
+        return Matrix.insertRow(m, m.getNumRows() - 1, a);
     }
 
 
@@ -804,7 +797,7 @@ public class Matrix implements MatrixUtils {
                 "Given array is null or empty. Cannot append it into the matrix")));
         }
 
-        return Matrix.insertColumn(m, m.getNumCols(), a);
+        return Matrix.insertColumn(m, m.getNumCols() - 1, a);
     }
 
 
@@ -1159,6 +1152,10 @@ public class Matrix implements MatrixUtils {
      * @see   #dropColumn(Matrix, int)
      */
     public static Matrix insertColumn(Matrix m, int col, double[] a) {
+        MatrixChecker.requireNonNull(m,
+            "Matrix is null. Please ensure the matrix are initialized"
+        );
+
         int mCols = m.getNumCols();          // Get the number of rows
         col += (col < 0) ? (mCols + 1) : 0;  // Allow negative indexing
 
@@ -1262,10 +1259,9 @@ public class Matrix implements MatrixUtils {
      * @see   #minorMatrix(Matrix, int, int)
      */
     public static Matrix dropRow(Matrix m, int row) {
-        if (MatrixUtils.isNullEntries(m)) {
-            raise(new NullMatrixException(
-                "Matrix is null. Please ensure the matrix are initialized"));
-        }
+        MatrixChecker.requireNonNull(m,
+            "Matrix is null. Please ensure the matrix are initialized"
+        );
 
         int rows = m.getNumRows();
         int cols = m.getNumCols();
@@ -1283,7 +1279,7 @@ public class Matrix implements MatrixUtils {
         double[][] newEntries = new double[rows - 1][cols];
         for (int i = 0, destRow = 0; i < rows; i++) {
             if (i == row) continue;  // Skip the desired row index
-            newEntries[destRow++] = Arrays.copyOf(entries[i], cols);
+            System.arraycopy(newEntries[destRow++], 0, entries[i], 0, cols);
         }
 
         return new Matrix(newEntries);
@@ -1455,10 +1451,9 @@ public class Matrix implements MatrixUtils {
      * @see    #swapColumns(Matrix, int, int)
      */
     public static Matrix swapRows(Matrix m, int row1, int row2) {
-        if (MatrixUtils.isNullEntries(m)) {
-            raise(new NullMatrixException(
-                "Matrix is null. Please ensure the matrix are initialized."));
-        }
+        MatrixChecker.requireNonNull(m,
+            "Matrix is null. Please ensure the matrix are initialized."
+        );
 
         double[][] entries = m.getEntries();
         double[] temp = new double[entries[row1].length];
@@ -1468,21 +1463,18 @@ public class Matrix implements MatrixUtils {
         row2 += (row2 < 0) ? entries.length : 0;
 
         if (row1 >= entries.length || row1 < 0) {
-            cause = new InvalidIndexException(
+            raise(new InvalidIndexException(
                 String.format("Given row index #1 is out of range: %d",
                     (row1 < 0) ? (row1 - entries.length) : row1
                 )
-            );
+            ));
         } else if (row2 >= entries.length || row2 < 0) {
-            cause = new InvalidIndexException(
+            raise(new InvalidIndexException(
                 String.format("Given row index #2 is out of range: %d",
                     (row2 < 0) ? (row2 - entries.length) : row2
                 )
-            );
+            ));
         }
-
-        // Raise the error, if any
-        if (cause != null) raise((RuntimeException) cause);
 
         // We prefer use the `System.arraycopy` method instead of `Arrays.copyOf` or
         // use a very slow method, *for-loop*. It because the `System.arraycopy` offers
@@ -1552,10 +1544,9 @@ public class Matrix implements MatrixUtils {
      * @see    #swapRows(Matrix, int, int)
      */
     public static Matrix swapColumns(Matrix m, int col1, int col2) {
-        if (MatrixUtils.isNullEntries(m)) {
-            raise(new NullMatrixException(
-                "Matrix is null. Please ensure the matrix are initialized."));
-        }
+        MatrixChecker.requireNonNull(m,
+            "Matrix is null. Please ensure the matrix are initialized."
+        );
 
         double[][] entries = m.getEntries();
 
@@ -1564,21 +1555,18 @@ public class Matrix implements MatrixUtils {
         col2 += (col2 < 0) ? entries[0].length : 0;
 
         if (col1 >= entries.length || col1 < 0) {
-            cause = new InvalidIndexException(
+            raise(new InvalidIndexException(
                 String.format("Given column index #1 is out of range: %d",
                     (col1 < 0) ? (col1 - entries[col1].length) : col1
                 )
-            );
+            ));
         } else if (col2 >= entries.length || col2 < 0) {
-            cause = new InvalidIndexException(
+            raise(new InvalidIndexException(
                 String.format("Given column index #2 is out of range: %d",
                     (col2 < 0) ? (col2 - entries[col2].length) : col2
                 )
-            );
+            ));
         }
-
-        // Raise the error, if any
-        if (cause != null) raise((RuntimeException) cause);
 
         for (int i = 0; i < entries.length; i++) {
             // Swap the elements of columns `col1` and `col2` directly without using
@@ -1804,30 +1792,28 @@ public class Matrix implements MatrixUtils {
      */
     public void sum(Matrix m) {
         // Throw "NullMatrixException" if the matrix is null
-        if (this.ENTRIES == null) {
-            cause = new NullMatrixException(
-                "This matrix is null. " +
-                "Please ensure the matrix are initialized before performing addition."
-            );
-        } else if (m == null || m.ENTRIES == null) {
-            cause = new NullMatrixException(
-                "Given matrix is null. " +
-                "Please ensure the matrix are initialized before performing addition."
-            );
-        }
-        // Else throw "IllegalMatrixSizeException" if the matrices size are not same
-        else if (this.ROWS != m.ROWS || this.COLS != m.COLS) {
-            cause = new IllegalMatrixSizeException(
+        MatrixChecker.requireNonNull(this,
+            "This matrix is null. " +
+            "Please ensure the matrix are initialized before performing addition"
+        );
+        MatrixChecker.requireNonNull(m,
+            "Given matrix is null. " +
+            "Please ensure the matrix are initialized before performing addition"
+        );
+
+        int[] thisShape = this.shape();
+        int[] mShape = m.shape();
+
+        // Throw "IllegalMatrixSizeException" if the matrices size are not same
+        if (thisShape[0] != mShape[0] || thisShape[1] != mShape[1]) {
+            raise(new IllegalMatrixSizeException(
                 String.format(
                     "Cannot perform addition for two matrices with different dimensions. " +
                     "A = %dx%d, B = %dx%d",
-                    this.ROWS, this.COLS, m.getSize()[0], m.getSize()[1]
+                    thisShape[0], thisShape[1], mShape[0], mShape[1]
                 )
-            );
+            ));
         }
-
-        // Throw the exception if got one
-        if (cause != null) raise((RuntimeException) cause);
 
         // Create new matrix for the result
         double[ ][ ] result = new double[this.ROWS][m.COLS];
