@@ -49,14 +49,14 @@ public class DoubleArray2DChecker {
      * must be maintained, and the presence of {@code null} entries could lead
      * to errors or undefined behavior in matrix computations.
      *
-     * @param  m  The {@link Matrix} to be checked for {@code null} references
+     * @param  a  The two-dimensional array to be checked for {@code null} references
      *            and entries.
      *
      * @throws NullMatrixException  If the given matrix is {@code null} or its
      *                              entries are {@code null}.
      *
      * @since  1.5.0
-     * @see    #requireNonNull(Matrix, String)
+     * @see    #requireNonNull(double[][], String)
      * @see    MatrixUtils#isNullEntries(Matrix)
      */
     public static void requireNonNull(double[][] a) {

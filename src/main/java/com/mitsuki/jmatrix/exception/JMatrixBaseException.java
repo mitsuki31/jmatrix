@@ -648,12 +648,12 @@ public class JMatrixBaseException extends RuntimeException {
      *      which corresponds to the error code {@code 400}.
      * </ul>
      *
-     * @param cause  The runtime exception that caused the error. This exception will either 
-     *               be printed and cause the application to exit, or will be thrown 
-     *               based on the configuration.
+     * @param cause              The runtime exception that caused the error. This exception will either 
+     *                           be printed and cause the application to exit, or will be thrown 
+     *                           based on the configuration.
      *
-     * @throws E     If the auto-raise configuration is not set to {@code auto},
-     *               the method throws the provided exception {@code cause}.
+     * @throws RuntimeException  If the auto-raise configuration is not set to {@code auto},
+     *                           the method throws the provided exception {@code cause}.
      *
      * @since  1.5.0
      * @see    #raise(RuntimeException, int)
@@ -697,17 +697,17 @@ public class JMatrixBaseException extends RuntimeException {
      * behavior supports scenarios where the application prefers to handle exceptions 
      * using traditional try-catch blocks rather than exiting.
      *
-     * @param cause  The runtime exception that caused the error. This exception will either 
-     *               be printed and cause the application to exit, or will be thrown 
-     *               based on the configuration.
-     * @param errno  The error number to exit with if auto-raise is enabled. This 
-     *               number should be a valid integer within the range 
-     *               {@link Integer#MIN_VALUE} to {@link Integer#MAX_VALUE}. If the 
-     *               provided value is less than {@link Integer#MIN_VALUE}, it will 
-     *               be adjusted to {@link Integer#MIN_VALUE}.
+     * @param cause              The runtime exception that caused the error. This exception will either 
+     *                           be printed and cause the application to exit, or will be thrown 
+     *                           based on the configuration.
+     * @param errno              The error number to exit with if auto-raise is enabled. This 
+     *                           number should be a valid integer within the range 
+     *                           {@link Integer#MIN_VALUE} to {@link Integer#MAX_VALUE}. If the 
+     *                           provided value is less than {@link Integer#MIN_VALUE}, it will 
+     *                           be adjusted to {@link Integer#MIN_VALUE}.
      *
-     * @throws E     If the auto-raise configuration is not set to {@code auto},
-     *               the method throws the provided exception {@code cause}.
+     * @throws RuntimeException  If the auto-raise configuration is not set to {@code auto},
+     *                           the method throws the provided exception {@code cause}.
      *
      * @since  1.5.0
      * @see    #raise(RuntimeException)
