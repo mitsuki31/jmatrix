@@ -4404,6 +4404,107 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /**
+     * Checks whether this matrix represents a permutation matrix.
+     *
+     * <p>A <b>permutation matrix</b> is a square matrix that has exactly one
+     * entry of 1 in each row and each column, and all other entries are 0.
+     * The number of rows must be equal to the number of columns, also known
+     * as square matrix. You can utilize the {@link #isSquare()} method to
+     * determine whether the matrix is square.
+     *
+     * <p>The elements on the main diagonal must be integers or floating-point numbers
+     * represented as integers (for example, {@code 1.0}), but not fractions or decimal numbers with
+     * fractional parts (for example, {@code 1.2} or {@code 1.8}).
+     *
+     * @apiNote
+     * This method has a time complexity of {@code O(n^2)} and a space complexity of {@code O(1)},
+     * where {@code n} is the number of rows or columns in the matrix.
+     *
+     * @return    {@code true} if the matrix represents a permutation matrix, {@code false} otherwise.
+     *
+     * @throws NullMatrixException         If this matrix has {@code null} entries.
+     * @throws IllegalMatrixSizeException  If this matrix is not a square matrix.
+     *
+     * @since  1.5.0
+     * @see    #isPermutationMatrix(Matrix)
+     * @see    #isIdentity()
+     * @see    #isSquare()
+     */
+    public boolean isPermutationMatrix() {
+        return Matrix.isPermutationMatrix(this);
+    }
+
+    /**
+     * Checks whether the given matrix represents a permutation matrix.
+     *
+     * <p>A <b>permutation matrix</b> is a square matrix that has exactly one
+     * entry of 1 in each row and each column, and all other entries are 0.
+     * The number of rows must be equal to the number of columns, also known
+     * as square matrix. You can utilize the {@link #isSquare()} method to
+     * determine whether the matrix is square.
+     *
+     * @param  m  The {@link Matrix} to be checked.
+     *
+     * @return    {@code true} if the matrix represents a permutation matrix,
+     *            {@code false} otherwise.
+     *
+     * @throws NullMatrixException         If the input matrix is {@code null}.
+     * @throws IllegalMatrixSizeException  If the input matrix is not represented as a square matrix.
+     *
+     * @since  1.5.0
+     * @see    #isPermutationMatrix()
+     * @see    #isPermutationMatrix(double[][])
+     * @see    #isIdentity(Matrix)
+     * @see    #isSquare(Matrix)
+     */
+    public static boolean isPermutationMatrix(Matrix m) {
+        if (!m.isSquare()) {
+            raise(new IllegalMatrixSizeException(
+               "Matrix is not square. " +
+               "Please ensure the matrix has the same number of rows and columns."
+            ));
+        }
+
+        double[][] entries = m.getEntries();
+        int rows = entries.length;
+
+        for (int i = 0; i < rows; i++) {
+            double[] row = m.getRow(i);
+            double[] col = m.getColumn(i);
+            
+            if (!(isCanonicalBasisArray(row) && isCanonicalBasisArray(col))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether the given two-dimensional array represents a permutation matrix.
+     *
+     * <p>This method is a convenience method, which creates a new instance of
+     * {@link Matrix} and calls the {@link #isPermutationMatrix(Matrix)}
+     * method.
+     *
+     * @param  arr  The two-dimensional array to be checked.
+     *
+     * @return      {@code true} if the given array represents a permutation matrix,
+     *              {@code false} otherwise.
+     *
+     * @throws NullMatrixException         If the given array is {@code null}.
+     * @throws IllegalMatrixSizeException  If the given array is not represented as a square matrix.
+     *
+     * @since  1.5.0
+     * @see    #isPermutationMatrix(Matrix)
+     * @see    #isIdentity(double[][])
+     * @see    #isSquare(double[][])
+     */
+    public static boolean isPermutationMatrix(double[][] arr) {
+        return Matrix.isPermutationMatrix(new Matrix(arr));
+    }
+
+
     /*=========================================
     ::
     ::  ADDITIONAL / UTILITIES METHODS
