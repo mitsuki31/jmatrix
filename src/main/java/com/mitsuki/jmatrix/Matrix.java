@@ -4979,6 +4979,135 @@ public class Matrix implements MatrixUtils {
 
 
     /**
+     * Retrieves the row specified by the given index from this matrix.
+     *
+     * @param  row  The index of the row to retrieve.
+     * @return      The row as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  If the given row index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getRow(int)
+     * @see    #getColumn(int)
+     */
+    public double[] getRow(int row) {
+        return Matrix.getRow(this, row);
+    }
+
+    /**
+     * Retrieves the row specified by the given index from the matrix.
+     *
+     * @param  m    The {@link Matrix} from which to retrieve the row.
+     * @param  row  The index of the row to retrieve.
+     * @return      The row as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  If the given row index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getRow(int)
+     * @see    #getColumn(int)
+     */
+    public static double[] getRow(Matrix m, int row) {
+        if (m == null || m.ENTRIES == null) return null;
+
+        row += (row < 0) ? m.ENTRIES.length : 0;
+        if (row >= m.ENTRIES.length) {
+            raise(new InvalidIndexException(
+                "Column index is out of bounds: " +
+                ((row < 0) ? (row - m.ENTRIES.length) : row)
+            ));
+        }
+        return m.getEntries()[row];
+    }
+
+
+    /**
+     * Retrieves the column specified by the given index from this matrix.
+     *
+     * @param  col  The index of the column to retrieve.
+     * @return      The column as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  If the given column index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getColumn(int)
+     * @see    #getRow(int)
+     */
+    public double[] getColumn(int col) {
+        if (this.ENTRIES == null) return null;
+        return Matrix.getColumn(this, col);
+    }
+
+    /**
+     * Retrieves the column specified by the given index from the matrix.
+     *
+     * @param  m    The {@link Matrix} from which to retrieve the column.
+     * @param  col  The index of the column to retrieve.
+     * @return      The column as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  if the given column index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getColumn(int)
+     * @see    #getRow(int)
+     */
+    public static double[] getColumn(Matrix m, int col) {
+        if (m == null || m.ENTRIES == null) return null;
+
+        col += (col < 0) ? m.ENTRIES[0].length : 0;
+        if (col >= m.ENTRIES[0].length) {
+            raise(new InvalidIndexException(
+                "Column index is out of bounds: " +
+                ((col < 0) ? (col - m.ENTRIES[0].length) : col)
+            ));
+        }
+
+        double[][] entries = m.getEntries();
+        double[] column = new double[entries.length];
+
+        for (int i = 0; i < entries.length; i++) {
+            column[i] = entries[i][col];
+        }
+        return column;
+    }
+
+    /**
+     * Retrieves the column specified by the given index from this matrix.
+     *
+     * <p>This method is an alias for {@link #getColumn(int)} method.
+     *
+     * @param  col  The index of the column to retrieve.
+     * @return      The column as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  if the given column index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getColumn(int)
+     */
+    public double[] getCol(int col) {
+        return this.getColumn(col);
+    }
+
+    /**
+     * Retrieves the column specified by the given index from the given matrix.
+     *
+     * <p>This method is an alias for {@link Matrix#getColumn(Matrix, int)} method.
+     *
+     * @param  m    The matrix from which to retrieve the column.
+     * @param  col  The index of the column to retrieve.
+     * @return      The column as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  if the given column index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getColumn(int)
+     */
+    public static double[] getCol(Matrix m, int col) {
+        return Matrix.getColumn(m, col);
+    }
+
+
+    /**
      * Returns the value at the specified row and column within this matrix.
      *
      * <p>This method is an alias for {@link #getEntry(int, int)} method, also it
