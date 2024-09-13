@@ -682,7 +682,7 @@ public class Matrix implements MatrixUtils {
                 "Given array is null or empty. Cannot append it into the matrix")));
         }
 
-        return Matrix.insertRow(m, m.getNumRows() - 1, a);
+        return Matrix.insertRow(m, m.getNumRows(), a);
     }
 
 
@@ -800,7 +800,7 @@ public class Matrix implements MatrixUtils {
                 "Given array is null or empty. Cannot append it into the matrix")));
         }
 
-        return Matrix.insertColumn(m, m.getNumCols() - 1, a);
+        return Matrix.insertColumn(m, m.getNumCols(), a);
     }
 
 
@@ -953,7 +953,7 @@ public class Matrix implements MatrixUtils {
         } else if (a == null || a.length == 0) {  // Check for null or empty array
             raise(new JMatrixBaseException(new NullPointerException(
                 "Given array is null or empty. Cannot insert it into the matrix")));
-        } else if (row < 0 || row >= mRows) {  // Check for the index is out of bounds
+        } else if (row < 0 || row > mRows) {  // Check for the index is out of bounds
             raise(new InvalidIndexException(
                 String.format("Given row index is out of range: %d",
                     (row < 0) ? (row - mRows - 1) : row
