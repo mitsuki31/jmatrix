@@ -1736,6 +1736,27 @@ public class Matrix implements MatrixUtils {
         return result;
     }
 
+    /**
+     * Checks if the given array is a canonical basis array.
+     *
+     * <p>A canonical basis array is an array that has exactly one 1 in it, and the rest are 0.
+     *
+     * @param  a   The array to be checked.
+     *
+     * @return     {@code true} if the array is a canonical basis array, {@code false} otherwise.
+     *
+     * @since      1.5.0
+     */
+    public static boolean isCanonicalBasisArray(double[] a) {
+        int numOnes = 0;
+        for (int i = 0; i < a.length; i++) {
+           if (Math.abs(1 - a[i]) < Matrix.THRESHOLD) {
+              numOnes++;
+           }
+        }
+        return numOnes == 1;
+     }
+
 
 
     /*=========================================
@@ -4383,6 +4404,107 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /**
+     * Checks whether this matrix represents a permutation matrix.
+     *
+     * <p>A <b>permutation matrix</b> is a square matrix that has exactly one
+     * entry of 1 in each row and each column, and all other entries are 0.
+     * The number of rows must be equal to the number of columns, also known
+     * as square matrix. You can utilize the {@link #isSquare()} method to
+     * determine whether the matrix is square.
+     *
+     * <p>The elements on the main diagonal must be integers or floating-point numbers
+     * represented as integers (for example, {@code 1.0}), but not fractions or decimal numbers with
+     * fractional parts (for example, {@code 1.2} or {@code 1.8}).
+     *
+     * @apiNote
+     * This method has a time complexity of {@code O(n^2)} and a space complexity of {@code O(1)},
+     * where {@code n} is the number of rows or columns in the matrix.
+     *
+     * @return    {@code true} if the matrix represents a permutation matrix, {@code false} otherwise.
+     *
+     * @throws NullMatrixException         If this matrix has {@code null} entries.
+     * @throws IllegalMatrixSizeException  If this matrix is not a square matrix.
+     *
+     * @since  1.5.0
+     * @see    #isPermutationMatrix(Matrix)
+     * @see    #isIdentity()
+     * @see    #isSquare()
+     */
+    public boolean isPermutationMatrix() {
+        return Matrix.isPermutationMatrix(this);
+    }
+
+    /**
+     * Checks whether the given matrix represents a permutation matrix.
+     *
+     * <p>A <b>permutation matrix</b> is a square matrix that has exactly one
+     * entry of 1 in each row and each column, and all other entries are 0.
+     * The number of rows must be equal to the number of columns, also known
+     * as square matrix. You can utilize the {@link #isSquare()} method to
+     * determine whether the matrix is square.
+     *
+     * @param  m  The {@link Matrix} to be checked.
+     *
+     * @return    {@code true} if the matrix represents a permutation matrix,
+     *            {@code false} otherwise.
+     *
+     * @throws NullMatrixException         If the input matrix is {@code null}.
+     * @throws IllegalMatrixSizeException  If the input matrix is not represented as a square matrix.
+     *
+     * @since  1.5.0
+     * @see    #isPermutationMatrix()
+     * @see    #isPermutationMatrix(double[][])
+     * @see    #isIdentity(Matrix)
+     * @see    #isSquare(Matrix)
+     */
+    public static boolean isPermutationMatrix(Matrix m) {
+        if (!m.isSquare()) {
+            raise(new IllegalMatrixSizeException(
+               "Matrix is not square. " +
+               "Please ensure the matrix has the same number of rows and columns."
+            ));
+        }
+
+        double[][] entries = m.getEntries();
+        int rows = entries.length;
+
+        for (int i = 0; i < rows; i++) {
+            double[] row = m.getRow(i);
+            double[] col = m.getColumn(i);
+            
+            if (!(isCanonicalBasisArray(row) && isCanonicalBasisArray(col))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether the given two-dimensional array represents a permutation matrix.
+     *
+     * <p>This method is a convenience method, which creates a new instance of
+     * {@link Matrix} and calls the {@link #isPermutationMatrix(Matrix)}
+     * method.
+     *
+     * @param  arr  The two-dimensional array to be checked.
+     *
+     * @return      {@code true} if the given array represents a permutation matrix,
+     *              {@code false} otherwise.
+     *
+     * @throws NullMatrixException         If the given array is {@code null}.
+     * @throws IllegalMatrixSizeException  If the given array is not represented as a square matrix.
+     *
+     * @since  1.5.0
+     * @see    #isPermutationMatrix(Matrix)
+     * @see    #isIdentity(double[][])
+     * @see    #isSquare(double[][])
+     */
+    public static boolean isPermutationMatrix(double[][] arr) {
+        return Matrix.isPermutationMatrix(new Matrix(arr));
+    }
+
+
     /*=========================================
     ::
     ::  ADDITIONAL / UTILITIES METHODS
@@ -4975,6 +5097,135 @@ public class Matrix implements MatrixUtils {
      */
     public static int getNumCols(Matrix m) {
         return MatrixUtils.isNullEntries(m) ? 0 : m.ENTRIES[0].length;
+    }
+
+
+    /**
+     * Retrieves the row specified by the given index from this matrix.
+     *
+     * @param  row  The index of the row to retrieve.
+     * @return      The row as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  If the given row index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getRow(int)
+     * @see    #getColumn(int)
+     */
+    public double[] getRow(int row) {
+        return Matrix.getRow(this, row);
+    }
+
+    /**
+     * Retrieves the row specified by the given index from the matrix.
+     *
+     * @param  m    The {@link Matrix} from which to retrieve the row.
+     * @param  row  The index of the row to retrieve.
+     * @return      The row as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  If the given row index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getRow(int)
+     * @see    #getColumn(int)
+     */
+    public static double[] getRow(Matrix m, int row) {
+        if (m == null || m.ENTRIES == null) return null;
+
+        row += (row < 0) ? m.ENTRIES.length : 0;
+        if (row >= m.ENTRIES.length) {
+            raise(new InvalidIndexException(
+                "Column index is out of bounds: " +
+                ((row < 0) ? (row - m.ENTRIES.length) : row)
+            ));
+        }
+        return m.getEntries()[row];
+    }
+
+
+    /**
+     * Retrieves the column specified by the given index from this matrix.
+     *
+     * @param  col  The index of the column to retrieve.
+     * @return      The column as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  If the given column index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getColumn(int)
+     * @see    #getRow(int)
+     */
+    public double[] getColumn(int col) {
+        if (this.ENTRIES == null) return null;
+        return Matrix.getColumn(this, col);
+    }
+
+    /**
+     * Retrieves the column specified by the given index from the matrix.
+     *
+     * @param  m    The {@link Matrix} from which to retrieve the column.
+     * @param  col  The index of the column to retrieve.
+     * @return      The column as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  if the given column index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getColumn(int)
+     * @see    #getRow(int)
+     */
+    public static double[] getColumn(Matrix m, int col) {
+        if (m == null || m.ENTRIES == null) return null;
+
+        col += (col < 0) ? m.ENTRIES[0].length : 0;
+        if (col >= m.ENTRIES[0].length) {
+            raise(new InvalidIndexException(
+                "Column index is out of bounds: " +
+                ((col < 0) ? (col - m.ENTRIES[0].length) : col)
+            ));
+        }
+
+        double[][] entries = m.getEntries();
+        double[] column = new double[entries.length];
+
+        for (int i = 0; i < entries.length; i++) {
+            column[i] = entries[i][col];
+        }
+        return column;
+    }
+
+    /**
+     * Retrieves the column specified by the given index from this matrix.
+     *
+     * <p>This method is an alias for {@link #getColumn(int)} method.
+     *
+     * @param  col  The index of the column to retrieve.
+     * @return      The column as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  if the given column index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getColumn(int)
+     */
+    public double[] getCol(int col) {
+        return this.getColumn(col);
+    }
+
+    /**
+     * Retrieves the column specified by the given index from the given matrix.
+     *
+     * <p>This method is an alias for {@link Matrix#getColumn(Matrix, int)} method.
+     *
+     * @param  m    The matrix from which to retrieve the column.
+     * @param  col  The index of the column to retrieve.
+     * @return      The column as an array of doubles, or {@code null} if the matrix is {@code null}.
+     *
+     * @throws InvalidIndexException  if the given column index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #getColumn(int)
+     */
+    public static double[] getCol(Matrix m, int col) {
+        return Matrix.getColumn(m, col);
     }
 
 
