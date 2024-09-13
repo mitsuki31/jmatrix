@@ -1736,6 +1736,27 @@ public class Matrix implements MatrixUtils {
         return result;
     }
 
+    /**
+     * Checks if the given array is a canonical basis array.
+     *
+     * <p>A canonical basis array is an array that has exactly one 1 in it, and the rest are 0.
+     *
+     * @param  a   The array to be checked.
+     *
+     * @return     {@code true} if the array is a canonical basis array, {@code false} otherwise.
+     *
+     * @since      1.5.0
+     */
+    public static boolean isCanonicalBasisArray(double[] a) {
+        int numOnes = 0;
+        for (int i = 0; i < a.length; i++) {
+           if (Math.abs(1 - a[i]) < Matrix.THRESHOLD) {
+              numOnes++;
+           }
+        }
+        return numOnes == 1;
+     }
+
 
 
     /*=========================================
