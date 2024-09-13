@@ -22,6 +22,7 @@ package com.mitsuki.jmatrix;
 
 import com.mitsuki.jmatrix.core.MatrixChecker;
 import com.mitsuki.jmatrix.core.MatrixUtils;
+import com.mitsuki.jmatrix.core.MatrixDeterminant;
 import com.mitsuki.jmatrix.exception.IllegalMatrixSizeException;
 import com.mitsuki.jmatrix.exception.InvalidIndexException;
 import com.mitsuki.jmatrix.exception.JMatrixBaseException;
@@ -117,7 +118,7 @@ import java.util.stream.Collectors;
  *
  * @author   <a href="https://github.com/mitsuki31" target="_blank">
  *           Ryuu Mitsuki</a>
- * @version  3.3, 12 September 2024
+ * @version  3.4, 13 September 2024
  * @since    0.1.0
  * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
  *           Apache License 2.0</a>
@@ -201,6 +202,7 @@ public class Matrix implements MatrixUtils {
     ::  MATRIX CONSTRUCTORS
     ::
     =========================================*/
+    // region Constructors
 
 
     /**
@@ -411,6 +413,7 @@ public class Matrix implements MatrixUtils {
     ::  MATRIX SPECIAL CONSTRUCTORS
     ::
     =========================================*/
+    // region Special Constructors
 
     /*--------------------------
     ::         Create
@@ -1740,6 +1743,7 @@ public class Matrix implements MatrixUtils {
     ::  MATRIX OPERATIONS
     ::
     =========================================*/
+    // region Matrix Operations
 
 
     /*--------------------------
@@ -3372,11 +3376,117 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*--------------------------
+    ::   Determinant Matrix
+    --------------------------*/
+
+    /**
+     * Calculates the determinant of the matrix.
+     * 
+     * <p>This method calls the static method {@link Matrix#determinant(Matrix)} to calculate
+     * the determinant of this matrix.
+     *
+     * <p>It will automatically chooses the best algorithm for calculating the determinant
+     * based on the size of the matrix. If the matrix is smaller than {@code 4x4}, this method
+     * uses the cofactor expansion algorithm. Otherwise, it uses Gaussian elimination.
+     * 
+     * @return    The determinant of the matrix.
+     * 
+     * @throws NullMatrixException
+     *           If the matrix is {@code null}.
+     * @throws IllegalMatrixSizeException
+     *           If the matrix is not a square matrix.
+     * 
+     * @implNote
+     * This method is just a wrapper for {@link Matrix#determinant(Matrix)}. It is more convenient
+     * to call this method directly on the matrix instance instead of calling the static method.
+     * 
+     * @since  1.5.0
+     * @see    #determinant(Matrix)
+     * @see    MatrixDeterminant#determinant_CofactorExpansion(Matrix)
+     * @see    MatrixDeterminant#determinant_GaussElimination(Matrix)
+     */
+    public double determinant() {
+        return Matrix.determinant(this);
+    }
+
+    /**
+     * Calculates the determinant of the given matrix.
+     * 
+     * <p>This method automatically chooses the best algorithm for calculating the determinant
+     * based on the size of the matrix. If the matrix is smaller than {@code 4x4}, this method
+     * uses the cofactor expansion algorithm. Otherwise, it uses Gaussian elimination.
+     * 
+     * @param  m  The matrix to calculate the determinant of.
+     * @return    The determinant of the matrix.
+     * 
+     * @throws NullMatrixException
+     *           If the matrix is {@code null} or contains {@code null} references.
+     * @throws IllegalMatrixSizeException
+     *           If the matrix is not a square matrix.
+     * 
+     * @since  1.5.0
+     * @see    #determinant(double[][])
+     * @see    MatrixDeterminant#determinant_CofactorExpansion(Matrix)
+     * @see    MatrixDeterminant#determinant_GaussElimination(Matrix)
+     */
+    public static double determinant(Matrix m) {
+        if (MatrixUtils.isNullEntries(m)) {
+            raise(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized")
+            );
+        }
+
+        if (m.getNumRows() <= 4) {  // Not larger than 4x4
+            // Cofactor expansion is faster for smaller matrices
+            return MatrixDeterminant.determinant_CofactorExpansion(m);
+        } else {
+            return MatrixDeterminant.determinant_GaussElimination(m);
+        }
+    }
+
+    /**
+     * Calculates the determinant of the given matrix.
+     * 
+     * <p>This method automatically chooses the best algorithm for calculating the determinant
+     * based on the size of the matrix. If the matrix is smaller than {@code 4x4}, this method
+     * uses the cofactor expansion algorithm. Otherwise, it uses Gaussian elimination.
+     * 
+     * @param  a  The 2D array representation of the matrix to calculate the determinant of.
+     * @return    The determinant of the matrix.
+     * 
+     * @throws NullMatrixException
+     *           If the matrix is {@code null} or contains {@code null} references.
+     * @throws IllegalMatrixSizeException
+     *           If the matrix is not a square matrix.
+     * 
+     * @since  1.5.0
+     * @see    #determinant(Matrix)
+     * @see    MatrixDeterminant#determinant_CofactorExpansion(double[][])
+     * @see    MatrixDeterminant#determinant_GaussElimination(double[][])
+     */
+    public static double determinant(double[][] a) {
+        if (a == null || a.length == 0) {
+            raise(new NullMatrixException(
+                "Matrix is null. Please ensure the matrix are initialized")
+            );
+        }
+
+        if (a.length <= 4) {  // Not larger than 4x4
+            // Cofactor expansion is faster for smaller matrices
+            return MatrixDeterminant.determinant_CofactorExpansion(a);
+        } else {
+            return MatrixDeterminant.determinant_GaussElimination(a);
+        }
+    }
+
+
     /*=========================================
     ::
     ::  MATRIX TYPE CHECKERS
     ::
     =========================================*/
+    // region Type Checkers
 
 
     /*---------------------------
@@ -4278,6 +4388,7 @@ public class Matrix implements MatrixUtils {
     ::  ADDITIONAL / UTILITIES METHODS
     ::
     =========================================*/
+    // region Utilities Methods
 
 
     /*---------------------------
@@ -5225,6 +5336,7 @@ public class Matrix implements MatrixUtils {
     ::  OVERRIDEN METHODS
     ::
     =========================================*/
+    // region Overriden Methods
 
 
     /**
