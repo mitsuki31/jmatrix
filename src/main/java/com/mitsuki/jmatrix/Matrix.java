@@ -5237,25 +5237,20 @@ public class Matrix implements MatrixUtils {
      * @see                           #getEntries()
      */
     final public void display(int index) {
-        if (this.ENTRIES != null) {
-            // Check for negative index and throw the exception
-            if (index < 0) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be a negative value.");
-            }
-            // Check if the given index greater than number of rows this matrix
-            else if (index > this.ROWS - 1) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be larger than number of rows.");
-            }
-
-            // Throw the exception if got one
-            if (cause != null) raise(cause);
-
-            System.out.println(Arrays.toString(this.ENTRIES[index]));
-        } else {
+        if (this.ENTRIES == null) {
             System.out.println("<null_matrix>");
+            return;
         }
+
+        int rows = this.getNumRows();
+        index += (index < 0) ? rows: 0;  // Support negative index
+        if (index < 0 || index >= rows) {
+            raise(new InvalidIndexException("Given row index is out of bounds: " +
+                ((index < 0) ? (index - rows) : index)
+            ));
+        }
+
+        System.out.println(Arrays.toString(this.ENTRIES[index]));
     }
 
 
@@ -5312,21 +5307,18 @@ public class Matrix implements MatrixUtils {
     final public static void display(double[ ][ ] arr, int index) {
         if (arr == null || arr.length == 0) {
             System.out.println("<null_2darray>");
-        } else {
-            // Checking index value
-            if (index < 0) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be a negative value.");
-            } else if (index > arr.length - 1) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be larger than number of rows.");
-            }
-
-            // Throw the exception if got one
-            if (cause != null) raise(cause);
-
-            System.out.println(Arrays.toString(arr[index]));
+            return;
         }
+
+        int rows = arr.length;
+        index += (index < 0) ? rows: 0;  // Support negative index
+        if (index < 0 || index >= rows) {
+            raise(new InvalidIndexException("Given row index is out of bounds: " +
+                ((index < 0) ? (index - rows) : index)
+            ));
+        }
+
+        System.out.println(Arrays.toString(arr[index]));
     }
 
 
