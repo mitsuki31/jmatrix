@@ -28,7 +28,12 @@ import static com.mitsuki.jmatrix.exception.JMatrixBaseException.raise;
  * the properties of matrices. It extends the {@link DoubleArray2DChecker} class and provides
  * static methods for checking matrix properties such as nullity, squareness, diagonalness, and identity.
  *
- * @since  1.5.0
+ * @since    1.5.0
+ * @version  1.0, 12 September 2024
+ * @author   <a href="https://github.com/mitsuki31" target="_blank">
+ *           Ryuu Mitsuki</a>
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ *           Apache License 2.0</a>
  */
 public class MatrixChecker extends DoubleArray2DChecker {
     /** Hide the constructor because it is a static class */

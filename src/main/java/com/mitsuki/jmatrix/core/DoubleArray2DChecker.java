@@ -30,7 +30,12 @@ import com.mitsuki.jmatrix.Matrix;
  * to be created to use its methods and provides static methods for checking matrix properties
  * such as nullity, squareness, diagonalness, and identity.
  *
- * @since  1.5.0
+ * @since    1.5.0
+ * @version  1.0, 12 September 2024
+ * @author   <a href="https://github.com/mitsuki31" target="_blank">
+ *           Ryuu Mitsuki</a>
+ * @license  <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+ *           Apache License 2.0</a>
  */
 public class DoubleArray2DChecker {
     /** Hide the constructor because it is a static class */
