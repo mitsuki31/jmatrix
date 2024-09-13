@@ -5237,25 +5237,20 @@ public class Matrix implements MatrixUtils {
      * @see                           #getEntries()
      */
     final public void display(int index) {
-        if (this.ENTRIES != null) {
-            // Check for negative index and throw the exception
-            if (index < 0) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be a negative value.");
-            }
-            // Check if the given index greater than number of rows this matrix
-            else if (index > this.ROWS - 1) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be larger than number of rows.");
-            }
-
-            // Throw the exception if got one
-            if (cause != null) raise(cause);
-
-            System.out.println(Arrays.toString(this.ENTRIES[index]));
-        } else {
+        if (this.ENTRIES == null) {
             System.out.println("<null_matrix>");
+            return;
         }
+
+        int rows = this.getNumRows();
+        index += (index < 0) ? rows: 0;  // Support negative index
+        if (index < 0 || index >= rows) {
+            raise(new InvalidIndexException("Given row index is out of bounds: " +
+                ((index < 0) ? (index - rows) : index)
+            ));
+        }
+
+        System.out.println(Arrays.toString(this.ENTRIES[index]));
     }
 
 
@@ -5312,23 +5307,234 @@ public class Matrix implements MatrixUtils {
     final public static void display(double[ ][ ] arr, int index) {
         if (arr == null || arr.length == 0) {
             System.out.println("<null_2darray>");
-        } else {
-            // Checking index value
-            if (index < 0) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be a negative value.");
-            } else if (index > arr.length - 1) {
-                cause = new InvalidIndexException(
-                    "Invalid given index. Index cannot be larger than number of rows.");
-            }
-
-            // Throw the exception if got one
-            if (cause != null) raise(cause);
-
-            System.out.println(Arrays.toString(arr[index]));
+            return;
         }
+
+        int rows = arr.length;
+        index += (index < 0) ? rows: 0;  // Support negative index
+        if (index < 0 || index >= rows) {
+            raise(new InvalidIndexException("Given row index is out of bounds: " +
+                ((index < 0) ? (index - rows) : index)
+            ));
+        }
+
+        System.out.println(Arrays.toString(arr[index]));
     }
 
+
+    final public void prettyDisplay() {
+        this.prettyDisplay(true);
+    }
+
+    final public void prettyDisplay(boolean showIndices) {
+        // If the matrix is null, print <null_matrix>
+        if (this.ENTRIES == null) {
+            System.out.println("<null_matrix>");
+            return;
+        }
+
+        double[][] entries = this.getEntries();
+        int rows = entries.length;
+        int cols = entries[0].length;
+        StringBuilder sb = new StringBuilder();
+
+        // Find the maximum width of each column
+        int[] widths = new int[cols];
+        for (double[] row : entries) {
+            for (int i = 0; i < row.length; i++) {
+                widths[i] = Math.max(widths[i], String.valueOf(row[i]).length());
+            }
+        }
+
+        // Print column numbers on top if `showIndices` is true
+        if (showIndices) {
+            sb.append("     ");
+            for (int i = 0; i < cols; i++) {
+                sb.append(
+                    String.format("%-" + widths[i] + "s",
+                    String.format("[%d]", i + 1)) + "  "
+                );
+            }
+            sb.append("\n");
+        }
+
+        // Print the matrix with row numbers on the left if `showIndices` is true
+        for (int i = 0; i < rows; i++) {
+            if (showIndices) {
+                sb.append(String.format("[%d]  ", (i + 1)));
+            }
+            for (int j = 0; j < cols; j++) {
+                sb.append(String.format("%-" + widths[j] + "s", entries[i][j]) + "  ");
+            }
+            sb.append("\n");
+        }
+
+        // Print the whole matrix
+        System.out.println(sb.toString());
+    }
+
+    final public void prettyDisplay(int index) {
+        prettyDisplay(index, true);
+    }
+
+    final public void prettyDisplay(int index, boolean showIndices) {
+        // If the matrix is null, print <null_matrix>
+        if (this.ENTRIES == null) {
+            System.out.println("<null_matrix>");
+            return;
+        }
+
+        double[][] entries = this.getEntries();
+        int rows = entries.length;
+        int cols = entries[0].length;
+        StringBuilder sb = new StringBuilder();
+
+        index += (index < 0) ? rows: 0;  // Support negative index
+        if (index < 0 || index >= rows) {
+            cause = new InvalidIndexException(
+                "Given row index is out of bounds: " + ((index < 0) ? (index - rows) : index)
+            );
+        }
+        if (cause != null) raise(cause);  // Throw the exception if got one
+
+        // Find the maximum width of each column
+        int[] widths = new int[cols];
+        for (double[] row : entries) {
+            for (int i = 0; i < row.length; i++) {
+                widths[i] = Math.max(widths[i], String.valueOf(row[i]).length());
+            }
+        }
+
+        // Add the column headers on top if `showIndices` is true
+        if (showIndices) {
+            sb.append("     ");
+            for (int i = 0; i < cols; i++) {
+                sb.append(
+                    String.format("%-" + widths[i] + "s",
+                    String.format("[%d]", i + 1)) + "  "
+                );
+            }
+            sb.append("\n");
+        }
+
+        // Add the matrix with row numbers on the left if `showIndices` is true
+        if (showIndices) {
+            sb.append(String.format("[%d]  ", (index + 1)));
+        }
+        for (int j = 0; j < cols; j++) {
+            sb.append(String.format("%-" + widths[j] + "s", entries[index][j]) + "  ");
+        }
+        sb.append("\n");
+
+        // Print the whole matrix
+        System.out.println(sb.toString());
+    }
+
+    final public static void prettyDisplay(double[ ][ ] arr) {
+        Matrix.prettyDisplay(arr, true);
+    }
+
+    final public static void prettyDisplay(double[ ][ ] arr, boolean showIndices) {
+        // If the two-dimensional array is null, print <null_2darray>
+        if (arr == null || arr.length == 0) {
+            System.out.println("<null_2darray>");
+            return;
+        }
+
+        int rows = arr.length;
+        int cols = arr[0].length;
+        StringBuilder sb = new StringBuilder();
+
+        // Find the maximum width of each column
+        int[] widths = new int[cols];
+        for (double[] row : arr) {
+            for (int i = 0; i < row.length; i++) {
+                widths[i] = Math.max(widths[i], String.valueOf(row[i]).length());
+            }
+        }
+
+        // Print column numbers on top if `showIndices` is true
+        if (showIndices) {
+            sb.append("     ");
+            for (int i = 0; i < cols; i++) {
+                sb.append(
+                    String.format("%-" + widths[i] + "s",
+                    String.format("[%d]", i + 1)) + "  "
+                );
+            }
+            sb.append("\n");
+        }
+
+        // Print the matrix with row numbers on the left if `showIndices` is true
+        for (int i = 0; i < rows; i++) {
+            if (showIndices) {
+                sb.append(String.format("[%d]  ", (i + 1)));
+            }
+            for (int j = 0; j < cols; j++) {
+                sb.append(String.format("%-" + widths[j] + "s", arr[i][j]) + "  ");
+            }
+            sb.append("\n");
+        }
+
+        // Print the whole matrix
+        System.out.println(sb.toString());
+    }
+
+    final public static void prettyDisplay(double[ ][ ] arr, int index) {
+        Matrix.prettyDisplay(arr, index, true);
+    }
+
+    final public static void prettyDisplay(double[ ][ ] arr, int index, boolean showIndices) {
+        // If the two-dimensional array is null, print <null_2darray>
+        if (arr == null || arr.length == 0) {
+            System.out.println("<null_2darray>");
+            return;
+        }
+
+        int rows = arr.length;
+        int cols = arr[0].length;
+        StringBuilder sb = new StringBuilder();
+
+        index += (index < 0) ? rows: 0;  // Support negative index
+        if (index < 0 || index >= rows) {
+            cause = new InvalidIndexException(
+                "Given row index is out of bounds: " + ((index < 0) ? (index - rows) : index)
+            );
+        }
+        if (cause != null) raise(cause);  // Throw the exception if got one
+
+        // Find the maximum width of each column
+        int[] widths = new int[cols];
+        for (double[] row : arr) {
+            for (int i = 0; i < row.length; i++) {
+                widths[i] = Math.max(widths[i], String.valueOf(row[i]).length());
+            }
+        }
+
+        // Add the column headers on top if `showIndices` is true
+        if (showIndices) {
+            sb.append("     ");
+            for (int i = 0; i < cols; i++) {
+                sb.append(
+                    String.format("%-" + widths[i] + "s",
+                    String.format("[%d]", i + 1)) + "  "
+                );
+            }
+            sb.append("\n");
+        }
+
+        // Add the matrix with row numbers on the left if `showIndices` is true
+        if (showIndices) {
+            sb.append(String.format("[%d]  ", (index + 1)));
+        }
+        for (int j = 0; j < cols; j++) {
+            sb.append(String.format("%-" + widths[j] + "s", arr[index][j]) + "  ");
+        }
+        sb.append("\n");
+
+        // Print the whole matrix
+        System.out.println(sb.toString());
+    }
 
 
     /*=========================================
