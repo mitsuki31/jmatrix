@@ -76,7 +76,7 @@ autolabeler:
     files:
       - '*.py'
 
-change-template: '- $TITLE (JM#$NUMBER) - @$AUTHOR'
+change-template: '- $TITLE ([JM#$NUMBER](https://github.com/mitsuki31/jmatrix/pull/$NUMBER)) - @$AUTHOR'
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 version-resolver:
   major:
