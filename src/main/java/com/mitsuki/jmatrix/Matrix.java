@@ -1279,7 +1279,7 @@ public class Matrix implements MatrixUtils {
         double[][] newEntries = new double[rows - 1][cols];
         for (int i = 0, destRow = 0; i < rows; i++) {
             if (i == row) continue;  // Skip the desired row index
-            System.arraycopy(newEntries[destRow++], 0, entries[i], 0, cols);
+            System.arraycopy(entries[i], 0, newEntries[destRow++], 0, cols);
         }
 
         return new Matrix(newEntries);
