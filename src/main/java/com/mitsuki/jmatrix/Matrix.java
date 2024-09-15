@@ -5573,10 +5573,107 @@ public class Matrix implements MatrixUtils {
     }
 
 
+    /*---------------------------
+    ::  Matrix Pretty Display
+    ---------------------------*/
+
+    /**
+     * Displays this matrix in a formatted and human-readable manner.
+     *
+     * <p>The method prints all rows and columns of the matrix along with the column and row indices.
+     * If the matrix has {@code null} entries, the method prints {@code <null_matrix>} instead.
+     *
+     * <p>The output includes the following formatting features:
+     * <ul>
+     *   <li>Each element is padded for alignment based on the largest element's width in its column.</li>
+     *   <li>Column headers are displayed.</li>
+     *   <li>Row numbers are displayed to the left of each row.</li>
+     * </ul>
+     *
+     * <p><b>Example Code:</b></p>
+     * <pre>&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 1, 2, 3 },
+     *       { 4, 5, 6 },
+     *       { 7, 8, 9 }
+     *   });
+     *   m.prettyDisplay();
+     * </pre>
+     *
+     * <p><b>Example Output:</b></p>
+     * <pre>&nbsp;
+     *        [1]  [2]  [3]
+     *   [1]  1.0  2.0  3.0
+     *   [2]  4.0  5.0  6.0
+     *   [3]  7.0  8.0  9.0
+     * </pre>
+     *
+     * <p>Special cases handled:
+     * <ul>
+     *   <li>If the matrix has {@code null} entries, the method prints {@code <null_matrix>}.</li>
+     * </ul>
+     *
+     * @apiNote
+     * This method is an alias for {@link prettyDisplay(boolean)} method with {@code showIndices} parameter
+     * set to {@code true} by default.
+     *
+     * @since  1.5.0
+     * @see    #prettyDisplay(boolean)
+     */
     final public void prettyDisplay() {
         this.prettyDisplay(true);
     }
 
+    /**
+     * Displays this matrix in a formatted and human-readable manner.
+     *
+     * <p>The method prints all rows and columns of the matrix with an option to show column and row indices.
+     * If the matrix has {@code null} entries, the method prints {@code <null_matrix>} instead.
+     *
+     * <p>The output includes the following formatting features:
+     * <ul>
+     *   <li>Each element is padded for alignment based on the largest element's width in its column.</li>
+     *   <li>Column headers are displayed if the {@code showIndices} flag is {@code true}.</li>
+     *   <li>If {@code showIndices} is {@code true}, row numbers are displayed to the left of each row.</li>
+     * </ul>
+     *
+     * <p><b>Example Code:</b></p>
+     * <pre>&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 1, 2, 3 },
+     *       { 4, 5, 6 },
+     *       { 7, 8, 9 }
+     *   });
+     *   m.prettyDisplay(true);
+     * </pre>
+     *
+     * <p><b>Example Output:</b></p>
+     *
+     * <p>With {@code showIndices} set to {@code true} (default):
+     * <pre>&nbsp;
+     *        [1]  [2]  [3]
+     *   [1]  1.0  2.0  3.0
+     *   [2]  4.0  5.0  6.0
+     *   [3]  7.0  8.0  9.0
+     * </pre>
+     *
+     * <p>With {@code showIndices} set to {@code false}:
+     * <pre>&nbsp;
+     *   1.0  2.0  3.0
+     *   4.0  5.0  6.0
+     *   7.0  8.0  9.0
+     * </pre>
+     *
+     * <p>Special cases handled:
+     * <ul>
+     *   <li>If the matrix has {@code null} entries, the method prints {@code <null_matrix>}.</li>
+     * </ul>
+     *
+     * @param  showIndices  Whether to display row and column indices along with the array elements.
+     *
+     * @since  1.5.0
+     * @see    #prettyDisplay()
+     */
     final public void prettyDisplay(boolean showIndices) {
         // If the matrix is null, print <null_matrix>
         if (this.ENTRIES == null) {
@@ -5624,10 +5721,110 @@ public class Matrix implements MatrixUtils {
         System.out.println(sb.toString());
     }
 
+    /**
+     * Displays a specified row of this matrix in a formatted and human-readable manner.
+     *
+     * <p>The method prints the elements of the matrix along with the column and row indices.
+     * If the given row index is negative, the method supports wrapping by converting it to a valid
+     * positive index. If the {@code index} is out of bounds, an {@link InvalidIndexException} is thrown.
+     *
+     * <p>The output includes the following formatting features:
+     * <ul>
+     *   <li>Each element is padded for alignment based on the largest element's width in its column.</li>
+     *   <li>Column headers are displayed.</li>
+     *   <li>Row numbers are displayed to the left of each row.</li>
+     * </ul>
+     *
+     * <p><b>Example Code:</b></p>
+     * <pre>&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 3, 4, 5 },
+     *       { 1, 2, 3 },
+     *       { 9, 7, 0 }
+     *   });
+     *   m.prettyDisplay(0);
+     * </pre>
+     *
+     * <p><b>Example Output:</b></p>
+     * <pre>&nbsp;
+     *        [1]  [2]  [3]
+     *   [1]  3.0  4.0  5.0
+     * </pre>
+     *
+     * <p>Special cases handled:
+     * <ul>
+     *   <li>If the matrix has {@code null} entries, the method prints {@code <null_matrix>}.</li>
+     *   <li>Negative indices are adjusted by adding the matrix length.</li>
+     * </ul>
+     *
+     * @apiNote
+     * This method is an alias for {@link #prettyDisplay(int, boolean)} method with {@code showIndices}
+     * parameter set to {@code true} by default.
+     *
+     * @param  index        The row index to display. Negative indices are supported and will be converted to
+     *                      positive by wrapping.
+     *
+     * @throws InvalidIndexException  If the given row index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #prettyDisplay(int, boolean)
+     */
     final public void prettyDisplay(int index) {
         prettyDisplay(index, true);
     }
 
+    /**
+     * Displays a specified row of this matrix in a formatted and human-readable manner.
+     *
+     * <p>The method prints the elements of the matrix with an option to show column and row indices.
+     * If the given row index is negative, the method supports wrapping by converting it to a valid
+     * positive index. If the {@code index} is out of bounds, an {@link InvalidIndexException} is thrown.
+     *
+     * <p>The output includes the following formatting features:
+     * <ul>
+     *   <li>Each element is padded for alignment based on the largest element's width in its column.</li>
+     *   <li>Column headers are displayed if the {@code showIndices} flag is {@code true}.</li>
+     *   <li>If {@code showIndices} is {@code true}, row numbers are displayed to the left of each row.</li>
+     * </ul>
+     *
+     * <p><b>Example Code:</b></p>
+     * <pre>&nbsp;
+     *   Matrix m = new Matrix(new double[][] {
+     *       { 3, 4, 5 },
+     *       { 1, 2, 3 },
+     *       { 9, 7, 0 }
+     *   });
+     *   m.prettyDisplay(0, true);
+     * </pre>
+     *
+     * <p><b>Example Output:</b></p>
+     *
+     * <p>With {@code showIndices} set to {@code true}:
+     * <pre>&nbsp;
+     *        [1]  [2]  [3]
+     *   [1]  3.0  4.0  5.0
+     * </pre>
+     *
+     * <p>With {@code showIndices} set to {@code false}:
+     * <pre>&nbsp;
+     *   3.0  4.0  5.0
+     * </pre>
+     *
+     * <p>Special cases handled:
+     * <ul>
+     *   <li>If the matrix has {@code null} entries, the method prints {@code <null_matrix>}.</li>
+     *   <li>Negative indices are adjusted by adding the matrix length.</li>
+     * </ul>
+     *
+     * @param  index        The row index to display. Negative indices are supported and will be converted to
+     *                      positive by wrapping.
+     * @param  showIndices  Whether to display row and column indices along with the matrix elements.
+     *
+     * @throws InvalidIndexException  If the given row index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #prettyDisplay(int)
+     */
     final public void prettyDisplay(int index, boolean showIndices) {
         // If the matrix is null, print <null_matrix>
         if (this.ENTRIES == null) {
@@ -5681,10 +5878,106 @@ public class Matrix implements MatrixUtils {
         System.out.println(sb.toString());
     }
 
+    /**
+     * Displays the two-dimensional array in a formatted and human-readable manner.
+     *
+     * <p>The method prints all rows and columns of the array along with the column and row indices.
+     * If the array is null or empty, the method prints {@code <null_2darray>} and exits.
+     *
+     * <p>The output includes the following formatting features:
+     * <ul>
+     *     <li>Each element is padded for alignment based on the largest element's width in its column.</li>
+     *     <li>Column headers are displayed.</li>
+     *     <li>Row numbers are displayed to the left of each row.</li>
+     * </ul>
+     *
+     * <p><b>Example Code:</b></p>
+     * <pre>&nbsp;
+     *   Matrix.prettyDisplay(new double[][] {
+     *       { 1, 2, 3 },
+     *       { 4, 5, 6 },
+     *       { 7, 8, 9 }
+     *   });
+     * </pre>
+     *
+     * <p><b>Example Output:</b></p>
+     * <pre>&nbsp;
+     *        [1]  [2]  [3]
+     *   [1]  1.0  2.0  3.0
+     *   [2]  4.0  5.0  6.0
+     *   [3]  7.0  8.0  9.0
+     * </pre>
+     *
+     * <p>Special cases handled:
+     * <ul>
+     *   <li>If the array is null or empty, the method prints {@code <null_2darray>}.</li>
+     * </ul>
+     *
+     * @apiNote
+     * This method is an alias for {@link prettyDisplay(double[][], boolean)} method with
+     * {@code showIndices} parameter set to {@code true} by default.
+     *
+     * @param  arr          The two-dimensional {@code double} array to display.
+     *                      If the array is null or empty, {@code <null_2darray>} will be printed.
+     *
+     * @since  1.5.0
+     * @see    #prettyDisplay(double[][], boolean)
+     */
     final public static void prettyDisplay(double[ ][ ] arr) {
         Matrix.prettyDisplay(arr, true);
     }
 
+    /**
+     * Displays the two-dimensional array in a formatted and human-readable manner.
+     *
+     * <p>The method prints all rows and columns of the array with an option to show column and row indices.
+     * If the array is null or empty, the method prints {@code <null_2darray>} and exits.
+     *
+     * <p>The output includes the following formatting features:
+     * <ul>
+     *     <li>Each element is padded for alignment based on the largest element's width in its column.</li>
+     *     <li>Column headers are displayed if the {@code showIndices} flag is {@code true}.</li>
+     *     <li>If {@code showIndices} is {@code true}, row numbers are displayed to the left of each row.</li>
+     * </ul>
+     *
+     * <p><b>Example Code:</b></p>
+     * <pre>&nbsp;
+     *   Matrix.prettyDisplay(new double[][] {
+     *       { 1, 2, 3 },
+     *       { 4, 5, 6 },
+     *       { 7, 8, 9 }
+     *   }, true);
+     * </pre>
+     *
+     * <p><b>Example Output:</b></p>
+     *
+     * <p>With {@code showIndices} set to {@code true}:
+     * <pre>&nbsp;
+     *        [1]  [2]  [3]
+     *   [1]  1.0  2.0  3.0
+     *   [2]  4.0  5.0  6.0
+     *   [3]  7.0  8.0  9.0
+     * </pre>
+     *
+     * <p>With {@code showIndices} set to {@code false}:
+     * <pre>&nbsp;
+     *   1.0  2.0  3.0
+     *   4.0  5.0  6.0
+     *   7.0  8.0  9.0
+     * </pre>
+     *
+     * <p>Special cases handled:
+     * <ul>
+     *   <li>If the array is null or empty, the method prints {@code <null_2darray>}.</li>
+     * </ul>
+     *
+     * @param  arr          The two-dimensional {@code double} array to display.
+     *                      If the array is null or empty, {@code <null_2darray>} will be printed.
+     * @param  showIndices  Whether to display row and column indices along with the array elements.
+     *
+     * @since  1.5.0
+     * @see    #prettyDisplay(double[][])
+     */
     final public static void prettyDisplay(double[ ][ ] arr, boolean showIndices) {
         // If the two-dimensional array is null, print <null_2darray>
         if (arr == null || arr.length == 0) {
@@ -5731,10 +6024,112 @@ public class Matrix implements MatrixUtils {
         System.out.println(sb.toString());
     }
 
+    /**
+     * Displays a specified row of a two-dimensional array in a formatted and human-readable manner.
+     *
+     * <p>The method prints the elements of the array along with the column and row indices.
+     * If the given row index is negative, the method supports wrapping by converting it to a valid
+     * positive index. If the {@code index} is out of bounds, an {@link InvalidIndexException} is thrown.
+     *
+     * <p>The output includes the following formatting features:
+     * <ul>
+     *   <li>Each element is padded for alignment based on the largest element's width in its column.</li>
+     *   <li>Column headers are displayed.</li>
+     *   <li>Row numbers are displayed to the left of each row.</li>
+     * </ul>
+     *
+     * <p><b>Example Code:</b></p>
+     * <pre>&nbsp;
+     *   Matrix.prettyDisplay(new double[][] {
+     *       { 3, 4, 5 },
+     *       { 1, 2, 3 },
+     *       { 9, 7, 0 }
+     *   }, 2);
+     * </pre>
+     *
+     * <p><b>Example Output:</b></p>
+     * <pre>&nbsp;
+     *        [1]  [2]  [3]
+     *   [3]  9.0  7.0  0.0
+     * </pre>
+     *
+     * <p>Special cases handled:
+     * <ul>
+     *   <li>If the array is null or empty, the method prints {@code <null_2darray>}.</li>
+     *   <li>Negative indices are adjusted by adding the array length.</li>
+     * </ul>
+     *
+     * @apiNote
+     * This method is an alias for {@link prettyDisplay(double[][], int, boolean)} method with
+     * {@code showIndices} parameter set to {@code true} by default.
+     *
+     * @param  arr          The two-dimensional {@code double} array to display.
+     *                      If the array is null or empty, {@code <null_2darray>} will be printed.
+     * @param  index        The row index to display. Negative indices are supported and will be converted to
+     *                      positive by wrapping.
+     *
+     * @throws InvalidIndexException  If the given row index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #prettyDisplay(double[][], int, boolean)
+     */
     final public static void prettyDisplay(double[ ][ ] arr, int index) {
         Matrix.prettyDisplay(arr, index, true);
     }
 
+    /**
+     * Displays a specified row of a two-dimensional array in a formatted and human-readable manner.
+     *
+     * <p>The method prints the elements of the array with an option to show column and row indices.
+     * If the given row index is negative, the method supports wrapping by converting it to a valid
+     * positive index. If the {@code index} is out of bounds, an {@link InvalidIndexException} is thrown.
+     *
+     * <p>The output includes the following formatting features:
+     * <ul>
+     *   <li>Each element is padded for alignment based on the largest element's width in its column.</li>
+     *   <li>Column headers are displayed if the {@code showIndices} flag is {@code true}.</li>
+     *   <li>If {@code showIndices} is {@code true}, row numbers are displayed to the left of each row.</li>
+     * </ul>
+     *
+     * <p><b>Example Code:</b></p>
+     * <pre>&nbsp;
+     *   Matrix.prettyDisplay(new double[][] {
+     *       { 3, 4, 5 },
+     *       { 1, 2, 3 },
+     *       { 9, 7, 0 }
+     *   }, 0, true);
+     * </pre>
+     *
+     * <p><b>Example Output:</b></p>
+     *
+     * <p>With {@code showIndices} set to {@code true} (default):
+     * <pre>&nbsp;
+     *        [1]  [2]  [3]
+     *   [1]  3.0  4.0  5.0
+     * </pre>
+     *
+     * <p>With {@code showIndices} set to {@code false}:
+     * <pre>&nbsp;
+     *   3.0  4.0  5.0
+     * </pre>
+     *
+     * <p>Special cases handled:
+     * <ul>
+     *   <li>If the array is null or empty, the method prints {@code <null_2darray>}.</li>
+     *   <li>Negative indices are adjusted by adding the array length.</li>
+     * </ul>
+     *
+     * @param  arr          The two-dimensional {@code double} array to display.
+     *                      If the array is null or empty, {@code <null_2darray>} will be printed.
+     * @param  index        The row index to display. Negative indices are supported and will be converted to
+     *                      positive by wrapping.
+     * @param  showIndices  Whether to display row and column indices along with the array elements.
+     *
+     * @throws InvalidIndexException  If the given row index is out of bounds.
+     *
+     * @since  1.5.0
+     * @see    #prettyDisplay(double[][], int)
+     */
     final public static void prettyDisplay(double[ ][ ] arr, int index, boolean showIndices) {
         // If the two-dimensional array is null, print <null_2darray>
         if (arr == null || arr.length == 0) {
@@ -5800,6 +6195,8 @@ public class Matrix implements MatrixUtils {
      * Returns a {@code String} representation of this matrix.
      *
      * <p>Use the {@link #display()} method to display this matrix in simply way.
+     * Or, consider to use {@link #prettyDisplay()} for more better human-readability and it is
+     * designed to display the grid-aligned matrix.
      *
      * @return the {@code String} representation of this matrix in Python-style array notation.
      *
