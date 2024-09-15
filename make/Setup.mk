@@ -169,9 +169,16 @@ __current_year := $(shell $(PY) -c "import datetime as date; print(date.datetime
 __jdoc_WIN_TITLE   := "$(PROGNAME) API"
 
 # Custom Javadoc tags
-__jdoc_CUSTOM_TAGS := -tag param -tag return -tag throws     \
-                      -tag warning:a:"Warning:" -tag author  \
-                      -tag license:pt:"License:" -tag see
+__jdoc_CUSTOM_TAGS := -tag param                                    \
+                      -tag return                                   \
+                      -tag throws                                   \
+                      -tag warning:a:"Warning:"                     \
+                      -tag apiNote:ptcmf:"API Note:"                \
+                      -tag implNote:ptcmf:"Implementation Note:"    \
+                      -tag author                                   \
+                      -tag license:pt:"License:"                    \
+                      -tag see
+
 
 # Custom bottom page; Must be closed with quotes!
 __jdoc_BOTTOM      := 'Copyright &copy; $(INCEPTION_YEAR) - $(__current_year) <a href="$(AUTHOR_URL)">$(AUTHOR)</a>. All rights reserved.'
