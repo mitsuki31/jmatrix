@@ -56,4 +56,4 @@ jobs:
       - name: Analyzing the code with pylint
         run: |
           echo "Analyzing the Python code..."
-          pylint --rcfile=.pylintrc $(git ls-files '*.py')
+          pylint --rcfile=.pylintrc $(git ls-files '*.py' --recurse-submodules)

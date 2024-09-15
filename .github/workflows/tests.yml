@@ -125,9 +125,9 @@ jobs:
         if: ${{ steps.setup-py.outputs.cache-hit != true }}
         run: |
           if [ $debug = 'true' ]; then
-            python -m pip install -r $(git ls-files **/$deps) --debug
+            python -m pip install -r $(git ls-files **/$deps --recurse-submodules) --debug
           else
-            python -m pip install -r $(git ls-files **/$deps)
+            python -m pip install -r $(git ls-files **/$deps --recurse-submodules)
           fi
         shell: bash
 
