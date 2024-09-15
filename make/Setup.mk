@@ -163,10 +163,10 @@ ifndef __intern_INC_SRC
 endif  # __intern_INC_SRC
 
 # Get current year using Python datetime module
-__current_year := $(shell $(PY) -c "import datetime as date; print(date.datetime.now().year)")
+__current_year     := $(shell $(PY) -c "import datetime as date; print(date.datetime.now().year)")
 
-# Window title for HTML docs "JMatrix API"
-__jdoc_WIN_TITLE   := "$(PROGNAME) API"
+# Window title for HTML docs "JMatrix <VERSION> API"
+__jdoc_WIN_TITLE   := "$(PROGNAME) $(VERSION) API"
 
 # Custom Javadoc tags
 __jdoc_CUSTOM_TAGS := -tag param                                    \
