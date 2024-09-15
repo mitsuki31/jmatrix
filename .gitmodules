@@ -1,0 +1,3 @@
+[submodule "vendor/JMBuilder"]
+	path = vendor/JMBuilder
+	url = https://github.com/mitsuki31/JMBuilder.git

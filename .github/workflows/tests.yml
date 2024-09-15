@@ -53,6 +53,9 @@ jobs:
       # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: true  # Ensure that submodules are fetched
+          fetch-depth: 0
 
       # Caching Maven deps
       - name: Cache Maven dependencies
@@ -103,6 +106,9 @@ jobs:
       # Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: true  # Ensure that submodules are fetched
+          fetch-depth: 0
 
       # Setup Python
       - name: Setup Python / Ubuntu / ${{ matrix.py-ver }}
@@ -119,9 +125,9 @@ jobs:
         if: ${{ steps.setup-py.outputs.cache-hit != true }}
         run: |
           if [ $debug = 'true' ]; then
-            python -m pip install -r $(git ls-files **/$deps) --debug
+            python -m pip install -r $(git ls-files **/$deps --recurse-submodules) --debug
           else
-            python -m pip install -r $(git ls-files **/$deps)
+            python -m pip install -r $(git ls-files **/$deps --recurse-submodules)
           fi
         shell: bash
 
