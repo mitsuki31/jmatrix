@@ -19,6 +19,9 @@ TARGET_DIR : os.PathLike
 OUTPUT_DIR : os.PathLike
     The path to the output directory for retrieved information.
 
+BUILDER_DIR : os.PathLike
+    The path to the JMatrix builder directory.
+
 Available Functions
 -------------------
 md5_get
@@ -47,6 +50,7 @@ ROOT_DIR: os.PathLike = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..'))
 TARGET_DIR: os.PathLike = os.path.join(ROOT_DIR, 'target')
 OUTPUT_DIR: os.PathLike = os.path.join(TARGET_DIR, '_retriever')
+BUILDER_DIR: os.PathLike = os.path.join(ROOT_DIR, 'vendor', 'JMBuilder')
 
 
 def md5_get(file: os.PathLike, block_size: int = -1) -> str:
@@ -100,7 +104,7 @@ def setup() -> str:
         directory ``OUTPUT_DIR``.
     """
     # Insert the JMBuilder path to PYTHONPATH environment
-    sys.path.insert(0, os.path.join(ROOT_DIR, 'tools', 'JMBuilder'))
+    sys.path.insert(0, BUILDER_DIR)
 
     # DO NOT TRY TO MOVE THIS IMPORTS TO GLOBAL!! Keep on this function only
     # for speed and performance when commands in Makefile run this
