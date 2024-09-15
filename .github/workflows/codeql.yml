@@ -51,6 +51,9 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        submodules: true  # Ensure that submodules are fetched
+        fetch-depth: 0
 
     # Setup the Java Virtual Machine
     - name: Setup JVM / ${{ matrix.os }}

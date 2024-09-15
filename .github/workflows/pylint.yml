@@ -29,6 +29,9 @@ jobs:
       # Checkout the repo
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: true  # Ensure that submodules are fetched
+          fetch-depth: 0
 
       # Setup Python
       - name: Set up Python ${{ matrix.python-version }}

@@ -53,6 +53,9 @@ jobs:
       # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: true  # Ensure that submodules are fetched
+          fetch-depth: 0
 
       # Caching Maven deps
       - name: Cache Maven dependencies
@@ -103,6 +106,9 @@ jobs:
       # Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: true  # Ensure that submodules are fetched
+          fetch-depth: 0
 
       # Setup Python
       - name: Setup Python / Ubuntu / ${{ matrix.py-ver }}
