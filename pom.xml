@@ -12,7 +12,7 @@
     <version>1.5.0-SNAPSHOT</version>
 
     <name>JMatrix</name>
-    <description>JMatrix is a Java library to build matrix with ease. Created by Ryuu Mitsuki.</description>
+    <description>A lightweight Java library for basic introduction to matrix and linear algebra concepts.</description>
     <url>https://github.com/mitsuki31/jmatrix.git</url>
     <inceptionYear>2023</inceptionYear>
     <licenses>
@@ -284,6 +284,26 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+      <repository>
+        <id>github-pkg</id>
+        <name>${project.name} GitHub Package</name>
+        <url>https://maven.pkg.github.com/mitsuki31/${project.artifactId}</url>
+        <uniqueVersion>true</uniqueVersion>
+      </repository>
+      <snapshotRepository>
+        <id>github-pkg</id>
+        <name>${project.name} GitHub Package</name>
+        <url>https://maven.pkg.github.com/mitsuki31/${project.artifactId}</url>
+        <uniqueVersion>true</uniqueVersion>
+      </snapshotRepository>
+      <site>
+        <id>jmatrix.api</id>
+        <name>${project.name} API Documentation Site</name>
+        <url>https://mitsuki31.github.io/${project.artifactId}</url>
+      </site>
+    </distributionManagement>
 
     <reporting>
         <plugins>
