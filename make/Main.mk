@@ -147,7 +147,7 @@ ifeq ($(__intern_INC_SRC),1)
 	$(call __info,Generating the JAR file (sources)...)
 	@$(JAR) $(subst {JAR},$(lastword $(JAR_NAMES)),$(JARFLAGS)) \
 		$(wildcard LICENSE) -C $(JAVA_DIR) . \
-		-C $(addprefix $(CLASSES_DIR)/,$(notdir $(RESOURCES_ONLY_DIR))) .
+		-C $(CLASSES_DIR) $(notdir $(RESOURCES_ONLY_DIR))
 	$(call __info,$(subst {JAR},$(abspath $(lastword $(JAR_NAMES))),$(._done_msg)))
 endif  # __intern_INC_SRC
 	$(eval undefine ._done_msg)
