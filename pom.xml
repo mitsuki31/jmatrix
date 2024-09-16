@@ -350,6 +350,11 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <!-- It is mandatory to include hard-formatted manifest file -->
+                            <useDefaultManifestFile>true</useDefaultManifestFile>
+                            <defaultManifestFile>${paths.classesDir}/MANIFEST.MF</defaultManifestFile>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
