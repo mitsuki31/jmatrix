@@ -9,7 +9,7 @@
     <groupId>com.mitsuki</groupId>
     <artifactId>jmatrix</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.0-SNAPSHOT</version>
+    <version>1.5.0</version>
 
     <name>JMatrix</name>
     <description>A lightweight Java library for basic introduction to matrix and linear algebra concepts.</description>
@@ -287,13 +287,13 @@
 
     <distributionManagement>
       <repository>
-        <id>github-pkg</id>
+        <id>github</id>
         <name>${project.name} GitHub Package</name>
         <url>https://maven.pkg.github.com/mitsuki31/${project.artifactId}</url>
         <uniqueVersion>true</uniqueVersion>
       </repository>
       <snapshotRepository>
-        <id>github-pkg</id>
+        <id>github</id>
         <name>${project.name} GitHub Package</name>
         <url>https://maven.pkg.github.com/mitsuki31/${project.artifactId}</url>
         <uniqueVersion>true</uniqueVersion>
