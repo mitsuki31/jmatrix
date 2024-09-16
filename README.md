@@ -57,6 +57,7 @@
     * [Matrix Multiplication](#matrix-mult)
     * [Transposition](#matrix-transpose)
 - [Author](#author)
+- [Contributing](#contributing)
 - [License](#license)
 </details>
 
@@ -64,12 +65,10 @@
 
 ## <a name="about-jmatrix" /> 🪐 About JMatrix
 
-**JMatrix** is an educational [Java][java-wiki] library and designed to facilitate and simplify [matrix operations][matrix-ops].  
-It offers a range of intuitive methods to perform common matrix operations with ease, making it an ideal learning tool for high school students exploring [linear algebra][linear-algebra-wiki] concepts.  
+**JMatrix** is a lightweight [Java][java-wiki] library that provides essential matrix operations like addition, subtraction, multiplication, and determinant calculation. Designed with simplicity in mind, it is perfect for educational purposes and small-scale projects involving [linear algebra][linear-algebra-wiki]. The library also supports custom matrix sizes and efficient handling of matrix operations for both square and rectangular matrices.
 
 > [!IMPORTANT]  
-> This project is currently in development and is intended for educational purposes only.  
-> It is not recommended for use in large-scale projects or production environments.
+> This project was intended for educational purposes only. It is not recommended for use in large-scale projects.
 
 **JMatrix** provides following basic matrix operations:
 
@@ -77,15 +76,16 @@ It offers a range of intuitive methods to perform common matrix operations with 
 - [Subtraction][matrix-sub]
 - [Multiplication][matrix-mult]
 - [Transposition][matrix-transpose]
-- *(additional matrix operations will be added in the future)*
+- [Trace](https://en.wikipedia.org/wiki/Trace_(linear_algebra))
+- [Determinant](https://en.wikipedia.org/wiki/Determinant)
 
-In addition to the fundamental matrix operations, **JMatrix** also includes matrix type checkers, allowing students or users to identify certain characteristics of matrices:
+In addition to the fundamental matrix operations, **JMatrix** also includes matrix type checkers, allowing users to identify certain characteristics of matrices:
 
-- `isDiagonal`        - Check whether the matrix is diagonal.
-- `isSquare`          - Check whether the matrix is square.
-- `isLowerTriangular` - Check whether the matrix is lower triangular.
-- `isUpperTriangular` - Check whether the matrix is upper triangular.
-- *(more matrix type checkers will be added in the future)*.
+- `isDiagonal`          - Check whether the matrix is [diagonal]( https://en.wikipedia.org/wiki/Diagonal_matrix).
+- `isSquare`            - Check whether the matrix is [square](https://en.wikipedia.org/wiki/Square_matrix).
+- `isLowerTriangular`   - Check whether the matrix is [lower triangular](https://en.wikipedia.org/wiki/Triangular_matrix).
+- `isUpperTriangular`   - Check whether the matrix is [upper triangular](https://en.wikipedia.org/wiki/Triangular_matrix).
+- `isPermutationMatrix` - Check whether the matrix is [permutation matrix](https://en.wikipedia.org/wiki/Permutation_matrix).
 
 
 <details>
@@ -95,7 +95,7 @@ In addition to the fundamental matrix operations, **JMatrix** also includes matr
 > They are widely used in various fields, including mathematics, physics, computer science, and engineering.  
 > Matrices provide a concise and organized way to represent and manipulate data.  
 >
-> Refer to [:books: JMatrix Wikis][what-is-matrix], if want to know about matrix with simplified informations.
+> Refer to [:books: JMatrix Wiki][what-is-matrix], if want to know about matrix with simplified informations.
 </details>
 
 ---
@@ -105,10 +105,10 @@ In addition to the fundamental matrix operations, **JMatrix** also includes matr
 If you are interested in obtaining the latest stable version of the project, please check the [latest version][latest-ver]. You can download the archived package containing compiled classes from there.
 
 For improved stability and better usability, we highly recommend downloading the archived package that also includes the source files (`jmatrix-<VERSION>_with_sources.jar`).
-This package contains all the necessary documentation about classes, methods, and other aspects related to **JMatrix**, making it easier to explore and understand the project.
+This package contains all the necessary documentation about classes, methods, and other aspects related to **JMatrix**, making it easier to explore and understand the library APIs.
 
 > [!WARNING]  
-> Currently, there is an issue with pre-build processes when using **Make** on Windows systems. The issue was that it failed while trying to create child processes to configure the build requirements.
+> Currently, there is an issue with pre-build processes when using **Make** on Windows systems. The issue was that it failed while trying to create child processes to configure the build requirements.
 > 
 > For better functionality, we recommend using [**Maven**][maven] instead. Because using **Make** is an alternative way for flexibility on UNIX systems.
 
@@ -140,16 +140,18 @@ Once you have the necessary prerequisites, you can start exploring and using **J
 
 ---
 
-
 ## <a name="constructor-summary" /> Constructor Summary
 
-There are five constructors available for constructing matrices in the **JMatrix** library. Each constructor serves a specific purpose, providing users with flexibility and ease of use.  
+There are five constructors available for constructing matrices in the **JMatrix** library. Each constructor serves a specific purpose, providing users with flexibility and ease of use.
 
 > [!NOTE]  
 > If you are unfamiliar with matrices or need a refresher, you can check the [:bookmark:Introduction to Matrix][what-is-matrix] page to gain a basic understanding before delving into matrix constructors.
 
-
 ### <a name="cr_matrix-1" /> `Matrix()`
+
+```java
+public Matrix();
+```
 
 This constructor does not require any arguments and constructs a Matrix with null entries, resulting in a null matrix. A null matrix cannot perform any operations until it is initialized with valid elements. For example:
 
@@ -175,7 +177,7 @@ Matrix m = new Matrix();
 >
 > #### Null Matrix
 >
-> ```java
+> ```console
 > null
 > ```
 >
@@ -187,10 +189,20 @@ Matrix m = new Matrix();
 >     (nullM.getEntries() == null) ? nullM.getEntries() : nullM.toString());
 > ```
 >
+> Also if you use either the `display()` or `prettyDisplay()` method from null matrix, this output will be printed.
+>
+> ```console
+> <null_matrix>
+> ```
+>
 > </details> 
 
 
-### <a name="cr_matrix-2"></a> `Matrix(int rows, int cols)`
+### <a name="cr_matrix-2" /> `Matrix(int, int)`
+
+```java
+public Matrix(int rows, int cols);
+```
 
 With this constructor, you can create a **zero matrix** with ease by providing two arguments: the number of [rows][matrix-row] and [columns][matrix-col]. A **zero matrix** contains all elements as zeros. For example:
 
@@ -199,7 +211,7 @@ With this constructor, you can create a **zero matrix** with ease by providing t
 Matrix m = new Matrix(3, 4);
 ```
 
-The code above constructs a new **zero matrix** with size $3 \times 4$. The matrix will look like this:
+The code above constructs a new **zero matrix** with size $3 \times 4$. The matrix will looks like this:
 
 ```math
 \begin{bmatrix}
@@ -209,16 +221,20 @@ The code above constructs a new **zero matrix** with size $3 \times 4$. The matr
 \end{bmatrix}
 ```
 
-### <a name="cr_matrix-3" /> `Matrix(int rows, int cols, int val)`
-
-This constructor is similar to [`Matrix(int rows, int cols)`](#cr_matrix-2) but with an additional argument that sets the value for all elements of the constructed matrix. For example:
+### <a name="cr_matrix-3" /> `Matrix(int, int, double)`
 
 ```java
-// Create a new matrix with size 4x4 and set all elements to 5
+public Matrix(int rows, int cols, double val);
+```
+
+This constructor is similar to [`Matrix(int, int)`](#cr_matrix-2) but with an additional argument that sets the value for all elements of the constructed matrix. For example:
+
+```java
+// Create a new matrix with size 4x4 and set all elements to 5.0
 Matrix m = new Matrix(4, 4, 5);
 ```
 
-The constructed matrix will look like this:
+The constructed matrix will looks like this:
 
 ```math
 \begin{bmatrix}
@@ -229,9 +245,13 @@ The constructed matrix will look like this:
 \end{bmatrix}
 ```
 
-### <a name="cr_matrix-4" /> `Matrix(double[][] array)`
+### <a name="cr_matrix-4" /> `Matrix(double[][])`
 
-This constructor is highly recommended for constructing a new [matrix][what-is-matrix]. You can declare the entries first and then convert them into a **Matrix** object whenever needed.
+```java
+public Matrix(double[][] arr);
+```
+
+This constructor is **highly recommended** for constructing a new [matrix][what-is-matrix]. You can declare the entries first and then convert them into a **Matrix** object whenever needed.
 
 > [!NOTE]  
 > Please note, this constructor only accepts two-dimensional array with type of `double`.
@@ -261,7 +281,11 @@ Matrix m = new Matrix(new double[][] {
 
 ### <a name="cr_matrix-5" /> `Matrix.identity(int)`
 
-This constructor creates a new **identity matrix** with a size of $n \times n$ (where $n$ is from input). An **identity matrix** is a square matrix with ones on the main diagonal and zeros elsewhere, often denoted as $I$.
+```java
+public static Matrix identity(int n);
+```
+
+This constructor creates a new **identity matrix** with a size of $n \times n$ (where $n$ is a non-floating number). An **identity matrix** is a square matrix with ones on the main diagonal and zeros elsewhere, often denoted as $I$.
 
 Please avoid using $I$ or $i$ as variable names for matrices in code, as $i$ is commonly used in `for-loop` statements. Instead, consider using $mI$ or a similar alternative. For instance:
 
@@ -270,7 +294,7 @@ Please avoid using $I$ or $i$ as variable names for matrices in code, as $i$ is 
 Matrix mI = Matrix.identity(5);
 ```
 
-The matrix will look like this:
+The matrix will looks like this:
 
 ```math
 \begin{bmatrix}
@@ -282,7 +306,6 @@ The matrix will look like this:
 \end{bmatrix}
 ```
 
-
 ## <a name="matrix-ops" /> Matrix Operations
 
 The **JMatrix** library provides several basic matrix operations that allow users to perform common matrix calculations with ease. These operations include:
@@ -292,17 +315,32 @@ The **JMatrix** library provides several basic matrix operations that allow user
 - [Scalar Multiplication](#scalar-mult)
 - [Matrix Multiplication](#matrix-mult)
 - [Transposition](#matrix-transpose)
+- [Trace](https://en.wikipedia.org/wiki/Trace_(linear_algebra))
+- [Determinant](https://en.wikipedia.org/wiki/Determinant)
 
-For more detailed information about each matrix operation, you can refer to the [:books: JMatrix Wikis][matrix-ops].
+For more detailed information about each matrix operation, you can refer to the [:books: JMatrix Wiki][matrix-ops].
 
 ### <a name="matrix-add" /> Addition
+
+```java
+public void sum(Matrix m);
+```
+```java
+public static Matrix sum(Matrix m, Matrix n);
+```
+```java
+public void sum(double[][] a);
+```
+```java
+public static double[][] sum(double[][] a, double[][] b);
+```
 
 :book: **Wiki:** [Matrix Addition][matrix-add]
 
 In **matrix addition**, two matrices with the same dimensions are added together element-wise. Each element of the resulting matrix is the sum of the corresponding elements from the two input matrices.
 
 > [!IMPORTANT]  
-> Before performing **matrix addition**, ensure that the two matrices have the same dimensions.
+> Before performing **matrix addition**, ensure that the two matrices have the same dimensions (in other words, square matrix).
 
 **Example code:**
 
@@ -335,15 +373,27 @@ Matrix k = Matrix.sum(m, n);
 
 In the example above, two matrices $m$ and $n$ are created. The `Matrix.sum(m, n)` method is used to add both matrices element-wise, and the resulting matrix $k$ is computed and stored. The output matrix $k$ is the sum of matrices $m$ and $n$.
 
-
 ### <a name="matrix-sub" /> Subtraction
+
+```java
+public void sub(Matrix m);
+```
+```java
+public static Matrix sub(Matrix m, Matrix n);
+```
+```java
+public void sub(double[][] a);
+```
+```java
+public static double[][] sub(double[][] a, double[][] b);
+```
 
 :book: **Wiki:** [Matrix Subtraction][matrix-sub]
 
 **Matrix subtraction** involves subtracting corresponding elements of one matrix from another.
 
-> **Important**  
-> Before performing **matrix subtraction**, ensure that the two matrices have the same dimensions.
+> [!IMPORTANT]  
+> Before performing **matrix subtraction**, ensure that the two matrices have the same dimensions (in other words, square matrix).
 
 **Example code:**
 
@@ -379,8 +429,14 @@ Matrix k = Matrix.sub(m, n);
 
 In the example above, two matrices $m$ and $n$ are created. The `Matrix.sub(m, n)` method is used to subtract $n$ from $m$ element-wise, and the resulting matrix $k$ is computed and stored. The output matrix $k$ is the difference between matrices $m$ and $n$.
 
-
 ### <a name="scalar-mult" /> Scalar Multiplication
+
+```java
+public void mult(double x);
+```
+```java
+public static Matrix mult(Matrix m, double x);
+```
 
 :book: **Wiki:** [Scalar Multiplication][scalar-mult]
 
@@ -413,10 +469,22 @@ Matrix s = Matrix.mult(m, 5);
 \end{bmatrix}
 ```
 
-In the example above, a matrix $m$ is created. The `Matrix.mult(m, 5)` method is used to multiply each element of matrix $m$ by the scalar value 5, resulting in a new matrix $s$.
-
+In the example above, a matrix $m$ is created. The `Matrix.mult(m, 5)` method is used to multiply each element of matrix $m$ by the scalar value $5$, resulting in a new matrix $s$.
 
 ### <a name="matrix-mult" /> Matrix Multiplication
+
+```java
+public void mult(Matrix m);
+```
+```java
+public static Matrix mult(Matrix m, Matrix n);
+```
+```java
+public void mult(double[][] a);
+```
+```java
+public static double[][] mult(double[][] a, double[][] b);
+```
 
 :book: **Wiki:** [Matrix Multiplication][matrix-mult]
 
@@ -460,12 +528,22 @@ In the example above, two matrices $m$ and $n$ are created. The `Matrix.mult(m, 
 
 ### <a name="matrix-transpose" /> Transposition
 
+```java
+public void transpose();
+```
+```java
+public static Matrix transpose(Matrix m);
+```
+```java
+public static double[][] transpose(double[][] a);
+```
+
 :book: **Wiki:** [Matrix Transposition][matrix-transpose]
 
 **Matrix transposition** involves swapping the [rows][matrix-row] and [columns][matrix-col] of a matrix. The resulting matrix will have its rows and columns interchanged.
 
 > [!NOTE]  
-> Repeating this operation to the transposed matrix will reset their indices position to the original position.
+> 💡 **Tip:** Repeating this operation to the transposed matrix will reset their indices position to the original position.
 
 **Example code:**
 
@@ -498,10 +576,11 @@ In the example above, a matrix $m$ is created. The `Matrix.transpose(m)` method 
 
 ## <a name="author" /> Author
 
-**JMatrix** is developed and maintained by [Ryuu Mitsuki][mitsuki31].
+**JMatrix** is authored and maintained by [Ryuu Mitsuki][mitsuki31].
 
-As the sole developer of the project, [Ryuu Mitsuki][mitsuki31] responsible for the continuous improvement and updates of the library. He is committed to providing a valuable and user-friendly educational resource for high school students and anyone interested in exploring [linear algebra][linear-algebra-wiki] concepts through the **JMatrix** library and [Java](https://www.oracle.com/java).
+## <a name="contributing" /> Contributing
 
+Please feel free to contribute to this project if you know of a problematic algorithm based on linear algebra concepts or if you wish to make any existing algorithm better. Any contributions is very appreciated and greatly helped me.
 
 ## <a name="license" /> License
 
@@ -517,7 +596,7 @@ By using **JMatrix**, you agree to comply with the terms of the [Apache License 
 
 
 [mitsuki31]: https://github.com/mitsuki31
-[jmatrix]: https://github.com/mitsuki31/jmatrix.git
+[jmatrix]: https://github.com/mitsuki31/jmatrix
 [license]: https://github.com/mitsuki31/jmatrix/blob/master/LICENSE
 [latest-ver]: https://github.com/mitsuki31/jmatrix/releases/latest
 
