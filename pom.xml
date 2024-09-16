@@ -102,6 +102,7 @@
                 <configuration>
                     <source>${sourceJdk}</source>
                     <target>${targetJdk}</target>
+                    <release>${sourceJdk}</release>
                     <testSource>${sourceJdk}</testSource>
                     <testTarget>${targetJdk}</testTarget>
                     <showDeprecation>true</showDeprecation>
